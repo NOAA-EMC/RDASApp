@@ -4,7 +4,7 @@ on: [push]
 jobs:
   check_pynorms:
     runs-on: ubuntu-latest
-    name: Check coding norms with pycodestyle and cpplint
+    name: Check coding norms with pycodestyle
 
     steps:
 
