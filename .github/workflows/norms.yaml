@@ -1,0 +1,24 @@
+name: Coding Norms
+on: [push]
+
+jobs:
+  check_pynorms:
+    runs-on: ubuntu-latest
+    name: Check coding norms with pycodestyle and cpplint
+
+    steps:
+
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install pycodestyle
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        path: RDASApp
+
+    - name: Run pycodestyle
+      run: |
+        cd $GITHUB_WORKSPACE/RDASApp
+        pycodestyle -v --config ./.pycodestyle ./ush ./scripts ./test 
+
