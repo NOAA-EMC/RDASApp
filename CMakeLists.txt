@@ -144,7 +144,7 @@ endif(BUILD_RDASBUNDLE)
 #add_subdirectory(ush)
 
 # Include testing.
-#add_subdirectory(test)
+add_subdirectory(test)
 
 # Finalize bundle
 # ---------------
