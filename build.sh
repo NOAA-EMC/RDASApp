@@ -109,8 +109,10 @@ CMAKE_OPTS+=" -DWORKFLOW_TESTS=${WORKFLOW_BUILD}"
 # determine which dycore to use
 if [[ $DYCORE == 'FV3' ]]; then
   CMAKE_OPTS+=" -DFV3_DYCORE=ON"
+  builddirs="fv3-jedi iodaconv"
 elif [[ $DYCORE == 'MPAS' ]]; then
   CMAKE_OPTS+=" -DFV3_DYCORE=OFF -DMPAS_DYCORE=ON"
+  builddirs="mpas-jedi iodaconv"
 else
   echo "$DYCORE is not a valid dycore option. Valid options are FV3 or MPAS"
   exit 1
@@ -136,7 +138,6 @@ set -x
 if [[ $BUILD_JCSDA == 'YES' ]]; then
   make -j ${BUILD_JOBS:-6} VERBOSE=$BUILD_VERBOSE
 else
-  builddirs="fv3-jedi iodaconv"
   for b in $builddirs; do
     cd $b
     make -j ${BUILD_JOBS:-6} VERBOSE=$BUILD_VERBOSE
