@@ -167,6 +167,9 @@ jedicmake/
 land-imsproc/
 land-jediincr/
 mom6/
+/MPAS/
+/mpas-jedi/
+/mpas-jedi-data/
 oops/
 saber/
 saber-data/
