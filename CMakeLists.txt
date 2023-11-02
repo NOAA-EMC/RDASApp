@@ -35,6 +35,8 @@ set( ENABLE_MPI ON CACHE BOOL "Compile with MPI" )
 option(BUILD_RDASBUNDLE "Build RDAS Bundle" ON)
 option(CLONE_JCSDADATA "Clone JCSDA test data repositories" OFF)
 option(WORKFLOW_TESTS "Include regional-workflow dependent tests" OFF)
+option(MPAS_DYCORE "Use MPAS" OFF)
+option(FV3_DYCORE "Use FV3" ON)
 
 # Initialize bundle
 # -----------------
@@ -79,15 +81,25 @@ if(BUILD_RDASBUNDLE)
   option(ENABLE_UFO_DATA "Obtain ufo test data from ufo-data repository (vs tarball)" ON)
   ecbuild_bundle( PROJECT ufo   GIT "https://github.com/jcsda/ufo.git" BRANCH develop )
 
+  if(FV3_DYCORE)
 # FMS and FV3 dynamical core
-  ecbuild_bundle( PROJECT fms GIT "https://github.com/jcsda/FMS.git" BRANCH release-stable )
-  ecbuild_bundle( PROJECT fv3 GIT "https://github.com/jcsda/GFDL_atmos_cubed_sphere.git" BRANCH release-stable )
+    ecbuild_bundle( PROJECT fms GIT "https://github.com/jcsda/FMS.git" BRANCH release-stable )
+    ecbuild_bundle( PROJECT fv3 GIT "https://github.com/jcsda/GFDL_atmos_cubed_sphere.git" BRANCH release-stable )
 
 # fv3-jedi and associated repositories
-  ecbuild_bundle( PROJECT femps       GIT "https://github.com/jcsda/femps.git"                BRANCH develop )
-  ecbuild_bundle( PROJECT fv3-jedi-lm GIT "https://github.com/jcsda/fv3-jedi-linearmodel.git" BRANCH develop )
-  option(ENABLE_FV3_JEDI_DATA "Obtain fv3-jedi test data from fv3-jedi-data repository (vs tarball)" ON)
-  ecbuild_bundle( PROJECT fv3-jedi    GIT "https://github.com/jcsda/fv3-jedi.git"             BRANCH develop )
+    ecbuild_bundle( PROJECT femps       GIT "https://github.com/jcsda/femps.git"                BRANCH develop )
+    ecbuild_bundle( PROJECT fv3-jedi-lm GIT "https://github.com/jcsda/fv3-jedi-linearmodel.git" BRANCH develop )
+    option(ENABLE_FV3_JEDI_DATA "Obtain fv3-jedi test data from fv3-jedi-data repository (vs tarball)" ON)
+    ecbuild_bundle( PROJECT fv3-jedi    GIT "https://github.com/jcsda/fv3-jedi.git"             BRANCH develop )
+  endif()
+
+  if(MPAS_DYCORE)
+    set(MPAS_DOUBLE_PRECISION "ON" CACHE STRING "MPAS-Model: Use double precision 64-bit Floating point.")
+    set(MPAS_CORES init_atmosphere atmosphere CACHE STRING "MPAS-Model: cores to build.")
+    ecbuild_bundle( PROJECT MPAS GIT "https://github.com/JCSDA/MPAS-Model.git" BRANCH release-stable UPDATE )
+    option(ENABLE_MPAS_JEDI_DATA "Obtain mpas-jedi test data from mpas-jedi-data repository (vs tarball)" ON)
+    ecbuild_bundle( PROJECT mpas-jedi GIT "https://github.com/JCSDA/mpas-jedi" BRANCH develop UPDATE )
+  endif()
 
 # Build IODA converters
   option(BUILD_IODA_CONVERTERS "Build IODA Converters" ON)
@@ -126,14 +138,20 @@ if(CLONE_JCSDADATA)
                       BRANCH ${GIT_BRANCH_FUNC} )
     endif()
 
-  # same procedure for fv3-jedi-data
-    find_branch_name(REPO_DIR_NAME fv3-jedi)
-    if( NOT DEFINED ENV{LOCAL_PATH_JEDI_TESTFILES} AND NOT DEFINED GIT_TAG_FUNC )
-      ecbuild_bundle( PROJECT fv3-jedi-data GIT "https://github.com/JCSDA-internal/fv3-jedi-data.git" BRANCH develop )
+    # same procedure for fv3-jedi-data
+    if(FV3_DYCORE)
+      find_branch_name(REPO_DIR_NAME fv3-jedi)
+      if( NOT DEFINED ENV{LOCAL_PATH_JEDI_TESTFILES} AND NOT DEFINED GIT_TAG_FUNC )
+        ecbuild_bundle( PROJECT fv3-jedi-data GIT "https://github.com/JCSDA-internal/fv3-jedi-data.git" BRANCH develop )
 
-      # If fv3-jedi's current branch is available in ioda-data repo, that branch will be checked out
-      branch_checkout (REPO_DIR_NAME fv3-jedi-data
-                      BRANCH ${GIT_BRANCH_FUNC} )
+        # If fv3-jedi's current branch is available in ioda-data repo, that branch will be checked out
+        branch_checkout (REPO_DIR_NAME fv3-jedi-data
+                        BRANCH ${GIT_BRANCH_FUNC} )
+      endif()
+    endif()
+
+    if(MPAS_DYCORE)
+      ecbuild_bundle( PROJECT mpas-jedi-data  GIT "https://github.com/jcsda-internal/mpas-jedi-data.git"  BRANCH develop UPDATE )
     endif()
 
   endif(CLONE_JCSDADATA)

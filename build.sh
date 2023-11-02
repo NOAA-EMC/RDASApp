@@ -24,6 +24,7 @@ usage() {
   echo "  -f  force a clean build             DEFAULT: NO"
   echo "  -d  include JCSDA ctest data        DEFAULT: NO"
   echo "  -a  build everything in bundle      DEFAULT: NO"
+  echo "  -m  select dycore                   DEFAULT: FV3"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -39,8 +40,9 @@ BUILD_VERBOSE="NO"
 CLONE_JCSDADATA="NO"
 CLEAN_BUILD="NO"
 BUILD_JCSDA="NO"
+DYCORE="FV3"
 
-while getopts "p:t:c:hvdfa" opt; do
+while getopts "p:t:c:m:hvdfa" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -50,6 +52,9 @@ while getopts "p:t:c:hvdfa" opt; do
       ;;
     c)
       CMAKE_OPTS=$OPTARG
+      ;;
+    m)
+      DYCORE=$OPTARG
       ;;
     v)
       BUILD_VERBOSE=YES
@@ -100,6 +105,16 @@ mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR}
 # activate tests based on if this is cloned within the global-workflow
 WORKFLOW_BUILD=${WORKFLOW_BUILD:-"OFF"}
 CMAKE_OPTS+=" -DWORKFLOW_TESTS=${WORKFLOW_BUILD}"
+
+# determine which dycore to use
+if [[ $DYCORE == 'FV3' ]]; then
+  CMAKE_OPTS+=" -DFV3_DYCORE=ON"
+elif [[ $DYCORE == 'MPAS' ]]; then
+  CMAKE_OPTS+=" -DFV3_DYCORE=OFF -DMPAS_DYCORE=ON"
+else
+  echo "$DYCORE is not a valid dycore option. Valid options are FV3 or MPAS"
+  exit 1
+fi
 
 # JCSDA changed test data things, need to make a dummy CRTM directory
 if [[ $BUILD_TARGET == 'hera' ]]; then
