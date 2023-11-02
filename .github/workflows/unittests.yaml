@@ -1,0 +1,58 @@
+name: Unit Tests
+on: [push, pull_request]
+
+jobs:
+  ctests:
+    runs-on: ubuntu-latest
+    name: Run Unit Tests with ctest
+
+    steps:
+
+    - name: Install pip dependencies
+      run: |
+        pip install --upgrade pip
+        pip install pycodestyle
+        pip install netCDF4
+        pip install xarray
+
+    - name: Checkout wxflow
+      uses: actions/checkout@v3
+      with:
+        repository: NOAA-EMC/wxflow
+        ref: develop
+        path: wxflow
+
+    - name: Install wxflow
+      run: |
+        cd wxflow
+        pip install .
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        path: RDASApp
+
+    - name: Install ecBuild
+      run: |
+        git clone https://github.com/ecmwf/ecbuild.git ecbuild
+        cd ecbuild
+        git checkout 3.6.1
+        mkdir bootstrap
+        cd bootstrap
+        ../bin/ecbuild ..
+        sudo make install
+
+    - name: Configure with cmake
+      run: |
+        mkdir $GITHUB_WORKSPACE/build && cd $GITHUB_WORKSPACE/build
+        cmake -DBUILD_RDASBUNDLE=OFF $GITHUB_WORKSPACE/RDASApp
+
+    - name: Build RDASApp
+      run: |
+        cd $GITHUB_WORKSPACE/build
+        make
+
+    - name: Run ctest
+      run: |
+        cd $GITHUB_WORKSPACE/build
+        ctest --output-on-failure
