@@ -24,7 +24,6 @@ usage() {
   echo "  -f  force a clean build             DEFAULT: NO"
   echo "  -d  include JCSDA ctest data        DEFAULT: NO"
   echo "  -a  build everything in bundle      DEFAULT: NO"
-  echo "  -m  select dycore                   DEFAULT: FV3"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -40,9 +39,9 @@ BUILD_VERBOSE="NO"
 CLONE_JCSDADATA="NO"
 CLEAN_BUILD="NO"
 BUILD_JCSDA="NO"
-DYCORE="FV3"
+COMPILER="${COMPILER:-intel}"
 
-while getopts "p:t:c:m:hvdfa" opt; do
+while getopts "p:t:c:hvdfa" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -52,9 +51,6 @@ while getopts "p:t:c:m:hvdfa" opt; do
       ;;
     c)
       CMAKE_OPTS=$OPTARG
-      ;;
-    m)
-      DYCORE=$OPTARG
       ;;
     v)
       BUILD_VERBOSE=YES
@@ -75,19 +71,19 @@ while getopts "p:t:c:m:hvdfa" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion)
-    echo "Building RDASApp on $BUILD_TARGET"
+  hera | orion | hercules)
+    echo "Building GDASApp on $BUILD_TARGET"
     source $dir_root/ush/module-setup.sh
     module use $dir_root/modulefiles
-    module load RDAS/$BUILD_TARGET
+    module load GDAS/$BUILD_TARGET.$COMPILER
     CMAKE_OPTS+=" -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON"
     module list
     ;;
   $(hostname))
-    echo "Building RDASApp on $BUILD_TARGET"
+    echo "Building GDASApp on $BUILD_TARGET"
     ;;
   *)
-    echo "Building RDASApp on unknown target: $BUILD_TARGET"
+    echo "Building GDASApp on unknown target: $BUILD_TARGET"
     ;;
 esac
 
@@ -106,22 +102,14 @@ mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR}
 WORKFLOW_BUILD=${WORKFLOW_BUILD:-"OFF"}
 CMAKE_OPTS+=" -DWORKFLOW_TESTS=${WORKFLOW_BUILD}"
 
-# determine which dycore to use
-if [[ $DYCORE == 'FV3' ]]; then
-  CMAKE_OPTS+=" -DFV3_DYCORE=ON"
-  builddirs="fv3-jedi iodaconv"
-elif [[ $DYCORE == 'MPAS' ]]; then
-  CMAKE_OPTS+=" -DFV3_DYCORE=OFF -DMPAS_DYCORE=ON"
-  builddirs="mpas-jedi iodaconv"
-else
-  echo "$DYCORE is not a valid dycore option. Valid options are FV3 or MPAS"
-  exit 1
-fi
-
 # JCSDA changed test data things, need to make a dummy CRTM directory
 if [[ $BUILD_TARGET == 'hera' ]]; then
-  mkdir -p $dir_root/test-data-release/
-  ln -sf $RDASAPP_TESTDATA/crtm $dir_root/test-data-release/crtm
+  if [ -d "$dir_root/bundle/fix/test-data-release/" ]; then rm -rf $dir_root/bundle/fix/test-data-release/; fi
+  if [ -d "$dir_root/bundle/test-data-release/" ]; then rm -rf $dir_root/bundle/test-data-release/; fi
+  mkdir -p $dir_root/bundle/fix/test-data-release/
+  mkdir -p $dir_root/bundle/test-data-release/
+  ln -sf $GDASAPP_TESTDATA/crtm $dir_root/bundle/fix/test-data-release/crtm
+  ln -sf $GDASAPP_TESTDATA/crtm $dir_root/bundle/test-data-release/crtm
 fi
 
 # Configure
@@ -129,7 +117,7 @@ echo "Configuring ..."
 set -x
 cmake \
   ${CMAKE_OPTS:-} \
-  $dir_root
+  $dir_root/bundle
 set +x
 
 # Build
@@ -138,6 +126,7 @@ set -x
 if [[ $BUILD_JCSDA == 'YES' ]]; then
   make -j ${BUILD_JOBS:-6} VERBOSE=$BUILD_VERBOSE
 else
+  builddirs="fv3-jedi soca iodaconv land-imsproc land-jediincr gdas-utils"
   for b in $builddirs; do
     cd $b
     make -j ${BUILD_JOBS:-6} VERBOSE=$BUILD_VERBOSE
