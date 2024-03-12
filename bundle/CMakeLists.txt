@@ -7,7 +7,7 @@ cmake_minimum_required( VERSION 3.20 FATAL_ERROR )
 
 find_package(ecbuild 3.5 REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild)
 
-project(GDAS-bundle VERSION 1.0.0 LANGUAGES C CXX Fortran )
+project(RDAS-bundle VERSION 1.0.0 LANGUAGES C CXX Fortran )
 
 include(GNUInstallDirs)
 enable_testing()
@@ -32,7 +32,7 @@ include( ecbuild_bundle )
 set( ENABLE_MPI ON CACHE BOOL "Compile with MPI" )
 
 # Handle user options.
-option(BUILD_GDASBUNDLE "Build GDAS Bundle" ON)
+option(BUILD_RDASBUNDLE "Build RDAS Bundle" ON)
 option(CLONE_JCSDADATA "Clone JCSDA test data repositories" OFF)
 option(WORKFLOW_TESTS "Include global-workflow dependent tests" OFF)
 
@@ -41,7 +41,7 @@ option(WORKFLOW_TESTS "Include global-workflow dependent tests" OFF)
 ecbuild_bundle_initialize()
 
 # Build bundle source code.
-if(BUILD_GDASBUNDLE)
+if(BUILD_RDASBUNDLE)
 
 # jedi-cmake
   ecbuild_bundle( PROJECT jedicmake SOURCE "../sorc/jedicmake" )
@@ -140,7 +140,7 @@ if(BUILD_GDASBUNDLE)
 
   endif(CLONE_JCSDADATA)
 
-endif(BUILD_GDASBUNDLE)
+endif(BUILD_RDASBUNDLE)
 
 # Finalize bundle
 # ---------------
