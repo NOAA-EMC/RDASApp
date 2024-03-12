@@ -80,3 +80,10 @@
 [submodule "sorc/mpas-jedi"]
 	path = sorc/mpas-jedi
 	url = https://github.com/JCSDA-internal/mpas-jedi.git
+    branch = develop 
+[submodule "sorc/mpas-jedi-data"]
+	path = sorc/mpas-jedi-data
+	url = https://github.com/jcsda-internal/mpas-jedi-data.git
+[submodule "sorc/mpas"]
+	path = sorc/mpas
+	url = https://github.com/jcsda-internal/MPAS-Model.git
