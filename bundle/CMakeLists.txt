@@ -93,6 +93,10 @@ if(BUILD_GDASBUNDLE)
   ecbuild_bundle( PROJECT fv3-jedi-lm SOURCE "../sorc/fv3-jedi-lm" )
   option(ENABLE_FV3_JEDI_DATA "Obtain fv3-jedi test data from fv3-jedi-data repository (vs tarball)" ON)
   ecbuild_bundle( PROJECT fv3-jedi SOURCE "../sorc/fv3-jedi" )
+#build mpas-jedi
+  ecbuild_bundle( PROJECT mpas SOURCE "../sorc/mpas" )
+  ecbuild_bundle( PROJECT mpas-jedi-data SOURCE "../sorc/mpas-jedi-data" )
+  ecbuild_bundle( PROJECT mpas-jedi SOURCE "../sorc/mpas-jedi" )
 
 # SOCA associated repositories
 # TODO: Move the Icepack fork to EMC github
@@ -122,7 +126,7 @@ if(BUILD_GDASBUNDLE)
 # RDASApp
   set(BUILD_RDAS "ON" CACHE STRING "Build rdasapp") #clt
   if(BUILD_RDAS)
-   ecbuild_bundle( PROJECT xxrdas SOURCE "../")
+   ecbuild_bundle( PROJECT rdas SOURCE "../")
   endif()
 
 # ioda, ufo, fv3-jedi, and saber test data
