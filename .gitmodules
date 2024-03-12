@@ -73,3 +73,6 @@
 	path = sorc/fms
 	url = https://github.com/jcsda/fms.git
     branch = release-stable 
+[submodule "sorc/fv3-jedi"]
+	path = sorc/fv3-jedi
+	url = https://github.com/jcsda/fv3-jedi.git
