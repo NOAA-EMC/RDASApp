@@ -5,11 +5,11 @@
 [submodule "sorc/ioda"]
 	path = sorc/ioda
 	url = https://github.com/jcsda/ioda.git
-    branch = master 
+    branch = develop 
 [submodule "sorc/femps"]
 	path = sorc/femps
 	url = https://github.com/jcsda/femps.git
-    branch = master 
+    branch = develop 
 [submodule "sorc/jedicmake"]
 	path = sorc/jedicmake
 	url = https://github.com/jcsda/jedi-cmake.git
@@ -20,27 +20,27 @@
 [submodule "sorc/gsw"]
 	path = sorc/gsw
 	url = https://github.com/jcsda-internal/GSW-Fortran.git
-    branch = master 
+    branch = develop 
 [submodule "sorc/oops"]
 	path = sorc/oops
 	url = https://github.com/jcsda/oops.git
-    branch = master 
+    branch = develop 
 [submodule "sorc/vader"]
 	path = sorc/vader
 	url = https://github.com/jcsda/vader.git
-    branch = main 
+    branch = develop 
 [submodule "sorc/saber"]
 	path = sorc/saber
 	url = https://github.com/jcsda/saber.git
-    branch = master 
+    branch = develop 
 [submodule "sorc/ufo"]
 	path = sorc/ufo
 	url = https://github.com/jcsda/ufo.git
-    branch = master 
+    branch = develop 
 [submodule "sorc/fv3-jedi-lm"]
 	path = sorc/fv3-jedi-lm
 	url = https://github.com/jcsda/fv3-jedi-linearmodel.git
-    branch = master 
+    branch = develop 
 [submodule "sorc/icepack"]
 	path = sorc/icepack
 	url = https://github.com/JCSDA-internal/Icepack.git
@@ -76,4 +76,7 @@
 [submodule "sorc/fv3-jedi"]
 	path = sorc/fv3-jedi
 	url = https://github.com/jcsda/fv3-jedi.git
-    branch = master 
+    branch = develop 
+[submodule "sorc/mpas-jedi"]
+	path = sorc/mpas-jedi
+	url = https://github.com/JCSDA-internal/mpas-jedi.git
