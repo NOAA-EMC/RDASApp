@@ -73,7 +73,7 @@ if(BUILD_GDASBUNDLE)
   endif()
 
 # Gibbs seawater
-  ecbuild_bundle( PROJECT gsw SOURCE "../sorc/gsw" )
+#clt  ecbuild_bundle( PROJECT gsw SOURCE "../sorc/gsw" )
 
 # Core JEDI repositories
   ecbuild_bundle( PROJECT oops SOURCE "../sorc/oops" )
@@ -96,12 +96,12 @@ if(BUILD_GDASBUNDLE)
 
 # SOCA associated repositories
 # TODO: Move the Icepack fork to EMC github
-  set(BUILD_ICEPACK "ON" CACHE STRING "Build the icepack library")
+  set(BUILD_ICEPACK "OFF" CACHE STRING "Build the icepack library")
   if ( BUILD_ICEPACK )
     ecbuild_bundle( PROJECT icepack SOURCE "../sorc/icepack" )
   endif()
-  ecbuild_bundle( PROJECT mom6 SOURCE "../sorc/mom6" )
-  ecbuild_bundle( PROJECT soca SOURCE "../sorc/soca" )
+#clt  ecbuild_bundle( PROJECT mom6 SOURCE "../sorc/mom6" )
+#clt  ecbuild_bundle( PROJECT soca SOURCE "../sorc/soca" )
 
   # Build JEDI/DA or other peripherals
   set(BUILD_gdas-utils "OFF" CACHE STRING "Build the gdas-utils") #clt
@@ -119,8 +119,11 @@ if(BUILD_GDASBUNDLE)
   ecbuild_bundle( PROJECT land-imsproc SOURCE "../sorc/land-imsproc" )
   ecbuild_bundle( PROJECT land-jediincr SOURCE "../sorc/land-jediincr" )
 
-# GDASApp
-  ecbuild_bundle( PROJECT gdas SOURCE "../")
+# RDASApp
+  set(BUILD_RDAS "ON" CACHE STRING "Build rdasapp") #clt
+  if(BUILD_RDAS)
+   ecbuild_bundle( PROJECT xxrdas SOURCE "../")
+  endif()
 
 # ioda, ufo, fv3-jedi, and saber test data
 #---------------------------------

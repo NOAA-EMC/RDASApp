@@ -36,9 +36,12 @@ INSTALL_PREFIX=""
 CMAKE_OPTS=""
 BUILD_TARGET="${MACHINE_ID:-'localhost'}"
 BUILD_VERBOSE="NO"
-CLONE_JCSDADATA="NO"
-CLEAN_BUILD="NO"
-BUILD_JCSDA="NO"
+#cltorg CLONE_JCSDADATA="NO"
+CLONE_JCSDADATA="YES"
+#cltorg CLEAN_BUILD="NO"
+CLEAN_BUILD="YES"
+#cltorg BUILD_JCSDA="NO"
+BUILD_JCSDA="YES"
 COMPILER="${COMPILER:-intel}"
 
 while getopts "p:t:c:hvdfa" opt; do
@@ -73,6 +76,7 @@ done
 case ${BUILD_TARGET} in
   hera | orion | hercules)
     echo "Building GDASApp on $BUILD_TARGET"
+    export PS1="[\u@\h \W]\$ " #clt to avoid unbound PS1 error
     source $dir_root/ush/module-setup.sh
     module use $dir_root/modulefiles
     module load GDAS/$BUILD_TARGET.$COMPILER
