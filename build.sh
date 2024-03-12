@@ -75,20 +75,20 @@ done
 
 case ${BUILD_TARGET} in
   hera | orion | hercules)
-    echo "Building GDASApp on $BUILD_TARGET"
+    echo "Building RDASApp on $BUILD_TARGET"
     export PS1="[\u@\h \W]\$ " #clt to avoid unbound PS1 error
     source $dir_root/ush/module-setup.sh
     module use $dir_root/modulefiles
-    module load GDAS/$BUILD_TARGET.$COMPILER
+    module load RDAS/$BUILD_TARGET.$COMPILER
 #cltorg    CMAKE_OPTS+=" -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON"
     CMAKE_OPTS+=" -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC "
     module list
     ;;
   $(hostname))
-    echo "Building GDASApp on $BUILD_TARGET"
+    echo "Building RDASApp on $BUILD_TARGET"
     ;;
   *)
-    echo "Building GDASApp on unknown target: $BUILD_TARGET"
+    echo "Building RDASApp on unknown target: $BUILD_TARGET"
     ;;
 esac
 
