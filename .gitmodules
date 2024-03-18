@@ -1,0 +1,48 @@
+[submodule "sorc/crtm"]
+	path = sorc/crtm
+	url = https://github.com/jcsda/crtm
+[submodule "sorc/femps"]
+	path = sorc/femps
+	url = https://github.com/jcsda/femps
+[submodule "sorc/fms"]
+	path = sorc/fms
+	url = https://github.com/jcsda/fms
+[submodule "sorc/fv3"]
+	path = sorc/fv3
+	url = https://github.com/jcsda/GFDL_atmos_cubed_sphere
+[submodule "sorc/fv3-jedi"]
+	path = sorc/fv3-jedi
+	url = https://github.com/jcsda/fv3-jedi
+[submodule "sorc/fv3-jedi-km"]
+	path = sorc/fv3-jedi-lm
+	url = https://github.com/JCSDA/fv3-jedi-linearmodel
+[submodule "sorc/gsibec"]
+	path = sorc/gsibec
+	url = https://github.com/GEOS-ESM/GSIbec
+[submodule "sorc/ioda"]
+	path = sorc/ioda
+	url = https://github.com/jcsda/ioda
+[submodule "sorc/iodaconv"]
+	path = sorc/iodaconv
+	url = https://github.com/jcsda-internal/ioda-converters
+[submodule "sorc/jedicmake"]
+	path = sorc/jedicmake
+	url = https://github.com/jcsda/jedi-cmake
+[submodule "sorc/oops"]
+	path = sorc/oops
+	url = https://github.com/jcsda/oops
+[submodule "sorc/saber"]
+	path = sorc/saber
+	url = https://github.com/jcsda/saber
+[submodule "sorc/ufo"]
+	path = sorc/ufo
+	url = https://github.com/jcsda/ufo
+[submodule "sorc/vader"]
+	path = sorc/vader
+	url = https://github.com/jcsda/vader
+[submodule "sorc/mpas"]
+	path = sorc/mpas
+	url = https://github.com/jcsda-internal/MPAS-Model
+[submodule "sorc/mpas-jedi"]
+	path = sorc/mpas-jedi
+	url = https://github.com/JCSDA/mpas-jedi
