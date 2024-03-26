@@ -78,7 +78,7 @@ setenv("CC","mpiicc")
 setenv("FC","mpiifort")
 setenv("CXX","mpiicpc")
 
-local mpiexec = '/apps/slurm/default/bin/srun'
+local mpiexec = '/apps/slurm_hera/default/bin/srun'
 local mpinproc = '-n'
 setenv('MPIEXEC_EXEC', mpiexec)
 setenv('MPIEXEC_NPROC', mpinproc)
