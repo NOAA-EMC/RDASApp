@@ -42,7 +42,7 @@ cd $repodir
 module purge
 export BUILD_JOBS=8
 rm -rf log.build
-./build.sh -t $TARGET &>> log.build
+./build.sh -t $TARGET -m FV3andMPAS &>> log.build
 build_status=$?
 if [ $build_status -eq 0 ]; then
   echo "Build:                                 *SUCCESS*" >> $outfile
