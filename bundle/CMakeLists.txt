@@ -109,6 +109,7 @@ endif()
 
 # ioda, ufo, fv3-jedi, and saber test data
 #---------------------------------
+  set(myown_JCSDA_DATA_ROOT "/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-jedi-new/jedi-bundle") #clt
   if(CLONE_JCSDADATA)
 
    set(JCSDA_DATA_ROOT "$ENV{RDASAPP_TESTDATA}/jcsda")
@@ -118,7 +119,8 @@ endif()
      ecbuild_bundle( PROJECT fv3-jedi-data SOURCE "${JCSDA_DATA_ROOT}/fv3-jedi-data" )
    endif()
    if(MPAS_DYCORE)
-     ecbuild_bundle( PROJECT mpas-jedi-data SOURCE "${JCSDA_DATA_ROOT}/mpas-jedi-data" )
+#     ecbuild_bundle( PROJECT mpas-jedi-data SOURCE "${myown_JCSDA_DATA_ROOT}/mpas-jedi-data" )
+     file( COPY "${myown_JCSDA_DATA_ROOT}/mpas-jedi-data" DESTINATION mpas-jedi-data )
    endif()
 
   endif(CLONE_JCSDADATA)
