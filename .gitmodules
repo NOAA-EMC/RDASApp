@@ -57,7 +57,7 @@
 [submodule "sorc/mpas"]
 	path = sorc/mpas
 	url = https://github.com/jcsda-internal/MPAS-Model
-	branch = develop
+	branch = release-stable 
 [submodule "sorc/mpas-jedi"]
 	path = sorc/mpas-jedi
 	url = https://github.com/JCSDA/mpas-jedi
