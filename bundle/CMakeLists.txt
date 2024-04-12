@@ -123,7 +123,12 @@ endif()
    endif()
 
   endif(CLONE_JCSDADATA)
+     set(RDAS_RRFS_DATA_ROOT "$ENV{RDASAPP_RRFS_TESTDATA}/jcsda")
+     set(RDAS_RRFS_DATA_ROOT "/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-rdas/rrfs-test-data") #clttodo
+     set(DESTINATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+     file( COPY "${RDAS_RRFS_DATA_ROOT}" DESTINATION ${DESTINATION_DIR} )
 
+  ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
 endif(BUILD_RDASBUNDLE)
 
 # Finalize bundle
