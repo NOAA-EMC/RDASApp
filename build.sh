@@ -132,6 +132,7 @@ if [[ $BUILD_TARGET == 'hera' ]]; then
   ln -sf $RDASAPP_TESTDATA/crtm $dir_root/bundle/test-data-release/crtm
 fi
 
+  CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120"
 # Configure
 echo "Configuring ..."
 set -x
