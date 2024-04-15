@@ -1,9 +1,8 @@
-# (C) Copyright 2017-2023 UCAR
-#
-# This software is licensed under the terms of the Apache Licence Version 2.0
-# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+#!-------------------------------------------------------------------------
+#!    NOAA/NCEP, National Centers for Environmental Prediction  RDASapp        !
+#!-------------------------------------------------------------------------
 
-# FV3-JEDI test data - from fv3-jedi-data repo if found, from local directory, or from tarball
+# rrfs data - from rrfs-test-data repo if found, from local directory, or from tarball
 set(rrfs-test-data_FOUND 1)  #clttodo
 if (rrfs-test-data_FOUND)
   message(STATUS "Use test data from rrfs-test-data repository")
@@ -34,17 +33,13 @@ foreach(case IN LISTS rrfs_fv3jedi_test_cases)
    endif()
 endforeach()
 
-# FV3 config files
+# JEDI config files
 # ----------------
 list( APPEND rrfs_fv3_test_yamf_files 
 rrfs_fv3jedi_hyb_2022052619.yaml
 )
 
-# gsibec config files
-# -------------------
-# ------------
 
-# Interface tests
 # ---------------
 set(target_test rrfs_fv3jedi_hyb_2022052619)
 ecbuild_add_test( TARGET   ${target_test} 
