@@ -11,6 +11,8 @@ project(RDASApp VERSION 1.0.0 LANGUAGES C CXX Fortran )
 
 include(GNUInstallDirs)
 enable_testing()
+#clt for rrfs test
+set(MPIEXEC_MAX_NUMPROCS 120 CACHE STRING "Maximum number of processors")
 
 # Build type.
 if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release|RelWithDebInfo|MinSizeRel)$")
