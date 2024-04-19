@@ -6,7 +6,7 @@
 # 4 - optional, run unit tests
 
 set -eu
-
+START=$(date +%s)
 dir_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 source $dir_root/ush/detect_machine.sh
@@ -23,8 +23,9 @@ usage() {
   echo "  -v  build with verbose output       DEFAULT: NO"
   echo "  -f  force a clean build             DEFAULT: NO"
   echo "  -d  include JCSDA ctest data        DEFAULT: NO"
+  echo "  -r  include rrfs-ctest data         DEFAULT: NO"
   echo "  -a  build everything in bundle      DEFAULT: NO"
-  echo "  -m  select dycore                   DEFAULT: FV3"
+  echo "  -m  select dycore                   DEFAULT: FV3andMPAS"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -38,12 +39,13 @@ CMAKE_OPTS=""
 BUILD_TARGET="${MACHINE_ID:-'localhost'}"
 BUILD_VERBOSE="NO"
 CLONE_JCSDADATA="NO"
+CLONE_RRFSDATA="NO"
 CLEAN_BUILD="NO"
 BUILD_JCSDA="NO"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 
-while getopts "p:t:c:m:hvdfa" opt; do
+while getopts "p:t:c:m:hvdfar" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -63,6 +65,9 @@ while getopts "p:t:c:m:hvdfa" opt; do
     d)
       CLONE_JCSDADATA=YES
       ;;
+    r)
+      CLONE_RRFSDATA=YES
+      ;;
     f)
       CLEAN_BUILD=YES
       ;;
@@ -78,6 +83,7 @@ done
 case ${BUILD_TARGET} in
   hera | orion | hercules)
     echo "Building RDASApp on $BUILD_TARGET"
+    echo "  Build initiated `date`"
     source $dir_root/ush/module-setup.sh
     module use $dir_root/modulefiles
     module load RDAS/$BUILD_TARGET.$COMPILER
@@ -92,7 +98,7 @@ case ${BUILD_TARGET} in
     ;;
 esac
 
-CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA"
+CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA -DCLONE_RRFSDATA=$CLONE_RRFSDATA"
 
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
@@ -163,4 +169,8 @@ if [[ -n ${INSTALL_PREFIX:-} ]]; then
   set +x
 fi
 
+echo build finished: `date`
+END=$(date +%s)
+DIFF=$((END - START))
+echo "Time taken to run the code: $DIFF seconds"
 exit 0
