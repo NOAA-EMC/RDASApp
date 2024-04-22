@@ -81,7 +81,7 @@ if(MPAS_DYCORE)
 
    endforeach()
   message(STATUS "MACHINCE_ID is " ${MACHINE_ID})
-   if("${MACHINE_ID}" STREQUAL "orion")
+   if("$ENV{MACHINE_ID}" STREQUAL "orion")
      message(STATUS "MACHINCE_ID ok " )
      if (MPI_ARGS)
        set(RESTORE_MPI_ARGS ${MPI_ARGS})
