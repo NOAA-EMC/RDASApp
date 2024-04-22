@@ -80,12 +80,21 @@ if(MPAS_DYCORE)
       file(COPY ${src_casedir}/namelist.atmosphere_15km  DESTINATION ${casedir})
 
    endforeach()
-
-   set(target_test rrfs_mpasjedi_2022052619_Ens3Dvar)
-   ecbuild_add_test( TARGET   ${target_test} 
+   if("${MACHINE_ID}" STREQUAL "orion")
+     if (MPI_ARGS)
+       set(RESTORE_MPI_ARGS ${MPI_ARGS})
+     endif()
+     set( MPI_ARGS "${MPI_ARGS} -N 2 --ntasks-per-node=18")
+     set(target_test rrfs_mpasjedi_2022052619_Ens3Dvar)
+     ecbuild_add_test( TARGET   ${target_test} 
                      MPI      36 
                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                      ARGS     ${target_test}.yaml 
-                     COMMAND  mpasjedi_variational.x )
+                     COMMAND   mpasjedi_variational.x )
+     if( RESTORE_MPI_ARGS )
+    
+       set(MPI_ARGS ${RESTORE_MPI_ARGS})
+     endif()
+   endif()
 
 endif()
