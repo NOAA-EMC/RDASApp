@@ -183,7 +183,7 @@ cbar1.ax.tick_params(labelsize=5, rotation=30)
 # Add titles, text, and save the figure
 plt.suptitle(f"Temperature {plot_var} at Level: {lev+1}\nobtype: {longname}", fontsize = 9, y = 1.05)
 
-m1.set_title(f"{title1}", fontsize = 9)
+m1.set_title(f"{title1}", fontsize = 9, y = 0.98)
 
 subtitle1_minmax = f"min: {np.around(np.min(jedi), decimals)}\nmax: {np.around(np.max(jedi), decimals)}"
 m1.text(left, top, f"{subtitle1_minmax}", fontsize = 6, ha='left', va='bottom')

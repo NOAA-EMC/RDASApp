@@ -3,7 +3,7 @@
 #SBATCH --qos=debug
 #SBATCH --ntasks=80
 #SBATCH -t 00:30:00
-#SBATCH --job-name=jedi_test
+#SBATCH --job-name=fv3jedi_test
 #SBATCH -o jedi.log
 #SBATCH --open-mode=truncate
 #SBATCH --cpus-per-task 2 --exclusive
@@ -32,18 +32,8 @@ module load soca-env
 
 module list
 
-export SLURM_ACCOUNT=@SLURM_ACCOUNT@
-export SALLOC_ACCOUNT=$SLURM_ACCOUNT
-export SBATCH_ACCOUNT=$SLURM_ACCOUNT
-export SLURM_QOS debug
-export FV3JEDI_TEST_TIER=2
-export MAIN_DEBUG=1
-export OOPS_DEBUG=1
 export OOPS_TRACE=1
-export IODA_PRINT_RUNSTATS=1
-#export CMAKE_OPTS+= "${CMAKE_OPTS:+$CMAKE_OPTS:}  -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC"
 export OMP_NUM_THREADS=1
-export I_MPI_DEBUG=10
 
 ulimit -s unlimited
 ulimit -v unlimited
