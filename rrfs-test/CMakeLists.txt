@@ -3,8 +3,7 @@
 #!-------------------------------------------------------------------------
 
 # rrfs data - from rrfs-test-data repo if found, from local directory, or from tarball
-set(rrfs-test-data_FOUND 1)  #clttodo
-if (rrfs-test-data_FOUND)
+if (CLONE_RRFSDATA)
   message(STATUS "Use test data from rrfs-test-data repository")
   set (rrfs-test_data_local "${CMAKE_SOURCE_DIR}/rrfs-test-data/")
 # It's unclear if anyone is using the local data functionality, therefore comment it out
@@ -13,16 +12,14 @@ if (rrfs-test-data_FOUND)
 #  message(STATUS "Use test data from local directory $ENV{FV3_JEDI_TESTFILES}")
 #  # A bit of guesswork here, I don't know if folks using this option stored it in the same directory structure
 #  set (fv3-jedi_data_testinput_tier_1_local "$ENV{FV3_JEDI_TESTFILES}/fv3-jedi-data/testinput_tier_1")
-else()
-  message(FATAL_ERROR  "rrfs data would only be avaiable from local sourcerfs-fv3-jedi-data repository")
 endif()
-if(FV3_DYCORE)
+if(FV3_DYCORE AND CLONE_RRFSDATA)
    list( APPEND rrfs_fv3jedi_test_cases
           rrfs_fv3jedi_hyb_2022052619
        )
    # JEDI config files
    # ----------------
-   list( APPEND rrfs_fv3jedi_test_yamf_files 
+   list( APPEND rrfs_fv3jedi_test_yamf_files
    rrfs_fv3jedi_hyb_2022052619.yaml
    )
    foreach(case IN LISTS rrfs_fv3jedi_test_cases)
@@ -37,22 +34,22 @@ if(FV3_DYCORE)
       file(COPY ${src_casedir}/INPUT DESTINATION ${casedir} )
       file(COPY ${src_casedir}/${case}.yaml  DESTINATION ${casedir} )
       file(COPY ${src_casedir}/Data DESTINATION ${casedir} )
-   endforeach() 
+   endforeach()
    # ---------------
    set(target_test rrfs_fv3jedi_hyb_2022052619)
-   ecbuild_add_test( TARGET   ${target_test} 
-                     MPI      80 
+   ecbuild_add_test( TARGET   ${target_test}
+                     MPI      80
                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                     ARGS     ${target_test}.yaml 
+                     ARGS     ${target_test}.yaml
                      COMMAND  fv3jedi_var.x )
 endif()
-if(MPAS_DYCORE)
+if(MPAS_DYCORE AND CLONE_RRFSDATA)
    list( APPEND rrfs_mpasjedi_test_cases
        rrfs_mpasjedi_2022052619_Ens3Dvar
     )
    # JEDI config files
    # ----------------
-   list( APPEND rrfs_mpasjedi_test_yamf_files 
+   list( APPEND rrfs_mpasjedi_test_yamf_files
    rrfs_mpasjedi_2022052619_Ens3Dvar.yaml
    )
    foreach(case IN LISTS rrfs_mpasjedi_test_cases)
@@ -82,10 +79,10 @@ if(MPAS_DYCORE)
    endforeach()
 
    set(target_test rrfs_mpasjedi_2022052619_Ens3Dvar)
-   ecbuild_add_test( TARGET   ${target_test} 
-                     MPI      36 
+   ecbuild_add_test( TARGET   ${target_test}
+                     MPI      36
                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                     ARGS     ${target_test}.yaml 
+                     ARGS     ${target_test}.yaml
                      COMMAND  mpasjedi_variational.x )
 
 endif()
