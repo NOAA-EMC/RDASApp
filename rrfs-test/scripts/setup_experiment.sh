@@ -63,8 +63,10 @@ sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_${dycore}jedi_
 sed -i "s#@YOUR_EXPERIMENT_DIR@#${YOUR_EXPERIMENT_DIR}#g"   ./run_${dycore}jedi_${platform}.sh
 sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"               ./run_${dycore}jedi_${platform}.sh
 
-# Copy visualization package.
-cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/*py .
+if [[ $DYCORE == "FV3" ]]; then
+  # Copy visualization package.
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/*py .
+fi
 
 # Link rrts-test yamls and obs files.
 ln -sf $YOUR_PATH_TO_RDASAPP/rrfs-test/yamls Data/yamls
