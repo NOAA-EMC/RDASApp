@@ -1,4 +1,0 @@
-#!/bin/tcsh
-setenv PYTHONPATH "/home/Donald.E.Lippi/miniconda3:/home/Donald.E.Lippi/Python/conda/local/emcpy/develop/lib/python3.9/site-packages:/home/Donald.E.Lippi/Python/conda/local/PyGSI/develop/lib/python3.9/site-packages:/home/Donald.E.Lippi/bin/python:$PATH"
-source "/home/Donald.E.Lippi/miniconda3/etc/profile.d/conda.csh"
-conda activate
