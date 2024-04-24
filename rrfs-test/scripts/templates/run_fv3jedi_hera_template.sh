@@ -27,7 +27,7 @@ ulimit -a
 
 inputfile=$1
 if [[ $inputfile == "" ]]; then
-  inputfile=rrfs_fv3jedi_hyb_2022052619.yaml
+  inputfile=Data/yamls/rrfs_fv3jedi_hyb_2022052619.yaml
 fi
 
 jedibin="@YOUR_PATH_TO_RDASAPP@/build/bin"
