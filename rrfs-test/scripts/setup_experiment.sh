@@ -54,7 +54,7 @@ cd $YOUR_EXPERIMENT_DIR
 echo "Copying data. This may take awhile."
 rsync -a $YOUR_PATH_TO_RDASAPP/bundle/rrfs-test-data/${TEST_DATA} .
 
-# Copy the template yamls which will be updated according to the user input
+# Copy the template run script which will be updated according to the user input
 cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_${dycore}jedi_${platform}_template.sh ./${TEST_DATA}/run_${dycore}jedi_${platform}.sh
 
 # Stream editor to edit files. Use "#" instead of "/" since we have "/" in paths.
@@ -68,8 +68,8 @@ if [[ $DYCORE == "FV3" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/*py .
 fi
 
-# Link rrts-test yamls and obs files.
-ln -sf $YOUR_PATH_TO_RDASAPP/rrfs-test/yamls Data/yamls
-ln -sf $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
+# Copy rrts-test yamls and obs files.
+cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/testinput/* testinput/.
+cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
 
 echo "done."

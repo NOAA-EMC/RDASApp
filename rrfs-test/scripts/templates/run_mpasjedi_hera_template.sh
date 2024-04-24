@@ -14,7 +14,7 @@ set +x
 module purge
 
 module use @YOUR_PATH_TO_RDASAPP@/modulefiles
-module load RDAS/hera
+module load RDAS/hera.intel
 
 module list
 
@@ -27,7 +27,7 @@ ulimit -a
 
 inputfile=$1
 if [[ $inputfile == "" ]]; then
-  inputfile=Data/yamls/rrfs_mpasjedi_2022052619_Ens3Dvar.yaml
+  inputfile=./testinput/rrfs_mpasjedi_2022052619_Ens3Dvar.yaml
 fi
 
 jedibin="@YOUR_PATH_TO_RDASAPP@/build/bin"
