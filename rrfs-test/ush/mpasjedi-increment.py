@@ -25,8 +25,8 @@ cartopy.config['data_dir']='/home/Donald.E.Lippi/cartopy' ### For Hera
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
 
-lev = 60                # 60=sfc; 1=toa
-clevmax_incr = 0.1     # max contour level for colorbar increment plots
+lev = 1                # 1=sfc, 60=toa
+clevmax_incr = 2.0     # max contour level for colorbar increment plots
 decimals = 4            # number of decimals to round for text boxes
 
 plot_box_width = 5.     # define size of plot domain (units: lat/lon degrees)
@@ -41,10 +41,12 @@ if variable == "airTemperature":
 
 # JEDI data
 datapath = "./"
-janalysis = f"{datapath}/Data/analysis_awind/hybens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
-jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
-jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
+janalysis   = "./an.2022-05-26_19.00.00.nc"            # analysis file
+jbackgrnd   = "./bg.2022-05-26_19.00.00.nc"            # background file
+jstatic      = "static.93175.nc"                         # to load the MPAS lat/lon
+#jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
 jdiag = f"{datapath}/Data/hofx/{singleob_type}_hofxs_2022052619.nc4"
+
 
 ###################################################################################
 print(f"{jdiag}")
@@ -88,18 +90,25 @@ print(f"Creating {plot_var} Plot...\n")
 lev = lev - 1
 
 # JEDI ####################################
-nc_g = Dataset(jgrid, mode='r')
-lats = nc_g.variables["grid_latt"][:,:]
-lons = nc_g.variables["grid_lont"][:,:]
-#lons = lons[:,:] - 180
+f_latlon = Dataset(jstatic, "r")
+lats = np.array( f_latlon.variables['latCell'][:] ) * 180.0 / np.pi
+lons0 = np.array( f_latlon.variables['lonCell'][:] ) * 180.0 / np.pi
+lons = np.where(lons0>180.0,lons0-360.0,lons0)
 
 # Open NETCDF4 dataset for reading
 nc_a = Dataset(janalysis, mode='r')
 nc_b = Dataset(jbackgrnd, mode='r')
 
 # Read data and get dimensions
-jedi_a = nc_a.variables["T"][0,lev,:,:].astype(np.float64)
-jedi_b = nc_b.variables["T"][0,lev,:,:].astype(np.float64)
+jedi_a = nc_a.variables["theta"][0,:,lev].astype(np.float64)
+jedi_b = nc_b.variables["theta"][0,:,lev].astype(np.float64)
+
+# Convert to temperature
+if variable == "airTemperature":
+	pres_a = (nc_a.variables['pressure_p'][0,:,lev] + nc_a['pressure_base'][0,:,lev])/100.0
+	pres_b = (nc_b.variables['pressure_p'][0,:,lev] + nc_a['pressure_base'][0,:,lev])/100.0
+	dividend_a = (1000.0/pres_a)**(0.286)
+	dividend_b = (1000.0/pres_b)**(0.286)
 
 # compute increment
 jedi_inc = jedi_a - jedi_b
@@ -169,7 +178,8 @@ if variable == "airTemperature":
     clevs, cm, units, longname = plot_T_inc(jedi_inc, clevmax)
 
 units="K"
-c1 = m1.contourf(lons, lats, jedi, clevs, cmap = cm)
+#c1 = m1.contourf(lons, lats, jedi, clevs, cmap = cm)
+c1 = plt.tricontourf(lons, lats, jedi, clevs, cmap = cm)
 
 # Scatter the single ob location
 m1.scatter(singleob_lon, singleob_lat, color='g', marker='o', s=2)
