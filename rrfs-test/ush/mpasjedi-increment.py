@@ -109,6 +109,8 @@ if variable == "airTemperature":
 	pres_b = (nc_b.variables['pressure_p'][0,:,lev] + nc_a['pressure_base'][0,:,lev])/100.0
 	dividend_a = (1000.0/pres_a)**(0.286)
 	dividend_b = (1000.0/pres_b)**(0.286)
+	jedi_a = jedi_a / dividend_a
+	jedi_b = jedi_b / dividend_b
 
 # compute increment
 jedi_inc = jedi_a - jedi_b
