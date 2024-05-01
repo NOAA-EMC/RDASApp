@@ -19,8 +19,6 @@ import warnings
 from scipy.spatial.distance import cdist
 
 warnings.filterwarnings('ignore')
-cartopy.config['data_dir']='/home/Donald.E.Lippi/cartopy' ### For Hera
-#cartopy.config['data_dir']='/work/noaa/fv3-cam/sdegelia/cartopy' ### For Orion
 
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
@@ -49,6 +47,12 @@ jdiag = f"{datapath}/Data/hofx/{singleob_type}_hofxs_2022052619.nc4"
 
 
 ###################################################################################
+# Set cartopy shapefile path
+platform = os.getenv('HOSTNAME').upper()
+if 'ORION' in platform:
+        cartopy.config['data_dir']='/work/noaa/fv3-cam/sdegelia/cartopy'
+elif 'H' in platform: # Will need to improve this once Hercules is supported
+        cartopy.config['data_dir']='/home/Donald.E.Lippi/cartopy'
 print(f"{jdiag}")
 # Do a quick omf and hofx value check from GSI diag file
 
