@@ -35,12 +35,21 @@ if (CLONE_RRFSDATA)
          file(COPY ${src_casedir}/Data DESTINATION ${casedir} )
       endforeach()
       # ---------------
-      set(target_test rrfs_fv3jedi_hyb_2022052619)
-      ecbuild_add_test( TARGET   ${target_test}
+      message(STATUS "MACHINE_ID is " ${MACHINE_ID})
+         if("${MACHINE_ID}" STREQUAL "orion")
+            message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
+            set(RESTORE_MPI_ARGS ${MPI_ARGS})
+            set(MPI_ARGS "${MPI_ARGS} --exclusive")
+         endif()   
+         set(target_test rrfs_fv3jedi_hyb_2022052619)
+         ecbuild_add_test( TARGET   ${target_test}
                         MPI      80
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  fv3jedi_var.x )
+         if("${MACHINE_ID}" STREQUAL "orion")
+            set(MPI_ARGS ${RESTORE_MPI_ARGS})
+         endif()
    endif()
    if(MPAS_DYCORE)
       list( APPEND rrfs_mpasjedi_test_cases
@@ -77,12 +86,20 @@ if (CLONE_RRFSDATA)
 
       endforeach()
 
-      set(target_test rrfs_mpasjedi_2022052619_Ens3Dvar)
-      ecbuild_add_test( TARGET   ${target_test}
+      message(STATUS "MACHINE_ID is " ${MACHINE_ID})
+         if("${MACHINE_ID}" STREQUAL "orion")
+            message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
+            set(RESTORE_MPI_ARGS ${MPI_ARGS})
+            set(MPI_ARGS "${MPI_ARGS} --exclusive")
+         endif()   
+         set(target_test rrfs_mpasjedi_2022052619_Ens3Dvar)
+         ecbuild_add_test( TARGET   ${target_test}
                         MPI      36
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  mpasjedi_variational.x )
-
+         if("${MACHINE_ID}" STREQUAL "orion")
+            set(MPI_ARGS ${RESTORE_MPI_ARGS})
+	 endif()
    endif()
 endif()
