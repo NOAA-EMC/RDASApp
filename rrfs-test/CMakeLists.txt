@@ -15,15 +15,21 @@ if (CLONE_RRFSDATA)
    if(FV3_DYCORE)
       list( APPEND rrfs_fv3jedi_test_cases
              rrfs_fv3jedi_hyb_2022052619
+             rrfs_fv3jedi_letkf_2022052619
           )
       # JEDI config files
       # ----------------
       list( APPEND rrfs_fv3jedi_test_yamf_files
       rrfs_fv3jedi_hyb_2022052619.yaml
+      rrfs_fv3jedi_letkf_2022052619.yaml
       )
       foreach(case IN LISTS rrfs_fv3jedi_test_cases)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rundir-${case}")
+         if ("${case}" STREQUAL "rrfs_fv3jedi_letkf_2022052619")
+             message(STATUS "Using the same input data from hybrid case for LETKF case")
+             set(src_casedir "${rrfs-test_data_local}/rundir-rrfs_fv3jedi_hyb_2022052619")
+         endif()
          if (NOT EXISTS "${casedir}")
            file(MAKE_DIRECTORY ${casedir})
          endif()
@@ -31,7 +37,11 @@ if (CLONE_RRFSDATA)
          file(CREATE_LINK ${src_casedir}/Data_static ${casedir}/Data_static SYMBOLIC)
       #clt     file(CREATE_LINK ${src_casedir}/testinput ${casedir} SYMBOLIC)
          file(COPY ${src_casedir}/INPUT DESTINATION ${casedir} )
-         file(COPY ${src_casedir}/${case}.yaml  DESTINATION ${casedir} )
+         if ("${case}" STREQUAL "rrfs_fv3jedi_letkf_2022052619")
+            file(COPY ./testinput/${case}.yaml  DESTINATION ${casedir} )
+         else()
+            file(COPY ${src_casedir}/${case}.yaml  DESTINATION ${casedir} )
+         endif()
          file(COPY ${src_casedir}/Data DESTINATION ${casedir} )
       endforeach()
       # ---------------
@@ -47,6 +57,12 @@ if (CLONE_RRFSDATA)
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  fv3jedi_var.x )
+         set(target_test rrfs_fv3jedi_letkf_2022052619)
+         ecbuild_add_test( TARGET   ${target_test}
+                        MPI      80
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                        ARGS     ${target_test}.yaml
+                        COMMAND  fv3jedi_letkf.x )
          if("${MACHINE_ID}" STREQUAL "orion")
             set(MPI_ARGS ${RESTORE_MPI_ARGS})
          endif()
