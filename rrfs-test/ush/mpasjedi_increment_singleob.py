@@ -40,10 +40,10 @@ if variable == "airTemperature":
 # JEDI data
 datapath = "./"
 janalysis   = "./an.2022-05-26_19.00.00.nc"            # analysis file
-jbackgrnd   = "./bg.2022-05-26_19.00.00.nc"            # background file
-jstatic      = "static.93175.nc"                         # to load the MPAS lat/lon
+jbackgrnd   = "./Data/bkg/bg.2022-05-26_19.00.00.nc"            # background file
+jstatic      = "./Data_static/static.93175.nc"                         # to load the MPAS lat/lon
 #jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
-jdiag = f"{datapath}/Data/hofx/{singleob_type}_hofxs_2022052619.nc4"
+jdiag = f"{datapath}/{singleob_type}_hofxs_2022052619.nc4"
 
 
 ###################################################################################
@@ -109,8 +109,8 @@ jedi_b = nc_b.variables["theta"][0,:,lev].astype(np.float64)
 
 # Convert to temperature
 if variable == "airTemperature":
-	pres_a = (nc_a.variables['pressure_p'][0,:,lev] + nc_a['pressure_base'][0,:,lev])/100.0
-	pres_b = (nc_b.variables['pressure_p'][0,:,lev] + nc_a['pressure_base'][0,:,lev])/100.0
+	pres_a = (nc_a.variables['pressure_p'][0,:,lev] + nc_b['pressure_base'][0,:,lev])/100.0
+	pres_b = (nc_b.variables['pressure_p'][0,:,lev] + nc_b['pressure_base'][0,:,lev])/100.0
 	dividend_a = (1000.0/pres_a)**(0.286)
 	dividend_b = (1000.0/pres_b)**(0.286)
 	jedi_a = jedi_a / dividend_a

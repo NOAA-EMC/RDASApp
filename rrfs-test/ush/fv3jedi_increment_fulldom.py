@@ -38,11 +38,11 @@ datapath = "./"
 jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
 
 # FOR LETKF 
-janalysis = f"{datapath}/Data/analysis_awind/letkf-meanposterior-fv3_lam-C775.fv_core.res.nc" # 
-jbackgrnd = f"{datapath}/Data/analysis_awind/letkf-meanprior-fv3_lam-C775.fv_core.res.nc"
+janalysis = f"{datapath}/letkf-meanposterior-fv3_lam-C775.fv_core.res.nc" # 
+jbackgrnd = f"{datapath}/letkf-meanprior-fv3_lam-C775.fv_core.res.nc"
 
 # FOR HYBRID (or ENVAR)
-#janalysis = f"{datapath}/Data/analysis_awind/hybens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
+#janalysis = f"{datapath}/hybens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
 #jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
 
 
