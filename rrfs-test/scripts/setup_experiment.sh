@@ -31,7 +31,7 @@ fi
 
 # Error check if choosing LETKF for MPAS 
 if [[ $DYCORE == "MPAS" && $DA_METHOD == "LETKF" ]]; then
-   echo "ERROR: LETKF is not et implemented for MPAS"
+   echo "ERROR: LETKF is not yet implemented for MPAS"
    exit 1
 fi 
 
