@@ -11,11 +11,6 @@ DYCORE="FV3" #FV3 or MPAS
 platform="hera" #hera or orion
 GSI_TEST_DATA="YES"
 YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
-
-
-YOUR_PATH_TO_RDASAPP="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20240510.gsi"
-YOUR_EXPERIMENT_DIR="$YOUR_PATH_TO_RDASAPP/jedi-assim"
-YOUR_PATH_TO_GSI="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/GSI.20240320"
 #######################
 
 # Print current setting to the screen.
