@@ -9,6 +9,13 @@ YOUR_EXPERIMENT_DIR="/path/to/your/desired/experiment/directory/jedi-assim_test"
 SLURM_ACCOUNT="fv3-cam"
 DYCORE="FV3" #FV3 or MPAS
 platform="hera" #hera or orion
+GSI_TEST_DATA="YES"
+YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
+
+
+YOUR_PATH_TO_RDASAPP="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20240510.gsi"
+YOUR_EXPERIMENT_DIR="$YOUR_PATH_TO_RDASAPP/jedi-assim"
+YOUR_PATH_TO_GSI="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/GSI.20240320"
 #######################
 
 # Print current setting to the screen.
@@ -17,10 +24,12 @@ echo -e "\tYOUR_PATH_TO_RDASAPP=$YOUR_PATH_TO_RDASAPP"
 echo -e "\tYOUR_EXPERIMENT_DIR=$YOUR_EXPERIMENT_DIR"
 echo -e "\tSLURM_ACCOUNT=$SLURM_ACCOUNT"
 echo -e "\tDYCORE=$DYCORE"
-echo -e "\tplatform=$platform\n"
+echo -e "\tplatform=$platform"
+echo -e "\tGSI_TEST_DATA=$GSI_TEST_DATA"
+echo -e "\tYOUR_PATH_TO_GSI=$YOUR_PATH_TO_GSI\n"
 
 # Check to see if user changed the paths to something valid.
-if [[ ! -d $YOUR_PATH_TO_RDASAPP && ! -d `dirname $YOUR_EXPERIMENT_DIR` ]]; then
+if [[ ! -d $YOUR_PATH_TO_RDASAPP || ! -d `dirname $YOUR_EXPERIMENT_DIR` ]]; then
   echo "Please make sure to edit the USER INPUT BLOCK before running $0."
   echo "exiting!!!"
   exit 1
@@ -52,6 +61,7 @@ cd $YOUR_EXPERIMENT_DIR
 
 # Copy the test data into the experiment directory.
 echo "Copying data. This may take awhile."
+echo "  --> ${dycore}-jedi data on $platform"
 rsync -a $YOUR_PATH_TO_RDASAPP/bundle/rrfs-test-data/${TEST_DATA} .
 
 # Copy the template run script which will be updated according to the user input
@@ -67,13 +77,34 @@ sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"               ./run_${dycore}jedi_
 cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/colormap.py .
 if [[ $DYCORE == "FV3" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi-increment.py .
-elif [[ $DYCORE == "MPAS" ]]; then 
+elif [[ $DYCORE == "MPAS" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/mpasjedi-increment.py .
+fi
+if [[ $GSI_TEST_DATA == "YES" ]]; then
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi-gsi-hofx-validation.py .
 fi
 
 # Copy rrts-test yamls and obs files.
 mkdir -p testinput
 cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/testinput/* testinput/.
 cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
+
+# Copy GSI test data
+if [[ $GSI_TEST_DATA == "YES" ]]; then
+  echo "  --> gsi data on $platform"
+  cd $YOUR_EXPERIMENT_DIR
+  # We will need to change this when we have it staged elsewhere.
+#  rsync -a /scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/jedi-assim_validation/gsi.clean .
+#  mv gsi.clean gsi
+  cd gsi
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_${platform}_template.sh run_gsi_${platform}.sh
+  sed -i "s#@YOUR_PATH_TO_GSI@#${YOUR_PATH_TO_GSI}#g" ./run_gsi_${platform}.sh
+  sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"       ./run_gsi_${platform}.sh
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_ncdiag_${platform}_template.sh run_gsi_ncdiag_${platform}.sh
+  sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_gsi_ncdiag_${platform}.sh
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
+  ln -sf ${YOUR_PATH_TO_GSI}/build/src/gsi/gsi.x .
+
+fi
 
 echo "done."
