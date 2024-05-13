@@ -16,7 +16,8 @@ cost function:
     npz: 60
     layout: [8,10]
     io_layout: [1,1]
-    ntiles: 1
+    ntiles: 1 
+
 
   background:
     datetime: 2022-05-26T19:00:00Z
@@ -31,11 +32,11 @@ cost function:
   background error:
     covariance model: hybrid
     components:
-    - covariance:
+    - covariance: 
         covariance model: SABER
         saber central block:
           saber block name: BUMP_NICAS
-          active variables: *3dvars
+          active variables: *3dvars 
           read:
             io:
               data directory: DataFix/bump_new
@@ -62,27 +63,27 @@ cost function:
       weight:
         value: 0.1
 
-    - covariance:
+    - covariance: 
         covariance model: ensemble
         members from template:
           template:
             datetime: 2022-05-26T19:00:00Z
             filetype: fms restart
             state variables: *3dvars
-            datapath: DataFix/inputs/mem%mem%/
+            datapath: Data/inputs/mem%mem%/
             filename_core: 20220526.190000.fv_core.res.tile1.nc
             filename_trcr: 20220526.190000.fv_tracer.res.tile1.nc
             filename_sfcd: 20220526.190000.sfc_data.nc
             filename_sfcw: 20220526.190000.fv_srf_wnd.res.nc
             filename_cplr: 20220526.190000.coupler.res
           pattern: %mem%
-          nmembers: 20
+          nmembers: 20 
           zero padding: 3
         localization:
           localization method: SABER
           saber central block:
             saber block name: BUMP_NICAS
-            active variables: *3dvars
+            active variables: *3dvars 
             read:
               io:
                 files prefix: DataFix/bump_new/fv3jedi_bumpparameters_nicas_lam_atm
@@ -107,10 +108,9 @@ cost function:
          obsdataout:
            engine:
              type: H5File
-             obsfile: Data/hofx/rass_tsen_obs_2022052619.nc4
+             obsfile: rass_tsen_obs_2022052619_hofx.nc4
          simulated variables: [airTemperature]
          observed variables: [airTemperature]
-
        obs operator:
          name: VertInterp
        obs error:
@@ -133,7 +133,7 @@ cost function:
          obsdataout:
            engine:
              type: H5File
-             obsfile: Data/hofx/rass_tsen_obs_2022052619.nc4
+             obsfile: rass_tsen_obs_2022052619_hofx.nc4
          simulated variables: [airTemperature]
          observed variables: [airTemperature]
        obs operator:
@@ -221,7 +221,13 @@ final:
 
 output:
   filetype: fms restart
-  datapath: Data/analysis_awind/
+  datapath: ./
   prefix: hybens3dvar-fv3_lam-C775 #Ens3dvar-fv3_lam-C775
   frequency: PT1H
+test:
+  reference filename: Data/testinput/rrfs-fv3jedi-hyb.ref
+  test output filename: rrfs-fv3jedi-hyb.out
+  float relative tolerance: 1.0e-3
+  float absolute tolerance: 1.0e-6
+
 
