@@ -68,11 +68,11 @@ cost function:
     streams_file: ./streams.atmosphere_15km
     deallocate non-da fields: true
     interpolation type: unstructured
-  analysis variables: *incvars
+  analysis variables: *incvars 
   background:
     state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
-    filename: ./bg.2022-05-26_19.00.00.nc
-    date: *analysisDate
+    filename: Data/bkg/bg.2022-05-26_19.00.00.nc
+    date: *analysisDate 
   background error:
     covariance model: ensemble
     localization:
@@ -82,8 +82,8 @@ cost function:
         active variables: *incvars
         read:
           io:
-            data directory: ./BUMP_files
-            files prefix: bumploc_1000km6km
+            data directory: ./DataFix/bump_new
+            files prefix: bumploc_1000km6km 
           drivers:
             multivariate strategy: duplicated
             read local nicas: true
@@ -92,11 +92,11 @@ cost function:
     members from template:
       template:
         <<: *memberConfig
-        filename: ./ensemble/%iMember%/restart.nc
+        filename: ./Data/inputs/%iMember%/restart.nc
       pattern: %iMember%
       start: 1
-      zero padding: 1
-      nmembers: 5
+      zero padding: 1 
+      nmembers: 5 
   observations:
      observers:
      - obs space:
@@ -108,7 +108,7 @@ cost function:
          obsdataout:
            engine:
              type: H5File
-             obsfile: Data/hofx/rass_tsen_obs_2022052619.nc4
+             obsfile: ./rass_tsen_obs_2022052619_hofx.nc4
          simulated variables: [airTemperature]
          observed variables: [airTemperature]
        obs operator:
@@ -118,14 +118,14 @@ cost function:
        obs filters:
        - filter: Bounds Check
          filter variables:
-         - name: airTemperature@GsiUseFlag
-         minvalue: 0.5
-         maxvalue: 1.5
+         - name: airTemperature@GsiUseFlag 
+         minvalue: 0.5 
+         maxvalue: 1.5 
          action:
-            name: accept
+            name: accept 
 
      - obs space:
-         name: sonde
+         name: sonde  
          obsdatain:
            engine:
              type: H5File
@@ -133,7 +133,7 @@ cost function:
          obsdataout:
            engine:
              type: H5File
-             obsfile: Data/hofx/rass_tsen_obs_2022052619.nc4
+             obsfile: ./rass_tsen_obs_2022052619_hofx.nc4
          simulated variables: [airTemperature]
          observed variables: [airTemperature]
        obs operator:
@@ -143,11 +143,11 @@ cost function:
        obs filters:
        - filter: Bounds Check
          filter variables:
-         - name: airTemperature@GsiUseFlag
-         minvalue: 0.5
-         maxvalue: 1.5
+         - name: airTemperature@GsiUseFlag 
+         minvalue: 0.5 
+         maxvalue: 1.5 
          action:
-            name: accept
+            name: accept 
 
 
      - obs space:
@@ -173,3 +173,9 @@ cost function:
          - name: windNorthward
          threshold: 6.0
        monitoring only: true
+test:
+  reference filename: Data/testinput/rrfs-mpasjedi-ens3dvar.ref
+  test output filename: ./rrfs-fv3jedi-ens3dvar.out
+  float relative tolerance: 1.0e-3
+  float absolute tolerance: 1.0e-6
+

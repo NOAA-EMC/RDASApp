@@ -22,27 +22,29 @@ warnings.filterwarnings('ignore')
 
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
-
 lev = 60                # 60=sfc; 1=toa
-clevmax_incr = 0.1     # max contour level for colorbar increment plots
-decimals = 4            # number of decimals to round for text boxes
-
-plot_box_width = 5.     # define size of plot domain (units: lat/lon degrees)
-
-singleob_type = "MSONET"
+clevmax_incr = 5     # max contour level for colorbar increment plots
+decimals = 2            # number of decimals to round for text boxes
+plot_box_width = 70.     # define size of plot domain (units: lat/lon degrees)
+plot_box_height = 30
 
 variable = "airTemperature"
-
 if variable == "airTemperature":
     obtype = 't'
     offset = -273.15
 
 # JEDI data
 datapath = "./"
-janalysis = f"{datapath}/Data/analysis_awind/hybens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
-jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
 jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
-jdiag = f"{datapath}/Data/hofx/{singleob_type}_hofxs_2022052619.nc4"
+
+# FOR LETKF 
+janalysis = f"{datapath}/letkf-meanposterior-fv3_lam-C775.fv_core.res.nc" # 
+jbackgrnd = f"{datapath}/letkf-meanprior-fv3_lam-C775.fv_core.res.nc"
+
+# FOR HYBRID (or ENVAR)
+#janalysis = f"{datapath}/hybens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
+#jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
+
 
 ###################################################################################
 # Set cartopy shapefile path
@@ -52,47 +54,6 @@ if 'ORION' in platform:
 elif 'H' in platform: # Will need to improve this once Hercules is supported
         cartopy.config['data_dir']='/home/Donald.E.Lippi/cartopy'
 
-print(f"{jdiag}")
-# Do a quick omf and hofx value check from GSI diag file
-
-# FROM JEDI diag
-jncdiag = Dataset(jdiag, mode='r')
-oberr_input = jncdiag.groups["EffectiveError0"].variables[f"{variable}"][:][0]
-oberr_final = jncdiag.groups["EffectiveError2"].variables[f"{variable}"][:][0]
-ob = jncdiag.groups["ObsValue"].variables[f"{variable}"][:][0] + offset
-omf= jncdiag.groups["ombg"].variables[f"{variable}"][:][0]
-fmo= -1*omf
-hofx= fmo+ob
-
-oberr_input = np.around(oberr_input.astype(np.float64), decimals)
-oberr_final = np.around(oberr_final.astype(np.float64), decimals)
-job = np.around(ob.astype(np.float64), decimals)
-jomf = np.around(omf.astype(np.float64), decimals)
-jhofx = np.around(hofx.astype(np.float64), decimals)
-print(f"JEDI:")
-print(f"  oberr_input: {oberr_input}")
-print(f"  oberr_final: {oberr_final}")
-subtitle1_hofx = f"  ob:   {job}\n  omf:  {jomf}\n  hofx: {jhofx}\n  oberr_final: {oberr_final}\n"
-print(subtitle1_hofx)
-
-# Grab single ob lat/lon and double check they're the same.
-joblat = jncdiag.groups["MetaData"].variables["latitude"][:][0]
-joblon = jncdiag.groups["MetaData"].variables["longitude"][:][0]
-
-joblat = np.around(joblat.astype(np.float64), decimals)
-joblon = np.around(joblon.astype(np.float64), decimals)
-
-singleob_lat = joblat
-singleob_lon = np.around(joblon - 360., decimals)  # convert to E-W
-
-print(f"Using:")
-print(f"  singleob_lat: {singleob_lat}")
-print(f"  singleob_lon: {singleob_lon}\n")
-
-print(f"Creating {plot_var} Plot...\n")
-lev = lev - 1
-
-# JEDI ####################################
 nc_g = Dataset(jgrid, mode='r')
 lats = nc_g.variables["grid_latt"][:,:]
 lons = nc_g.variables["grid_lont"][:,:]
@@ -103,6 +64,7 @@ nc_a = Dataset(janalysis, mode='r')
 nc_b = Dataset(jbackgrnd, mode='r')
 
 # Read data and get dimensions
+lev = lev-1
 jedi_a = nc_a.variables["T"][0,lev,:,:].astype(np.float64)
 jedi_b = nc_b.variables["T"][0,lev,:,:].astype(np.float64)
 
@@ -115,48 +77,40 @@ if plot_var == "Increment":
     clevmax = clevmax_incr
 
 # CREATE PLOT ##############################
-fig = plt.figure(figsize=(3,3))
+fig = plt.figure(figsize=(7,4))
 m1 = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
 
 # Determine extent for plot domain
+cen_lat = 34.5
+cen_lon = -97.5
 half = plot_box_width / 2.
-left = singleob_lon - half
-right = singleob_lon + half
-bot = singleob_lat - half
-top = singleob_lat + half
+left = cen_lon - half
+right = cen_lon + half
+half = plot_box_height / 2.
+bot = cen_lat - half
+top = cen_lat + half
 
 # Set extent for both plots
 domain="single_ob"
 m1.set_extent([left, right, top, bot])
 
 # Add features to the subplots
-m1.add_feature(cfeature.GSHHSFeature(scale='low'))
-
+#m1.add_feature(cfeature.GSHHSFeature(scale='low'))
 m1.add_feature(cfeature.COASTLINE)
-
 m1.add_feature(cfeature.BORDERS)
-
 m1.add_feature(cfeature.STATES)
-
 #m.add_feature(cfeature.OCEAN)
 #m.add_feature(cfeature.LAND)
 #m.add_feature(cfeature.LAKES)
 
 # Gridlines for the subplots
 gl1 = m1.gridlines(crs = ccrs.PlateCarree(), draw_labels = True, linewidth = 0.5, color = 'k', alpha = 0.25, linestyle = '-')
-
 gl1.xlocator = mticker.FixedLocator([])
-
-gl1.xlocator = mticker.FixedLocator(np.arange(-180., 181., 5.))
-
-gl1.ylocator = mticker.FixedLocator(np.arange(-80., 91., 5.))
-
+gl1.xlocator = mticker.FixedLocator(np.arange(-180., 181., 10.))
+gl1.ylocator = mticker.FixedLocator(np.arange(-80., 91., 10.))
 gl1.xformatter = LONGITUDE_FORMATTER
-
 gl1.yformatter = LATITUDE_FORMATTER
-
 gl1.xlabel_style = {'size': 5, 'color': 'gray'}
-
 gl1.ylabel_style = {'size': 5, 'color': 'gray'}
 
 
@@ -174,30 +128,22 @@ if variable == "airTemperature":
     clevs, cm, units, longname = plot_T_inc(jedi_inc, clevmax)
 
 units="K"
-c1 = m1.contourf(lons, lats, jedi, clevs, cmap = cm)
-
-# Scatter the single ob location
-m1.scatter(singleob_lon, singleob_lat, color='g', marker='o', s=2)
+c1 = m1.contourf(lons, lats, jedi, clevs, cmap = cm, extend='both')
 
 # Add colorbar
 cbar1 = fig.colorbar(c1, orientation="horizontal", fraction=0.046, pad=0.07)
-
 cbar1.set_label(units, size=8)
-
 cbar1.ax.tick_params(labelsize=5, rotation=30)
 
 # Add titles, text, and save the figure
-plt.suptitle(f"Temperature {plot_var} at Level: {lev+1}\nobtype: {longname}", fontsize = 9, y = 1.05)
-
-m1.set_title(f"{title1}", fontsize = 9, y = 0.98)
-
-subtitle1_minmax = f"min: {np.around(np.min(jedi), decimals)}\nmax: {np.around(np.max(jedi), decimals)}"
-m1.text(left, top, f"{subtitle1_minmax}", fontsize = 6, ha='left', va='bottom')
-
-m1.text(left, bot, f"{subtitle1_hofx}", fontsize = 6, ha='left', va='bottom')
+#plt.suptitle(f"Temperature {plot_var} at Level: {lev+1}\nobtype: {longname}", fontsize = 9, y = 1.05)
+#m1.set_title(f"{title1}", fontsize = 9, y = 0.98)
+#subtitle1_minmax = f"min: {np.around(np.min(jedi), decimals)}\nmax: {np.around(np.max(jedi), decimals)}"
+#m1.text(left, top, f"{subtitle1_minmax}", fontsize = 6, ha='left', va='bottom')
 
 if plot_var == "Increment":
-    plt.savefig(f"./increment_{variable}.png", dpi=250, bbox_inches='tight')
+    plt.tight_layout()
+    plt.savefig(f"./increment_{variable}.png", dpi=350, bbox_inches='tight')
 
 # Print some final stats
 print(f"Stats:")

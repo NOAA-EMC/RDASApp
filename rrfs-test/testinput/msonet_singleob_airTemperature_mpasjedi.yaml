@@ -71,7 +71,7 @@ cost function:
   analysis variables: *incvars
   background:
     state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
-    filename: ./bg.2022-05-26_19.00.00.nc
+    filename: ./Data/bkg/bg.2022-05-26_19.00.00.nc
     date: *analysisDate
   background error:
     covariance model: ensemble
@@ -82,7 +82,7 @@ cost function:
         active variables: *incvars
         read:
           io:
-            data directory: ./BUMP_files
+            data directory: ./DataFix/bump_new
             files prefix: bumploc_1000km6km
           drivers:
             multivariate strategy: duplicated
@@ -92,7 +92,7 @@ cost function:
     members from template:
       template:
         <<: *memberConfig
-        filename: ./ensemble/%iMember%/restart.nc
+        filename: ./Data/inputs/%iMember%/restart.nc
       pattern: %iMember%
       start: 1
       zero padding: 1
@@ -109,7 +109,7 @@ cost function:
          obsdataout:
            engine:
              type: H5File
-             obsfile: Data/hofx/MSONET_hofxs_2022052619.nc4
+             obsfile: ./MSONET_hofxs_2022052619.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -219,7 +219,7 @@ cost function:
            - variable: QCflagsData/airTemperature
 
          - filter: GOMsaver
-           filename: Data/geovals/msonet_geovals_rrfs_2022052619.nc4
+           filename: ./msonet_geovals_rrfs_2022052619.nc4
 
 
 

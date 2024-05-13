@@ -69,7 +69,7 @@ cost function:
             datetime: 2022-05-26T19:00:00Z
             filetype: fms restart
             state variables: *3dvars
-            datapath: DataFix/inputs/mem%mem%/
+            datapath: Data/inputs/mem%mem%/
             filename_core: 20220526.190000.fv_core.res.tile1.nc
             filename_trcr: 20220526.190000.fv_tracer.res.tile1.nc
             filename_sfcd: 20220526.190000.sfc_data.nc
@@ -107,7 +107,7 @@ cost function:
          obsdataout:
            engine:
              type: H5File
-             obsfile: Data/hofx/MSONET_hofxs_2022052619.nc4
+             obsfile: MSONET_hofxs_2022052619.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -222,7 +222,7 @@ cost function:
            - variable: QCflagsData/airTemperature
 
          - filter: GOMsaver
-           filename: Data/geovals/msonet_geovals_rrfs_2022052619.nc4
+           filename: ./msonet_geovals_rrfs_2022052619.nc4
 
 variational:
   minimizer:
@@ -268,7 +268,7 @@ final:
 
 output:
   filetype: fms restart
-  datapath: Data/analysis_awind/
+  datapath: ./
   prefix: hybens3dvar-fv3_lam-C775
   frequency: PT1H
 

@@ -27,10 +27,10 @@ ulimit -a
 
 inputfile=$1
 if [[ $inputfile == "" ]]; then
-  inputfile=./testinput/rrfs_mpasjedi_2022052619_Ens3Dvar.yaml
+  inputfile=./testinput/@YAML@
 fi
 
 jedibin="@YOUR_PATH_TO_RDASAPP@/build/bin"
 # Run JEDI - currently cannot change processor count
-srun -l -n 36 $jedibin/mpasjedi_variational.x ./$inputfile out.log
+srun -l -n 36 $jedibin/@EXECUTABLE@ ./$inputfile out.log
 
