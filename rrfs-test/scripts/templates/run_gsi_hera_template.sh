@@ -67,5 +67,3 @@ for loop in $loops; do
     fi
   done
 done
-
-cp diag*${ANAL_TIME} ${hofxdir}/.
