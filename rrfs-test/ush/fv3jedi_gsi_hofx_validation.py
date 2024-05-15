@@ -13,10 +13,11 @@ warnings.filterwarnings('ignore')
 
 ############ USER INPUT ##########################################################
 # JEDI data
-variable = str(sys.argv[1])
-obtype = int(sys.argv[2]) # bufr type (e.g., 88 is mesonet)
-datapath = "./"
-diag = f"{datapath}/MSONET_hofxs_{variable}_2022052619.nc4"
+diag = str(sys.argv[1])
+variable = str(sys.argv[2])
+obtype = int(sys.argv[3]) # bufr type (e.g., 88 is mesonet)
+#datapath = "./"
+#diag = f"{datapath}/MSONET_hofxs_{variable}_2022052619.nc4"
 
 ###################################################################################
 if obtype < 100:
