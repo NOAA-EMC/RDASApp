@@ -13,17 +13,17 @@ warnings.filterwarnings('ignore')
 
 ############ USER INPUT ##########################################################
 # JEDI data
-singleob_type = "MSONET"
-obtype = 88 # 188/288 for Mesonet
 variable = str(sys.argv[1])
+obtype = int(sys.argv[2]) # bufr type (e.g., 88 is mesonet)
 datapath = "./"
-diag = f"{datapath}/Data/hofx/MSONET_hofxs_{variable}_2022052619.nc4"
+diag = f"{datapath}/MSONET_hofxs_{variable}_2022052619.nc4"
 
 ###################################################################################
-if variable[:4] == "wind":
-    obtype = obtype + 200
-else:
-    obtype = obtype + 100
+if obtype < 100:
+    if variable[:4] == "wind":
+        obtype = obtype + 200
+    else:
+        obtype = obtype + 100
 
 print(f"{diag}")
 ncdiag = Dataset(diag, mode='r')
