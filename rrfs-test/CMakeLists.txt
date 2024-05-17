@@ -79,11 +79,13 @@ if (CLONE_RRFSDATA)
       #       Also need to add the associated executable to the rrfs_fv3jedi_exes list below 
       list( APPEND rrfs_mpasjedi_tests
              rrfs_mpasjedi_2022052619_Ens3Dvar
+             rrfs_mpasjedi_2022052619_letkf
           )
 
       # JEDI executables for each test case above
       list ( APPEND rrfs_mpasjedi_exes
              mpasjedi_variational.x
+             mpasjedi_enkf.x
       )
 
       foreach(case IN LISTS rrfs_mpasjedi_tests)

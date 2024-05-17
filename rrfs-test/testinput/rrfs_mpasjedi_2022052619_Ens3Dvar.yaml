@@ -175,7 +175,7 @@ cost function:
        monitoring only: true
 test:
   reference filename: Data/testinput/rrfs-mpasjedi-ens3dvar.ref
-  test output filename: ./rrfs-fv3jedi-ens3dvar.out
+  test output filename: ./rrfs-mpasjedi-ens3dvar.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6
 
