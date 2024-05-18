@@ -11,6 +11,8 @@ YOUR_EXPERIMENT_DIR="/path/to/your/desired/experiment/directory/jedi-assim_test"
 SLURM_ACCOUNT="fv3-cam"
 DYCORE="FV3" #FV3 or MPAS
 platform="hera" #hera or orion
+GSI_TEST_DATA="YES"
+YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
 #######################
 
 # Print current setting to the screen.
@@ -19,7 +21,9 @@ echo -e "\tYOUR_PATH_TO_RDASAPP=$YOUR_PATH_TO_RDASAPP"
 echo -e "\tYOUR_EXPERIMENT_DIR=$YOUR_EXPERIMENT_DIR"
 echo -e "\tSLURM_ACCOUNT=$SLURM_ACCOUNT"
 echo -e "\tDYCORE=$DYCORE"
-echo -e "\tplatform=$platform\n"
+echo -e "\tplatform=$platform"
+echo -e "\tGSI_TEST_DATA=$GSI_TEST_DATA"
+echo -e "\tYOUR_PATH_TO_GSI=$YOUR_PATH_TO_GSI\n"
 
 # Check to see if user changed the paths to something valid.
 if [[ ! -d $YOUR_PATH_TO_RDASAPP || ! -d `dirname $YOUR_EXPERIMENT_DIR` ]]; then
@@ -74,11 +78,31 @@ if [[ $DYCORE == "FV3" ]]; then
 elif [[ $DYCORE == "MPAS" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/mpasjedi_increment_singleob.py .
 fi
+if [[ $GSI_TEST_DATA == "YES" ]]; then
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_gsi_hofx_validation.py .
+fi
 
 # Copy rrts-test yamls and obs files.
 mkdir -p testinput
 cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/testinput/* testinput/.
 cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
+
+# Copy GSI test data
+if [[ $GSI_TEST_DATA == "YES" ]]; then
+  echo "  --> gsi data on $platform"
+  cd $YOUR_EXPERIMENT_DIR
+  # We will need to change this when we have it staged elsewhere.
+  rsync -a /scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/staged-data/gsi_2022052619 .
+  cd gsi_2022052619
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_${platform}_template.sh run_gsi_${platform}.sh
+  sed -i "s#@YOUR_PATH_TO_GSI@#${YOUR_PATH_TO_GSI}#g" ./run_gsi_${platform}.sh
+  sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"       ./run_gsi_${platform}.sh
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_ncdiag_${platform}_template.sh run_gsi_ncdiag_${platform}.sh
+  sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_gsi_ncdiag_${platform}.sh
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
+  ln -sf ${YOUR_PATH_TO_GSI}/build/src/gsi/gsi.x .
+
+fi
 
 echo "done."
 END=$(date +%s)
