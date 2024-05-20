@@ -14,4 +14,9 @@ for i in $needs_changed; do
     sed -i "s#::${i}::#::${i}0::#g"  ./eva_mesonet_*yaml
 done
 
-eva ./eva_mesonet_MSONET_hofxs_airTemperature_2022052619.yaml
+inputfile=$1
+if [[ $1 == "" ]]; then
+  inputfile="eva_mesonet_MSONET_hofxs_airTemperature_2022052619.yaml"
+fi
+
+eva ./$inputfile
