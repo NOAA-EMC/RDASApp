@@ -69,13 +69,13 @@ cost function:
             datetime: 2022-05-26T19:00:00Z
             filetype: fms restart
             state variables: *3dvars
-            datapath: Data/inputs/mem%mem%/
+            datapath: Data/inputs/memMEM/
             filename_core: 20220526.190000.fv_core.res.tile1.nc
             filename_trcr: 20220526.190000.fv_tracer.res.tile1.nc
             filename_sfcd: 20220526.190000.sfc_data.nc
             filename_sfcw: 20220526.190000.fv_srf_wnd.res.nc
             filename_cplr: 20220526.190000.coupler.res
-          pattern: %mem%
+          pattern: MEM
           nmembers: 20
           zero padding: 3
         localization:
