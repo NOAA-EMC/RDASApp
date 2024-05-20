@@ -8,13 +8,20 @@ import numpy as np
 import time
 import sys, os
 import warnings
+import argparse
 
 warnings.filterwarnings('ignore')
 
 ############ USER INPUT ##########################################################
-diag = str(sys.argv[1])
-variable = str(sys.argv[2])
-obtype = int(sys.argv[3]) # bufr type (e.g., 88 is mesonet)
+parser = argparse.ArgumentParser()
+parser.add_argument('-d', '--diag', type=str, help='diagnostic file', required=True)
+parser.add_argument('-v', '--variable', type=str, help='variable name', required=True)
+parser.add_argument('-o', '--obtype', type=int, help='bufr observation type', required=True)
+args = parser.parse_args()
+
+diag = args.diag
+variable = args.variable
+obtype = args.obtype
 ###################################################################################
 if obtype < 100:
     if variable[:4] == "wind":

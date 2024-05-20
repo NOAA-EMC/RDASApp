@@ -17,6 +17,7 @@ import sys, os
 import shapely.geometry
 import warnings
 from scipy.spatial.distance import cdist
+import argparse
 
 warnings.filterwarnings('ignore')
 
@@ -31,78 +32,30 @@ decimals = 4            # number of decimals to round for text boxes
 
 plot_box_width = 5.     # define size of plot domain (units: lat/lon degrees)
 
-show_closest_points = False  # plot the 4 closest points to ob location
+parser = argparse.ArgumentParser()
+parser.add_argument('-j', '--jedidiag', type=str, help='jedi diagnostic file', required=True)
+parser.add_argument('-g', '--gsidiag', type=str, help='gsi diagnostic file', required=True)
+parser.add_argument('-v', '--variable', type=str, help='variable name', required=True)
+parser.add_argument('-o', '--obtype', type=int, help='bufr observation type', required=True)
+args = parser.parse_args()
 
-singleob_type = "MSONET"
+jdiag = args.inputdiagjedi
+gdiag = args.inputdiaggsi
+variable = args.variable
+obtype = args.obtype
 
-variable = "airTemperature"
-#variable = "stationPressure"
-#variable = "specificHumidity"
-#variable = "windEastward"
-#variable = "windNorthward"
-
-diag = str(sys.argv[1])
-variable = str(sys.argv[2])
-obtype = int(sys.argv[3]) # bufr type (e.g., 88 is mesonet)
-
-#if variable == "airTemperature":
-#    obtype = 't'
-#    #offset = 0 #-273.15
-#    gscale = 1
-#    jscale = 1
-#    gscale2=gscale
-#    jscale2=jscale
-#    pre = ''
-#    tolerance = 0.075       # hofx difference tolerance
-#if variable == "specificHumidity":
-#    obtype = 'q'
-#    offset = 0
-#    gscale = 1 #/1000.0
-#    jscale = 1 #000.0
-#    gscale2=gscale
-#    jscale2=jscale
-#    pre = ''
-#    tolerance = 0.075       # hofx difference tolerance
-#    decimals = 8            # number of decimals to round for text boxes
-#    clevmax_diff = 0.05     # max contour level for colorbar diff plots
-#    clevmax_incr = 0.05     # max contour level for colorbar increment plots
-#if variable == "windEastward":
-#    obtype = 'uv'
-#    offset = 0
-#    gscale = 1
-#    jscale = 1
-#    gscale2=gscale
-#    jscale2=jscale
-#    pre = 'u_'
-#    tolerance = 0.075       # hofx difference tolerance
-#if variable == "windNorthward":
-#    obtype = 'uv'
-#    offset = 0
-#    gscale = 1
-#    jscale = 1
-#    gscale2=gscale
-#    jscale2=jscale
-#    pre = 'v_'
-#    tolerance = 0.075       # hofx difference tolerance
-#if variable == "stationPressure":
-#    obtype = 'ps'
-#    offset = 0
-#    gscale = 100.0
-#    jscale = 1.0
-#    gscale2= 1.0
-#    jscale2= 0.01
-#    pre = ''
-#    tolerance = 0.075*100.0  # hofx difference tolerance
-#    clevmax_diff = 1.0     # max contour level for colorbar diff plots
-#    clevmax_incr = 1.0     # max contour level for colorbar increment plots
+#jdiag = str(sys.argv[1])
+#gdiag = str(sys.argv[2])
+#variable = str(sys.argv[3])
+#obtype = int(sys.argv[4]) # bufr type (e.g., 88 is mesonet)
 
 # JEDI data
 datapath = "./"
-janalysis = f"{datapath}/hybens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
+janalysis = f"{datapath}/hybens3dvar-fv3_lam-C775.fv_core.res.nc"
 jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
 jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
-#jdiag = f"{datapath}/{singleob_type}_hofxs_{variable}_singleob_2022052619.nc4"
-jdiag = f"{datapath}/{singleob_type}_hofxs_{variable}_2022052619.nc4"
+#jdiag = f"{datapath}/{singleob_type}_hofxs_{variable}_2022052619.nc4"
+jdiag = f"{datapath}/{jdiag}"
 
 #GSI data
 datapath = "../gsi_2022052619/"
@@ -110,8 +63,9 @@ ganalysis = f"{datapath}/fv3_dynvars"
 gbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars"
 ggrid = f"{datapath}/Data/bkg/fv3_grid_spec"
 #gdiag = f"{datapath}/{singleob_type}.conv_{obtype}_01.nc4"
-gdiag = f"{datapath}/diags-single/diag_conv_t_ges.2022052619"
-gdiag = f"{datapath}/diags-full/diag_conv_t_ges.2022052619"
+#gdiag = f"{datapath}/diags-single/diag_conv_t_ges.2022052619"
+#gdiag = f"{datapath}/diags-full/diag_conv_t_ges.2022052619"
+gdiag = f"{datapath}/{gdiag}"
 
 ###################################################################################
 # Set cartopy shapefile path
@@ -122,15 +76,22 @@ elif 'H' in platform: # Will need to improve this once Hercules is supported
         cartopy.config['data_dir']='/home/Donald.E.Lippi/cartopy'
 
 print(f"{jdiag}")
+
+if obtype < 100:
+    if variable[:4] == "wind":
+        obtype = obtype + 200
+    else:
+        obtype = obtype + 100
+
 # Do a quick omf and hofx value check from GSI diag file
 
 # FROM JEDI diag
 jncdiag = Dataset(jdiag, mode='r')
-oberr_input = jscale2*jncdiag.groups["EffectiveError0"].variables[f"{variable}"][:][0]
-oberr_final = jscale2*jncdiag.groups["EffectiveError2"].variables[f"{variable}"][:][0]
+oberr_input = jncdiag.groups["EffectiveError0"].variables[f"{variable}"][:][0]
+oberr_final = jncdiag.groups["EffectiveError2"].variables[f"{variable}"][:][0]
 #pdb.set_trace()
-ob = jscale*(jncdiag.groups["ObsValue"].variables[f"{variable}"][:][0] + offset)
-omf= jscale*jncdiag.groups["ombg"].variables[f"{variable}"][:][0]
+ob = jncdiag.groups["ObsValue"].variables[f"{variable}"][:][0]
+omf= jncdiag.groups["ombg"].variables[f"{variable}"][:][0]
 fmo= -1*omf
 hofx= fmo+ob
 
@@ -146,11 +107,16 @@ subtitle1_hofx = f"  ob:   {job}\n  omf:  {jomf}\n  hofx: {jhofx}\n  oberr_final
 print(subtitle1_hofx)
 
 # FROM GSI diag
+prefix = ""
+if variable == "windWestard":
+    prefix == "u_"
+if variable == "windNorthward":
+    prefix == "v_"
 gncdiag = Dataset(gdiag, mode='r')
-oberr_input = 1.0/(gscale2*gncdiag.variables["Errinv_Input"][:][0])
-oberr_final = 1.0/(gscale2*gncdiag.variables["Errinv_Final"][:][0])
-ob = gscale*(gncdiag.variables[f"{pre}Observation"][:][0] + offset)
-omf= gscale*(gncdiag.variables[f"{pre}Obs_Minus_Forecast_unadjusted"][:][0])
+oberr_input = 1.0/(gncdiag.variables["Errinv_Input"][:][0])
+oberr_final = 1.0/(gncdiag.variables["Errinv_Final"][:][0])
+ob = gncdiag.variables[f"{prefix}Observation"][:][0]
+omf= gncdiag.variables[f"{prefix}Obs_Minus_Forecast_unadjusted"][:][0]
 #omf= gncdiag.variables["Obs_Minus_Forecast_adjusted"][:][0]
 fmo= -1*omf
 hofx= fmo+ob
@@ -170,17 +136,6 @@ dhofx = jhofx - ghofx
 percd_hofx = 100 * dhofx / ghofx
 subtitle1_percd = f"  hofx (diff):   {np.around(dhofx, decimals)}\n"
 subtitle1_percd = f"{subtitle1_percd}  hofx (% diff): {np.around(percd_hofx, 2)}%"
-
-if np.abs(dhofx) > tolerance:
-    print(f"JEDI hofx validation: FAILED")
-    print(f"  Diff between hofxs: {np.around(dhofx, decimals)} > {tolerance}")
-    print(f"  Percent diff: {np.around(percd_hofx, 2)}%\n")
-else:
-    print(f"JEDI hofx validation: PASSED")
-    print(f"  Diff between hofxs: {np.around(dhofx, decimals)} < {tolerance}")
-    print(f"  Percent diff: {np.around(percd_hofx, 2)}%\n")
-
-
 
 # Grab single ob lat/lon and double check they're the same.
 joblat = jncdiag.groups["MetaData"].variables["latitude"][:][0]
@@ -259,29 +214,6 @@ if plot_var == "Diff":
     gsi  = jedi_b - gsi_b
     clevmax = clevmax_diff
 
-if show_closest_points:
-    # Get the indices of the 16 closest grid points
-    distances = cdist([[singleob_lat,singleob_lon]], np.dstack((lats,lons-360.0)).reshape(-1,2))
-    indices = np.argsort(distances.ravel())[:3]
-
-    # Extract the surrounding 16 grid points
-    surrounding_latitudes = lats.ravel()[indices].reshape(3, 1)
-    surrounding_longitudes = lons.ravel()[indices].reshape(3, 1) - 360.0
-    jsurrounding_temperatures = jedi_b.ravel()[indices].reshape(3, 1)-273.15
-    gsurrounding_temperatures = gsi_b.ravel()[indices].reshape(3, 1)-273.15
-    subtitle1_points=""
-    subtitle2_points=""
-    print("Gridded values")
-    for lat, lon, tj, tg in zip(surrounding_latitudes.flatten(), surrounding_longitudes.flatten(), jsurrounding_temperatures.flatten(), gsurrounding_temperatures.flatten()):
-        lat = np.around(lat.astype(np.float64), decimals)
-        lon = np.around(lon.astype(np.float64), decimals)
-        tj = np.around(tj, decimals)
-        tg = np.around(tg, decimals)
-        print(f"  Latitude: {lat}, Longitude: {lon}, T-jedi: {tj}, T-gsi: {tg} ")
-        subtitle1_points = f"{subtitle1_points}lat:{lat}, lon:{lon}, T:{tj}\n"
-        subtitle2_points = f"{subtitle2_points}lat:{lat}, lon:{lon}, T:{tg}\n"
-    print("")
-
 # CREATE PLOT ##############################
 fig = plt.figure(figsize=(6,3))
 m1 = fig.add_subplot(1, 2, 1, projection=ccrs.PlateCarree(central_longitude=0))
@@ -344,7 +276,6 @@ gl2.xlabel_style = {'size': 5, 'color': 'gray'}
 gl1.ylabel_style = {'size': 5, 'color': 'gray'}
 gl2.ylabel_style = {'size': 5, 'color': 'gray'}
 
-
 def plot_T_inc(var_n, clevmax):
     """Temperature increment/diff [K]"""
     longname = "airTemperature"
@@ -390,7 +321,6 @@ def plot_p_inc(var_n, clevmax):
     cm = colormap.diff_colormap(clevs)
     return(clevs, cm, units, longname)
 
-
 # Plot the data
 if variable == "airTemperature":
     clevs, cm, units, longname = plot_T_inc(jedi_inc, clevmax)
@@ -403,7 +333,8 @@ if variable == "windNorthward":
 if variable == "stationPressure":
     clevs, cm, units, longname = plot_p_inc(jedi_inc, clevmax)
 
-units="K"
+units="K" # for now, plotting temperature incs for all ob types assimilated.
+
 c1 = m1.contourf(lons, lats, jedi, clevs, cmap = cm)
 c2 = m2.contourf(lons, lats,  gsi, clevs, cmap = cm)
 
@@ -411,25 +342,12 @@ c2 = m2.contourf(lons, lats,  gsi, clevs, cmap = cm)
 m1.scatter(singleob_lon, singleob_lat, color='g', marker='o', s=2)
 m2.scatter(singleob_lon, singleob_lat, color='g', marker='o', s=2)
 
-if show_closest_points:
-    # Scatter closest grid points
-    m1.scatter(surrounding_longitudes.flatten(), surrounding_latitudes.flatten(), color='k', marker='o', s=1)
-    m2.scatter(surrounding_longitudes.flatten(), surrounding_latitudes.flatten(), color='k', marker='o', s=1)
-
-    #print(f"{singleob_lon},{singleob_lat}")
-    #print(f"{surrounding_longitudes.flatten()},{surrounding_latitudes.flatten()}")
-
-
-
-
 # Add colorbar
 cax1 = fig.add_axes([0.125000, 0.05, 0.352273, 0.03542]) #x, y, width, height
 cax2 = fig.add_axes([0.547727, 0.05, 0.352273, 0.03542])
 
 cbar1 = fig.colorbar(c1, cax=cax1, orientation="horizontal", fraction=0.046, pad=0.07)
 cbar2 = fig.colorbar(c2, cax=cax2, orientation="horizontal", fraction=0.046, pad=0.07)
-print(cbar1.ax)
-print(cbar2.ax)
 
 cbar1.set_label(units, size=8)
 cbar2.set_label(units, size=8)
@@ -439,7 +357,6 @@ cbar2.ax.tick_params(labelsize=5, rotation=30)
 
 # Add titles, text, and save the figure
 plt.suptitle(f"Temperature {plot_var} at Level: {lev+1}\nobtype: {longname}", fontsize = 9, y = 1.05)
-#plt.suptitle(f"{longname} {plot_var} at 2m", fontsize = 9, y = 1.05)
 
 m1.set_title(f"{title1}", fontsize = 9)
 m2.set_title(f"{title2}", fontsize = 9)
@@ -455,16 +372,10 @@ m2.text(left, bot, f"{subtitle2_hofx}", fontsize = 6, ha='left', va='bottom')
 m1.text(left*1.01, bot*.94, f"{subtitle1_percd}", fontsize = 6, ha='left', va='top')
 #m2.text(left, bot, f"subtitle2_percd}", fontsize = 6, ha='left', va='top')
 
-if show_closest_points:
-    left = singleob_lon - half*0.05 # move to the left by 5% of the halfwidth
-    m1.text(left, bot, f"{subtitle1_points}", fontsize = 4, ha='left', va='bottom')
-    m2.text(left, bot, f"{subtitle2_points}", fontsize = 4, ha='left', va='bottom')
-
-
 if plot_var == "Increment":
-    plt.savefig(f"./increment_{variable}.png", dpi=250, bbox_inches='tight')
+    plt.savefig(f"./fv3jedi_vs_gsi_increment_{obtype}_{variable}.png", dpi=250, bbox_inches='tight')
 if plot_var == "Diff":
-    plt.savefig(f"./diff_{variable}.png", dpi=250, bbox_inches='tight')
+    plt.savefig(f"./fv3jedi_vs_gsi_difference_{obtype}_{variable}.png", dpi=250, bbox_inches='tight')
 
 # Print some final stats
 print(f"Stats:")
