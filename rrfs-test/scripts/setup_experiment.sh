@@ -82,7 +82,7 @@ elif [[ $DYCORE == "MPAS" ]]; then
 fi
 if [[ $GSI_TEST_DATA == "YES" && $DYCORE == "FV3" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_gsi_validation.py .
-  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_gsi_increment_singleob.py
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_gsi_increment_singleob.py .
 fi
 
 # Copy rrts-test yamls and obs files.
