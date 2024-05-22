@@ -13,6 +13,7 @@ DYCORE="FV3" #FV3 or MPAS
 platform="hera" #hera or orion
 GSI_TEST_DATA="YES"
 YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
+EVA="YES"
 #######################
 
 # Print current setting to the screen.
@@ -23,7 +24,8 @@ echo -e "\tSLURM_ACCOUNT=$SLURM_ACCOUNT"
 echo -e "\tDYCORE=$DYCORE"
 echo -e "\tplatform=$platform"
 echo -e "\tGSI_TEST_DATA=$GSI_TEST_DATA"
-echo -e "\tYOUR_PATH_TO_GSI=$YOUR_PATH_TO_GSI\n"
+echo -e "\tYOUR_PATH_TO_GSI=$YOUR_PATH_TO_GSI"
+echo -e "\tEVA=$EVA\n"
 
 # Check to see if user changed the paths to something valid.
 if [[ ! -d $YOUR_PATH_TO_RDASAPP || ! -d `dirname $YOUR_EXPERIMENT_DIR` ]]; then
@@ -57,7 +59,7 @@ mkdir -p $YOUR_EXPERIMENT_DIR
 cd $YOUR_EXPERIMENT_DIR
 
 # Copy the test data into the experiment directory.
-echo "Copying data. This may take awhile."
+echo "Copying data. This will take just a moment."
 echo "  --> ${dycore}-jedi data on $platform"
 rsync -a $YOUR_PATH_TO_RDASAPP/bundle/rrfs-test-data/${TEST_DATA} .
 
@@ -78,8 +80,9 @@ if [[ $DYCORE == "FV3" ]]; then
 elif [[ $DYCORE == "MPAS" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/mpasjedi_increment_singleob.py .
 fi
-if [[ $GSI_TEST_DATA == "YES" ]]; then
-  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_gsi_hofx_validation.py .
+if [[ $GSI_TEST_DATA == "YES" && $DYCORE == "FV3" ]]; then
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_gsi_validation.py .
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_gsi_increment_singleob.py .
 fi
 
 # Copy rrts-test yamls and obs files.
@@ -101,7 +104,17 @@ if [[ $GSI_TEST_DATA == "YES" ]]; then
   sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_gsi_ncdiag_${platform}.sh
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
   ln -sf ${YOUR_PATH_TO_GSI}/build/src/gsi/gsi.x .
+fi
 
+# Copy EVA scripts
+if [[ $EVA == "YES" ]]; then
+  echo "  --> eva scripts on $platform"
+  cd $YOUR_EXPERIMENT_DIR
+  rsync -a $YOUR_PATH_TO_RDASAPP/ush/eva .
+  cd eva
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_eva_template.sh run_eva_${platform}.sh
+  sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_eva_${platform}.sh
+  sed -i "s#@platform@#${platform}#g" ./run_eva_${platform}.sh
 fi
 
 echo "done."
