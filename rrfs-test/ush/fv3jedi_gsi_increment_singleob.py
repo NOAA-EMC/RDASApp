@@ -39,8 +39,8 @@ parser.add_argument('-v', '--variable', type=str, help='variable name', required
 parser.add_argument('-o', '--obtype', type=int, help='bufr observation type', required=True)
 args = parser.parse_args()
 
-jdiag = args.inputdiagjedi
-gdiag = args.inputdiaggsi
+jdiag = args.jedidiag
+gdiag = args.gsidiag
 variable = args.variable
 obtype = args.obtype
 
