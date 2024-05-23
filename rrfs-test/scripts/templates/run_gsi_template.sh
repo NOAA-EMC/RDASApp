@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 #SBATCH --account=@SLURM_ACCOUNT@
 #SBATCH --qos=debug
 #SBATCH --ntasks=360
@@ -9,13 +9,23 @@
 #SBATCH --cpus-per-task 2 --exclusive
 
 . /apps/lmod/lmod/init/sh
+set +x
 
 module purge
 
+hostname=`hostname | cut -c 1 | awk '{print tolower($0)}'`
+if [[ $hostname == "h" ]]; then
+  platform="hera"
+elif [[ $hostname == "o" ]]; then
+  platform="orion"
+fi
+
 module use @YOUR_PATH_TO_GSI@/modulefiles
-module load gsi_hera.intel
+module load gsi_${platform}.intel
 
 module list
+
+export OMP_NUM_THREADS=1
 
 ulimit -s unlimited
 ulimit -v unlimited

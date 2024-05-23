@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 #SBATCH --account=fv3-cam
 #SBATCH --qos=debug
 #SBATCH --ntasks=80
@@ -13,8 +13,15 @@ set +x
 
 module purge
 
+hostname=`hostname | cut -c 1 | awk '{print tolower($0)}'`
+if [[ $hostname == "h" ]]; then
+  platform="hera"
+elif [[ $hostname == "o" ]]; then
+  platform="orion"
+fi
+
 module use @YOUR_PATH_TO_RDASAPP@/modulefiles
-module load RDAS/orion.intel
+module load RDAS/${platform}.intel
 
 module list
 
@@ -24,6 +31,8 @@ export OMP_NUM_THREADS=1
 ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
+
+module list
 
 inputfile=$1
 if [[ $inputfile == "" ]]; then

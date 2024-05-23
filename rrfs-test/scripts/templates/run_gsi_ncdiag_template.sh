@@ -5,8 +5,15 @@ export PYTHONPATH="$PYTHONPATH:$RDASApp/build/lib/python3.10/"
 
 module purge
 
+hostname=`hostname | cut -c 1 | awk '{print tolower($0)}'`
+if [[ $hostname == "h" ]]; then
+  platform="hera"
+elif [[ $hostname == "o" ]]; then
+  platform="orion"
+fi
+
 module use @YOUR_PATH_TO_RDASAPP@/modulefiles
-module load RDAS/hera.intel
+module load RDAS/${platform}.intel
 
 module list
 

@@ -1,8 +1,17 @@
 #!/bin/bash
 
 module purge
+
+hostname=`hostname | cut -c 1 | awk '{print tolower($0)}'`
+if [[ $hostname == "h" ]]; then
+  platform="hera"
+elif [[ $hostname == "o" ]]; then
+  platform="orion"
+fi
+
 module use @YOUR_PATH_TO_RDASAPP@/modulefiles
-module load EVA/@platform@
+module load EVA/${platform}
+
 module list
 
 python gen_eva_obs_yaml.py -i msonet_airTemperature.yaml -o ./ -t jedi_gsi_compare_conv.yaml
@@ -15,7 +24,7 @@ for i in $needs_changed; do
 done
 
 inputfile=$1
-if [[ $1 == "" ]]; then
+if [[ $inputfile == "" ]]; then
   inputfile="eva_mesonet_MSONET_hofxs_airTemperature_2022052619.yaml"
 fi
 
