@@ -6,7 +6,8 @@
 #SBATCH --job-name=gsi_test
 #SBATCH -o gsi.out
 #SBATCH --open-mode=truncate
-#SBATCH --cpus-per-task 2 --exclusive
+##SBATCH --cpus-per-task 2 --exclusive
+#SBATCH --cpus-per-task 4 --exclusive
 
 . /apps/lmod/lmod/init/sh
 set +x

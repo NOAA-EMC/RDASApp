@@ -1,15 +1,16 @@
 #!/bin/bash
 
 RDASApp=@YOUR_PATH_TO_RDASAPP@
-export PYTHONPATH="$PYTHONPATH:$RDASApp/build/lib/python3.10/"
 
 module purge
 
 hostname=`hostname | cut -c 1 | awk '{print tolower($0)}'`
 if [[ $hostname == "h" ]]; then
   platform="hera"
+  export PYTHONPATH="$PYTHONPATH:$RDASApp/build/lib/python3.10/"
 elif [[ $hostname == "o" ]]; then
   platform="orion"
+  export PYTHONPATH="$PYTHONPATH:$RDASApp/build/lib/python3.7/"
 fi
 
 module use @YOUR_PATH_TO_RDASAPP@/modulefiles
