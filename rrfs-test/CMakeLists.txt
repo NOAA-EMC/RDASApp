@@ -80,12 +80,14 @@ if (CLONE_RRFSDATA)
       list( APPEND rrfs_mpasjedi_tests
              rrfs_mpasjedi_2022052619_Ens3Dvar
              rrfs_mpasjedi_2022052619_letkf
+             rrfs_mpasjedi_2022052619_atms_npp_qc
           )
 
       # JEDI executables for each test case above
       list ( APPEND rrfs_mpasjedi_exes
              mpasjedi_variational.x
              mpasjedi_enkf.x
+             mpasjedi_variational.x
       )
 
       foreach(case IN LISTS rrfs_mpasjedi_tests)
