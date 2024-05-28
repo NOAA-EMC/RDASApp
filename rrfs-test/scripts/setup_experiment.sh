@@ -64,13 +64,13 @@ echo "  --> ${dycore}-jedi data on $platform"
 rsync -a $YOUR_PATH_TO_RDASAPP/bundle/rrfs-test-data/${TEST_DATA} .
 
 # Copy the template run script which will be updated according to the user input
-cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_${dycore}jedi_${platform}_template.sh ./${TEST_DATA}/run_${dycore}jedi_${platform}.sh
+cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_${dycore}jedi_template.sh ./${TEST_DATA}/run_${dycore}jedi.sh
 
 # Stream editor to edit files. Use "#" instead of "/" since we have "/" in paths.
 cd ${YOUR_EXPERIMENT_DIR}/${TEST_DATA}
-sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_${dycore}jedi_${platform}.sh
-sed -i "s#@YOUR_EXPERIMENT_DIR@#${YOUR_EXPERIMENT_DIR}#g"   ./run_${dycore}jedi_${platform}.sh
-sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"               ./run_${dycore}jedi_${platform}.sh
+sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_${dycore}jedi.sh
+sed -i "s#@YOUR_EXPERIMENT_DIR@#${YOUR_EXPERIMENT_DIR}#g"   ./run_${dycore}jedi.sh
+sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"               ./run_${dycore}jedi.sh
 
 # Copy visualization package.
 cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/colormap.py .
@@ -79,6 +79,7 @@ if [[ $DYCORE == "FV3" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_increment_fulldom.py .
 elif [[ $DYCORE == "MPAS" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/mpasjedi_increment_singleob.py .
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/mpasjedi_increment_fulldom.py .
 fi
 if [[ $GSI_TEST_DATA == "YES" && $DYCORE == "FV3" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_gsi_validation.py .
@@ -94,14 +95,17 @@ cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
 if [[ $GSI_TEST_DATA == "YES" ]]; then
   echo "  --> gsi data on $platform"
   cd $YOUR_EXPERIMENT_DIR
-  # We will need to change this when we have it staged elsewhere.
-  rsync -a /scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/staged-data/gsi_2022052619 .
+  if [[ $platform == "hera" ]]; then
+    rsync -a /scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/staged-data/gsi_2022052619 .
+  elif [[ $platform == "orion" ]]; then
+    rsync -a /work/noaa/fv3-cam/dlippi/RRFSv2/staged-data/gsi_2022052619 .
+  fi
   cd gsi_2022052619
-  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_${platform}_template.sh run_gsi_${platform}.sh
-  sed -i "s#@YOUR_PATH_TO_GSI@#${YOUR_PATH_TO_GSI}#g" ./run_gsi_${platform}.sh
-  sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"       ./run_gsi_${platform}.sh
-  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_ncdiag_${platform}_template.sh run_gsi_ncdiag_${platform}.sh
-  sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_gsi_ncdiag_${platform}.sh
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_template.sh run_gsi.sh
+  sed -i "s#@YOUR_PATH_TO_GSI@#${YOUR_PATH_TO_GSI}#g" ./run_gsi.sh
+  sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"       ./run_gsi.sh
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_ncdiag_template.sh run_gsi_ncdiag.sh
+  sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_gsi_ncdiag.sh
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
   ln -sf ${YOUR_PATH_TO_GSI}/build/src/gsi/gsi.x .
 fi
@@ -112,9 +116,8 @@ if [[ $EVA == "YES" ]]; then
   cd $YOUR_EXPERIMENT_DIR
   rsync -a $YOUR_PATH_TO_RDASAPP/ush/eva .
   cd eva
-  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_eva_template.sh run_eva_${platform}.sh
-  sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_eva_${platform}.sh
-  sed -i "s#@platform@#${platform}#g" ./run_eva_${platform}.sh
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_eva_template.sh run_eva.sh
+  sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_eva.sh
 fi
 
 echo "done."
