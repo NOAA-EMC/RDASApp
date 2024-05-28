@@ -79,6 +79,7 @@ if [[ $DYCORE == "FV3" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_increment_fulldom.py .
 elif [[ $DYCORE == "MPAS" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/mpasjedi_increment_singleob.py .
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/mpasjedi_increment_fulldom.py .
 fi
 if [[ $GSI_TEST_DATA == "YES" && $DYCORE == "FV3" ]]; then
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/fv3jedi_gsi_validation.py .
