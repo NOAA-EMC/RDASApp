@@ -6,7 +6,7 @@
 #SBATCH --job-name=fv3jedi_test
 #SBATCH -o jedi.log
 #SBATCH --open-mode=truncate
-#SBATCH --cpus-per-task 2 --exclusive
+#SBATCH --cpus-per-task 4 --exclusive
 
 . /apps/lmod/lmod/init/sh
 set +x
