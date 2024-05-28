@@ -17,6 +17,8 @@ observations:
               transforms:
                 - scale: 3600
               referenceTime: "2022-05-26T19:00:00Z"
+          obsTimeMinusCycleTime:
+            query: "*/DHR"
           stationIdentification:
             query: "*/SID"
           longitude:
@@ -34,7 +36,15 @@ observations:
             query: "*/Z___INFO/Z__EVENT{1}/ZOB"
             type: float
 
-          #ObsValue
+          # ObsType
+          observationType:
+            query: "*/TYP"
+
+          # ObsValue
+          stationPressure:
+            query: "*/P___INFO/P__EVENT{1}/POB"
+            transforms:
+              - scale: 100
           dewpointTemperature:
             query: "*/Q___INFO/TDO"
             transforms:
@@ -60,6 +70,8 @@ observations:
           # QualityMarker
           pressureQualityMarker:
             query: "*/P___INFO/P__EVENT{1}/PQM"
+          stationPressureQualityMarker:
+            query: "*/P___INFO/P__EVENT{1}/PQM"
           heightQualityMarker:
             query: "*/Z___INFO/Z__EVENT{1}/ZQM"
           airTemperatureQualityMarker:
@@ -71,6 +83,10 @@ observations:
 
           # ObsError
           pressureError:
+            query: "*/P___INFO/P__BACKG/POE"
+            transforms:
+              - scale: 100
+          stationPressureError:
             query: "*/P___INFO/P__BACKG/POE"
             transforms:
               - scale: 100
@@ -95,6 +111,13 @@ observations:
           source: variables/timestamp
           longName: "seconds since 1970-01-01T00:00:00Z"
           units: "seconds since 1970-01-01T00:00:00Z"
+
+        - name: "MetaData/timeOffset"
+          #- name: "MetaData/obsTimeMinusCycleTime"
+          coordinates: "longitude latitude"
+          source: variables/obsTimeMinusCycleTime
+          longName: "Observation Time Minus Cycle Time"
+          units: "hours"
 
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
@@ -133,7 +156,24 @@ observations:
           longName: "Height of Observation"
           units: "m"
 
+        # ObsType
+        - name: "ObsType/stationElevation"
+          coordinates: "longitude latitude"
+          source: variables/observationType
+          longName: "Station Elevation Observation Type"
+
+        - name: "ObsType/stationPressure"
+          coordinates: "longitude latitude"
+          source: variables/observationType
+          longName: "Station Pressure Observation Type"
+
         # ObsValue
+        - name: "ObsValue/stationPressure"
+          coordinates: "longitude latitude"
+          source: variables/stationPressure
+          longName: "Station Pressure"
+          units: "Pa"
+
         - name: "ObsValue/dewPointTemperature"
           coordinates: "longitude latitude"
           source: variables/dewpointTemperature
@@ -176,6 +216,11 @@ observations:
           source: variables/pressureQualityMarker
           longName: "Pressure Quality Marker"
 
+        - name: "QualityMarker/stationPressure"
+          coordinates: "longitude latitude"
+          source: variables/stationPressureQualityMarker
+          longName: "Station Pressure Quality Marker"
+
         - name: "QualityMarker/height"
           coordinates: "longitude latitude"
           source: variables/heightQualityMarker
@@ -206,6 +251,12 @@ observations:
           coordinates: "longitude latitude"
           source: variables/pressureError
           longName: "Pressure Error"
+          units: "Pa"
+
+        - name: "ObsError/stationPressure"
+          coordinates: "longitude latitude"
+          source: variables/stationPressureError
+          longName: "Station Pressure ObsError"
           units: "Pa"
 
         - name: "ObsError/relativeHumidity"
