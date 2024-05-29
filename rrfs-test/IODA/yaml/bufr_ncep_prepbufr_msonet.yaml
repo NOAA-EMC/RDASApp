@@ -81,24 +81,6 @@ observations:
           windQualityMarker:
             query: "*/W___INFO/W__EVENT{1}/WQM"
 
-          # ObsError
-          pressureError:
-            query: "*/P___INFO/P__BACKG/POE"
-            transforms:
-              - scale: 100
-          stationPressureError:
-            query: "*/P___INFO/P__BACKG/POE"
-            transforms:
-              - scale: 100
-          relativeHumidityError:
-            query: "*/Q___INFO/Q__BACKG/QOE"
-          airTemperatureError:
-            query: "*/T___INFO/T__BACKG/TOE"
-            transforms:
-              - offset: 273.15
-          windError:
-            query: "*/W___INFO/W__BACKG/WOE"
-
 
     ioda:
       backend: netcdf
@@ -166,6 +148,36 @@ observations:
           coordinates: "longitude latitude"
           source: variables/observationType
           longName: "Station Pressure Observation Type"
+
+        - name: "ObsType/dewPointTemperature"
+          coordinates: "longitude latitude"
+          source: variables/observationType
+          longName: "Dew Point Temperature Observation Type"
+
+        - name: "ObsType/virtualTemperature"
+          coordinates: "longitude latitude"
+          source: variables/observationType
+          longName: "Virtual Temperature Observation Type"
+
+        - name: "ObsType/airTemperature"
+          coordinates: "longitude latitude"
+          source: variables/observationType
+          longName: "Temperature Observation Type"
+
+        - name: "ObsType/specificHumidity"
+          coordinates: "longitude latitude"
+          source: variables/observationType
+          longName: "Specific Humidity Observation Type"
+
+        - name: "ObsType/windEastward"
+          coordinates: "longitude latitude"
+          source: variables/observationType
+          longName: "Eastward Wind Observation Type"
+
+        - name: "ObsType/windNorthward"
+          coordinates: "longitude latitude"
+          source: variables/observationType
+          longName: "Northward Wind Observation Type"
 
         # ObsValue
         - name: "ObsValue/stationPressure"
@@ -246,39 +258,3 @@ observations:
           source: variables/windQualityMarker
           longName: "U, V-Component of Wind Quality Marker"
 
-        # ObsError
-        - name: "ObsError/pressure"
-          coordinates: "longitude latitude"
-          source: variables/pressureError
-          longName: "Pressure Error"
-          units: "Pa"
-
-        - name: "ObsError/stationPressure"
-          coordinates: "longitude latitude"
-          source: variables/stationPressureError
-          longName: "Station Pressure ObsError"
-          units: "Pa"
-
-        - name: "ObsError/relativeHumidity"
-          coordinates: "longitude latitude"
-          source: variables/relativeHumidityError
-          longName: "Relative Humidity Error"
-          units: "1"
-
-        - name: "ObsError/airTemperature"
-          coordinates: "longitude latitude"
-          source: variables/airTemperatureError
-          longName: "Temperature Error"
-          units: "K"
-
-        - name: "ObsError/windEastward"
-          coordinates: "longitude latitude"
-          source: variables/windError
-          longName: "Eastward Wind Error"
-          units: "m s-1"
-
-        - name: "ObsError/windNorthward"
-          coordinates: "longitude latitude"
-          source: variables/windError
-          longName: "Northward Wind Error"
-          units: "m s-1"
