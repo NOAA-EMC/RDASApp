@@ -723,4 +723,8 @@ cost function:
            - name: reject
 
 
-
+test:
+  reference filename: Data/testinput/rrfs-mpasjedi-atms_npp.ref
+  test output filename: ./rrfs-mpasjedi-atms_npp.out
+  float relative tolerance: 1.0e-3
+  float absolute tolerance: 1.0e-6
