@@ -10,11 +10,12 @@ YOUR_PATH_TO_RDASAPP="/path/to/your/installation/of/RDASApp"
 YOUR_EXPERIMENT_DIR="/path/to/your/desired/experiment/directory/jedi-assim_test"
 SLURM_ACCOUNT="fv3-cam"
 DYCORE="FV3" #FV3 | MPAS
-platform="hera" #hera | orion | jet
 GSI_TEST_DATA="YES"
 YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
 EVA="YES"
 #######################
+
+source $YOUR_PATH_TO_RDASAPP/ush/detect_machine.sh
 
 # Print current setting to the screen.
 echo "Your current settings are:"
@@ -22,7 +23,7 @@ echo -e "\tYOUR_PATH_TO_RDASAPP=$YOUR_PATH_TO_RDASAPP"
 echo -e "\tYOUR_EXPERIMENT_DIR=$YOUR_EXPERIMENT_DIR"
 echo -e "\tSLURM_ACCOUNT=$SLURM_ACCOUNT"
 echo -e "\tDYCORE=$DYCORE"
-echo -e "\tplatform=$platform"
+echo -e "\tMACHINE_ID=$MACHINE_ID"
 echo -e "\tGSI_TEST_DATA=$GSI_TEST_DATA"
 echo -e "\tYOUR_PATH_TO_GSI=$YOUR_PATH_TO_GSI"
 echo -e "\tEVA=$EVA\n"
@@ -46,8 +47,8 @@ else
   exit 2
 fi
 
-if [[ ! ( $platform == "hera" || $platform == "orion" || $platform == "jet" ) ]]; then
-   echo "Not a valid platform: ${platform}. Please use hera | orion | jet."
+if [[ ! ( $MACHINE_ID == "hera" || $MACHINE_ID == "orion" || $MACHINE_ID == "jet" ) ]]; then
+   echo "Not a valid MACHINE_ID: ${MACHINE_ID}. Please use hera | orion | jet."
    exit 3
 fi
 
@@ -60,7 +61,7 @@ cd $YOUR_EXPERIMENT_DIR
 
 # Copy the test data into the experiment directory.
 echo "Copying data. This will take just a moment."
-echo "  --> ${dycore}-jedi data on $platform"
+echo "  --> ${dycore}-jedi data on $MACHINE_ID"
 rsync -a $YOUR_PATH_TO_RDASAPP/bundle/rrfs-test-data/${TEST_DATA} .
 
 # Copy the template run script which will be updated according to the user input
@@ -71,6 +72,7 @@ cd ${YOUR_EXPERIMENT_DIR}/${TEST_DATA}
 sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_${dycore}jedi.sh
 sed -i "s#@YOUR_EXPERIMENT_DIR@#${YOUR_EXPERIMENT_DIR}#g"   ./run_${dycore}jedi.sh
 sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"               ./run_${dycore}jedi.sh
+sed -i "s#@MACHINE_ID@#${MACHINE_ID}#g"                     ./run_${dycore}jedi.sh
 
 # Copy visualization package.
 cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/ush/colormap.py .
@@ -93,33 +95,36 @@ cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
 
 # Copy GSI test data
 if [[ $GSI_TEST_DATA == "YES" ]]; then
-  echo "  --> gsi data on $platform"
+  echo "  --> gsi data on $MACHINE_ID"
   cd $YOUR_EXPERIMENT_DIR
-  if [[ $platform == "hera" ]]; then
+  if [[ $MACHINE_ID == "hera" ]]; then
     rsync -a /scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/staged-data/gsi_2022052619 .
-  elif [[ $platform == "orion" ]]; then
+  elif [[ $MACHINE_ID == "orion" ]]; then
     rsync -a /work/noaa/fv3-cam/dlippi/RRFSv2/staged-data/gsi_2022052619 .
-  elif [[ $platform == "jet" ]]; then
+  elif [[ $MACHINE_ID == "jet" ]]; then
     rsync -a /lfs4/BMC/nrtrr/RDAS_DATA/gsi_2022052619 .
   fi
   cd gsi_2022052619
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_template.sh run_gsi.sh
   sed -i "s#@YOUR_PATH_TO_GSI@#${YOUR_PATH_TO_GSI}#g" ./run_gsi.sh
   sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"       ./run_gsi.sh
+  sed -i "s#@MACHINE_ID@#${MACHINE_ID}#g"             ./run_gsi.sh
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_ncdiag_template.sh run_gsi_ncdiag.sh
   sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_gsi_ncdiag.sh
+  sed -i "s#@MACHINE_ID@#${MACHINE_ID}#g"                     ./run_gsi_ncdiag.sh
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/obs/* Data/obs/.
   ln -sf ${YOUR_PATH_TO_GSI}/build/src/gsi/gsi.x .
 fi
 
 # Copy EVA scripts
 if [[ $EVA == "YES" ]]; then
-  echo "  --> eva scripts on $platform"
+  echo "  --> eva scripts on $MACHINE_ID"
   cd $YOUR_EXPERIMENT_DIR
   rsync -a $YOUR_PATH_TO_RDASAPP/ush/eva .
   cd eva
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_eva_template.sh run_eva.sh
   sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_eva.sh
+  sed -i "s#@MACHINE_ID@#${MACHINE_ID}#g"                     ./run_eva.sh
 fi
 
 echo "done."

@@ -4,20 +4,18 @@ RDASApp=@YOUR_PATH_TO_RDASAPP@
 
 module purge
 
-hostname=`hostname | cut -c 1 | awk '{print tolower($0)}'`
-if [[ $hostname == "h" ]]; then
-  platform="hera"
+MACHINE_ID="@MACHINE_ID@"
+
+if [[ $MACHINE_ID == "hera" ]]; then
   export PYTHONPATH="$PYTHONPATH:$RDASApp/build/lib/python3.10/"
-elif [[ $hostname == "o" ]]; then
-  platform="orion"
+elif [[ $MACHINE_ID == "orion" ]]; then
   export PYTHONPATH="$PYTHONPATH:$RDASApp/build/lib/python3.7/"
-elif [[ $hostname == "f" ]]; then
-  platform="jet"
+elif [[ $MACHINE_ID == "jet" ]]; then
   export PYTHONPATH="$PYTHONPATH:$RDASApp/build/lib/python3.10/"
 fi
 
 module use @YOUR_PATH_TO_RDASAPP@/modulefiles
-module load RDAS/${platform}.intel
+module load RDAS/@MACHINE_ID@.intel
 
 module list
 
