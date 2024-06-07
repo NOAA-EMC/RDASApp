@@ -24,7 +24,7 @@ usage() {
   echo "  -f  force a clean build             DEFAULT: NO"
   echo "  -d  include JCSDA ctest data        DEFAULT: NO"
   echo "  -r  include rrfs-ctest data         DEFAULT: NO"
-  echo "  -a  build everything in bundle      DEFAULT: NO"
+  echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                   DEFAULT: FV3andMPAS"
   echo "  -h  display this message and quit"
   echo
@@ -41,11 +41,11 @@ BUILD_VERBOSE="NO"
 CLONE_JCSDADATA="NO"
 CLONE_RRFSDATA="NO"
 CLEAN_BUILD="NO"
-BUILD_JCSDA="NO"
+BUILD_JCSDA="YES"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 
-while getopts "p:t:c:m:hvdfar" opt; do
+while getopts "p:t:c:m:hvdfsr" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -71,8 +71,8 @@ while getopts "p:t:c:m:hvdfar" opt; do
     f)
       CLEAN_BUILD=YES
       ;;
-    a)
-      BUILD_JCSDA=YES
+    s)
+      BUILD_JCSDA=NO
       ;;
     h|\?|:)
       usage
@@ -90,9 +90,6 @@ case ${BUILD_TARGET} in
     CMAKE_OPTS+=" -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON -DMACHINE_ID=$MACHINE_ID"
     module list
     ;;
-  $(hostname))
-    echo "Building RDASApp on $BUILD_TARGET"
-    ;;
   *)
     echo "Building RDASApp on unknown target: $BUILD_TARGET"
     exit
@@ -104,6 +101,18 @@ CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA -DCLONE_RRFSDATA=$CLONE_RRFSDAT
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
   [[ -d ${BUILD_DIR} ]] && rm -rf ${BUILD_DIR}
+else
+  printf "Build directory (${BUILD_DIR}) already exists\n"
+  printf "Please choose what to do:\n\n"
+  printf "[R]emove the existing directory\n"
+  printf "[C]ontinue building in the existing directory\n"
+  printf "[Q]uit this build script\n"
+  read -p "Choose an option (R/C/Q):" choice
+  case ${choice} in
+    [Rr]* ) rm -rf ${BUILD_DIR}; break ;;
+    [Cc]* ) break ;;
+        * ) exit ;;
+  esac
 fi
 mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR}
 
