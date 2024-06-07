@@ -101,7 +101,7 @@ CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA -DCLONE_RRFSDATA=$CLONE_RRFSDAT
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
   [[ -d ${BUILD_DIR} ]] && rm -rf ${BUILD_DIR}
-else
+elif [[ -d ${BUILD_DIR} ]]; then
   printf "Build directory (${BUILD_DIR}) already exists\n"
   printf "Please choose what to do:\n\n"
   printf "[R]emove the existing directory\n"
