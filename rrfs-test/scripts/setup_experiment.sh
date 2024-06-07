@@ -14,15 +14,6 @@ platform="hera" #hera | orion | jet
 GSI_TEST_DATA="YES"
 YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
 EVA="YES"
-
-YOUR_PATH_TO_RDASAPP="/lfs5/BMC/wrfruc/Donald.E.Lippi/RRFSv2/RDASApp.20240607"
-YOUR_EXPERIMENT_DIR="$YOUR_PATH_TO_RDASAPP/jedi-assim"
-SLURM_ACCOUNT="wrf-ruc"
-DYCORE="FV3" #FV3 | MPAS
-platform="jet" #hera | orion | jet
-GSI_TEST_DATA="YES"
-YOUR_PATH_TO_GSI="/lfs5/BMC/wrfruc/Donald.E.Lippi/RRFSv2/GSI.ufo_geovals"
-EVA="YES"
 #######################
 
 # Print current setting to the screen.
