@@ -11,6 +11,9 @@ if [[ $hostname == "h" ]]; then
 elif [[ $hostname == "o" ]]; then
   platform="orion"
   export PYTHONPATH="$PYTHONPATH:$RDASApp/build/lib/python3.7/"
+elif [[ $hostname == "f" ]]; then
+  platform="jet"
+  export PYTHONPATH="$PYTHONPATH:$RDASApp/build/lib/python3.10/"
 fi
 
 module use @YOUR_PATH_TO_RDASAPP@/modulefiles

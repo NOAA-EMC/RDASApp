@@ -7,6 +7,8 @@ if [[ $hostname == "h" ]]; then
   platform="hera"
 elif [[ $hostname == "o" ]]; then
   platform="orion"
+elif [[ $hostname == "f" ]]; then
+  platform="jet"
 fi
 
 module use @YOUR_PATH_TO_RDASAPP@/modulefiles

@@ -9,10 +9,19 @@ START=$(date +%s)
 YOUR_PATH_TO_RDASAPP="/path/to/your/installation/of/RDASApp"
 YOUR_EXPERIMENT_DIR="/path/to/your/desired/experiment/directory/jedi-assim_test"
 SLURM_ACCOUNT="fv3-cam"
-DYCORE="FV3" #FV3 or MPAS
-platform="hera" #hera or orion
+DYCORE="FV3" #FV3 | MPAS
+platform="hera" #hera | orion | jet
 GSI_TEST_DATA="YES"
 YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
+EVA="YES"
+
+YOUR_PATH_TO_RDASAPP="/lfs5/BMC/wrfruc/Donald.E.Lippi/RRFSv2/RDASApp.20240607"
+YOUR_EXPERIMENT_DIR="$YOUR_PATH_TO_RDASAPP/jedi-assim"
+SLURM_ACCOUNT="wrf-ruc"
+DYCORE="FV3" #FV3 | MPAS
+platform="jet" #hera | orion | jet
+GSI_TEST_DATA="YES"
+YOUR_PATH_TO_GSI="/lfs5/BMC/wrfruc/Donald.E.Lippi/RRFSv2/GSI.ufo_geovals"
 EVA="YES"
 #######################
 
@@ -41,13 +50,13 @@ if [[ $DYCORE == "FV3" ]]; then
 elif [[ $DYCORE == "MPAS" ]]; then
   TEST_DATA="rrfs-data_mpasjedi_2022052619"
 else
-  echo "Not a valid DYCORE: ${DYCORE}. Please use FV3 or MPAS."
+  echo "Not a valid DYCORE: ${DYCORE}. Please use FV3 | MPAS."
   echo "exiting!!!"
   exit 2
 fi
 
-if [[ ! ( $platform == "hera" || $platform == "orion" ) ]]; then
-   echo "Not a valid platform: ${platform}. Please use hera or orion."
+if [[ ! ( $platform == "hera" || $platform == "orion" || $platform == "jet" ) ]]; then
+   echo "Not a valid platform: ${platform}. Please use hera | orion | jet."
    exit 3
 fi
 
@@ -99,6 +108,8 @@ if [[ $GSI_TEST_DATA == "YES" ]]; then
     rsync -a /scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/staged-data/gsi_2022052619 .
   elif [[ $platform == "orion" ]]; then
     rsync -a /work/noaa/fv3-cam/dlippi/RRFSv2/staged-data/gsi_2022052619 .
+  elif [[ $platform == "jet" ]]; then
+    rsync -a /lfs4/BMC/nrtrr/RDAS_DATA/gsi_2022052619 .
   fi
   cd gsi_2022052619
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_template.sh run_gsi.sh
