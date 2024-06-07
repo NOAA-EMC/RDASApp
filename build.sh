@@ -81,7 +81,7 @@ while getopts "p:t:c:m:hvdfar" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules)
+  hera | orion | hercules | jet)
     echo "Building RDASApp on $BUILD_TARGET"
     echo "  Build initiated `date`"
     source $dir_root/ush/module-setup.sh
@@ -95,6 +95,7 @@ case ${BUILD_TARGET} in
     ;;
   *)
     echo "Building RDASApp on unknown target: $BUILD_TARGET"
+    exit
     ;;
 esac
 
