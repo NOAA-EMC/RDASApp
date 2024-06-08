@@ -69,9 +69,8 @@ while getopts "p:t:c:m:hvfs-:" opt; do
       ;;
     -)
       if [[ "${OPTARG}" == "notestdata" ]]; then
-        LINK_NEST=ON
-        CLONE_RRFSDATA=NO
         CLONE_JCSDADATA=NO
+        CLONE_RRFSDATA=NO
       fi 
       ;;
     h|\?|:)
