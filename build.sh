@@ -22,10 +22,9 @@ usage() {
   echo "  -c  additional CMake options        DEFAULT: <none>"
   echo "  -v  build with verbose output       DEFAULT: NO"
   echo "  -f  force a clean build             DEFAULT: NO"
-  echo "  -d  include JCSDA ctest data        DEFAULT: NO"
-  echo "  -r  include rrfs-ctest data         DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
-  echo "  -m  select dycore                   DEFAULT: FV3andMPAS"
+  echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
+  echo "  --notestdata  do not include JCSDA and rrfs ctest data  DEFAULT: NO"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -38,14 +37,14 @@ INSTALL_PREFIX=""
 CMAKE_OPTS=""
 BUILD_TARGET="${MACHINE_ID:-'localhost'}"
 BUILD_VERBOSE="NO"
-CLONE_JCSDADATA="NO"
-CLONE_RRFSDATA="NO"
+CLONE_JCSDADATA="YES"
+CLONE_RRFSDATA="YES"
 CLEAN_BUILD="NO"
 BUILD_JCSDA="YES"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 
-while getopts "p:t:c:m:hvdfsr" opt; do
+while getopts "p:t:c:m:hvfs-:" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -62,17 +61,18 @@ while getopts "p:t:c:m:hvdfsr" opt; do
     v)
       BUILD_VERBOSE=YES
       ;;
-    d)
-      CLONE_JCSDADATA=YES
-      ;;
-    r)
-      CLONE_RRFSDATA=YES
-      ;;
     f)
       CLEAN_BUILD=YES
       ;;
     s)
       BUILD_JCSDA=NO
+      ;;
+    -)
+      if [[ "${OPTARG}" == "notestdata" ]]; then
+        LINK_NEST=ON
+        CLONE_RRFSDATA=NO
+        CLONE_JCSDADATA=NO
+      fi 
       ;;
     h|\?|:)
       usage
@@ -104,13 +104,13 @@ if [[ $CLEAN_BUILD == 'YES' ]]; then
 elif [[ -d ${BUILD_DIR} ]]; then
   printf "Build directory (${BUILD_DIR}) already exists\n"
   printf "Please choose what to do:\n\n"
-  printf "[R]emove the existing directory\n"
-  printf "[C]ontinue building in the existing directory\n"
-  printf "[Q]uit this build script\n"
-  read -p "Choose an option (R/C/Q):" choice
+  printf "[r]emove the existing directory\n"
+  printf "[c]ontinue building in the existing directory\n"
+  printf "[q]uit this build script\n"
+  read -p "Choose an option (r/c/q):" choice
   case ${choice} in
-    [Rr]* ) rm -rf ${BUILD_DIR}; break ;;
-    [Cc]* ) break ;;
+    [Rr]* ) rm -rf ${BUILD_DIR} ;;
+    [Cc]* ) ;;
         * ) exit ;;
   esac
 fi
