@@ -12,7 +12,7 @@ Navigate to the RDASApp root directory and then build using the  `build.sh`  scr
 Run `./build.sh -h` to learn more about command line options supported by build.sh
 
 ## 3. RRFS CTest
-### load modules for ctest
+### 3.1 load modules for ctest
 The compiling step can load the modules needed for running the ctest. If running the ctest with a new terminal, extra steps are needed to load the modules:
 ```
 module use modulefiles/
@@ -20,7 +20,7 @@ module load RDAS/hera.intel
 ```
 Where `hera.intel` should be replaced with a correct platform-dependent module file, such as `jet.intel`, `orion.intel`, `hercules.intel`
 
-### Run ctest
+### 3.2 Run ctest
 ```
 export SLURM_ACCOUNT=$account
 cd RDASApp/build
