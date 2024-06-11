@@ -15,7 +15,7 @@ Run `./build.sh -h` to learn more about command line options supported by build.
 ### 3.1 load modules for ctest
 The compiling step can load the modules needed for running the ctest. If running the ctest with a new terminal, extra steps are needed to load the modules:
 ```
-module use modulefiles/
+module use modulefiles
 module load RDAS/hera.intel
 ```
 Where `hera.intel` should be replaced with a correct platform-dependent module file, such as `jet.intel`, `orion.intel`, `hercules.intel`
