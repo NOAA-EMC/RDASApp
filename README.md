@@ -7,5 +7,5 @@ Repository for JEDI-based data assimilation for the Rapid Refresh Forecast Syste
 -   NOAA RDHPCS Orion
 -   NOAA RDHPCS Hercules
 
-## [How to clone and build RDASAPP?](docs/build.md)
-## [How to run RRFS CTest?](docs/build.md#3-rrfs-ctest)
+## [How to clone and build RDASAPP?](docs/build_and_test.md)
+## [How to run RRFS CTest?](docs/build_and_test.md#3-rrfs-ctest)
