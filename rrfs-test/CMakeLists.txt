@@ -7,15 +7,13 @@ include(funcs.cmake)
 ### Define CTests here ###
 
 # FV3-JEDI tests
-set(rrfs_fv3jedi_tests "")
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_hyb_2022052619"     "fv3jedi_var.x")
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_letkf_2022052619"   "fv3jedi_letkf.x")
+
+set(rrfs_test_execs "")
 
 # MPAS-JEDI tests 
-set(rrfs_mpasjedi_tests "")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_Ens3Dvar"     "mpasjedi_variational.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_atms_npp_qc"  "mpasjedi_variational.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_letkf"        "mpasjedi_enkf.x")
+add_to_dictionary(rrfs_test_execs "rrfs_mpasjedi_2022052619_Ens3Dvar"     "mpasjedi_variational.x")
+add_to_dictionary(rrfs_test_execs "rrfs_mpasjedi_2022052619_atms_npp_qc"  "mpasjedi_variational.x")
+add_to_dictionary(rrfs_test_execs "rrfs_mpasjedi_2022052619_letkf"        "mpasjedi_enkf.x")
 
 
 # rrfs data - from rrfs-test-data repo if found, from local directory, or from tarball
@@ -30,6 +28,12 @@ if (CLONE_RRFSDATA)
 #  # A bit of guesswork here, I don't know if folks using this option stored it in the same directory structure
 #  set (fv3-jedi_data_testinput_tier_1_local "$ENV{FV3_JEDI_TESTFILES}/fv3-jedi-data/testinput_tier_1")
    if(FV3_DYCORE)
+     list( APPEND rrfs_fv3jedi_tests
+             rrfs_fv3jedi_hyb_2022052619
+             rrfs_fv3jedi_letkf_2022052619
+          )
+      add_to_dictionary(rrfs_test_execs "rrfs_fv3jedi_hyb_2022052619"     "fv3jedi_var.x")
+      add_to_dictionary(rrfs_test_execs "rrfs_fv3jedi_letkf_2022052619"   "fv3jedi_letkf.x")
 
       message(STATUS "MACHINE_ID is " ${MACHINE_ID})
       if("${MACHINE_ID}" STREQUAL "orion")
@@ -38,10 +42,7 @@ if (CLONE_RRFSDATA)
          set(MPI_ARGS "${MPI_ARGS} --exclusive")
       endif()   
 
-      foreach(keypair ${rrfs_fv3jedi_tests})
-	 string(REGEX MATCH "([^=]+)=([^=]*)" _ ${keypair})
-	 set(case ${CMAKE_MATCH_1})
-         set(exe ${CMAKE_MATCH_2})
+      foreach(case IN LISTS  rrfs_fv3jedi_tests)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_fv3jedi_2022052619")
          if (NOT EXISTS "${casedir}")
@@ -53,6 +54,7 @@ if (CLONE_RRFSDATA)
          file(CREATE_LINK ${src_casedir}/Data ${casedir}/Data SYMBOLIC)
          file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir} )
          set(target_test ${case})
+	 get_from_dictionary(rrfs_test_execs ${case} exe)
          ecbuild_add_test( TARGET ${target_test}
                         MPI      80
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
@@ -74,11 +76,16 @@ if (CLONE_RRFSDATA)
          set(RESTORE_MPI_ARGS ${MPI_ARGS})
          set(MPI_ARGS "${MPI_ARGS} --exclusive")
       endif()   
-
-      foreach(keypair ${rrfs_mpasjedi_tests})
-	 string(REGEX MATCH "([^=]+)=([^=]*)" _ ${keypair})
-	 set(case ${CMAKE_MATCH_1})
-         set(exe ${CMAKE_MATCH_2})
+       list( APPEND rrfs_mpasjedi_tests
+             rrfs_mpasjedi_2022052619_Ens3Dvar
+             rrfs_mpasjedi_2022052619_letkf
+             rrfs_mpasjedi_2022052619_atms_npp_qc
+          )
+         add_to_dictionary(rrfs_test_execs "rrfs_mpasjedi_2022052619_Ens3Dvar"     "mpasjedi_variational.x")
+         add_to_dictionary(rrfs_test_execs "rrfs_mpasjedi_2022052619_letkf"     "mpasjedi_enkf.x")
+	 add_to_dictionary(rrfs_test_execs "rrfs_mpasjedi_2022052619_atms_npp_qc"    "mpasjedi_variational.x")
+      foreach(case IN LISTS rrfs_mpasjedi_tests)
+	 get_from_dictionary(rrfs_test_execs ${case} exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_mpasjedi_2022052619")
          if (NOT EXISTS "${casedir}")
