@@ -2,7 +2,7 @@
 #!    NOAA/NCEP, National Centers for Environmental Prediction  RDASapp        !
 #!-------------------------------------------------------------------------
 
-include(dict_funcs.cmake)
+include(funcs.cmake)
 
 ### Define CTests here ###
 
