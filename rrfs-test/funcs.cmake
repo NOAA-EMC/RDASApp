@@ -41,3 +41,16 @@ function(get_from_dictionary dict key result)
     # If the key is not found, set the result to an empty string or some default value
     set(${result} "" PARENT_SCOPE)
 endfunction()
+
+# Function to retrieve keys from a dict
+function(get_all_keys dict result)
+    set(keys "")
+    foreach(entry IN LISTS ${dict})
+        string(FIND "${entry}" "=" EQUAL_POS)
+        if(EQUAL_POS GREATER -1)
+            string(SUBSTRING "${entry}" 0 ${EQUAL_POS} ENTRY_KEY)
+            list(APPEND keys "${ENTRY_KEY}")
+        endif()
+    endforeach()
+    set(${result} "${keys}" PARENT_SCOPE)
+endfunction()
