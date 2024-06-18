@@ -13,15 +13,8 @@ set +x
 
 module purge
 
-hostname=`hostname | cut -c 1 | awk '{print tolower($0)}'`
-if [[ $hostname == "h" ]]; then
-  platform="hera"
-elif [[ $hostname == "o" ]]; then
-  platform="orion"
-fi
-
 module use @YOUR_PATH_TO_GSI@/modulefiles
-module load gsi_${platform}.intel
+module load gsi_@MACHINE_ID@.intel
 
 module list
 
