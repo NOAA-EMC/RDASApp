@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=fv3-cam
+#SBATCH --account=@SLURM_ACCOUNT@
 #SBATCH --qos=debug
 #SBATCH --ntasks=36
 #SBATCH -t 00:30:00
@@ -13,15 +13,8 @@ set +x
 
 module purge
 
-hostname=`hostname | cut -c 1 | awk '{print tolower($0)}'`
-if [[ $hostname == "h" ]]; then
-  platform="hera"
-elif [[ $hostname == "o" ]]; then
-  platform="orion"
-fi
-
 module use @YOUR_PATH_TO_RDASAPP@/modulefiles
-module load RDAS/${platform}.intel
+module load RDAS/@MACHINE_ID@.intel
 
 module list
 
