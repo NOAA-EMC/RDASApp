@@ -99,6 +99,8 @@ cost function:
       weight:
         value: 0.9
 
+  observations:
+     observers:
 @OBSERVATIONS@
 
 variational:

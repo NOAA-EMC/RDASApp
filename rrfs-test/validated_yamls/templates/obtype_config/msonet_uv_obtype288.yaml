@@ -1,5 +1,3 @@
-  observations:
-     observers:
      - obs space:
          name: mesonet
          obsdatain:
