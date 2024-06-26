@@ -1,10 +1,9 @@
 #!/bin/sh
 #
 ushdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-basedir="$(dirname "$mydir")"
 source $ushdir/detect_machine.sh
+basedir="$(dirname "$ushdir")"
 
-set -x
 case ${MACHINE_ID} in
   hera)
     RDAS_DATA=/scratch1/NCEPDEV/fv3-cam/RDAS_DATA
@@ -19,4 +18,5 @@ case ${MACHINE_ID} in
     echo "platform not supported: ${MACHINE_ID}"
     ;;
 esac
-ln -snf ${RDAS_DATA}/fix ${basedir}/fix
+mkdir -p ${basedir}/fix
+ln -snf ${RDAS_DATA}/fix/* ${basedir}/fix/

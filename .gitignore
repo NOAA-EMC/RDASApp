@@ -152,3 +152,8 @@ install*/
 # Ignore all things under expr/ with some exceptions
 expr/*
 !expr/mpasjedi_2024052700
+expr/mpasjedi_2024052700/*BL
+expr/mpasjedi_2024052700/data/
+expr/mpasjedi_2024052700/graphinfo/
+expr/mpasjedi_2024052700/stream_list
+fix
