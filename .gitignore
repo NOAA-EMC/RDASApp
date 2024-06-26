@@ -156,4 +156,6 @@ expr/mpasjedi_2024052700/*BL
 expr/mpasjedi_2024052700/data/
 expr/mpasjedi_2024052700/graphinfo/
 expr/mpasjedi_2024052700/stream_list
+expr/mpasjedi_2024052700/log.*
+expr/mpasjedi_2024052700/*.nc*
 fix

@@ -1,22 +1,32 @@
 #! /bin/sh
-#SBATCH --account=rtrr
-#SBATCH --qos=batch
-#SBATCH --partition=bigmem
+#SBATCH --account=rtwrfruc
+#SBATCH --qos=rth
+#SBATCH --partition=kjet
+#SBATCH --reservation=rrfsens
 #SBATCH --ntasks=120
 #SBATCH -t 00:58:00
 #SBATCH --job-name=mpasjedi_test
 #SBATCH -o log.jedi
 #SBATCH --open-mode=truncate
 #SBATCH --cpus-per-task 4 --exclusive
-TOPDIR="/scratch1/BMC/wrfruc/gge/RDASApp"
+#
+#=======RDASAPP block=================
+RDASApp=$( git rev-parse --show-toplevel 2>/dev/null )
+if [[ -z ${RDASApp} ]]; then
+  echo "Not under a clone of RDASApp!"
+  echo "delete lines inside the 'RDASApp block' and set the RDASApp variable mannually"
+  exit
+fi
+#=======RDASAPP block=================
+
 inputfile=./testinput/sonde_singeob_airTemperature_mpasjedi.yaml
 
 . /apps/lmod/lmod/init/sh
 set +x
 
 module purge
-source ${TOPDIR}/ush/detect_machine.sh 
-module use ${TOPDIR}/modulefiles
+source ${RDASApp}/ush/detect_machine.sh 
+module use ${RDASApp}/modulefiles
 module load RDAS/${MACHINE_ID}.intel
 module list
 
@@ -27,4 +37,4 @@ ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
 
-srun -l -n 120 ${TOPDIR}/build/bin/mpasjedi_variational.x    ./$inputfile    log.out
+srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_variational.x    ./$inputfile    log.out
