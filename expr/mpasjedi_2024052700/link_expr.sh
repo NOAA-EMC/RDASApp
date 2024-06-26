@@ -10,9 +10,9 @@ BUMPLOC="conus12km-401km11levels"
 exprname="mpas_2024052700"
 
 ln -snf ${RDASApp}/fix/physics/* .
-mkdir -p graphinfo
+mkdir -p graphinfo stream_list
 ln -snf ${RDASApp}/fix/graphinfo/* graphinfo/
-cp -rp ${RDASApp}/fix/stream_list .
+cp -rp ${RDASApp}/fix/stream_list/* stream_list/
 
 mkdir -p data; cd data
 mkdir -p bumploc bkg obs ens
