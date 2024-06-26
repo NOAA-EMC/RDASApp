@@ -148,3 +148,7 @@ install*/
 # Ignore the following bundle repositories
 !/bundle/CMakeLists.txt
 /bundle/*
+
+# Ignore all things under expr/ with some exceptions
+expr/*
+!expr/mpasjedi_2024052700
