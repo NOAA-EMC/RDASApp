@@ -22,8 +22,8 @@ fi
 . /apps/lmod/lmod/init/sh
 
 module purge
-source ${TOPDIR}/ush/detect_machine.sh 
-module use ${TOPDIR}/modulefiles
+source ${RDASApp}/ush/detect_machine.sh 
+module use ${RDASApp}/modulefiles
 module load RDAS/${MACHINE_ID}.intel
 module list
 
@@ -34,4 +34,4 @@ ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
 
-srun -l -n 120 ${TOPDIR}/build/bin/mpasjedi_error_covariance_toolbox.x ./testinput/bumploc.yaml
+srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_error_covariance_toolbox.x ./testinput/bumploc.yaml
