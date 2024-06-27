@@ -1,8 +1,8 @@
 #! /bin/sh
-#SBATCH --account=rtwrfruc
-#SBATCH --qos=rth
-#SBATCH --partition=kjet
-#SBATCH --reservation=rrfsens
+#SBATCH --account=rtrr
+#SBATCH --qos=batch
+###SBATCH --partition=kjet
+###SBATCH --reservation=rrfsens
 #SBATCH --ntasks=120
 #SBATCH -t 00:58:00
 #SBATCH --job-name=mpasjedi_test
@@ -22,7 +22,6 @@ fi
 inputfile=./testinput/sonde_singeob_airTemperature_mpasjedi.yaml
 
 . /apps/lmod/lmod/init/sh
-set +x
 
 module purge
 source ${RDASApp}/ush/detect_machine.sh 

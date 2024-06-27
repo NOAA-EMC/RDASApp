@@ -150,12 +150,12 @@ install*/
 /bundle/*
 
 # Ignore all things under expr/ with some exceptions
-expr/*
-!expr/mpasjedi_2024052700
-expr/mpasjedi_2024052700/*BL
-expr/mpasjedi_2024052700/data/
-expr/mpasjedi_2024052700/graphinfo/
-expr/mpasjedi_2024052700/stream_list
-expr/mpasjedi_2024052700/log.*
-expr/mpasjedi_2024052700/*.nc*
+rrfs-test/mpasjedi_2024052700/*BL
+rrfs-test/mpasjedi_2024052700/data/
+rrfs-test/mpasjedi_2024052700/graphinfo/
+rrfs-test/mpasjedi_2024052700/stream_list
+rrfs-test/mpasjedi_2024052700/log.*
+rrfs-test/mpasjedi_2024052700/*.nc*
+rrfs-test/mpasjedi_2024052700/*.png
+rrfs-test/mpasjedi_2024052700/*.py
 fix

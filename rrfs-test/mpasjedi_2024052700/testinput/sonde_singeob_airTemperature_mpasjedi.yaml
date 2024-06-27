@@ -92,7 +92,7 @@ cost function:
     members from template:
       template:
         <<: *memberConfig
-        filename: ./data/ens/%iMember%/restart.2024-05-27_00.00.00.nc
+        filename: ./data/ens/%iMember%/init.nc
       pattern: %iMember%
       start: 1
       zero padding: 2 

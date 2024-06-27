@@ -1,17 +1,25 @@
 #! /bin/sh
 #SBATCH --account=rtrr
 #SBATCH --qos=batch
-#SBATCH --partition=bigmem
+###SBATCH --partition=bigmem
+###SBATCH --partition=kjet
+###SBATCH --reservation=rrfsens
 #SBATCH --ntasks=120
 #SBATCH -t 00:58:00
 #SBATCH --job-name=mpasjedi_bump
 #SBATCH -o log.bump
 #SBATCH --open-mode=truncate
 #SBATCH --cpus-per-task 4 --exclusive
-TOPDIR="/scratch1/BMC/wrfruc/gge/RDASApp"
+#=======RDASApp block=================
+RDASApp=$( git rev-parse --show-toplevel 2>/dev/null )
+if [[ -z ${RDASApp} ]]; then
+  echo "Not under a clone of RDASApp!"
+  echo "delete lines inside the 'RDASApp block' and set the RDASApp variable mannually"
+  exit
+fi
+#=======RDASApp block=================
 
 . /apps/lmod/lmod/init/sh
-set -+
 
 module purge
 source ${TOPDIR}/ush/detect_machine.sh 
