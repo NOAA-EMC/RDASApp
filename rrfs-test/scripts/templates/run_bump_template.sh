@@ -1,18 +1,17 @@
-#!/bin/bash
+#! /bin/sh
 #SBATCH --account=@SLURM_ACCOUNT@
 #SBATCH --qos=batch
+###SBATCH --partition=bigmem
 ###SBATCH --partition=kjet
 ###SBATCH --reservation=rrfsens
 #SBATCH --ntasks=120
 #SBATCH -t 00:58:00
-#SBATCH --job-name=mpasjedi_test
-#SBATCH -o jedi.log
+#SBATCH --job-name=mpasjedi_bump
+#SBATCH -o log.bump
 #SBATCH --open-mode=truncate
 #SBATCH --cpus-per-task 4 --exclusive
-#
 
 . /apps/lmod/lmod/init/sh
-set +x
 
 module purge
 
@@ -28,14 +27,5 @@ ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
 
-module list
-
-inputfile=$1
-if [[ $inputfile == "" ]]; then
-  inputfile=./testinput/sonde_singeob_airTemperature_mpasjedi.yaml
-fi
-
 jedibin="@YOUR_PATH_TO_RDASAPP@/build/bin"
-# Run JEDI - currently cannot change processor count
-srun -l -n 120 $jedibin/mpasjedi_variational.x ./$inputfile out.log
-
+srun -l -n 120 ${jedibin}/mpasjedi_error_covariance_toolbox.x ./testinput/bumploc.yaml

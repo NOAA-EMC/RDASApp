@@ -9,10 +9,10 @@ START=$(date +%s)
 YOUR_PATH_TO_RDASAPP="/path/to/your/installation/of/RDASApp"
 YOUR_EXPERIMENT_DIR="/path/to/your/desired/experiment/directory/jedi-assim_test"
 SLURM_ACCOUNT="fv3-cam"
-DYCORE="FV3" #FV3 | MPAS
-GSI_TEST_DATA="YES"
-YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
-EVA="YES"
+DYCORE="MPAS" #FV3 | MPAS
+YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI" # Not needed for MPASJEDI
+GSI_TEST_DATA="NO"
+EVA="NO"
 #######################
 
 source $YOUR_PATH_TO_RDASAPP/ush/detect_machine.sh
@@ -40,7 +40,9 @@ fi
 if [[ $DYCORE == "FV3" ]]; then
   TEST_DATA="rrfs-data_fv3jedi_2022052619"
 elif [[ $DYCORE == "MPAS" ]]; then
-  TEST_DATA="rrfs-data_mpasjedi_2022052619"
+  #TEST_DATA="rrfs-data_mpasjedi_2022052619"  # not scientifically useful
+  #TEST_DATA="rrfs-data_mpasjedi_2024052700"
+  TEST_DATA="mpas_2024052700"
 else
   echo "Not a valid DYCORE: ${DYCORE}. Please use FV3 | MPAS."
   echo "exiting!!!"
@@ -55,14 +57,38 @@ fi
 # Lowercase dycore for script names.
 declare -l dycore="$DYCORE"
 
-# Ensure experiment directory exists, the move into that space.
+# Ensure experiment directory exists, then move into that space.
 mkdir -p $YOUR_EXPERIMENT_DIR
 cd $YOUR_EXPERIMENT_DIR
 
 # Copy the test data into the experiment directory.
 echo "Copying data. This will take just a moment."
 echo "  --> ${dycore}-jedi data on $MACHINE_ID"
-rsync -a $YOUR_PATH_TO_RDASAPP/bundle/rrfs-test-data/${TEST_DATA} .
+if [[ $DYCORE == "FV3" ]]; then
+  # Data volume isn't too large so copy/rsync is fine.
+  rsync -a $YOUR_PATH_TO_RDASAPP/bundle/rrfs-test-data/${TEST_DATA} .
+elif [[ $DYCORE == "MPAS" ]]; then
+  # Data volume is pretty large so link what we can.
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/physics/* .
+  mkdir -p graphinfo stream_list
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/graphinfo/* graphinfo/
+  cp -rp ${YOUR_PATH_TO_RDASAPP}/fix/stream_list/* stream_list/
+  cp ${YOUR_PATH_TO_RDASAPP}/sorc/mpas-jedi/test/testinput/obsop_name_map.yaml .
+  cp ${YOUR_PATH_TO_RDASAPP}/sorc/mpas-jedi/test/testinput/namelists/keptvars.yaml .
+  cp ${YOUR_PATH_TO_RDASAPP}/sorc/mpas-jedi/test/testinput/namelists/geovars.yaml .
+  mkdir -p data; cd data
+  mkdir -p bumploc bkg obs ens
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/bumploc/${BUMPLOC} bumploc/
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc .
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc static.nc
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${exprname}/obs/* obs/
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${exprname}/ens/* ens/
+  cd $YOUR_EXPERIMENT_DIR 
+  cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_bump_template.sh run_bump.sh
+  sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_bump.sh
+  sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"               ./run_bump.sh
+  sed -i "s#@MACHINE_ID@#${MACHINE_ID}#g"                     ./run_bump.sh
+fi
 
 # Copy the template run script which will be updated according to the user input
 cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_${dycore}jedi_template.sh ./${TEST_DATA}/run_${dycore}jedi.sh
