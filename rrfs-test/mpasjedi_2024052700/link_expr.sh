@@ -13,6 +13,11 @@ ln -snf ${RDASApp}/fix/physics/* .
 mkdir -p graphinfo stream_list
 ln -snf ${RDASApp}/fix/graphinfo/* graphinfo/
 cp -rp ${RDASApp}/fix/stream_list/* stream_list/
+cp ${RDASApp}/sorc/mpas-jedi/test/testinput/obsop_name_map.yaml .
+cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/keptvars.yaml .
+cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/geovars.yaml .
+cp ${RDASApp}/ush/colormap.py .
+cp ${RDASApp}/ush/mpasjedi_increment_singleob.py .
 
 mkdir -p data; cd data
 mkdir -p bumploc bkg obs ens

@@ -23,13 +23,13 @@ warnings.filterwarnings('ignore')
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
 
-lev = 1                # 1=sfc, 60=toa
-clevmax_incr = 2.0     # max contour level for colorbar increment plots
-decimals = 4            # number of decimals to round for text boxes
+lev = 20             # 1=sfc, 55=toa
+clevmax_incr = 1.5     # max contour level for colorbar increment plots
+decimals = 2            # number of decimals to round for text boxes
 
-plot_box_width = 5.     # define size of plot domain (units: lat/lon degrees)
+plot_box_width = 8.     # define size of plot domain (units: lat/lon degrees)
 
-singleob_type = "MSONET"
+singleob_type = "adpupa"
 
 variable = "airTemperature"
 
@@ -39,11 +39,12 @@ if variable == "airTemperature":
 
 # JEDI data
 datapath = "./"
-janalysis   = "./an.2022-05-26_19.00.00.nc"            # analysis file
-jbackgrnd   = "./Data/bkg/bg.2022-05-26_19.00.00.nc"            # background file
-jstatic      = "./Data_static/static.93175.nc"                         # to load the MPAS lat/lon
+janalysis   = "./ana.2024-05-27_00.00.00.nc"            # analysis file
+jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"
+jstatic      = "./data/restart.2024-05-27_00.00.00.nc"
 #jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
-jdiag = f"{datapath}/{singleob_type}_hofxs_2022052619.nc4"
+#jdiag = f"{datapath}/{singleob_type}_hofxs_2022052619.nc4"
+jdiag = "adpupa_hofx.nc4"
 
 
 ###################################################################################
