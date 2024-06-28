@@ -41,11 +41,6 @@ option(WORKFLOW_TESTS "Include regional-workflow dependent tests" OFF)
 option(MPAS_DYCORE "Use MPAS" OFF)
 option(FV3_DYCORE "Use FV3" ON)
 
-if( BUILD_RDASBUNDLE )
-	find_package( fv3jedi REQUIRED )
-	add_subdirectory( mains )
-endif()
-
 # Install utility scripts.
 #add_subdirectory(ush)
 

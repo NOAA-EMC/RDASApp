@@ -131,7 +131,7 @@ elif [[ $DYCORE == 'MPAS' ]]; then
   builddirs="mpas-jedi iodaconv"
 elif [[ $DYCORE == 'FV3andMPAS' ]]; then
   CMAKE_OPTS+=" -DFV3_DYCORE=ON -DMPAS_DYCORE=ON"
-  builddirs="rdas fv3-jedi mpas-jedi iodaconv"
+  builddirs="fv3-jedi mpas-jedi iodaconv"
 else
   echo "$DYCORE is not a valid dycore option. Valid options are FV3 or MPAS"
   exit 1
