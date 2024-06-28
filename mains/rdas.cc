@@ -8,6 +8,7 @@
 
 #include "oops/generic/instantiateModelFactory.h"
 #include "saber/oops/instantiateCovarFactory.h"
+#include "saber/oops/ErrorCovarianceToolbox.h"
 #include "ufo/instantiateObsErrorFactory.h"
 #include "ufo/instantiateObsFilterFactory.h"
 #include "ufo/ObsTraits.h"
@@ -22,6 +23,7 @@
 
 template<typename Traits>
 int runApp(int argc, char** argv, const std::string traits, const std::string appName) {
+
   // Create the Run object
   oops::Run run(argc, argv);
 
@@ -50,6 +52,9 @@ int runApp(int argc, char** argv, const std::string traits, const std::string ap
 
   apps["convertstate"] = []() {
       return std::make_unique<oops::ConvertState<Traits>>();
+  };
+  apps["bump"] = []() {
+      return std::make_unique<saber::ErrorCovarianceToolbox<Traits>>();
   };
   apps["hofx4d"] = []() {
       return std::make_unique<oops::HofX4D<Traits, ufo::ObsTraits>>();
@@ -93,6 +98,7 @@ int main(int argc,  char ** argv) {
   // ----------------------------------------
   const std::set<std::string> validApps = {
     "convertstate",
+    "bump",
     "hofx4d",
     "localensembleda",
     "variational"
