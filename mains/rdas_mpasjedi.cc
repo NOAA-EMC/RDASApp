@@ -28,10 +28,10 @@ int runApp(int argc, char** argv, const std::string appName) {
   oops::Run run(argc, argv);
 
   // Instantiate oops factories
-  oops::instantiateModelFactory<mpas::Traits>();
+  oops::instantiateModelFactory<Traits>();
 
   // Instantiate saber factories
-  saber::instantiateCovarFactory<mpas::Traits>();
+  saber::instantiateCovarFactory<Traits>();
 
   // Intantiate ufo factories
   ufo::instantiateObsErrorFactory();
@@ -39,12 +39,12 @@ int runApp(int argc, char** argv, const std::string appName) {
 
   // Localization for ensemble DA
   if (appName == "localensembleda") {
-    ufo::instantiateObsLocFactory<mpas::Traits>();
+    ufo::instantiateObsLocFactory<Traits>();
   }
 
   // Localization for variational DA
   if (appName == "variational") {
-    saber::instantiateLocalizationFactory<mpas::Traits>();
+    saber::instantiateLocalizationFactory<Traits>();
   }
 
   // Intantiate ufo factories
@@ -58,19 +58,19 @@ int runApp(int argc, char** argv, const std::string appName) {
   std::map<std::string, std::function<std::unique_ptr<oops::Application>()>> apps;
 
   apps["convertstate"] = []() {
-      return std::make_unique<oops::ConvertState<mpas::Traits>>();
+      return std::make_unique<oops::ConvertState<Traits>>();
   };
   apps["bump"] = []() {
-      return std::make_unique<saber::ErrorCovarianceToolbox<mpas::Traits>>();
+      return std::make_unique<saber::ErrorCovarianceToolbox<Traits>>();
   };
   apps["hofx4d"] = []() {
-      return std::make_unique<oops::HofX4D<mpas::Traits, ufo::ObsTraits>>();
+      return std::make_unique<oops::HofX4D<Traits, ufo::ObsTraits>>();
   };
   apps["localensembleda"] = []() {
       return std::make_unique<oops::LocalEnsembleDA<mpas::Traits, ufo::ObsTraits>>();
   };
   apps["variational"] = []() {
-    return std::make_unique<oops::Variational<mpas::Traits, ufo::ObsTraits>>();
+    return std::make_unique<oops::Variational<Traits, ufo::ObsTraits>>();
   };
 
   // Create application object and point to it
