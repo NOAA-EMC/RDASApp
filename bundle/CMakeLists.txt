@@ -107,9 +107,7 @@ endif()
     ecbuild_bundle( PROJECT iodaconv SOURCE "../sorc/iodaconv" )
   endif()
 
-# rdas mega executable - move down once ready
-#---------------------------------
-  find_package( fv3jedi REQUIRED )
+# rdas mega executable
   ecbuild_bundle( PROJECT rdas SOURCE "../mains" )
 
 # ioda, ufo, fv3-jedi, and saber test data
