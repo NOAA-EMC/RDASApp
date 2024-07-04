@@ -22,7 +22,7 @@
 // -------------------------------------------------------------------------------------------------
 
 template<typename Traits>
-int runApp(int argc, char** argv, const std::string traits, const std::string appName) {
+int runApp(int argc, char** argv, const std::string appName) {
 
   // Create the Run object
   oops::Run run(argc, argv);
@@ -39,16 +39,12 @@ int runApp(int argc, char** argv, const std::string traits, const std::string ap
 
   // Localization for ensemble DA
   if (appName == "localensembleda") {
-    if (traits == "mpasjedi") {
-      ufo::instantiateObsLocFactory<mpas::Traits>();
-    }
+    ufo::instantiateObsLocFactory<mpas::Traits>();
   }
 
   // Localization for variational DA
   if (appName == "variational") {
-    if (traits == "mpasjedi") {
-      saber::instantiateLocalizationFactory<mpas::Traits>();
-    } 
+    saber::instantiateLocalizationFactory<mpas::Traits>();
   }
 
   // Intantiate ufo factories
@@ -89,21 +85,11 @@ int runApp(int argc, char** argv, const std::string traits, const std::string ap
 int main(int argc,  char ** argv) {
   // Check that the number of arguments is correct
   // ----------------------------------------------
-  ASSERT_MSG(argc >= 3, "Usage: " + std::string(argv[0]) + " <traits> <application> <options>");
-
-  // Get traits from second argument passed to executable
-  // ----------------------------------------------------
-  std::string traits = argv[1];
-  for (char &c : traits) {c = std::tolower(c);}
+  ASSERT_MSG(argc >= 2, "Usage: " + std::string(argv[0]) + " <application> <options>");
 
   // Get the application to be run
-  std::string app = argv[2];
+  std::string app = argv[1];
   for (char &c : app) {c = std::tolower(c);}
-
-  // Check that the traits are recognized
-  // ------------------------------------
-  const std::set<std::string> validTraits = {"mpasjedi"};
-  ASSERT_MSG(validTraits.find(traits) != validTraits.end(), "Traits not recognized: " + traits);
 
   // Check that the application is recognized
   // ----------------------------------------
@@ -116,17 +102,15 @@ int main(int argc,  char ** argv) {
   };
   ASSERT_MSG(validApps.find(app) != validApps.end(), "Application not recognized: " + app);
 
-  // Remove traits and program from argc and argv
+  // Remove program from argc and argv
   // --------------------------------------------
-  argv[2] = argv[0];  // Move executable name to third position
-  argv += 2;          // Move pointer up two
-  argc -= 2;          // Remove 2 from count
+  argv[1] = argv[0];  // Move executable name to second position
+  argv += 1;          // Move pointer up two
+  argc -= 1;          // Remove 1 from count
 
   // Call application specific main functions
   // ----------------------------------------
-  if (traits == "mpasjedi") {
-    return runApp<mpas::Traits>(argc, argv, traits, app);
-  }
+  return runApp<mpas::Traits>(argc, argv, app);
 }
 
 // -------------------------------------------------------------------------------------------------
