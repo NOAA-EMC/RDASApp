@@ -34,5 +34,5 @@ fi
 
 jedibin="@YOUR_PATH_TO_RDASAPP@/build/bin"
 # Run JEDI - currently cannot change processor count
-srun -l -n 36 $jedibin/mpasjedi_variational.x ./$inputfile out.log
+srun -l -n 36 $jedibin/rdas_mpasjedi.x variational ./$inputfile out.log
 
