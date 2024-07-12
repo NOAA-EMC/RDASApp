@@ -73,9 +73,7 @@ observations:
           units: "1"
 
         - name: "ObsValue/cloudCoverTotal"
-          #- name: "ObsValue/cloundAmountAvg"
           coordinates: "longitude latitude"
           source: variables/cloudAmountECAM
           longName: "Effective Cloud Amount Avg Mult FOV"
           units: "1" 
-
