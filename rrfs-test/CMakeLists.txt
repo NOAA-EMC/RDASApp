@@ -8,14 +8,14 @@ include(funcs.cmake)
 
 # FV3-JEDI tests
 set(rrfs_fv3jedi_tests)
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_hyb_2022052619"     "variational")
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_letkf_2022052619"   "localensembleda")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_hyb_2022052619"     "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_letkf_2022052619"   "fv3jedi_letkf.x")
 
 # MPAS-JEDI tests 
 set(rrfs_mpasjedi_tests)
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_Ens3Dvar"     "variational")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_atms_npp_qc"  "variational")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_letkf"        "localensembleda")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_Ens3Dvar"     "mpasjedi_variational.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_atms_npp_qc"  "mpasjedi_variational.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_letkf"        "mpasjedi_enkf.x")
 
 
 # rrfs data - from rrfs-test-data repo if found, from local directory, or from tarball
@@ -40,7 +40,7 @@ if (CLONE_RRFSDATA)
 
       get_all_keys(rrfs_fv3jedi_tests caselist)
       foreach(case ${caselist})
-         get_from_dictionary(rrfs_fv3jedi_tests case application)
+         get_from_dictionary(rrfs_fv3jedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_fv3jedi_2022052619")
          if (NOT EXISTS "${casedir}")
@@ -55,8 +55,8 @@ if (CLONE_RRFSDATA)
          ecbuild_add_test( TARGET ${target_test}
                         MPI      80
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${application} ${target_test}.yaml
-                        COMMAND  rdas_fv3jedi.x )
+                        ARGS     ${target_test}.yaml
+                        COMMAND  ${exe} )
       endforeach()
 
       if("${MACHINE_ID}" STREQUAL "orion")
@@ -77,7 +77,7 @@ if (CLONE_RRFSDATA)
 
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
-	 get_from_dictionary(rrfs_mpasjedi_tests case application)
+	 get_from_dictionary(rrfs_mpasjedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_mpasjedi_2022052619")
          if (NOT EXISTS "${casedir}")
@@ -100,8 +100,8 @@ if (CLONE_RRFSDATA)
          ecbuild_add_test( TARGET ${target_test}
                         MPI      36
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${application} ${target_test}.yaml
-                        COMMAND  rdas_mpasjedi.x )
+                        ARGS     ${target_test}.yaml
+                        COMMAND  ${exe} )
       endforeach()
 
       if("${MACHINE_ID}" STREQUAL "orion")
