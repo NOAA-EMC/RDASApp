@@ -40,7 +40,7 @@ observations:
           gateRange: 
             query: "*/NL2RW/DIST125M"
             transforms:
-              - scale: 1000
+              - scale: 125
           radialVelocity: 
             query: "*/NL2RW/DMVR"
           spectralWidth: 
@@ -116,7 +116,7 @@ observations:
         - name: "ObsValue/gateRange"
           coordinates: "longitude latitude"
           source: variables/gateRange
-          longName: "Distance From Antenna (In Units of 125M)"
+          longName: "Distance From Antenna"
           units: "m"
 
         - name: "ObsValue/radialVelocity"
