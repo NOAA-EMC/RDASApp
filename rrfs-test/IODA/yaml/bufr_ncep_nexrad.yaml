@@ -100,6 +100,7 @@ observations:
           coordinates: "longitude latitude"
           source: variables/heightOfAntenna
           longName: "Height Of Antenna Above Ground"
+          units: "m"
 
         - name: "ObsValue/beamAzimuthAngle"
           coordinates: "longitude latitude"
@@ -129,7 +130,7 @@ observations:
           coordinates: "longitude latitude"
           source: variables/spectralWidth
           longName: "Doppler Velocity Spectral Width"
-          #units: "m s-1"
+          units: "m s-1"
 
         - name: "ObsValue/ppiVolume"
           coordinates: "longitude latitude"
@@ -144,7 +145,7 @@ observations:
         - name: "ObsValue/unfoldingVelocity"
           coordinates: "longitude latitude"
           source: variables/unfoldingVelocity
-          longName: "Unfolding Velocity (to compute Nyqvist frequency)"
+          longName: "Unfolding Velocity (to compute Nyquist frequency)"
           units: "m s-1"
 
         - name: "ObsValue/volumeCoveragePattern"
