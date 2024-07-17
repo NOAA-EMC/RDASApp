@@ -89,7 +89,6 @@ if obtype < 100:
 jncdiag = Dataset(jdiag, mode='r')
 oberr_input = jncdiag.groups["EffectiveError0"].variables[f"{variable}"][:][0]
 oberr_final = jncdiag.groups["EffectiveError2"].variables[f"{variable}"][:][0]
-#pdb.set_trace()
 ob = jncdiag.groups["ObsValue"].variables[f"{variable}"][:][0]
 omf= jncdiag.groups["ombg"].variables[f"{variable}"][:][0]
 fmo= -1*omf
@@ -100,6 +99,7 @@ oberr_final = np.around(oberr_final.astype(np.float64), decimals)
 job = np.around(ob.astype(np.float64), decimals)
 jomf = np.around(omf.astype(np.float64), decimals)
 jhofx = np.around(hofx.astype(np.float64), decimals)
+
 print(f"JEDI:")
 print(f"  oberr_input: {oberr_input}")
 print(f"  oberr_final: {oberr_final}")
@@ -107,19 +107,27 @@ subtitle1_hofx = f"  ob:   {job}\n  omf:  {jomf}\n  hofx: {jhofx}\n  oberr_final
 print(subtitle1_hofx)
 
 # FROM GSI diag
-prefix = ""
-if variable == "windWestard":
-    prefix == "u_"
-if variable == "windNorthward":
-    prefix == "v_"
+#prefix = ""
+#if variable == "windEastward":
+#    prefix = "u_"
+#if variable == "windNorthward":
+#    prefix = "v_"
+
 gncdiag = Dataset(gdiag, mode='r')
-oberr_input = 1.0/(gncdiag.variables["Errinv_Input"][:][0])
-oberr_final = 1.0/(gncdiag.variables["Errinv_Final"][:][0])
-ob = gncdiag.variables[f"{prefix}Observation"][:][0]
-omf= gncdiag.variables[f"{prefix}Obs_Minus_Forecast_unadjusted"][:][0]
+oberr_input = jncdiag.groups["GsiInputObsError"].variables[f"{variable}"][:][0]
+oberr_final = jncdiag.groups["GsiFinalObsError"].variables[f"{variable}"][:][0]
+ob = jncdiag.groups["ObsValue"].variables[f"{variable}"][:][0]
+hofx = jncdiag.groups["GsiHofXBc"].variables[f"{variable}"][:][0]
+#hofx = jncdiag.groups["GsiHofX"].variables[f"{variable}"][:][0]
+omf = ob - hofx
+
+#oberr_input = 1.0/(gncdiag.variables["Errinv_Input"][:][0])
+#oberr_final = 1.0/(gncdiag.variables["Errinv_Final"][:][0])
+#ob = gncdiag.variables[f"{prefix}Observation"][:][0]
+#omf= gncdiag.variables[f"{prefix}Obs_Minus_Forecast_unadjusted"][:][0]
 #omf= gncdiag.variables["Obs_Minus_Forecast_adjusted"][:][0]
-fmo= -1*omf
-hofx= fmo+ob
+#fmo= -1*omf
+#hofx= fmo+ob
 oberr_input = np.around(oberr_input.astype(np.float64), decimals)
 oberr_final = np.around(oberr_final.astype(np.float64), decimals)
 gob = np.around(ob.astype(np.float64), decimals)
