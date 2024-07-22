@@ -73,6 +73,7 @@ if (CLONE_RRFSDATA)
          set(RESTORE_MPI_ARGS ${MPI_ARGS})
          set(MPI_ARGS "${MPI_ARGS} --exclusive")
       endif()   
+      set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=18")
 
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})

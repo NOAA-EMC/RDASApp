@@ -46,17 +46,17 @@ gerrf = np.ma.masked_greater(gerrf, 999) # mask large values
 print(f"min/max of jedi errf: {np.min(jerrf)} {np.max(jerrf)}")
 print(f"min/max of gsi errf: {np.min(gerrf)} {np.max(gerrf)}")
 
-xmin = np.min(jerrf)
-xmax = np.max(jerrf)
-# Round to nearest 10 that contains all errf values.
-errf_xmin = np.floor(xmin/10)*10
-errf_xmax = np.ceil(xmax/10)*10
+# Function to calculate the floor and ceiling based on the order of magnitude
+def order_of_magnitude_bounds(value):
+    if value == 0:
+        return 0, 0
+    order_of_magnitude = 10 ** np.floor(np.log10(np.abs(value)))
+    floor_value = np.floor(value / order_of_magnitude) * order_of_magnitude
+    ceiling_value = np.ceil(value / order_of_magnitude) * order_of_magnitude
+    return floor_value, ceiling_value
 
-xmin = np.min(jhofx)
-xmax = np.max(jhofx)
-# Round to nearest 10 that contains all hofx values.
-hofx_xmin = np.floor(xmin/10)*10
-hofx_xmax = np.ceil(xmax/10)*10
+errf_xmin, errf_xmax = order_of_magnitude_bounds(jerrf)
+hofx_xmin, hofx_xmax = order_of_magnitude_bounds(jhofx)
 
 # CREATE PLOT ##############################
 fig = plt.figure(figsize = (6, 3))
