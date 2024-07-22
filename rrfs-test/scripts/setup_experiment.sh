@@ -48,10 +48,21 @@ else
   exit 2
 fi
 
-if [[ ! ( $MACHINE_ID == "hera" || $MACHINE_ID == "orion" || $MACHINE_ID == "jet" ) ]]; then
-   echo "Not a valid MACHINE_ID: ${MACHINE_ID}. Please use hera | orion | jet."
-   exit 3
-fi
+case ${MACHINE_ID} in
+  hera)
+    RDAS_DATA=/scratch1/NCEPDEV/fv3-cam/RDAS_DATA
+    ;;
+  jet)
+    RDAS_DATA=/lfs4/BMC/nrtrr/RDAS_DATA
+    ;;
+  orion|hercules)
+    RDAS_DATA=/work/noaa/rtrr/RDAS_DATA
+    ;;
+  *)
+    echo "platform not supported: ${MACHINE_ID}"
+    exit 3
+    ;;
+esac
 
 # Lowercase dycore for script names.
 declare -l dycore="$DYCORE"
@@ -70,10 +81,12 @@ elif [[ $DYCORE == "MPAS" ]]; then
   # Data volume is pretty large so link what we can.
   mkdir -p ${TEST_DATA}
   cd ${TEST_DATA}
-  #ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/physics/* .
-  #mkdir -p graphinfo stream_list
-  #ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/graphinfo/* graphinfo/
-  #cp -rp ${YOUR_PATH_TO_RDASAPP}/fix/stream_list/* stream_list/
+  mkdir -p fix
+  ln -sf ${RDAS_DATA}/fix/* fix/.
+  ln -sf ${RDAS_DATA}/fix/physics/* .
+  mkdir -p graphinfo stream_list
+  ln -sf ${RDAS_DATA}/fix/graphinfo/* graphinfo/
+  cp -rp ${RDAS_DATA}/fix/stream_list/* stream_list/
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/bumploc.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/namelist.atmosphere .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/sonde_singeob_airTemperature_mpasjedi.yaml .
@@ -83,11 +96,11 @@ elif [[ $DYCORE == "MPAS" ]]; then
   cp ${YOUR_PATH_TO_RDASAPP}/sorc/mpas-jedi/test/testinput/namelists/geovars.yaml .
   mkdir -p data; cd data
   mkdir -p bumploc bkg obs ens
-  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/bumploc/${BUMPLOC} bumploc/
-  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc .
-  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc static.nc
-  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${exprname}/obs/* obs/
-  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${exprname}/ens/* ens/
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/bumploc/* bumploc/.
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/bkg/restart.2024-05-27_00.00.00.nc .
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/bkg/restart.2024-05-27_00.00.00.nc static.nc
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/obs/* obs/
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/ens/* ens/
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_bump_template.sh run_bump.sh
   sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_bump.sh
   sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"               ./run_bump.sh
