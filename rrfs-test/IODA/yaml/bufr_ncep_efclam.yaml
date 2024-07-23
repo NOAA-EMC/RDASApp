@@ -63,7 +63,7 @@ observations:
         - name: "MetaData/satelliteIdentifier"
           coordinates: "longitude latitude"
           source: variables/satelliteIdentifier
-          longName: "Satelliate Identifier"
+          longName: "Satellite Identifier"
 
         # ObsValue - cloud
         - name: "ObsValue/cloudAmount"
