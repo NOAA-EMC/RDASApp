@@ -17,12 +17,12 @@ warnings.filterwarnings('ignore')
 
 # MPAS info
 jstatic = "data/static.nc" # to load the MPAS lat/lon
-ens_file = "conus12km_mpas.init.nc"
+ens_file = "restart.2024-05-27_00.00.00.nc"
 nmems = 30
 
 # Plotting options
 variable = "airTemperature" # currently only working for [airTemperature]
-lev = 20                # 1=sfc, 60=toa
+lev = 23                # 1=sfc, 55=toa
 cen_lat = 35.44
 cen_lon = -97.47
 plot_box_width = 60.     # define size of plot domain (units: lat/lon degrees)
@@ -47,7 +47,7 @@ lons = np.where(lons0>180.0,lons0-360.0,lons0)
 # Now read the var you want 
 bg_all = []
 for imem in range(1, nmems+1):
-        infile = 'data/ens.pres/%s/%s' % (str(imem).zfill(2), ens_file)
+        infile = 'data/ens/mem%s/%s' % (str(imem).zfill(2), ens_file)
         nc = Dataset(infile, 'r')
         if variable == 'airTemperature': 
             bg = nc.variables['theta'][0,:,lev].astype(np.float64)

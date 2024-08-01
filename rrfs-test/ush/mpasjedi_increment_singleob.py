@@ -23,8 +23,8 @@ warnings.filterwarnings('ignore')
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
 
-lev = 20             # 1=sfc, 55=toa
-clevmax_incr = 1.5     # max contour level for colorbar increment plots
+lev = 23             # 1=sfc, 55=toa
+clevmax_incr = 2.0     # max contour level for colorbar increment plots
 decimals = 2            # number of decimals to round for text boxes
 
 plot_box_width = 8.     # define size of plot domain (units: lat/lon degrees)

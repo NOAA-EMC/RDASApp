@@ -32,7 +32,7 @@ module list
 
 inputfile=$1
 if [[ $inputfile == "" ]]; then
-  inputfile=./testinput/sonde_singeob_airTemperature_mpasjedi.yaml
+  inputfile=./sonde_singeob_airTemperature_mpasjedi.yaml
 fi
 
 jedibin="@YOUR_PATH_TO_RDASAPP@/build/bin"
