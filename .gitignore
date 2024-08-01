@@ -149,6 +149,7 @@ install*/
 !/bundle/CMakeLists.txt
 /bundle/*
 
-# ignore expr/
+# 
 expr
 fix/INIT_DONE
+fix/.agent
