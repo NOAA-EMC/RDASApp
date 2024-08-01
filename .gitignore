@@ -151,3 +151,4 @@ install*/
 
 # ignore expr/
 expr
+fix/INIT_DONE
