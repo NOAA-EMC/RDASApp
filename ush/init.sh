@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ushdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-source $ushdir/detect_machine.sh
+source ${ushdir}/detect_machine.sh
 basedir="$(dirname "$ushdir")"
 
 case ${MACHINE_ID} in
@@ -18,5 +18,12 @@ case ${MACHINE_ID} in
     echo "platform not supported: ${MACHINE_ID}"
     ;;
 esac
+
+agentfile=${basedir}/fix/.agent
+filetype=$(file ${agentfile})
+if [[ ! "${filetype}" == *"symbolic link"* ]]; then
+  rm -rf ${agentfile}
+fi
 mkdir -p ${basedir}/fix
-ln -snf ${RDAS_DATA}/fix/* ${basedir}/fix/
+ln -snf ${RDAS_DATA}/fix ${agentfile}
+touch ${basedir}/fix/INIT_DONE

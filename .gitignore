@@ -149,13 +149,5 @@ install*/
 !/bundle/CMakeLists.txt
 /bundle/*
 
-# Ignore all things under expr/ with some exceptions
-rrfs-test/mpasjedi_2024052700/*BL
-rrfs-test/mpasjedi_2024052700/data/
-rrfs-test/mpasjedi_2024052700/graphinfo/
-rrfs-test/mpasjedi_2024052700/stream_list
-rrfs-test/mpasjedi_2024052700/log.*
-rrfs-test/mpasjedi_2024052700/*.nc*
-rrfs-test/mpasjedi_2024052700/*.png
-rrfs-test/mpasjedi_2024052700/*.py
-fix
+# ignore expr/
+expr
