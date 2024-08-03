@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 #SBATCH --account=rtrr
 #SBATCH --qos=batch
 ###SBATCH --partition=kjet
@@ -9,15 +9,8 @@
 #SBATCH -o log.jedi
 #SBATCH --open-mode=truncate
 #SBATCH --cpus-per-task 4 --exclusive
-#
-#=======RDASApp block=================
-RDASApp=$( git rev-parse --show-toplevel 2>/dev/null )
-if [[ -z ${RDASApp} ]]; then
-  echo "Not under a clone of RDASApp!"
-  echo "delete lines inside the 'RDASApp block' and set the RDASApp variable mannually"
-  exit
-fi
-#=======RDASApp block=================
+
+RDASApp=@RDASApp@
 
 inputfile=./sonde_singeob_airTemperature_mpasjedi.yaml
 
