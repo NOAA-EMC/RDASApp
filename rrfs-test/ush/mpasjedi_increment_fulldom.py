@@ -22,9 +22,9 @@ warnings.filterwarnings('ignore')
 
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
-lev = 9                # 1=sfc, 60=toa
+lev = 23             # 1=sfc, 55=toa
 clevmax_incr = 2.0     # max contour level for colorbar increment plots
-decimals = 4            # number of decimals to round for text boxes
+decimals = 2            # number of decimals to round for text boxes
 plot_box_width = 75.     # define size of plot domain (units: lat/lon degrees)
 plot_box_height = 30
 
@@ -35,11 +35,11 @@ if variable == "airTemperature":
 
 # JEDI data
 datapath = "./"
-jstatic      = "./Data_static/static.93175.nc"                         # to load the MPAS lat/lon
+jstatic      = "./data/restart.2024-05-27_00.00.00.nc"                 # to load the MPAS lat/lon
 
 # FOR LETKF 
-janalysis   = "./an.2022-05-26_19.00.00.nc"            # analysis file
-jbackgrnd   = "./bg.2022-05-26_19.00.00.nc"            # background file
+janalysis   = "./ana.2024-05-27_00.00.00.nc"            # analysis file
+jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"            # background file
 
 # FOR HYBRID (or ENVAR)
 #janalysis   = "./an.2022-05-26_19.00.00.nc"            # analysis file

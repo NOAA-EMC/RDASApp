@@ -148,3 +148,8 @@ install*/
 # Ignore the following bundle repositories
 !/bundle/CMakeLists.txt
 /bundle/*
+
+# 
+expr
+fix/INIT_DONE
+fix/.agent
