@@ -12,7 +12,7 @@
 
 RDASApp=@RDASApp@
 
-inputfile=./sonde_singeob_airTemperature_mpasjedi.yaml
+inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar_sonde_singleob.yaml
 
 . /apps/lmod/lmod/init/sh
 
