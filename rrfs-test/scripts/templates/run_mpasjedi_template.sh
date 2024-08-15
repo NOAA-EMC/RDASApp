@@ -32,10 +32,11 @@ module list
 
 inputfile=$1
 if [[ $inputfile == "" ]]; then
-  inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar_sonde_singleob.yaml
+  inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
 fi
 
 jedibin="@YOUR_PATH_TO_RDASAPP@/build/bin"
 # Run JEDI - currently cannot change processor count
 srun -l -n 120 $jedibin/mpasjedi_variational.x ./$inputfile out.log
+#srun -l -n 120 $jedibin/mpasjedi_enkf.x ./$inputfile out.log
 

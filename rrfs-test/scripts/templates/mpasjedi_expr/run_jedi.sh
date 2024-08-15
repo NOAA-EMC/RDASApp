@@ -12,7 +12,7 @@
 
 RDASApp=@RDASApp@
 
-inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar_sonde_singleob.yaml
+inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
 
 . /apps/lmod/lmod/init/sh
 
@@ -30,3 +30,4 @@ ulimit -v unlimited
 ulimit -a
 
 srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_variational.x    ./$inputfile    log.out
+#srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_enkf.x    ./$inputfile    log.out
