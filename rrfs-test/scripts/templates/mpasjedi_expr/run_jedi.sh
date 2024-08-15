@@ -12,9 +12,9 @@
 
 RDASApp=@RDASApp@
 
-inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
-#inputfile=./rrfs_mpasjedi_2024052700_letkf.yaml
-#inputfile=./rrfs_mpasjedi_2024052700_getkf.yaml
+inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml # FOR ENVAR
+#inputfile=./rrfs_mpasjedi_2024052700_letkf.yaml # FOR LETKF
+#inputfile=./rrfs_mpasjedi_2024052700_getkf.yaml # FOR GETKF
 
 . /apps/lmod/lmod/init/sh
 
@@ -31,5 +31,5 @@ ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
 
-srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_variational.x    ./$inputfile    log.out
-#srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_enkf.x    ./$inputfile    log.out
+srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_variational.x    ./$inputfile    log.out # FOR ENVAR
+#srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_enkf.x    ./$inputfile    log.out # FOR LETKF/GETKF
