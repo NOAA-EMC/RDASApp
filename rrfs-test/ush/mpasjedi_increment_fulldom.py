@@ -37,14 +37,13 @@ if variable == "airTemperature":
 datapath = "./"
 jstatic      = "./data/restart.2024-05-27_00.00.00.nc"                 # to load the MPAS lat/lon
 
-# FOR LETKF 
-janalysis   = "./ana.2024-05-27_00.00.00.nc"            # analysis file
-jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"            # background file
-
 # FOR HYBRID (or ENVAR)
-#janalysis   = "./an.2022-05-26_19.00.00.nc"            # analysis file
-#jbackgrnd   = "./Data/bkg/bg.2022-05-26_19.00.00.nc"            # background file
+janalysis   = "./ana.2024-05-27_00.00.00.nc"                    # analysis file
+jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"            # background file (control member)
 
+# FOR LETKF 
+#janalysis   = "./ana.2024-05-27_00.00.00.nc"                # analysis file
+#jbackgrnd   = "./bg.2024-05-27_00.00.00.nc"                 # background file (ensmean)
 
 ###################################################################################
 # Set cartopy shapefile path
