@@ -64,7 +64,7 @@ if 'restart' in jbackgrnd:
     oberr_final = jncdiag.groups["EffectiveError2"].variables[f"{variable}"][:][0]
 elif 'bg.' in jbackgrnd:
     # LETKF/GETKF run that uses different obs error variables
-    # The original "EffectiveError0" isnt created here so cannot compared input and final error
+    # The original "EffectiveError0" isnt created here so cannot compare input and final error
     oberr_input = jncdiag.groups["ObsError"].variables[f"{variable}"][:][0]
     oberr_final = jncdiag.groups["ObsError"].variables[f"{variable}"][:][0]
 ob = jncdiag.groups["ObsValue"].variables[f"{variable}"][:][0] + offset
