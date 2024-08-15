@@ -13,6 +13,8 @@
 RDASApp=@RDASApp@
 
 inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
+#inputfile=./rrfs_mpasjedi_2024052700_letkf.yaml
+#inputfile=./rrfs_mpasjedi_2024052700_getkf.yaml
 
 . /apps/lmod/lmod/init/sh
 
