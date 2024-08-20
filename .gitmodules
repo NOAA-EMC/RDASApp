@@ -1,48 +1,75 @@
 [submodule "sorc/crtm"]
 	path = sorc/crtm
 	url = https://github.com/jcsda/crtm
+	branch = release/crtm_jedi_v2.4.1
+	ignore = all
 [submodule "sorc/femps"]
 	path = sorc/femps
 	url = https://github.com/jcsda/femps
-[submodule "sorc/fms"]
-	path = sorc/fms
-	url = https://github.com/jcsda/fms
+	branch = develop
+	ignore = all
 [submodule "sorc/fv3"]
 	path = sorc/fv3
 	url = https://github.com/jcsda/GFDL_atmos_cubed_sphere
+	branch = release-stable
+	ignore = all
 [submodule "sorc/fv3-jedi"]
 	path = sorc/fv3-jedi
 	url = https://github.com/jcsda/fv3-jedi
+	branch = develop
+	ignore = all
 [submodule "sorc/fv3-jedi-km"]
 	path = sorc/fv3-jedi-lm
 	url = https://github.com/JCSDA/fv3-jedi-linearmodel
+	branch = develop
+	ignore = all
 [submodule "sorc/gsibec"]
 	path = sorc/gsibec
 	url = https://github.com/GEOS-ESM/GSIbec
+	branch = develop
+	ignore = all
 [submodule "sorc/ioda"]
 	path = sorc/ioda
 	url = https://github.com/jcsda/ioda
+	branch = develop
+	ignore = all
 [submodule "sorc/iodaconv"]
 	path = sorc/iodaconv
 	url = https://github.com/jcsda-internal/ioda-converters
+	branch = develop
+	ignore = all
 [submodule "sorc/jedicmake"]
 	path = sorc/jedicmake
 	url = https://github.com/jcsda/jedi-cmake
+	branch = develop
+	ignore = all
 [submodule "sorc/oops"]
 	path = sorc/oops
 	url = https://github.com/jcsda/oops
+	branch = develop
+	ignore = all
 [submodule "sorc/saber"]
 	path = sorc/saber
 	url = https://github.com/jcsda/saber
+	branch = develop
+	ignore = all
 [submodule "sorc/ufo"]
 	path = sorc/ufo
 	url = https://github.com/jcsda/ufo
+	branch = develop
+	ignore = all
 [submodule "sorc/vader"]
 	path = sorc/vader
 	url = https://github.com/jcsda/vader
+	branch = develop
+	ignore = all
 [submodule "sorc/mpas"]
 	path = sorc/mpas
 	url = https://github.com/jcsda-internal/MPAS-Model
+	branch = release-stable 
+	ignore = all
 [submodule "sorc/mpas-jedi"]
 	path = sorc/mpas-jedi
 	url = https://github.com/JCSDA/mpas-jedi
+	branch = develop
+	ignore = all

@@ -1,0 +1,163 @@
+_hor obs localization: &HorizObsLoc
+   localization method: Horizontal Gaspari-Cohn
+   lengthscale: 1000e3
+
+_conventional vertical localization: &HeightVertObsLoc
+   localization method: Vertical localization
+   vertical lengthscale: 6000
+   ioda vertical coordinate: height
+   ioda vertical coordinate group: MetaData
+   localization function: Gaspari Cohn
+
+
+geometry:
+  nml_file: ./namelist.atmosphere_15km
+  streams_file: ./streams.atmosphere_15km
+  deallocate non-da fields: true
+  interpolation type: unstructured
+  iterator dimension: 3 
+
+increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
+
+background: 
+   members from template: 
+      template:
+         date: '2022-05-26T19:00:00Z'
+         state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
+         stream_name: background
+         filename: ./Data/inputs/%iMember%/restart.nc
+      pattern: '%iMember%'
+      start: 1 
+      zero padding: 1
+      nmembers: 5 
+
+observations:
+     observers:
+     - obs space:
+         name: Aircraft
+         distribution:
+           name: Halo
+           halo size: 5.0e6
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: Data/obs/rass_tsen_obs_2022052619.nc4
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: ./rass_tsen_obs_2022052619_hofx.nc4
+         simulated variables: [airTemperature]
+         observed variables: [airTemperature]
+       obs operator:
+         name: VertInterp
+       obs error:
+         covariance model: diagonal
+       obs localizations: 
+         - <<: *HorizObsLoc
+         - <<: *HeightVertObsLoc
+       obs filters:
+       - filter: Bounds Check
+         filter variables:
+         - name: airTemperature@GsiUseFlag 
+         minvalue: 0.5 
+         maxvalue: 1.5 
+         action:
+            name: accept 
+
+     - obs space:
+         name: sonde  
+         distribution:
+           name: Halo
+           halo size: 5.0e6
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: Data/obs/sondes_tsen_obs_2022052619.nc4
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: ./rass_tsen_obs_2022052619_hofx.nc4
+         simulated variables: [airTemperature]
+         observed variables: [airTemperature]
+       obs operator:
+         name: VertInterp
+       obs error:
+         covariance model: diagonal
+       obs localizations: 
+         - <<: *HorizObsLoc
+         - <<: *HeightVertObsLoc
+       obs filters:
+       - filter: Bounds Check
+         filter variables:
+         - name: airTemperature@GsiUseFlag 
+         minvalue: 0.5 
+         maxvalue: 1.5 
+         action:
+            name: accept 
+
+
+     - obs space:
+         name: sonde
+         distribution:
+           name: Halo
+           halo size: 5.0e6
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: Data/obs/sondes_uv_obs_2022052619.nc4
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: ./sonde_uv_obs_2022052619_hofx.nc4
+         simulated variables: [windEastward, windNorthward]
+       obs operator:
+         name: VertInterp
+         vertical coordinate: air_pressure
+         observation vertical coordinate: pressure
+         interpolation method: log-linear
+       obs error:
+         covariance model: diagonal ufo
+       obs localizations: 
+         - <<: *HorizObsLoc
+         - <<: *HeightVertObsLoc
+       obs filters:
+       - filter: PreQC
+         maxvalue: 3
+       - filter: Background Check
+         filter variables:
+         - name: windEastward
+         - name: windNorthward
+         threshold: 6.0
+       monitoring only: true
+
+
+driver:
+  save posterior ensemble: false
+  save prior mean: true
+  save posterior mean: true
+
+time window:
+       begin: 2022-05-26T18:00:00Z
+       length: PT2H
+
+local ensemble DA:
+  solver: LETKF
+  inflation:
+    rtps: 0.95
+    rtpp: 0.6
+    mult: 1.1
+
+output mean prior:
+  filename: ./bg.$Y-$M-$D_$h.$m.$s.nc
+  stream name: background
+
+output: # for outputting mean posterior
+  filename: ./an.$Y-$M-$D_$h.$m.$s.nc
+  stream name: analysis 
+
+test:
+  reference filename: Data/testinput/rrfs-mpasjedi-letkf.ref
+  test output filename: ./rrfs-mpasjedi-letkf.out
+  float relative tolerance: 1.0e-3
+  float absolute tolerance: 1.0e-6
+

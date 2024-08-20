@@ -6,7 +6,7 @@
 # 4 - optional, run unit tests
 
 set -eu
-
+START=$(date +%s)
 dir_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 source $dir_root/ush/detect_machine.sh
@@ -22,9 +22,9 @@ usage() {
   echo "  -c  additional CMake options        DEFAULT: <none>"
   echo "  -v  build with verbose output       DEFAULT: NO"
   echo "  -f  force a clean build             DEFAULT: NO"
-  echo "  -d  include JCSDA ctest data        DEFAULT: NO"
-  echo "  -a  build everything in bundle      DEFAULT: NO"
-  echo "  -m  select dycore                   DEFAULT: FV3"
+  echo "  -s  only build a subset of the bundle  DEFAULT: NO"
+  echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
+  echo "  --notestdata  do not include JCSDA and rrfs ctest data  DEFAULT: NO"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -37,13 +37,14 @@ INSTALL_PREFIX=""
 CMAKE_OPTS=""
 BUILD_TARGET="${MACHINE_ID:-'localhost'}"
 BUILD_VERBOSE="NO"
-CLONE_JCSDADATA="NO"
+CLONE_JCSDADATA="YES"
+CLONE_RRFSDATA="YES"
 CLEAN_BUILD="NO"
-BUILD_JCSDA="NO"
+BUILD_JCSDA="YES"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 
-while getopts "p:t:c:m:hvdfa" opt; do
+while getopts "p:t:c:m:hvfs-:" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -60,14 +61,17 @@ while getopts "p:t:c:m:hvdfa" opt; do
     v)
       BUILD_VERBOSE=YES
       ;;
-    d)
-      CLONE_JCSDADATA=YES
-      ;;
     f)
       CLEAN_BUILD=YES
       ;;
-    a)
-      BUILD_JCSDA=YES
+    s)
+      BUILD_JCSDA=NO
+      ;;
+    -)
+      if [[ "${OPTARG}" == "notestdata" ]]; then
+        CLONE_JCSDADATA=NO
+        CLONE_RRFSDATA=NO
+      fi 
       ;;
     h|\?|:)
       usage
@@ -76,27 +80,38 @@ while getopts "p:t:c:m:hvdfa" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules)
+  hera | orion | hercules | jet)
     echo "Building RDASApp on $BUILD_TARGET"
+    echo "  Build initiated `date`"
     source $dir_root/ush/module-setup.sh
     module use $dir_root/modulefiles
     module load RDAS/$BUILD_TARGET.$COMPILER
-    CMAKE_OPTS+=" -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON"
+    CMAKE_OPTS+=" -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON -DMACHINE_ID=$MACHINE_ID"
     module list
-    ;;
-  $(hostname))
-    echo "Building RDASApp on $BUILD_TARGET"
     ;;
   *)
     echo "Building RDASApp on unknown target: $BUILD_TARGET"
+    exit
     ;;
 esac
 
-CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA"
+CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA -DCLONE_RRFSDATA=$CLONE_RRFSDATA"
 
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
   [[ -d ${BUILD_DIR} ]] && rm -rf ${BUILD_DIR}
+elif [[ -d ${BUILD_DIR} ]]; then
+  printf "Build directory (${BUILD_DIR}) already exists\n"
+  printf "Please choose what to do:\n\n"
+  printf "[r]emove the existing directory\n"
+  printf "[c]ontinue building in the existing directory\n"
+  printf "[q]uit this build script\n"
+  read -p "Choose an option (r/c/q):" choice
+  case ${choice} in
+    [Rr]* ) rm -rf ${BUILD_DIR} ;;
+    [Cc]* ) ;;
+        * ) exit ;;
+  esac
 fi
 mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR}
 
@@ -132,6 +147,7 @@ if [[ $BUILD_TARGET == 'hera' ]]; then
   ln -sf $RDASAPP_TESTDATA/crtm $dir_root/bundle/test-data-release/crtm
 fi
 
+  CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120"
 # Configure
 echo "Configuring ..."
 set -x
@@ -162,4 +178,8 @@ if [[ -n ${INSTALL_PREFIX:-} ]]; then
   set +x
 fi
 
+echo build finished: `date`
+END=$(date +%s)
+DIFF=$((END - START))
+echo "Time taken to run the code: $DIFF seconds"
 exit 0

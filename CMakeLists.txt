@@ -11,6 +11,8 @@ project(RDASApp VERSION 1.0.0 LANGUAGES C CXX Fortran )
 
 include(GNUInstallDirs)
 enable_testing()
+#clt for rrfs test
+set(MPIEXEC_MAX_NUMPROCS 120 CACHE STRING "Maximum number of processors")
 
 # Build type.
 if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release|RelWithDebInfo|MinSizeRel)$")
@@ -34,6 +36,7 @@ set( ENABLE_MPI ON CACHE BOOL "Compile with MPI" )
 # Handle user options.
 option(BUILD_RDASBUNDLE "Build RDAS Bundle" ON)
 option(CLONE_JCSDADATA "Clone JCSDA test data repositories" OFF)
+option(CLONE_RRFSDATA "Clone RRFS test data" OFF)
 option(WORKFLOW_TESTS "Include regional-workflow dependent tests" OFF)
 option(MPAS_DYCORE "Use MPAS" OFF)
 option(FV3_DYCORE "Use FV3" ON)

@@ -1,0 +1,94 @@
+# (C) Copyright 2024 NOAA/NWS/NCEP/EMC
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+
+observations:
+  - obs space:
+      name: bufr
+
+      obsdatain: "./rap.t00z.lghtng.tm00.bufr_d"
+
+      exports:
+        variables:
+          # MetaData
+          timestamp:
+            datetime:
+              year: "*/YEAR"
+              month: "*/MNTH"
+              day: "*/DAYS"
+              hour: "*/HOUR"
+              minute: "*/MINU"
+              second: "*/SECO"
+          longitude:
+            query: "*/CLONH"
+          latitude:
+            query: "*/CLATH"
+          dataProviderRestricted:
+            query: "*/RSRD"
+          dataRestrictedExpiration:
+            query: "*/EXPRSRD"
+
+          # ObsValue
+          lightningDischargePolarity:
+            query: "*/PLRTS"
+          amplitudeOfLightningStrike: 
+            query: "*/AMPLS"
+          #numberOfFlashes:
+          lightningMultiStrikes:
+            query: "*/NOFL"
+  
+
+    ioda:
+      backend: netcdf
+      obsdataout: "./rap.t00z.lghtng.tm00.bufr_d.nc"
+
+      variables:
+        # MetaData
+        - name: "MetaData/dateTime"
+          coordinates: "longitude latitude"
+          source: variables/timestamp
+          longName: "Datetime"
+          units: "seconds since 1970-01-01T00:00:00Z"
+
+        - name: "MetaData/latitude"
+          coordinates: "longitude latitude"
+          source: variables/latitude
+          longName: "Latitude"
+          units: "degree_north"
+          range: [-90, 90]
+
+        - name: "MetaData/longitude"
+          coordinates: "longitude latitude"
+          source: variables/longitude
+          longName: "Longitude"
+          units: "degree_east"
+          range: [-180, 180]
+
+        - name: "MetaData/dataProviderRestricted"
+          coordinates: "longitude latitude"
+          source: variables/dataProviderRestricted
+          longName: "Restrictions On Data Redistribution"
+
+        - name: "MetaData/dataRestrictedExpiration"
+          coordinates: "longitude latitude"
+          source: variables/dataRestrictedExpiration
+          longName: "Expiration Of Restrictions On Data Redistribution"
+
+        # Observation
+        - name: "ObsValue/lightningDischargePolarity"
+          coordinates: "longitude latitude"
+          source: variables/lightningDischargePolarity
+          longName: "Polarity Of Lightning Stroke"
+
+        - name: "ObsValue/amplitudeOfLightningStrike"
+          coordinates: "longitude latitude"
+          source: variables/amplitudeOfLightningStrike
+          longName: "Amplitude Of Lightning Stroke"
+          units: "amps"
+
+        - name: "ObsValue/lightningMultiStrikes"
+          coordinates: "longitude latitude"
+          source: variables/lightningMultiStrikes
+          longName: "Multiplicity of Lightning Strikes"
+          units: "1"

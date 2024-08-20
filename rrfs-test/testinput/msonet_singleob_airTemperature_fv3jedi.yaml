@@ -1,0 +1,274 @@
+cost function:
+  cost type: 3D-Var
+  time window:
+      begin: 2022-05-26T18:00:00Z
+      length: PT2H
+  analysis variables: &3dvars [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,specific_humidity,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
+
+  geometry:
+    fms initialization:
+      namelist filename: DataFix/fmsmpp.nml
+      field table filename: DataFix/field_table
+    namelist filename: DataFix/input_lam_C775.nml
+    field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+    akbk: DataFix/fix/akbk61.nc
+    # input.nml
+    npz: 60
+    layout: [8,10]
+    io_layout: [1,1]
+    ntiles: 1
+
+  background:
+    datetime: 2022-05-26T19:00:00Z
+    filetype: fms restart
+    datapath: Data/bkg
+    filename_core: fv3_dynvars.nc
+    filename_trcr: fv3_tracer.nc
+    filename_sfcd: fv3_sfcdata.nc
+    filename_sfcw: fv3_srf_wnd.nc
+    filename_cplr: coupler.res
+    state variables: [eastward_wind,northward_wind,u_component_of_native_D_grid_wind,v_component_of_native_D_grid_wind,air_temperature,air_pressure_thickness,specific_humidity,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,phis,f10m]
+  background error:
+    covariance model: hybrid
+    components:
+    - covariance:
+        covariance model: SABER
+        saber central block:
+          saber block name: BUMP_NICAS
+          active variables: *3dvars
+          read:
+            io:
+              data directory: DataFix/bump_new
+              files prefix: fv3jedi_bumpparameters_nicas_lam_atm
+              alias:
+              - in code: common
+                in file: fixed_250km_0.3
+            drivers:
+               multivariate strategy: duplicated
+               read local nicas: true
+        saber outer blocks:
+        - saber block name: StdDev
+          read:
+            model file:
+              datetime: 2022-05-26T19:00:00Z
+              set datetime on read: true
+              filetype: fms restart
+              psinfile: true
+              datapath: Data_static/staticb_rrfs_step2/
+              filename_core: 20220526.190000.stddev.fv_core.res.nc
+              filename_trcr: 20220526.190000.stddev.fv_tracer.res.nc
+              filename_cplr: 20220526.190000.stddev.coupler.res
+              date: 2022-05-26T19:00:00Z
+      weight:
+        value: 0.1
+
+    - covariance:
+        covariance model: ensemble
+        members from template:
+          template:
+            datetime: 2022-05-26T19:00:00Z
+            filetype: fms restart
+            state variables: *3dvars
+            datapath: Data/inputs/mem%mem%/
+            filename_core: 20220526.190000.fv_core.res.tile1.nc
+            filename_trcr: 20220526.190000.fv_tracer.res.tile1.nc
+            filename_sfcd: 20220526.190000.sfc_data.nc
+            filename_sfcw: 20220526.190000.fv_srf_wnd.res.nc
+            filename_cplr: 20220526.190000.coupler.res
+          pattern: %mem%
+          nmembers: 20
+          zero padding: 3
+        localization:
+          localization method: SABER
+          saber central block:
+            saber block name: BUMP_NICAS
+            active variables: *3dvars
+            read:
+              io:
+                files prefix: DataFix/bump_new/fv3jedi_bumpparameters_nicas_lam_atm
+                alias:
+                - in code: common
+                  in file: fixed_250km_0.3
+
+              drivers:
+                 multivariate strategy: duplicated
+                 read local nicas: true
+      weight:
+        value: 0.9
+
+  observations:
+     observers:
+     - obs space:
+         name: mesonet
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: Data/obs/msonet_singleob_airTemperature.nc4
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: MSONET_hofxs_2022052619.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [airTemperature]
+         simulated variables: [airTemperature]
+
+       obs operator:
+         name: Composite
+         components:
+         - name: VertInterp
+           #vertical coordinate: geopotential_height
+           #vertical coordinate: geometric_height
+           #vertical coordinate: height
+           #observation vertical coordinate: height
+           #observation vertical coordinate group: MetaData
+           #interpolation method: linear
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           variables:
+           - name: airTemperature
+
+       obs error:
+         covariance model: diagonal
+
+       obs filters:
+         # ------------------
+         # airTemperature
+         # ------------------
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
+           action:
+             name: assign error
+             error parameter: 4.0  # K
+           defer to post: true
+
+         # Ajusted error after initial assignment (qcmod.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorConventional
+               options:
+                 test QCflag: PreQC
+                 test QCthreshold: 3
+                 inflate variables: [airTemperature]
+                 pressure: MetaData/pressure
+                 distance threshold: -1.
+           defer to post: true
+
+         # error inflation based on pressure check (setupt.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
+           action:
+             name: inflate error
+             #inflation factor: 1.09757
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: airTemperature
+                 inflation factor: 8.0
+                 geovar_sfc_geomz: surface_geometric_height
+           defer to post: true
+
+         # Reject airTemperature with ObsType=195
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 195
+           action:
+             name: reject
+
+         - filter: Bounds Check
+           filter variables:
+           - name: airTemperature
+           minvalue: 230
+           maxvalue: 330
+
+         - filter: Background Check
+           filter variables:
+           - name: airTemperature
+           threshold: 10.0
+           absolute threshold: 10.0
+
+        # Print filter data
+         - filter: Print Filter Data
+           message: Printing filter data
+           summary: true
+           variables:
+           - variable: MetaData/latitude
+           - variable: MetaData/longitude
+           - variable: MetaData/pressure
+           - variable: ObsType/airTemperature
+           - variable: ObsValue/airTemperature
+           - variable: QCflagsData/airTemperature
+
+         - filter: GOMsaver
+           filename: ./msonet_geovals_rrfs_2022052619.nc4
+
+variational:
+  minimizer:
+    algorithm: DRPCG    # Derber-Rosati Conjugate Gradients
+  iterations:
+  - ninner: 50
+    gradient norm reduction: 1e-60
+    geometry:
+      fms initialization:
+        namelist filename: DataFix/fmsmpp.nml
+        field table filename: DataFix/field_table
+      namelist filename: DataFix/input_lam_C775.nml
+      field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+      akbk: DataFix/fix/akbk61.nc
+      # input.nml
+      npz: 60
+      layout: [8,10]
+      io_layout: [1,1]
+      ntiles: 1
+      fieldsets:
+      - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
+    diagnostics:
+      departures: ombg
+  - ninner: 50
+    gradient norm reduction: 1e-60
+    geometry:
+      fms initialization:
+        namelist filename: DataFix/fmsmpp.nml
+        field table filename: DataFix/field_table
+      namelist filename: DataFix/input_lam_C775.nml
+      field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+      akbk: DataFix/fix/akbk61.nc
+      # input.nml
+      npz: 60
+      layout: [8,10]
+      io_layout: [1,1]
+      ntiles: 1
+      fieldsets:
+      - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
+final:
+  diagnostics:
+    departures: oman
+
+output:
+  filetype: fms restart
+  datapath: ./
+  prefix: hybens3dvar-fv3_lam-C775
+  frequency: PT1H
+

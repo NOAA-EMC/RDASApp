@@ -83,7 +83,7 @@ if(BUILD_RDASBUNDLE)
 
   if(FV3_DYCORE)
     # FMS and FV3 dynamical core
-    ecbuild_bundle( PROJECT fms SOURCE "../sorc/fms" )
+    include(../sorc/fv3-interface.cmake)
     ecbuild_bundle( PROJECT fv3 SOURCE "../sorc/fv3" )
 
     # fv3-jedi and associated repositories
@@ -107,6 +107,9 @@ endif()
     ecbuild_bundle( PROJECT iodaconv SOURCE "../sorc/iodaconv" )
   endif()
 
+# rdas mega executable
+  ecbuild_bundle( PROJECT rdas SOURCE "../mains" )
+
 # ioda, ufo, fv3-jedi, and saber test data
 #---------------------------------
   if(CLONE_JCSDADATA)
@@ -118,10 +121,28 @@ endif()
      ecbuild_bundle( PROJECT fv3-jedi-data SOURCE "${JCSDA_DATA_ROOT}/fv3-jedi-data" )
    endif()
    if(MPAS_DYCORE)
-     ecbuild_bundle( PROJECT mpas-jedi-data SOURCE "${JCSDA_DATA_ROOT}/mpas-jedi-data" )
+     set(DESTINATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+     file( COPY "${JCSDA_DATA_ROOT}/mpas-jedi-data" DESTINATION ${DESTINATION_DIR} )
    endif()
 
   endif(CLONE_JCSDADATA)
+# rrfs-test data (fv3 and/or mpas)
+#---------------------------------
+  if(CLONE_RRFSDATA)
+     set(RDAS_RRFS_DATA_ROOT "$ENV{RDAS_RRFS_DATA_ROOT}/rrfs-test-data")
+     set(DESTINATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+     if(NOT EXISTS "${DESTINATION_DIR}/rrfs-test-data")
+        file(MAKE_DIRECTORY "${DESTINATION_DIR}/rrfs-test-data")
+     endif()
+     if(FV3_DYCORE)
+     file( COPY "${RDAS_RRFS_DATA_ROOT}/rrfs-data_fv3jedi_2022052619" DESTINATION "${DESTINATION_DIR}/rrfs-test-data" )
+     endif()
+     if(MPAS_DYCORE)
+     file( COPY "${RDAS_RRFS_DATA_ROOT}/rrfs-data_mpasjedi_2022052619" DESTINATION "${DESTINATION_DIR}/rrfs-test-data" )
+     endif()
+
+  ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
+  endif(CLONE_RRFSDATA)
 
 endif(BUILD_RDASBUNDLE)
 

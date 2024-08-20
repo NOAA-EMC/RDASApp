@@ -62,6 +62,7 @@ load("json/3.10.5")
 --load("crtm/v2.4_jedi")
 load("rocoto/1.3.6")
 load("prod_util/2.1.1")
+load("fms/2023.04")
 
 load("py-jinja2/3.0.3")
 load("py-netcdf4/1.5.8")
@@ -85,6 +86,10 @@ setenv('MPIEXEC_NPROC', mpinproc)
 
 setenv("CRTM_FIX","/scratch1/NCEPDEV/da/Cory.R.Martin/RDASApp/fix/crtm/2.4.0")
 setenv("RDASAPP_TESTDATA","/scratch1/NCEPDEV/da/Cory.R.Martin/CI/RDASApp/data")
+--setenv("RDAS_RRFS_DATA_ROOT","/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-rdas/")
+--setenv("RDAS_RRFS_DATA_ROOT", "/scratch1/NCEPDEV/da/Xiaoyan.Zhang/RRFS")
+setenv("RDAS_RRFS_DATA_ROOT", "/scratch1/NCEPDEV/da/Samuel.Degelia/RRFS")
+
 --prepend_path("PATH","/scratch2/NCEPDEV/nwprod/hpc-stack/libs/hpc-stack/intel-18.0.5.274/prod_util/1.2.2/bin")
 
 whatis("Name: ".. pkgName)
