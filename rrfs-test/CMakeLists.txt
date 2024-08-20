@@ -15,6 +15,7 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_letkf_2022052619"   "fv3jedi_
 set(rrfs_mpasjedi_tests)
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_Ens3Dvar"     "mpasjedi_variational.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_atms_npp_qc"  "mpasjedi_variational.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_atms_npp_qc_bc"  "mpasjedi_variational.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_letkf"        "mpasjedi_enkf.x")
 
 
