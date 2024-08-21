@@ -7,7 +7,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: MSONET_hofxs_uv_2022052619.nc4
+             obsfile: MSONET_hofxs_uv_288_2022052619.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -19,8 +19,8 @@
          components:
          - name: VertInterp
            hofx_scaling: true
-           hofx scaling field: f10m
-           #hofx scaling field: wind_reduction_factor_at_10m
+           #hofx scaling field: f10m
+           hofx scaling field: wind_reduction_factor_at_10m
            hofx scaling field group: GeoVaLs
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
@@ -44,6 +44,7 @@
          # windEastward
          # ------------------
          # Initial error assignment
+         # 288
          - filter: Perform Action
            filter variables:
            - name: windEastward
@@ -83,7 +84,6 @@
              is_in: 288
            action:
              name: inflate error
-             #inflation factor: 1.0233
              inflation variable:
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
@@ -95,6 +95,7 @@
          # ------------------
          # windNorthward
          # ------------------
+         # 288
          # Initial error assignment
          - filter: Perform Action
            filter variables:
@@ -135,7 +136,6 @@
              is_in: 288
            action:
              name: inflate error
-             #inflation factor: 1.0233
              inflation variable:
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
@@ -156,12 +156,6 @@
 #           - name: windNorthward
 #           threshold: 10.0
 #           absolute threshold: 10.0
-
-#         - filter: BlackList
-#           where:
-#           - variable:
-#               name: MetaData/prepbufrReportType
-#           is_in: 195, 295, 400-999
 
         # Print filter data
          - filter: Print Filter Data

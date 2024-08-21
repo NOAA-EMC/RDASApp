@@ -7,7 +7,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: MSONET_hofxs_stationPressure_2022052619.nc4
+             obsfile: MSONET_hofxs_stationPressure_188_2022052619.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -82,16 +82,6 @@
              inflation variable:
                name: ObsFunction/ObsErrorFactorSfcPressure
            defer to post: true
-
-         # Reject stationPressure with ObsType=195
-         - filter: Perform Action
-           filter variables:
-           - name: stationPressure
-           where:
-           - variable: ObsType/stationPressure
-             is_in: 195
-           action:
-             name: reject
 
          - filter: Bounds Check
            filter variables:
