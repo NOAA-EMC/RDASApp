@@ -43,7 +43,7 @@ jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"            # background fi
 
 # FOR LETKF 
 #janalysis   = "./ana.2024-05-27_00.00.00.nc"                # analysis file
-#jbackgrnd   = "./bg.2024-05-27_00.00.00.nc"                 # background file (ensmean)
+#jbackgrnd   = "./bkg.2024-05-27_00.00.00.nc"                 # background file (ensmean)
 
 ###################################################################################
 # Set cartopy shapefile path

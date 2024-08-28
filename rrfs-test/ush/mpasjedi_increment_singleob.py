@@ -43,7 +43,7 @@ jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"            # background fi
 
 # FOR LETKF
 #janalysis   = "./ana.2024-05-27_00.00.00.nc"                # analysis file
-#jbackgrnd   = "./bg.2024-05-27_00.00.00.nc"                 # background file (ensmean)
+#jbackgrnd   = "./bkg.2024-05-27_00.00.00.nc"                 # background file (ensmean)
 
 
 ###################################################################################
@@ -62,7 +62,7 @@ if 'restart' in jbackgrnd:
     # Assuming Var run
     oberr_input = jncdiag.groups["EffectiveError0"].variables[f"{variable}"][:][0]
     oberr_final = jncdiag.groups["EffectiveError2"].variables[f"{variable}"][:][0]
-elif 'bg.' in jbackgrnd:
+elif 'bkg.' in jbackgrnd:
     # LETKF/GETKF run that uses different obs error variables
     # The original "EffectiveError0" isnt created here so cannot compare input and final error
     oberr_input = jncdiag.groups["ObsError"].variables[f"{variable}"][:][0]
