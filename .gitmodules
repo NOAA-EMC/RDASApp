@@ -8,11 +8,6 @@
 	url = https://github.com/jcsda/femps
 	branch = develop
 	ignore = all
-[submodule "sorc/fms"]
-	path = sorc/fms
-	url = https://github.com/jcsda/fms
-	branch = release-stable
-	ignore = all
 [submodule "sorc/fv3"]
 	path = sorc/fv3
 	url = https://github.com/jcsda/GFDL_atmos_cubed_sphere
