@@ -79,7 +79,7 @@ local ensemble DA:
     mult: 1.1
 
 output mean prior:
-  filename: ./bg.$Y-$M-$D_$h.$m.$s.nc
+  filename: ./bkg.$Y-$M-$D_$h.$m.$s.nc
   stream name: background
 
 output: # for outputting mean posterior
