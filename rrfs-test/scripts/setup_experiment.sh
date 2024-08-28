@@ -89,7 +89,9 @@ elif [[ $DYCORE == "MPAS" ]]; then
   cp -rp ${RDAS_DATA}/fix/stream_list/* stream_list/
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/bumploc.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/namelist.atmosphere .
-  cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/sonde_singeob_airTemperature_mpasjedi.yaml .
+  cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
+  cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_letkf.yaml .
+  cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput/streams.atmosphere .
   cp ${YOUR_PATH_TO_RDASAPP}/sorc/mpas-jedi/test/testinput/obsop_name_map.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/sorc/mpas-jedi/test/testinput/namelists/keptvars.yaml .

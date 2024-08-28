@@ -29,10 +29,12 @@ cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/geovars.yaml .
 cp ${RDASApp}/rrfs-test/testinput/bumploc.yaml .
 cp ${RDASApp}/rrfs-test/testinput/namelist.atmosphere .
 cp ${RDASApp}/rrfs-test/testinput/streams.atmosphere .
-cp ${RDASApp}/rrfs-test/testinput/sonde_singeob_airTemperature_mpasjedi.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_letkf.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf.yaml .
 if [[ "${exprname}" == "atl_2024052700" ]]; then
   sed -i -e "s/conus12km_mpas.graph/atl12km.graph/" ./namelist.atmosphere
-  sed -i -e "s/conus12km-401km11levels/atl12km-401km11levels/" ./sonde_singeob_airTemperature_mpasjedi.yaml
+  sed -i -e "s/conus12km-401km11levels/atl12km-401km11levels/" ./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
 fi
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/mpasjedi_expr/run_bump.sh > run_bump.sh
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/mpasjedi_expr/run_jedi.sh > run_jedi.sh
