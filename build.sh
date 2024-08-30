@@ -142,10 +142,6 @@ if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
   # Link in case data
   echo "Linking in test data for MPAS-JEDI case"
   $dir_root/rrfs-test/scripts/link_mpasjedi_expr.sh
-  # Create merged yaml files for ctest
-  cd ${dir_root}/rrfs-test/validated_yamls
-  ./gen_yaml.sh
-  cd ${dir_root}
 fi
 
 # JCSDA changed test data things, need to make a dummy CRTM directory
