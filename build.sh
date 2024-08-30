@@ -137,7 +137,7 @@ else
   exit 1
 fi
 
-# Link in MPAS-JEDI test data and created new yaml files needed for ctest
+# Link in MPAS-JEDI test data
 if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
   # Link in case data
   echo "Linking in test data for MPAS-JEDI case"
