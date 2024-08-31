@@ -73,3 +73,6 @@
 	url = https://github.com/JCSDA/mpas-jedi
 	branch = develop
 	ignore = all
+[submodule "sorc/fms"]
+	path = sorc/fms
+	url = https://github.com/jcsda/fms
