@@ -83,6 +83,7 @@ if(BUILD_RDASBUNDLE)
 
   if(FV3_DYCORE)
     # FMS and FV3 dynamical core
+    include(../sorc/fv3-interface.cmake)
     ecbuild_bundle( PROJECT fms SOURCE "../sorc/fms" )
     ecbuild_bundle( PROJECT fv3 SOURCE "../sorc/fv3" )
 
