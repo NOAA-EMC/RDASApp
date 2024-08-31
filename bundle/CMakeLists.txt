@@ -83,9 +83,7 @@ if(BUILD_RDASBUNDLE)
 
   if(FV3_DYCORE)
     # FMS and FV3 dynamical core
-# FMS and FV3 dynamical core
     ecbuild_bundle( PROJECT fms SOURCE "../sorc/fms" )
-#clt follow GDASapp     include(../sorc/fv3-interface.cmake)
     ecbuild_bundle( PROJECT fv3 SOURCE "../sorc/fv3" )
 
     # fv3-jedi and associated repositories
