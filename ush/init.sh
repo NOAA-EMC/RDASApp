@@ -12,7 +12,7 @@ case ${MACHINE_ID} in
     RDAS_DATA=/lfs5/BMC/nrtrr/RDAS_DATA
     ;;
   orion|hercules)
-    RDAS_DATA=/work/noaa/rtrr/RDAS_DATA
+    RDAS_DATA=/work/noaa/zrtrr/RDAS_DATA
     ;;
   *)
     echo "platform not supported: ${MACHINE_ID}"
