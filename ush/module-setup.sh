@@ -23,7 +23,7 @@ elif [[ $MACHINE_ID = orion* ]] ; then
     module purge
 
 elif [[ $MACHINE_ID = hercules* ]] ; then
-    # We are on Orion
+    # We are on hercules
     if ( ! eval module help > /dev/null 2>&1 ) ; then
         source /apps/lmod/init/bash
     fi
