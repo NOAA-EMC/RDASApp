@@ -138,9 +138,8 @@ endif()
      file( COPY "${RDAS_RRFS_DATA_ROOT}/rrfs-data_fv3jedi_2022052619" DESTINATION "${DESTINATION_DIR}/rrfs-test-data" )
      endif()
      if(MPAS_DYCORE)
-     file( COPY "${RDAS_RRFS_DATA_ROOT}/rrfs-data_mpasjedi_2022052619" DESTINATION "${DESTINATION_DIR}/rrfs-test-data" )
+     file( COPY "${CMAKE_CURRENT_SOURCE_DIR}/../expr/mpas_2024052700/" DESTINATION "${DESTINATION_DIR}/rrfs-test-data/rrfs-data_mpasjedi_2024052700" )
      endif()
-
   ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
   endif(CLONE_RRFSDATA)
 

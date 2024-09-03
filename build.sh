@@ -137,6 +137,13 @@ else
   exit 1
 fi
 
+# Link in MPAS-JEDI test data
+if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
+  # Link in case data
+  echo "Linking in test data for MPAS-JEDI case"
+  $dir_root/rrfs-test/scripts/link_mpasjedi_expr.sh
+fi
+
 # JCSDA changed test data things, need to make a dummy CRTM directory
 if [[ $BUILD_TARGET == 'hera' ]]; then
   if [ -d "$dir_root/bundle/fix/test-data-release/" ]; then rm -rf $dir_root/bundle/fix/test-data-release/; fi
