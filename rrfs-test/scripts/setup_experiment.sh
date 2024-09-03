@@ -40,7 +40,6 @@ fi
 if [[ $DYCORE == "FV3" ]]; then
   TEST_DATA="rrfs-data_fv3jedi_2022052619"
 elif [[ $DYCORE == "MPAS" ]]; then
-  #TEST_DATA="rrfs-data_mpasjedi_2022052619"  # not a scientifically useful case.
   TEST_DATA="mpas_2024052700"
 else
   echo "Not a valid DYCORE: ${DYCORE}. Please use MPAS | FV3."

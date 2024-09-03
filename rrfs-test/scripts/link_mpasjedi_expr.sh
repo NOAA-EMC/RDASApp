@@ -26,7 +26,7 @@ cp -rp ${RDASApp}/fix/stream_list/* stream_list/
 cp ${RDASApp}/sorc/mpas-jedi/test/testinput/obsop_name_map.yaml .
 cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/keptvars.yaml .
 cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/geovars.yaml .
-cp ${RDASApp}/rrfs-test/testinput/bumploc.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_bumploc.yaml ./bumploc.yaml
 cp ${RDASApp}/rrfs-test/testinput/namelist.atmosphere .
 cp ${RDASApp}/rrfs-test/testinput/streams.atmosphere .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
@@ -44,10 +44,11 @@ cp ${RDASApp}/rrfs-test/ush/mpasjedi_spread.py .
 
 mkdir -p data
 cd data
-mkdir -p bumploc bkg obs ens
+mkdir -p bumploc bkg obs ens ref
 ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc static.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/ens/* ens/
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/ref/* ref/
 

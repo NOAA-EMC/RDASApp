@@ -86,3 +86,8 @@ output: # for outputting mean posterior
   filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
   stream name: analysis 
 
+test:
+  reference filename: data/ref/rrfs-mpasjedi-letkf.ref
+  test output filename: ./rrfs-mpasjedi-letkf.out
+  float relative tolerance: 1.0e-3
+  float absolute tolerance: 1.0e-6
