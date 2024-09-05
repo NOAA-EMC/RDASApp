@@ -13,11 +13,11 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_letkf_2022052619"   "fv3jedi_
 
 # MPAS-JEDI tests 
 set(rrfs_mpasjedi_tests)
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_Ens3Dvar"     "mpasjedi_variational.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_atms_npp_qc"  "mpasjedi_variational.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_atms_npp_qc_bc"  "mpasjedi_variational.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2022052619_letkf"        "mpasjedi_enkf.x")
 
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_Ens3Dvar" "mpasjedi_variational.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_letkf"    "mpasjedi_enkf.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf"    "mpasjedi_enkf.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"  "mpasjedi_error_covariance_toolbox.x")
 
 # rrfs data - from rrfs-test-data repo if found, from local directory, or from tarball
 if (CLONE_RRFSDATA)
@@ -66,6 +66,7 @@ if (CLONE_RRFSDATA)
 
 
    endif()
+
    if(MPAS_DYCORE)
 
       message(STATUS "MACHINE_ID is " ${MACHINE_ID})
@@ -74,32 +75,30 @@ if (CLONE_RRFSDATA)
          set(RESTORE_MPI_ARGS ${MPI_ARGS})
          set(MPI_ARGS "${MPI_ARGS} --exclusive")
       endif()   
-      set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=18")
+      set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=4")
 
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
 	 get_from_dictionary(rrfs_mpasjedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
-         set(src_casedir "${rrfs-test_data_local}/rrfs-data_mpasjedi_2022052619")
+         set(src_casedir "${rrfs-test_data_local}/rrfs-data_mpasjedi_2024052700")
          if (NOT EXISTS "${casedir}")
            file(MAKE_DIRECTORY ${casedir})
          endif()
-         file(CREATE_LINK ${src_casedir}/DataFix ${casedir}/DataFix SYMBOLIC)
-         file(CREATE_LINK ${src_casedir}/Data_static ${casedir}/Data_static SYMBOLIC)
-         file(CREATE_LINK ${src_casedir}/Data ${casedir}/Data SYMBOLIC)
-         file(COPY ${src_casedir}/streams.atmosphere_15km DESTINATION ${casedir})
-         file(COPY ${src_casedir}/namelist.atmosphere_15km  DESTINATION ${casedir})
+	 file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
+	 file(CREATE_LINK ${src_casedir}/graphinfo ${casedir}/graphinfo SYMBOLIC)
+	 file(CREATE_LINK ${src_casedir}/stream_list ${casedir}/stream_list SYMBOLIC)
+	 file(COPY ${src_casedir}/streams.atmosphere DESTINATION ${casedir})
+	 file(COPY ${src_casedir}/namelist.atmosphere DESTINATION ${casedir})
 	 file(COPY ${src_casedir}/geovars.yaml DESTINATION ${casedir})
 	 file(COPY ${src_casedir}/keptvars.yaml DESTINATION ${casedir})
 	 file(COPY ${src_casedir}/obsop_name_map.yaml DESTINATION ${casedir})
-         file(GLOB bl_FILES "${src_casedir}/*.*BL")
-         file(COPY ${bl_FILES} DESTINATION ${casedir})
-         file(GLOB DATA_FILES "${src_casedir}/*DATA*")
-         file(COPY ${DATA_FILES} DESTINATION ${casedir})
-         file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir} )
+	 file(GLOB bl_FILES "${src_casedir}/*.*BL")
+	 file(COPY ${bl_FILES} DESTINATION ${casedir})
+	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
          ecbuild_add_test( TARGET ${target_test}
-                        MPI      36
+                        MPI      120
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
