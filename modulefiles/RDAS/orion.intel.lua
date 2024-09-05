@@ -67,6 +67,7 @@ unload("py-numpy/1.22.3")
 load("miniconda3/4.6.14")
 load("gdasapp/1.0.0")
 
+load("fms/2023.04")
 -- below is a hack because of cmake finding the wrong python...
 setenv("CONDA_PREFIX", "/work2/noaa/da/python/opt/core/miniconda3/4.6.14/envs/gdasapp/")
 
