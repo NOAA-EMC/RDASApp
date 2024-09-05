@@ -38,7 +38,7 @@ CMAKE_OPTS=""
 BUILD_TARGET="${MACHINE_ID:-'localhost'}"
 BUILD_VERBOSE="NO"
 CLONE_JCSDADATA="YES"
-CLONE_RRFSDATA="YES"
+ADD_RRFS_TESTS="YES"
 CLEAN_BUILD="NO"
 BUILD_JCSDA="YES"
 DYCORE="FV3andMPAS"
@@ -70,7 +70,6 @@ while getopts "p:t:c:m:hvfs-:" opt; do
     -)
       if [[ "${OPTARG}" == "notestdata" ]]; then
         CLONE_JCSDADATA=NO
-        CLONE_RRFSDATA=NO
       fi 
       ;;
     h|\?|:)
@@ -95,7 +94,7 @@ case ${BUILD_TARGET} in
     ;;
 esac
 
-CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA -DCLONE_RRFSDATA=$CLONE_RRFSDATA"
+CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA -DADD_RRFS_TESTS=$ADD_RRFS_TESTS"
 
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
@@ -145,16 +144,14 @@ if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
 fi
 
 # JCSDA changed test data things, need to make a dummy CRTM directory
-if [[ $BUILD_TARGET == 'hera' ]]; then
-  if [ -d "$dir_root/bundle/fix/test-data-release/" ]; then rm -rf $dir_root/bundle/fix/test-data-release/; fi
-  if [ -d "$dir_root/bundle/test-data-release/" ]; then rm -rf $dir_root/bundle/test-data-release/; fi
-  mkdir -p $dir_root/bundle/fix/test-data-release/
-  mkdir -p $dir_root/bundle/test-data-release/
-  ln -sf $RDASAPP_TESTDATA/crtm $dir_root/bundle/fix/test-data-release/crtm
-  ln -sf $RDASAPP_TESTDATA/crtm $dir_root/bundle/test-data-release/crtm
-fi
+if [ -d "$dir_root/bundle/fix/test-data-release/" ]; then rm -rf $dir_root/bundle/fix/test-data-release/; fi
+if [ -d "$dir_root/bundle/test-data-release/" ]; then rm -rf $dir_root/bundle/test-data-release/; fi
+mkdir -p $dir_root/bundle/fix/test-data-release/
+mkdir -p $dir_root/bundle/test-data-release/
+ln -sf $RDASAPP_TESTDATA/crtm $dir_root/bundle/fix/test-data-release/crtm
+ln -sf $RDASAPP_TESTDATA/crtm $dir_root/bundle/test-data-release/crtm
 
-  CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120"
+CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120"
 # Configure
 echo "Configuring ..."
 set -x

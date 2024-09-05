@@ -126,22 +126,10 @@ endif()
    endif()
 
   endif(CLONE_JCSDADATA)
-# rrfs-test data (fv3 and/or mpas)
-#---------------------------------
-  if(CLONE_RRFSDATA)
-     set(RDAS_RRFS_DATA_ROOT "$ENV{RDAS_RRFS_DATA_ROOT}/rrfs-test-data")
-     set(DESTINATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-     if(NOT EXISTS "${DESTINATION_DIR}/rrfs-test-data")
-        file(MAKE_DIRECTORY "${DESTINATION_DIR}/rrfs-test-data")
-     endif()
-     if(FV3_DYCORE)
-     file( COPY "${RDAS_RRFS_DATA_ROOT}/rrfs-data_fv3jedi_2022052619" DESTINATION "${DESTINATION_DIR}/rrfs-test-data" )
-     endif()
-     if(MPAS_DYCORE)
-     file( COPY "${CMAKE_CURRENT_SOURCE_DIR}/../expr/mpas_2024052700/" DESTINATION "${DESTINATION_DIR}/rrfs-test-data/rrfs-data_mpasjedi_2024052700" )
-     endif()
-  ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
-  endif(CLONE_RRFSDATA)
+
+  if(ADD_RRFS_TESTS)
+    ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
+  endif(ADD_RRFS_TESTS)
 
 endif(BUILD_RDASBUNDLE)
 

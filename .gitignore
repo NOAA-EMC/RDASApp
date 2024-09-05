@@ -146,8 +146,9 @@ build*/
 install*/
 
 # Ignore the following bundle repositories
-!/bundle/CMakeLists.txt
-/bundle/*
+bundle/*
+!bundle/CMakeLists.txt
+!bundle/rrfs-test-data
 
 # 
 expr
