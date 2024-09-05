@@ -2,6 +2,8 @@
 ```
 git clone --recurse-submodules https://github.com/NOAA-EMC/RDASApp.git
 ```
+If running on Orion, you will also need to run `module load git-lfs` before cloning. 
+
 ## 2.Build RDASApp
 ```
     cd RDASApp
