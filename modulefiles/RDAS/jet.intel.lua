@@ -87,7 +87,6 @@ setenv('MPIEXEC_NPROC', mpinproc)
 
 setenv("CRTM_FIX","/lfs5/BMC/nrtrr/RDAS_DATA/crtm/2.4.0")
 setenv("RDASAPP_TESTDATA","/lfs5/BMC/nrtrr/RDAS_DATA")
-setenv("RDAS_RRFS_DATA_ROOT", "/lfs5/BMC/nrtrr/RDAS_DATA")
 
 whatis("Name: ".. pkgName)
 whatis("Version: ".. pkgVersion)
