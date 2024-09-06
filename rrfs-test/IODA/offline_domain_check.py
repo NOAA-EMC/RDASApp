@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import netCDF4 as nc
 import numpy as np
 from matplotlib.path import Path
