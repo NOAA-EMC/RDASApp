@@ -5,6 +5,7 @@
 # 2 - configure; build; install
 # 4 - optional, run unit tests
 
+module purge
 set -eu
 START=$(date +%s)
 dir_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
