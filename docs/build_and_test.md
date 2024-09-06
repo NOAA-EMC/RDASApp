@@ -1,9 +1,8 @@
 ## 1.Clone RDASApp
-If running on Orion, you will also need to run `module load git-lfs` before cloning. 
+If running on Orion/Hercules, you will need to run `module load git-lfs` before cloning. 
 ```
 git clone --recurse-submodules https://github.com/NOAA-EMC/RDASApp.git
 ```
-
 ## 2.Build RDASApp
 ```
     cd RDASApp
