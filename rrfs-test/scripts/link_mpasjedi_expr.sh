@@ -45,7 +45,7 @@ cp ${RDASApp}/rrfs-test/ush/mpasjedi_spread.py .
 mkdir -p data
 cd data
 mkdir -p bumploc bkg obs ens ref
-ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/
+ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/${BUMPLOC}
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc static.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/
