@@ -149,6 +149,7 @@ install*/
 /bundle/*
 !/bundle/CMakeLists.txt
 !/bundle/rrfs-test-data
+!/bundle/test-data-release
 
 # 
 expr
