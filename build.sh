@@ -25,7 +25,6 @@ usage() {
   echo "  -f  force a clean build             DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
-  echo "  --notestdata  do not include JCSDA and rrfs ctest data  DEFAULT: NO"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -38,7 +37,6 @@ INSTALL_PREFIX=""
 CMAKE_OPTS=""
 BUILD_TARGET="${MACHINE_ID:-'localhost'}"
 BUILD_VERBOSE="NO"
-CLONE_JCSDADATA="YES"
 ADD_RRFS_TESTS="YES"
 CLEAN_BUILD="NO"
 BUILD_JCSDA="YES"
@@ -68,11 +66,6 @@ while getopts "p:t:c:m:hvfs-:" opt; do
     s)
       BUILD_JCSDA=NO
       ;;
-    -)
-      if [[ "${OPTARG}" == "notestdata" ]]; then
-        CLONE_JCSDADATA=NO
-      fi 
-      ;;
     h|\?|:)
       usage
       ;;
@@ -95,7 +88,7 @@ case ${BUILD_TARGET} in
     ;;
 esac
 
-CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA -DADD_RRFS_TESTS=$ADD_RRFS_TESTS"
+CMAKE_OPTS+=" -DADD_RRFS_TESTS=$ADD_RRFS_TESTS"
 
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then

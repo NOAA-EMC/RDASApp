@@ -35,9 +35,7 @@ set( ENABLE_MPI ON CACHE BOOL "Compile with MPI" )
 
 # Handle user options.
 option(BUILD_RDASBUNDLE "Build RDAS Bundle" ON)
-option(CLONE_JCSDADATA "Clone JCSDA test data repositories" OFF)
 option(ADD_RRFS_TESTS "Add RRFS tests" OFF)
-option(WORKFLOW_TESTS "Include regional-workflow dependent tests" OFF)
 option(MPAS_DYCORE "Use MPAS" OFF)
 option(FV3_DYCORE "Use FV3" ON)
 

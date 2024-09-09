@@ -80,10 +80,6 @@ local mpinproc = '-n'
 setenv('MPIEXEC_EXEC', mpiexec)
 setenv('MPIEXEC_NPROC', mpinproc)
 
-setenv("CRTM_FIX","/work2/noaa/da/cmartin/RDASApp/fix/crtm/2.4.0")
-setenv("RDASAPP_TESTDATA","/work2/noaa/da/cmartin/CI/RDASApp/data")
-prepend_path("PATH","/apps/contrib/NCEP/libs/hpc-stack/intel-2018.4/prod_util/1.2.2/bin")
-
 execute{cmd="ulimit -s unlimited",modeA={"load"}}
 
 whatis("Name: ".. pkgName)

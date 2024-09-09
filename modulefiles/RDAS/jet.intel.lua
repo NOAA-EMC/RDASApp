@@ -85,9 +85,6 @@ local mpinproc = '-n'
 setenv('MPIEXEC_EXEC', mpiexec)
 setenv('MPIEXEC_NPROC', mpinproc)
 
-setenv("CRTM_FIX","/lfs5/BMC/nrtrr/RDAS_DATA/crtm/2.4.0")
-setenv("RDASAPP_TESTDATA","/lfs5/BMC/nrtrr/RDAS_DATA")
-
 whatis("Name: ".. pkgName)
 whatis("Version: ".. pkgVersion)
 whatis("Category: RDASApp")

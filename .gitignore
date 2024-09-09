@@ -150,6 +150,10 @@ install*/
 !/bundle/CMakeLists.txt
 !/bundle/rrfs-test-data
 !/bundle/test-data-release
+!/bundle/ufo-data
+!/bundle/ioda-data
+!/bundle/fv3-jedi-data
+!/bundle/mpas-jedi-data
 
 # 
 expr
