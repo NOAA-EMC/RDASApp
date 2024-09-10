@@ -137,6 +137,13 @@ if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
   $dir_root/rrfs-test/scripts/link_mpasjedi_expr.sh
 fi
 
+# Set lower number of build jobs on Orion due to memory limit on login nodes
+if [[ $BUILD_TARGET == 'orion' ]]; then
+  BUILD_JOBS=${BUILD_JOBS:-4}
+else # hera, hercules, jet
+  BUILD_JOBS=${BUILD_JOBS:-6}
+fi
+
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120"
 # Configure
 echo "Configuring ..."
@@ -150,11 +157,11 @@ set +x
 echo "Building ..."
 set -x
 if [[ $BUILD_JCSDA == 'YES' ]]; then
-  make -j ${BUILD_JOBS:-6} VERBOSE=$BUILD_VERBOSE
+  make -j $BUILD_JOBS VERBOSE=$BUILD_VERBOSE
 else
   for b in $builddirs; do
     cd $b
-    make -j ${BUILD_JOBS:-6} VERBOSE=$BUILD_VERBOSE
+    make -j $BUILD_JOBS VERBOSE=$BUILD_VERBOSE
     cd ../
   done
 fi
