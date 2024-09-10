@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from netCDF4 import Dataset
 import pdb
 import matplotlib
@@ -35,11 +36,11 @@ if variable == "airTemperature":
 
 # JEDI data
 datapath = "./"
-jstatic      = "./data/restart.2024-05-27_00.00.00.nc"                 # to load the MPAS lat/lon
+jstatic      = "./data/static.nc"                 # to load the MPAS lat/lon
 
 # FOR HYBRID (or ENVAR)
 janalysis   = "./ana.2024-05-27_00.00.00.nc"                    # analysis file
-jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"            # background file (control member)
+jbackgrnd   = "./data/mpasout.2024-05-27_00.00.00.nc"            # background file (control member)
 
 # FOR LETKF 
 #janalysis   = "./ana.2024-05-27_00.00.00.nc"                # analysis file
