@@ -18,8 +18,7 @@ add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_letkf"    "mpasj
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf"    "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"  "mpasjedi_error_covariance_toolbox.x")
 
-# rrfs data - from rrfs-test-data repo if found, from local directory, or from tarball
-if (CLONE_RRFSDATA)
+if (ADD_RRFS_TESTS)
    message(STATUS "Use test data from rrfs-test-data repository")
    set (rrfs-test_data_local "${CMAKE_SOURCE_DIR}/rrfs-test-data/")
    set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")

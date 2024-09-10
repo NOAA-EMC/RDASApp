@@ -25,7 +25,6 @@ usage() {
   echo "  -f  force a clean build             DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
-  echo "  --notestdata  do not include JCSDA and rrfs ctest data  DEFAULT: NO"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -38,8 +37,7 @@ INSTALL_PREFIX=""
 CMAKE_OPTS=""
 BUILD_TARGET="${MACHINE_ID:-'localhost'}"
 BUILD_VERBOSE="NO"
-CLONE_JCSDADATA="YES"
-CLONE_RRFSDATA="YES"
+ADD_RRFS_TESTS="YES"
 CLEAN_BUILD="NO"
 BUILD_JCSDA="YES"
 DYCORE="FV3andMPAS"
@@ -68,12 +66,6 @@ while getopts "p:t:c:m:hvfs-:" opt; do
     s)
       BUILD_JCSDA=NO
       ;;
-    -)
-      if [[ "${OPTARG}" == "notestdata" ]]; then
-        CLONE_JCSDADATA=NO
-        CLONE_RRFSDATA=NO
-      fi 
-      ;;
     h|\?|:)
       usage
       ;;
@@ -96,7 +88,7 @@ case ${BUILD_TARGET} in
     ;;
 esac
 
-CMAKE_OPTS+=" -DCLONE_JCSDADATA=$CLONE_JCSDADATA -DCLONE_RRFSDATA=$CLONE_RRFSDATA"
+CMAKE_OPTS+=" -DADD_RRFS_TESTS=$ADD_RRFS_TESTS"
 
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
@@ -145,17 +137,7 @@ if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
   $dir_root/rrfs-test/scripts/link_mpasjedi_expr.sh
 fi
 
-# JCSDA changed test data things, need to make a dummy CRTM directory
-if [[ $BUILD_TARGET == 'hera' ]]; then
-  if [ -d "$dir_root/bundle/fix/test-data-release/" ]; then rm -rf $dir_root/bundle/fix/test-data-release/; fi
-  if [ -d "$dir_root/bundle/test-data-release/" ]; then rm -rf $dir_root/bundle/test-data-release/; fi
-  mkdir -p $dir_root/bundle/fix/test-data-release/
-  mkdir -p $dir_root/bundle/test-data-release/
-  ln -sf $RDASAPP_TESTDATA/crtm $dir_root/bundle/fix/test-data-release/crtm
-  ln -sf $RDASAPP_TESTDATA/crtm $dir_root/bundle/test-data-release/crtm
-fi
-
-  CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120"
+CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120"
 # Configure
 echo "Configuring ..."
 set -x

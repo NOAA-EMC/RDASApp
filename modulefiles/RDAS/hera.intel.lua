@@ -84,14 +84,6 @@ local mpinproc = '-n'
 setenv('MPIEXEC_EXEC', mpiexec)
 setenv('MPIEXEC_NPROC', mpinproc)
 
-setenv("CRTM_FIX","/scratch1/NCEPDEV/da/Cory.R.Martin/RDASApp/fix/crtm/2.4.0")
-setenv("RDASAPP_TESTDATA","/scratch1/NCEPDEV/da/Cory.R.Martin/CI/RDASApp/data")
---setenv("RDAS_RRFS_DATA_ROOT","/scratch2/NCEPDEV/fv3-cam/Ting.Lei/dr-emc-rdas/")
---setenv("RDAS_RRFS_DATA_ROOT", "/scratch1/NCEPDEV/da/Xiaoyan.Zhang/RRFS")
-setenv("RDAS_RRFS_DATA_ROOT", "/scratch1/NCEPDEV/da/Samuel.Degelia/RRFS")
-
---prepend_path("PATH","/scratch2/NCEPDEV/nwprod/hpc-stack/libs/hpc-stack/intel-18.0.5.274/prod_util/1.2.2/bin")
-
 whatis("Name: ".. pkgName)
 whatis("Version: ".. pkgVersion)
 whatis("Category: RDASApp")
