@@ -22,29 +22,28 @@ warnings.filterwarnings('ignore')
 
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
-
 lev = 23             # 1=sfc, 55=toa
 clevmax_incr = 2.0     # max contour level for colorbar increment plots
 decimals = 2            # number of decimals to round for text boxes
-
 plot_box_width = 8.     # define size of plot domain (units: lat/lon degrees)
 
-singleob_type = "adpupa"
-
 variable = "airTemperature"
-
 if variable == "airTemperature":
     obtype = 't'
     offset = -273.15
 
 # JEDI data
 datapath = "./"
-janalysis   = "./ana.2024-05-27_00.00.00.nc"            # analysis file
-jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"
-jstatic      = "./data/restart.2024-05-27_00.00.00.nc"
-#jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
-#jdiag = f"{datapath}/{singleob_type}_hofxs_2022052619.nc4"
-jdiag = "adpupa_hofx.nc4"
+jstatic      = "./data/restart.2024-05-27_00.00.00.nc"                 # to load the MPAS lat/lon
+jdiag        = "adpupa_hofx.nc4"                                       # obs diag file 
+
+# FOR HYBRID (or ENVAR)
+janalysis   = "./ana.2024-05-27_00.00.00.nc"                    # analysis file
+jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"            # background file (control member)
+
+# FOR LETKF
+#janalysis   = "./ana.2024-05-27_00.00.00.nc"                # analysis file
+#jbackgrnd   = "./bkg.2024-05-27_00.00.00.nc"                 # background file (ensmean)
 
 
 ###################################################################################
@@ -59,8 +58,15 @@ print(f"{jdiag}")
 
 # FROM JEDI diag
 jncdiag = Dataset(jdiag, mode='r')
-oberr_input = jncdiag.groups["EffectiveError0"].variables[f"{variable}"][:][0]
-oberr_final = jncdiag.groups["EffectiveError2"].variables[f"{variable}"][:][0]
+if 'restart' in jbackgrnd: 
+    # Assuming Var run
+    oberr_input = jncdiag.groups["EffectiveError0"].variables[f"{variable}"][:][0]
+    oberr_final = jncdiag.groups["EffectiveError2"].variables[f"{variable}"][:][0]
+elif 'bkg.' in jbackgrnd:
+    # LETKF/GETKF run that uses different obs error variables
+    # The original "EffectiveError0" isnt created here so cannot compare input and final error
+    oberr_input = jncdiag.groups["ObsError"].variables[f"{variable}"][:][0]
+    oberr_final = jncdiag.groups["ObsError"].variables[f"{variable}"][:][0]
 ob = jncdiag.groups["ObsValue"].variables[f"{variable}"][:][0] + offset
 omf= jncdiag.groups["ombg"].variables[f"{variable}"][:][0]
 fmo= -1*omf
@@ -142,32 +148,21 @@ m1.set_extent([left, right, top, bot])
 
 # Add features to the subplots
 m1.add_feature(cfeature.GSHHSFeature(scale='low'))
-
 m1.add_feature(cfeature.COASTLINE)
-
 m1.add_feature(cfeature.BORDERS)
-
 m1.add_feature(cfeature.STATES)
-
 #m.add_feature(cfeature.OCEAN)
 #m.add_feature(cfeature.LAND)
 #m.add_feature(cfeature.LAKES)
 
 # Gridlines for the subplots
 gl1 = m1.gridlines(crs = ccrs.PlateCarree(), draw_labels = True, linewidth = 0.5, color = 'k', alpha = 0.25, linestyle = '-')
-
 gl1.xlocator = mticker.FixedLocator([])
-
 gl1.xlocator = mticker.FixedLocator(np.arange(-180., 181., 5.))
-
 gl1.ylocator = mticker.FixedLocator(np.arange(-80., 91., 5.))
-
 gl1.xformatter = LONGITUDE_FORMATTER
-
 gl1.yformatter = LATITUDE_FORMATTER
-
 gl1.xlabel_style = {'size': 5, 'color': 'gray'}
-
 gl1.ylabel_style = {'size': 5, 'color': 'gray'}
 
 
@@ -193,19 +188,14 @@ m1.scatter(singleob_lon, singleob_lat, color='g', marker='o', s=2)
 
 # Add colorbar
 cbar1 = fig.colorbar(c1, orientation="horizontal", fraction=0.046, pad=0.07)
-
 cbar1.set_label(units, size=8)
-
 cbar1.ax.tick_params(labelsize=5, rotation=30)
 
 # Add titles, text, and save the figure
 plt.suptitle(f"Temperature {plot_var} at Level: {lev+1}\nobtype: {longname}", fontsize = 9, y = 1.05)
-
 m1.set_title(f"{title1}", fontsize = 9, y = 0.98)
-
 subtitle1_minmax = f"min: {np.around(np.min(jedi), decimals)}\nmax: {np.around(np.max(jedi), decimals)}"
 m1.text(left, top, f"{subtitle1_minmax}", fontsize = 6, ha='left', va='bottom')
-
 m1.text(left, bot, f"{subtitle1_hofx}", fontsize = 6, ha='left', va='bottom')
 
 if plot_var == "Increment":

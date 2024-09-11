@@ -1,0 +1,161 @@
+# (C) Copyright 2024 NOAA/NWS/NCEP/EMC
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+
+observations:
+  - obs space:
+      name: bufr
+
+      obsdatain: "./testinput_20230610/rtma_ru.t0000z.nexrad.tm00.bufr_d"
+
+      exports:
+        group_by_variable: spectralWidth 
+        variables:
+          # MetaData
+          timestamp:
+            datetime:
+              year: "*/YEAR"
+              month: "*/MNTH"
+              day: "*/DAYS"
+              hour: "*/HOUR"
+              minute: "*/MINU"
+              second: "*/SECO"
+          longitude:
+            query: "[*/CLON, */CLONH]"
+          latitude:
+            query: "[*/CLAT, */CLATH]"
+          stationIdentification:
+            query: "*/SSTN"
+
+          # ObsValue
+          height: 
+            query: "*/HSMSL"
+          heightOfAntenna: 
+            query: "*/HSALG"
+          beamAzimuthAngle: 
+            query: "*/ANAZ"
+          beamTiltAngle: 
+            query: "*/ANEL"
+          gateRange: 
+            query: "*/NL2RW/DIST125M"
+            transforms:
+              - scale: 125
+          radialVelocity: 
+            query: "*/NL2RW/DMVR"
+          spectralWidth: 
+            query: "*/NL2RW/DVSW"
+          ppiVolume: 
+            query: "*/VOID"
+          ppiIndex: 
+            query: "*/SCID"
+          unfoldingVelocity: 
+            query: "*/HNQV"
+          volumeCoveragePattern: 
+            query: "*/VOCP"
+          
+          # QualityMarker 
+          windAlongRadialLineQM: 
+            query: "*/QCRW"
+
+    ioda:
+      backend: netcdf
+      obsdataout: "./testrun_nexrad/rtma_ru.t0000z.nexrad.bufr.nc"
+
+      variables:
+        # MetaData
+        - name: "MetaData/dateTime"
+          coordinates: "longitude latitude"
+          source: variables/timestamp
+          longName: "Datetime"
+          units: "seconds since 1970-01-01T00:00:00Z"
+
+        - name: "MetaData/latitude"
+          coordinates: "longitude latitude"
+          source: variables/latitude
+          longName: "Latitude"
+          units: "degree_north"
+          range: [-90, 90]
+
+        - name: "MetaData/longitude"
+          coordinates: "longitude latitude"
+          source: variables/longitude
+          longName: "Longitude"
+          units: "degree_east"
+          range: [-180, 180]
+
+        - name: "MetaData/stationIdentification"
+          coordinates: "longitude latitude"
+          source: variables/stationIdentification
+          longName: "Station Identification"
+
+        # Observation
+        - name: "ObsValue/height"
+          coordinates: "longitude latitude"
+          source: variables/height
+          longName: "Height Of Station Ground Above MSL"
+          units: "m"
+
+        - name: "ObsValue/heightOfAntenna"
+          coordinates: "longitude latitude"
+          source: variables/heightOfAntenna
+          longName: "Height Of Antenna Above Ground"
+          units: "m"
+
+        - name: "ObsValue/beamAzimuthAngle"
+          coordinates: "longitude latitude"
+          source: variables/beamAzimuthAngle
+          longName: "Antenna Azimuth Angle"
+          units: "degree"
+
+        - name: "ObsValue/beamTiltAngle"
+          coordinates: "longitude latitude"
+          source: variables/beamTiltAngle
+          longName: "Antenna Elevation Angle"
+          units: "degree"
+
+        - name: "ObsValue/gateRange"
+          coordinates: "longitude latitude"
+          source: variables/gateRange
+          longName: "Distance From Antenna"
+          units: "m"
+
+        - name: "ObsValue/radialVelocity"
+          coordinates: "longitude latitude"
+          source: variables/radialVelocity
+          longName: "Doppler Mean Radial Velocity"
+          units: "m s-1"
+
+        - name: "ObsValue/spectralWidth"
+          coordinates: "longitude latitude"
+          source: variables/spectralWidth
+          longName: "Doppler Velocity Spectral Width"
+          units: "m s-1"
+
+        - name: "ObsValue/ppiVolume"
+          coordinates: "longitude latitude"
+          source: variables/ppiVolume
+          longName: "Radar Volume Id"
+
+        - name: "ObsValue/ppiIndex"
+          coordinates: "longitude latitude"
+          source: variables/ppiIndex
+          longName: "Radar Scan Id"
+
+        - name: "ObsValue/unfoldingVelocity"
+          coordinates: "longitude latitude"
+          source: variables/unfoldingVelocity
+          longName: "Unfolding Velocity (to compute Nyquist frequency)"
+          units: "m s-1"
+
+        - name: "ObsValue/volumeCoveragePattern"
+          coordinates: "longitude latitude"
+          source: variables/volumeCoveragePattern
+          longName: "Volume Coverage Pattern"
+
+        # QualityMarker
+        - name: "QualityMarker/unfoldingVelocity"
+          coordinates: "longitude latitude"
+          source: variables/windAlongRadialLineQM
+          longName: "Quality Marker For Wind Along Radial Line"
+

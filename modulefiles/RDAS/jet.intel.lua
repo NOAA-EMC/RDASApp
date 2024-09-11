@@ -6,7 +6,7 @@ local pkgName    = myModuleName()
 local pkgVersion = myModuleVersion()
 local pkgNameVer = myModuleFullName()
 
-prepend_path("MODULEPATH", '/mnt/lfs4/HFIP/hfv3gfs/role.epic/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/modulefiles/Core')
+prepend_path("MODULEPATH", '/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/modulefiles/Core')
 
 -- below two lines get us access to the spack-stack modules
 load("stack-intel/2021.5.0")
@@ -74,7 +74,7 @@ load("py-scipy/1.11.3")
 load("py-xarray/2023.7.0")
 
 -- hack for wxflow
-prepend_path("PYTHONPATH", "/lfs4/BMC/nrtrr/RDAS_DATA/python/20240307")
+prepend_path("PYTHONPATH", "/lfs5/BMC/nrtrr/RDAS_DATA/python/20240307")
 
 setenv("CC","mpiicc")
 setenv("FC","mpiifort")
@@ -84,10 +84,6 @@ local mpiexec = '/apps/slurm/default/bin/srun'
 local mpinproc = '-n'
 setenv('MPIEXEC_EXEC', mpiexec)
 setenv('MPIEXEC_NPROC', mpinproc)
-
-setenv("CRTM_FIX","/lfs4/BMC/nrtrr/RDAS_DATA/crtm/2.4.0")
-setenv("RDASAPP_TESTDATA","/lfs4/BMC/nrtrr/RDAS_DATA")
-setenv("RDAS_RRFS_DATA_ROOT", "/lfs4/BMC/nrtrr/RDAS_DATA")
 
 whatis("Name: ".. pkgName)
 whatis("Version: ".. pkgVersion)
