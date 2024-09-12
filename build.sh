@@ -43,7 +43,6 @@ BUILD_JCSDA="YES"
 BUILD_SUPER_EXE="NO"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
-#BUILD_JOBS="6"
 
 while getopts "p:c:m:j:hvfsx-:" opt; do
   case $opt in
