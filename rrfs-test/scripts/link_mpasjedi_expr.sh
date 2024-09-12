@@ -7,7 +7,7 @@ if [[ -z ${RDASApp} ]]; then
 fi
 
 #RDASApp="/path/to/RDASApp"  # set this variable if line2-7 was removed
-BUMPLOC="conus12km-401km11levels_updatesaber"
+BUMPLOC="conus12km-401km11levels"
 exprname="mpas_2024052700"
 if [[ "$1" == "atl12km" ]]; then
   BUMPLOC="atl12km-401km11levels"
