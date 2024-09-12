@@ -19,12 +19,12 @@ usage() {
   echo "Usage: $0 -p <prefix> | -t <target> -h"
   echo
   echo "  -p  installation prefix <prefix>    DEFAULT: <none>"
-  echo "  -t  target to build for <target>    DEFAULT: $MACHINE_ID"
   echo "  -c  additional CMake options        DEFAULT: <none>"
   echo "  -v  build with verbose output       DEFAULT: NO"
   echo "  -f  force a clean build             DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
+  echo "  -x  build super executables         DEFAULT: NO"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -37,19 +37,16 @@ INSTALL_PREFIX=""
 CMAKE_OPTS=""
 BUILD_TARGET="${MACHINE_ID:-'localhost'}"
 BUILD_VERBOSE="NO"
-ADD_RRFS_TESTS="YES"
 CLEAN_BUILD="NO"
 BUILD_JCSDA="YES"
+BUILD_SUPER_EXE="NO"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 
-while getopts "p:t:c:m:hvfs-:" opt; do
+while getopts "p:c:m:hvfsx-:" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
-      ;;
-    t)
-      BUILD_TARGET=$OPTARG
       ;;
     c)
       CMAKE_OPTS=$OPTARG
@@ -66,6 +63,9 @@ while getopts "p:t:c:m:hvfs-:" opt; do
     s)
       BUILD_JCSDA=NO
       ;;
+    x)
+      BUILD_SUPER_EXE=YES
+      ;; 
     h|\?|:)
       usage
       ;;
@@ -87,8 +87,6 @@ case ${BUILD_TARGET} in
     exit
     ;;
 esac
-
-CMAKE_OPTS+=" -DADD_RRFS_TESTS=$ADD_RRFS_TESTS"
 
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
@@ -144,7 +142,7 @@ else # hera, hercules, jet
   BUILD_JOBS=${BUILD_JOBS:-6}
 fi
 
-CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120"
+CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE"
 # Configure
 echo "Configuring ..."
 set -x
