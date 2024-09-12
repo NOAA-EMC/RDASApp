@@ -18,17 +18,16 @@ add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_letkf"    "mpasj
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf"    "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"  "mpasjedi_error_covariance_toolbox.x")
 
-if (ADD_RRFS_TESTS)
-   message(STATUS "Use test data from rrfs-test-data repository")
-   set (rrfs-test_data_local "${CMAKE_SOURCE_DIR}/rrfs-test-data/")
-   set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
+message(STATUS "Use test data from rrfs-test-data repository")
+set (rrfs-test_data_local "${CMAKE_SOURCE_DIR}/rrfs-test-data/")
+set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
 # It's unclear if anyone is using the local data functionality, therefore comment it out
 # for now and add in if someone complains / remove if completely if not.
 #elseif (DEFINED ENV{FV3_JEDI_TESTFILES})
 #  message(STATUS "Use test data from local directory $ENV{FV3_JEDI_TESTFILES}")
 #  # A bit of guesswork here, I don't know if folks using this option stored it in the same directory structure
 #  set (fv3-jedi_data_testinput_tier_1_local "$ENV{FV3_JEDI_TESTFILES}/fv3-jedi-data/testinput_tier_1")
-   if(FV3_DYCORE)
+if(FV3_DYCORE)
 
       message(STATUS "MACHINE_ID is " ${MACHINE_ID})
       if("${MACHINE_ID}" STREQUAL "orion")
@@ -106,5 +105,4 @@ if (ADD_RRFS_TESTS)
           set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endif()
 
-   endif()
 endif()
