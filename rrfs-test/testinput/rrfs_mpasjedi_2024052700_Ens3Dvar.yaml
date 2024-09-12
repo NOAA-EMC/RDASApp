@@ -125,7 +125,7 @@ cost function:
            defer to post: true
 
 test:
-  reference filename: data/ref/rrfs-mpasjedi-ens3dvar.ref_NEW
+  reference filename: data/ref/rrfs-mpasjedi-ens3dvar.ref
   test output filename: ./rrfs-mpasjedi-ens3dvar.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6
