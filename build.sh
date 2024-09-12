@@ -21,6 +21,7 @@ usage() {
   echo "  -p  installation prefix <prefix>    DEFAULT: <none>"
   echo "  -c  additional CMake options        DEFAULT: <none>"
   echo "  -v  build with verbose output       DEFAULT: NO"
+  echo "  -j  number of build jobs            DEFAULT: 6"
   echo "  -f  force a clean build             DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
@@ -42,8 +43,9 @@ BUILD_JCSDA="YES"
 BUILD_SUPER_EXE="NO"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
+#BUILD_JOBS="6"
 
-while getopts "p:c:m:hvfsx-:" opt; do
+while getopts "p:c:m:j:hvfsx-:" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -53,6 +55,9 @@ while getopts "p:c:m:hvfsx-:" opt; do
       ;;
     m)
       DYCORE=$OPTARG
+      ;;
+    j)
+      BUILD_JOBS=$OPTARG
       ;;
     v)
       BUILD_VERBOSE=YES
@@ -87,6 +92,13 @@ case ${BUILD_TARGET} in
     exit
     ;;
 esac
+
+# Set default number of build jobs based on machine
+if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nodes
+  BUILD_JOBS=${BUILD_JOBS:-4}
+else # hera, hercules, jet
+  BUILD_JOBS=${BUILD_JOBS:-6}
+fi
 
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
@@ -133,13 +145,6 @@ if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
   # Link in case data
   echo "Linking in test data for MPAS-JEDI case"
   $dir_root/rrfs-test/scripts/link_mpasjedi_expr.sh
-fi
-
-# Set lower number of build jobs on Orion due to memory limit on login nodes
-if [[ $BUILD_TARGET == 'orion' ]]; then
-  BUILD_JOBS=${BUILD_JOBS:-4}
-else # hera, hercules, jet
-  BUILD_JOBS=${BUILD_JOBS:-6}
 fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE"
