@@ -86,20 +86,23 @@
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
                  variable: airTemperature
-                 inflation factor: 8.0
+                 inflation factor: 0.0
                  #geovar_sfc_geomz: surface_geometric_height #FV3
                  #geovar_sfc_geomz: surface_altitude #MPAS
            defer to post: true
 
          - filter: Bounds Check
+           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            minvalue: 100
            maxvalue: 400
 
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
+           absolute threshold: 7.0
            threshold: 7.0
            where:
            - variable: ObsType/airTemperature
@@ -108,14 +111,16 @@
              name: reject
 
          - filter: Domain Check
+           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset
-               minvalue: -1.50
-               maxvalue: 1.50
+               minvalue: -1.00
+               maxvalue: 1.00
 
          - filter: Temporal Thinning
-           min_spacing: PT01M
+           apply at iterations: 0,1
+           min_spacing: PT30M
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification

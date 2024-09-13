@@ -93,7 +93,7 @@
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
                  variable: windEastward
-                 inflation factor: 4.0
+                 inflation factor: 0.0
                  #geovar_sfc_geomz: surface_geometric_height #FV3
                  #geovar_sfc_geomz: surface_altitude #MPAS
            defer to post: true
@@ -152,12 +152,13 @@
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
                  variable: windNorthward
-                 inflation factor: 4.0
+                 inflation factor: 0.0
                  #geovar_sfc_geomz: surface_geometric_height #FV3
                  #geovar_sfc_geomz: surface_altitude #MPAS
            defer to post: true
 
          - filter: Bounds Check
+           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -165,21 +166,24 @@
            maxvalue: 200
 
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
-           threshold: 6.5
-           #absolute threshold: 10.0
+           absolute threshold: 10.0
+           threshold: 10.0
 
          - filter: Domain Check
+           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset
-               minvalue: -1.50
-               maxvalue: 1.50
+               minvalue: -1.00
+               maxvalue: 1.00
 
          - filter: Temporal Thinning
-           min_spacing: PT01M
+           apply at iterations: 0,1
+           min_spacing: PT30M
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification

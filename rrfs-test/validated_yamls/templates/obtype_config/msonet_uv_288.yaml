@@ -53,7 +53,7 @@
            action:
              name: assign error
              error parameter: 3.0  # m/s
-           defer to post: true
+           #defer to post: true
 
          ## Ajusted error after initial assignment (qcmod.f90)
          #- filter: Perform Action
@@ -87,9 +87,9 @@
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
                  variable: windEastward
-                 inflation factor: 4.0
+                 inflation factor: 0.0
                  #geovar_sfc_geomz: surface_geometric_height #FV3
-                 #geovar_sfc_geomz: surface_altitude #MPAS
+                 #geovar_sfc_geomz: surface_geopotential_height #MPAS
            defer to post: true
 
          # ------------------
@@ -106,7 +106,7 @@
            action:
              name: assign error
              error parameter: 3.0  # m/s
-           defer to post: true
+           #defer to post: true
 
          ## Ajusted error after initial assignment (qcmod.f90)
          #- filter: Perform Action
@@ -140,12 +140,13 @@
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
                  variable: windNorthward
-                 inflation factor: 4.0
+                 inflation factor: 0.0
                  #geovar_sfc_geomz: surface_geometric_height #FV3
-                 #geovar_sfc_geomz: surface_altitude #MPAS
+                 #geovar_sfc_geomz: surface_geopotential_height #MPAS
            defer to post: true
 
          - filter: Bounds Check
+           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -153,21 +154,24 @@
            maxvalue: 200
 
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
-           threshold: 6.0
-           #absolute threshold: 10.0
+           absolute threshold: 5.0
+           threshold: 5.0
 
          - filter: Domain Check
+           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset
-               minvalue: -0.25
-               maxvalue: 0.25
+               minvalue: -0.10
+               maxvalue: 0.10
 
          - filter: Temporal Thinning
-           min_spacing: PT01M
+           apply at iterations: 0,1
+           min_spacing: PT30M
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification

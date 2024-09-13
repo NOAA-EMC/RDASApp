@@ -85,15 +85,18 @@
            defer to post: true
 
          - filter: Bounds Check
+           apply at iterations: 0,1
            filter variables:
            - name: stationPressure
            minvalue: 0.0
            maxvalue: 120000.0
 
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: stationPressure
-           threshold: 4.0
+           absolute threshold: 5.0
+           threshold: 5.0
            where:
            - variable: ObsType/stationPressure
              is_in: 188
@@ -101,14 +104,16 @@
              name: reject
 
          - filter: Domain Check
+           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset
-               minvalue: -0.25
-               maxvalue: 0.25
+               minvalue: -0.10
+               maxvalue: 0.10
 
          - filter: Temporal Thinning
-           min_spacing: PT01M
+           apply at iterations: 0,1
+           min_spacing: PT30M
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
