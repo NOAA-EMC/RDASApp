@@ -2,7 +2,8 @@
 
 # Define the basic configuration YAML
 #basic_config="fv3jedi_hyb3denvar.yaml"
-basic_config="mpasjedi_3dvar.yaml"
+#basic_config="mpasjedi_3dvar.yaml"
+basic_config="mpasjedi_en3dvar.yaml"
 
 # Define the aircraft observation type configs as an array
 aircraft_obtype_configs=(
@@ -11,8 +12,8 @@ aircraft_obtype_configs=(
     "aircft_airTemperature_133.yaml"
     "aircft_airTemperature_134.yaml"
     "aircft_airTemperature_135.yaml"
-    #"aircft_specificHumidity_133.yaml"
-    #"aircft_specificHumidity_134.yaml"
+    "aircft_specificHumidity_133.yaml"
+    "aircft_specificHumidity_134.yaml"
     "aircft_uv_230.yaml"
     "aircft_uv_231.yaml"
     "aircft_uv_233.yaml"
@@ -23,7 +24,7 @@ aircraft_obtype_configs=(
 # Define mesonet observation type configs as an array
 mesonet_obtype_configs=(
     "msonet_airTemperature_188.yaml"
-    #"msonet_specificHumidity_188.yaml"
+    "msonet_specificHumidity_188.yaml"
     "msonet_stationPressure_188.yaml"
     "msonet_uv_288.yaml"
 )

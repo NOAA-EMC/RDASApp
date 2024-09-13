@@ -164,6 +164,11 @@
            - name: windNorthward
            minvalue: -200
            maxvalue: 200
+           where:
+           - variable: ObsType/windEastward
+             is_in: 231
+           action:
+             name: reject
 
          - filter: Background Check
            apply at iterations: 0,1
@@ -172,6 +177,11 @@
            - name: windNorthward
            absolute threshold: 10.0
            threshold: 10.0
+           where:
+           - variable: ObsType/windEastward
+             is_in: 231
+           action:
+             name: reject
 
          - filter: Domain Check
            apply at iterations: 0,1
@@ -180,6 +190,11 @@
                  name: MetaData/timeOffset
                minvalue: -1.00
                maxvalue: 1.00
+           where:
+           - variable: ObsType/windEastward
+             is_in: 231
+           action:
+             name: reject
 
          - filter: Temporal Thinning
            apply at iterations: 0,1

@@ -73,6 +73,11 @@ cost function:
     state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
     filename: data/mpasout.2024-05-27_00.00.00.nc
     date: *analysisDate
+#  Use this block for Identity B
+#  background error:
+#    covariance model: SABER
+#    saber central block:
+#      saber block name: ID
   background error:
     covariance model: SABER
     saber central block:
