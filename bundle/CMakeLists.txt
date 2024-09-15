@@ -105,12 +105,11 @@ endif()
     ecbuild_bundle( PROJECT iodaconv SOURCE "../sorc/iodaconv" )
   endif()
 
-# rdas mega executable
-  ecbuild_bundle( PROJECT rdas SOURCE "../mains" )
-
-  if(ADD_RRFS_TESTS)
-    ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
-  endif(ADD_RRFS_TESTS)
+# rdas tests and super executables
+  ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
+  if(BUILD_SUPER_EXE)
+    ecbuild_bundle( PROJECT rdas SOURCE "../mains" )
+  endif()
 
 endif(BUILD_RDASBUNDLE)
 
