@@ -6,7 +6,7 @@ basedir="$(dirname "$ushdir")"
 
 case ${MACHINE_ID} in
   hera)
-    RDAS_DATA=/scratch1/NCEPDEV/fv3-cam/RDAS_DATA
+    RDAS_DATA=/scratch2/BMC/rtrr/RDAS_DATA
     ;;
   jet)
     RDAS_DATA=/lfs5/BMC/nrtrr/RDAS_DATA
