@@ -112,13 +112,13 @@ gl1.xlabel_style = {'size': 5, 'color': 'gray'}
 gl1.ylabel_style = {'size': 5, 'color': 'gray'}
 
 # Create triangulation and mask
-tri = Triangulation(lons, lats)
-tri_mask = TriAnalyzer(tri).get_flat_tri_mask(min_circle_ratio=0.1)
-tri.set_mask(tri_mask)
+triang = Triangulation(lons, lats)
+mask = TriAnalyzer(triang).get_flat_tri_mask(min_circle_ratio=0.1)
+triang.set_mask(mask)
 
 # Plot the data using triangulation
 clevs, cm, units, longname = plot_T_inc(jedi_inc, clevmax_incr)
-c1 = m1.tricontourf(tri, jedi_inc, clevs, cmap=cm, extend='both')
+c1 = m1.tricontourf(triang, jedi_inc, clevs, cmap=cm, extend='both', transform=ccrs.PlateCarree())
 
 # Add colorbar
 cbar1 = fig.colorbar(c1, orientation="horizontal", fraction=0.046, pad=0.07)

@@ -10,7 +10,6 @@ import numpy as np
 import sys, os
 import warnings
 from matplotlib.tri import Triangulation, TriAnalyzer
-from scipy.spatial import Delaunay
 
 warnings.filterwarnings('ignore')
 
@@ -62,10 +61,6 @@ for imem in range(1, nmems + 1):
 bg_all = np.asarray(bg_all)
 var = np.nanvar(bg_all, axis=0)
 
-# Construct Delaunay triangulation
-points = np.vstack((lons, lats)).T
-tri = Delaunay(points)
-
 # Define plot domain bounds
 half = plot_box_width / 2.
 left = cen_lon - half
@@ -90,7 +85,7 @@ cmap = plt.get_cmap('viridis')
 cmap.set_under('gray')
 
 # Plot using Delaunay triangulation
-triang = Triangulation(lons, lats, tri.simplices)
+triang = Triangulation(lons, lats)
 mask = TriAnalyzer(triang).get_flat_tri_mask(min_circle_ratio=0.1)
 triang.set_mask(mask)
 
