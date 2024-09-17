@@ -59,23 +59,26 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-g', '--grid', type=str, help='grid file', required=True)
 parser.add_argument('-o', '--obs', type=str, help='ioda observation file', required=True)
 parser.add_argument('-f', '--fig', action='store_true', help='disable figure (default is False)', required=False)
+parser.add_argument('-s', '--shrink', type=float, help='hull shrink factor', required=True)
 args = parser.parse_args()
 
 # Assign filenames
 obs_filename = args.obs
 grid_filename = args.grid  # see note above.
 make_fig = args.fig
+hull_shrink_factor = args.shrink
 
 print(f"Obs file: {obs_filename}")
 print(f"Grid file: {grid_filename}")
 print(f"Figure flag: {args.fig}")
+print(f"Hull shrink factor: {hull_shrink_factor}")
 
 # Plotting options
 plot_box_width = 100. # define size of plot domain (units: lat/lon degrees)
 plot_box_height = 50
 cen_lat = 34.5
 cen_lon = -97.5
-hull_shrink_factor = 0.04  #4% was found to work fairly well.
+#hull_shrink_factor = 0.10  #10% was found to work fairly well.
 
 grid_ds = nc.Dataset(grid_filename, 'r')
 obs_ds = nc.Dataset(obs_filename, 'r')
@@ -234,24 +237,34 @@ gl1.xlabel_style = {'size': 5, 'color': 'gray'}
 gl1.ylabel_style = {'size': 5, 'color': 'gray'}
 
 # Plot the domain and the observations
-m1.fill(adjusted_lon.flatten(), grid_lat.flatten(), color='b', label='Domain Boundary', zorder=1, transform=ccrs.PlateCarree())
+#m1.fill(adjusted_lon.flatten(), grid_lat.flatten(), color='b', label='Domain Boundary', zorder=1, transform=ccrs.PlateCarree())
+m1.scatter(adjusted_lon.flatten(), grid_lat.flatten(), c='b', s=1, label='Domain Boundary', zorder=2)
 m1.plot(adjusted_shrunken_points[:, 0], shrunken_points[:, 1], 'r-', label='Convex Hull', zorder=10, transform=ccrs.PlateCarree())
 
 # Plot included observations
 included_lat = obs_lat[inside_indices]
 included_lon = obs_lon[inside_indices]
-plt.scatter(included_lon, included_lat, c='g', s=2, label='Included Observations', zorder=3, transform=ccrs.PlateCarree())
+included_count = len(included_lat)
+plt.scatter(included_lon, included_lat, c='g', s=2, label=f'Included Observations ({included_count})', zorder=3, transform=ccrs.PlateCarree())
 
 # Plot excluded observations
 excluded_indices = np.setdiff1d(np.arange(len(obs_lat)), inside_indices)
 excluded_lat = obs_lat[excluded_indices]
 excluded_lon = obs_lon[excluded_indices]
-plt.scatter(excluded_lon, excluded_lat, c='r', s=2, label='Excluded Observations', zorder=4, transform=ccrs.PlateCarree())
+
+excluded_count = len(excluded_lat)
+total_count = len(obs_lat)
+
+print(f"Ob counts:")
+print(f"  Excluded: {excluded_count}")
+print(f"  Included: {included_count}")
+print(f"  Total:    {total_count}")
+plt.scatter(excluded_lon, excluded_lat, c='r', s=2, label=f'Excluded Observations ({excluded_count})', zorder=4, transform=ccrs.PlateCarree())
 
 plt.xlabel('Longitude')
 plt.ylabel('Latitude')
 plt.legend(loc='upper right')
-plt.title(f'{dycore} Domain and Observations')
+plt.title(f'{dycore} Domain and Observations ({hull_shrink_factor*100}%)')
 plt.tight_layout()
 plt.savefig(f'./domain_check_{dycore}.png')
 
