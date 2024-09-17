@@ -79,15 +79,15 @@ local ensemble DA:
     mult: 1.1
 
 output mean prior:
-  filename: ./bkg.$Y-$M-$D_$h.$m.$s.nc
+  filename: ./bkg_getkf_split.$Y-$M-$D_$h.$m.$s.nc
   stream name: background
 
 output: # for outputting mean posterior
-  filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
+  filename: ./ana_getkf_split.$Y-$M-$D_$h.$m.$s.nc
   stream name: analysis 
 
-#test:
-#  reference filename: data/ref/rrfs-mpasjedi-getkf.ref
-#  test output filename: ./rrfs-mpasjedi-getkf.out
-#  float relative tolerance: 1.0e-3
-#  float absolute tolerance: 1.0e-6
+test:
+  reference filename: testoutput/rrfs-mpasjedi-getkf-solver.ref
+  test output filename: ./rrfs-mpasjedi-getkf-solver.out
+  float relative tolerance: 1.0e-3
+  float absolute tolerance: 1.0e-6
