@@ -98,11 +98,20 @@ if(FV3_DYCORE)
 	 get_from_dictionary(rrfs_mpasjedi_tests case exe)
          file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
-         ecbuild_add_test( TARGET ${target_test}
+	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
+           ecbuild_add_test( TARGET ${target_test}
+                        MPI      120
+                        WORKING_DIRECTORY ${casedir}
+                        ARGS     ${target_test}.yaml
+			TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
+                        COMMAND  ${exe} )
+	else()
+          ecbuild_add_test( TARGET ${target_test}
                         MPI      120
                         WORKING_DIRECTORY ${casedir}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
+	endif()
       endforeach()
 
       if("${MACHINE_ID}" STREQUAL "orion")
