@@ -17,7 +17,8 @@ warnings.filterwarnings('ignore')
 
 # MPAS info
 jstatic = "data/static.nc"  # to load the MPAS lat/lon
-ens_file = "mpasout.2024-05-27_00.00.00.nc"
+ens_file = "restart.2024-05-27_00.00.00.nc"
+#ens_file = "mpasout.2024-05-27_00.00.00.nc"
 nmems = 30
 
 # Plotting options
@@ -43,11 +44,15 @@ lats = np.array(f_latlon.variables['latCell'][:]) * 180.0 / np.pi
 lons0 = np.array(f_latlon.variables['lonCell'][:]) * 180.0 / np.pi
 lons = np.where(lons0 > 180.0, lons0 - 360.0, lons0)
 
-# Now read the var you want 
+# Now read the var you want
 bg_all = []
 for imem in range(1, nmems + 1):
-    infile = 'data/ens/mem%s/%s' % (str(imem).zfill(3), ens_file)
-    nc = Dataset(infile, 'r')
+    try:
+        infile = 'data/ens/mem%s/%s' % (str(imem).zfill(3), ens_file)
+        nc = Dataset(infile, 'r')
+    except FileNotFoundError:
+        infile = 'data/ens/mem%s/%s' % (str(imem).zfill(2), ens_file)
+        nc = Dataset(infile, 'r')
     if variable == 'airTemperature':
         bg = nc.variables['theta'][0, :, lev].astype(np.float64)
         pres = (nc.variables['pressure_p'][0, :, lev] + nc.variables['pressure_base'][0, :, lev]) / 100.0
