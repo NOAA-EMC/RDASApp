@@ -41,7 +41,7 @@ if(FV3_DYCORE)
       get_all_keys(rrfs_fv3jedi_tests caselist)
       foreach(case ${caselist})
          get_from_dictionary(rrfs_fv3jedi_tests case exe)
-	 set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
+         set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_fv3jedi_2022052619")
          if (NOT EXISTS "${casedir}")
            file(MAKE_DIRECTORY ${casedir})
@@ -55,7 +55,7 @@ if(FV3_DYCORE)
          set(target_test ${case})
          ecbuild_add_test( TARGET ${target_test}
                         MPI      80
-                        WORKING_DIRECTORY ${casedir}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
       endforeach()
@@ -85,23 +85,23 @@ if(FV3_DYCORE)
          if (NOT EXISTS "${casedir}")
            file(MAKE_DIRECTORY ${casedir})
          endif()
-         file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
-         file(CREATE_LINK ${src_casedir}/graphinfo ${casedir}/graphinfo SYMBOLIC)
-         file(CREATE_LINK ${src_casedir}/stream_list ${casedir}/stream_list SYMBOLIC)
-         file(CREATE_LINK ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput SYMBOLIC)
-         file(COPY ${src_casedir}/streams.atmosphere DESTINATION ${casedir})
-         file(COPY ${src_casedir}/namelist.atmosphere DESTINATION ${casedir})
-         file(COPY ${src_casedir}/geovars.yaml DESTINATION ${casedir})
-         file(COPY ${src_casedir}/keptvars.yaml DESTINATION ${casedir})
-         file(COPY ${src_casedir}/obsop_name_map.yaml DESTINATION ${casedir})
-         file(GLOB bl_FILES "${src_casedir}/*.*BL")
-         file(COPY ${bl_FILES} DESTINATION ${casedir})
-         file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
+	 file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
+	 file(CREATE_LINK ${src_casedir}/graphinfo ${casedir}/graphinfo SYMBOLIC)
+	 file(CREATE_LINK ${src_casedir}/stream_list ${casedir}/stream_list SYMBOLIC)
+	 file(CREATE_LINK ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput SYMBOLIC)
+	 file(COPY ${src_casedir}/streams.atmosphere DESTINATION ${casedir})
+	 file(COPY ${src_casedir}/namelist.atmosphere DESTINATION ${casedir})
+	 file(COPY ${src_casedir}/geovars.yaml DESTINATION ${casedir})
+	 file(COPY ${src_casedir}/keptvars.yaml DESTINATION ${casedir})
+	 file(COPY ${src_casedir}/obsop_name_map.yaml DESTINATION ${casedir})
+	 file(GLOB bl_FILES "${src_casedir}/*.*BL")
+	 file(COPY ${bl_FILES} DESTINATION ${casedir})
+	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
 	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
            ecbuild_add_test( TARGET ${target_test}
                         MPI      120
-                        WORKING_DIRECTORY ${casedir}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
 			TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
                         COMMAND  ${exe} )
