@@ -36,7 +36,7 @@ observations:
          obsdataout:
            engine:
              type: H5File
-             obsfile: ./adpupa_getkf_hofx.nc4
+             obsfile: ./adpupa_hofx.nc4
          simulated variables: [airTemperature]
          observed variables: [airTemperature]
        obs operator:
@@ -78,11 +78,11 @@ local ensemble DA:
     mult: 1.1
 
 output mean prior:
-  filename: ./bkg_getkf.$Y-$M-$D_$h.$m.$s.nc
+  filename: ./bkg.$Y-$M-$D_$h.$m.$s.nc
   stream name: background
 
 output: # for outputting mean posterior
-  filename: ./ana_getkf.$Y-$M-$D_$h.$m.$s.nc
+  filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
   stream name: analysis 
 
 test:

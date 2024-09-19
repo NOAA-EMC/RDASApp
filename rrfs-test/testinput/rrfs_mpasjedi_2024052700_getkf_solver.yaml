@@ -32,11 +32,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: ./adpupa_getkfsplit_hofx.nc4
+             obsfile: ../rundir-rrfs_mpasjedi_2024052700_getkf_observer/adpupa_hofx.nc4
          obsdataout:
            engine:
              type: H5File
-             obsfile: ./adpupa_getkfsplit_solver.nc4
+             obsfile: ./adpupa_hofx_solver.nc4
          simulated variables: [airTemperature]
          observed variables: [airTemperature]
        obs operator:
@@ -79,11 +79,11 @@ local ensemble DA:
     mult: 1.1
 
 output mean prior:
-  filename: ./bkg_getkf_split.$Y-$M-$D_$h.$m.$s.nc
+  filename: ./bkg.$Y-$M-$D_$h.$m.$s.nc
   stream name: background
 
 output: # for outputting mean posterior
-  filename: ./ana_getkf_split.$Y-$M-$D_$h.$m.$s.nc
+  filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
   stream name: analysis 
 
 test:
