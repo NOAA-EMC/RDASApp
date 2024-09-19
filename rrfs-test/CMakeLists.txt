@@ -55,7 +55,7 @@ if(FV3_DYCORE)
          set(target_test ${case})
          ecbuild_add_test( TARGET ${target_test}
                         MPI      80
-			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
       endforeach()
@@ -108,7 +108,7 @@ if(FV3_DYCORE)
 	else()
           ecbuild_add_test( TARGET ${target_test}
                         MPI      120
-                        WORKING_DIRECTORY ${casedir}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
 	endif()
