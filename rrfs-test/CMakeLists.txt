@@ -105,13 +105,13 @@ if(FV3_DYCORE)
                         ARGS     ${target_test}.yaml
 			TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
                         COMMAND  ${exe} )
-	else()
-          ecbuild_add_test( TARGET ${target_test}
+	 else()
+           ecbuild_add_test( TARGET ${target_test}
                         MPI      120
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
-	endif()
+	 endif()
       endforeach()
 
       if("${MACHINE_ID}" STREQUAL "orion")
