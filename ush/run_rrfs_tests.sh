@@ -15,3 +15,4 @@ set -x
 cd ${ushdir}/../build/rrfs-test
 pwd
 ctest # or ctest -VV for verbose outputs
+exit $?
