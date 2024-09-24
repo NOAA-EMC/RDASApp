@@ -3,11 +3,11 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: Data/obs/atms_npp_obs_2024052700.nc
+             obsfile: data/obs/atms_npp_obs_2024052700.nc
          obsdataout:
            engine:
              type: H5File
-             obsfile: Data/hofx/rass_atms_obs_2024052700.nc4
+             obsfile: ./rass_atms_obs_2024052700.nc4
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: &atms_npp_channels 1-22
@@ -18,20 +18,20 @@
            obs options:
              Sensor_ID: atms_npp
              EndianType: little_endian
-             CoefficientPath: Data/crtm_2.4.0/
+             CoefficientPath: data/crtm_2.4.0/
              IRVISlandCoeff: IGBP
            linear obs operator:
              Absorbers: [H2O, O3]
 
        obs bias:
-         input file:  Data/obs/atms_npp.satbias.nc4
-         output file: Data/bc/out_atms_npp.satbias.nc
+         input file:  data/obs/atms_npp.satbias.nc4
+         output file: ./out_atms_npp.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapse_rate
              order: 2
-             tlapse: &atms_npp_tlapse  Data/obs/atms_npp.tlapse.txt
+             tlapse: &atms_npp_tlapse  data/obs/atms_npp.tlapse.txt
            - name: lapse_rate
              tlapse: *atms_npp_tlapse
            - name: emissivity
@@ -48,11 +48,11 @@
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: Data/obs/atms_npp.satbias_cov.nc4
+             input file: data/obs/atms_npp.satbias_cov.nc4
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: Data/bc/out_atms_npp.satbias_cov.nc
+           output file: ./out_atms_npp.satbias_cov.nc
 
        obs pre filters:
        # Step 0-A: Create Diagnostic Flags
