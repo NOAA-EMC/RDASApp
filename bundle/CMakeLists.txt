@@ -33,8 +33,6 @@ set( ENABLE_MPI ON CACHE BOOL "Compile with MPI" )
 
 # Handle user options.
 option(BUILD_RDASBUNDLE "Build RDAS Bundle" ON)
-option(CLONE_JCSDADATA "Clone JCSDA test data repositories" OFF)
-option(WORKFLOW_TESTS "Include global-workflow dependent tests" OFF)
 
 # Initialize bundle
 # -----------------
@@ -107,41 +105,11 @@ endif()
     ecbuild_bundle( PROJECT iodaconv SOURCE "../sorc/iodaconv" )
   endif()
 
-# rdas mega executable
-  ecbuild_bundle( PROJECT rdas SOURCE "../mains" )
-
-# ioda, ufo, fv3-jedi, and saber test data
-#---------------------------------
-  if(CLONE_JCSDADATA)
-
-   set(JCSDA_DATA_ROOT "$ENV{RDASAPP_TESTDATA}/jcsda")
-   ecbuild_bundle( PROJECT ioda-data SOURCE "${JCSDA_DATA_ROOT}/ioda-data" )
-   ecbuild_bundle( PROJECT ufo-data SOURCE "${JCSDA_DATA_ROOT}/ufo-data" )
-   if(FV3_DYCORE)
-     ecbuild_bundle( PROJECT fv3-jedi-data SOURCE "${JCSDA_DATA_ROOT}/fv3-jedi-data" )
-   endif()
-   if(MPAS_DYCORE)
-     set(DESTINATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-     file( COPY "${JCSDA_DATA_ROOT}/mpas-jedi-data" DESTINATION ${DESTINATION_DIR} )
-   endif()
-
-  endif(CLONE_JCSDADATA)
-# rrfs-test data (fv3 and/or mpas)
-#---------------------------------
-  if(CLONE_RRFSDATA)
-     set(RDAS_RRFS_DATA_ROOT "$ENV{RDAS_RRFS_DATA_ROOT}/rrfs-test-data")
-     set(DESTINATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-     if(NOT EXISTS "${DESTINATION_DIR}/rrfs-test-data")
-        file(MAKE_DIRECTORY "${DESTINATION_DIR}/rrfs-test-data")
-     endif()
-     if(FV3_DYCORE)
-     file( COPY "${RDAS_RRFS_DATA_ROOT}/rrfs-data_fv3jedi_2022052619" DESTINATION "${DESTINATION_DIR}/rrfs-test-data" )
-     endif()
-     if(MPAS_DYCORE)
-     file( COPY "${CMAKE_CURRENT_SOURCE_DIR}/../expr/mpas_2024052700/" DESTINATION "${DESTINATION_DIR}/rrfs-test-data/rrfs-data_mpasjedi_2024052700" )
-     endif()
+# rdas tests and super executables
   ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
-  endif(CLONE_RRFSDATA)
+  if(BUILD_SUPER_EXE)
+    ecbuild_bundle( PROJECT rdas SOURCE "../mains" )
+  endif()
 
 endif(BUILD_RDASBUNDLE)
 
