@@ -1,5 +1,5 @@
      - obs space:
-         name: aircraft
+         name: aircar
          obsdatain:
            engine:
              type: H5File
@@ -7,7 +7,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_specificHumidity_133.nc4
+             obsfile: AIRCAR_hofxs_specificHumidity_133.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -145,9 +145,9 @@
          #  - variable: MetaData/latitude
          #  - variable: MetaData/longitude
          #  - variable: MetaData/pressure
-         #  - variable: ObsType/airTemperature
-         #  - variable: ObsValue/airTemperature
-         #  - variable: QCflagsData/airTemperature
+         #  - variable: ObsType/specificHumidity
+         #  - variable: ObsValue/specificHumidity
+         #  - variable: QCflagsData/specificHumidity
 
          - filter: GOMsaver
-           filename: ./data/geovals/aircft_geovals_rrfs.nc4
+           filename: ./data/geovals/aircar_geovals_rrfs.nc4

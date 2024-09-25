@@ -1,5 +1,5 @@
      - obs space:
-         name: mesonet
+         name: msonet
          obsdatain:
            engine:
              type: H5File
@@ -126,9 +126,9 @@
          #  - variable: MetaData/latitude
          #  - variable: MetaData/longitude
          #  - variable: MetaData/pressure
-         #  - variable: ObsType/airTemperature
-         #  - variable: ObsValue/airTemperature
-         #  - variable: QCflagsData/airTemperature
+         #  - variable: ObsType/stationPressure
+         #  - variable: ObsValue/stationPressure
+         #  - variable: QCflagsData/stationPressure
 
          - filter: GOMsaver
            filename: ./data/geovals/msonet_geovals_rrfs.nc4

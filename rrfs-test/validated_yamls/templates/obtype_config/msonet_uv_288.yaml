@@ -1,5 +1,5 @@
      - obs space:
-         name: mesonet
+         name: msonet
          obsdatain:
            engine:
              type: H5File
@@ -53,7 +53,7 @@
            action:
              name: assign error
              error parameter: 3.0  # m/s
-           #defer to post: true
+           defer to post: true
 
          ## Ajusted error after initial assignment (qcmod.f90)
          #- filter: Perform Action
@@ -89,7 +89,7 @@
                  variable: windEastward
                  inflation factor: 0.0
                  #geovar_sfc_geomz: surface_geometric_height #FV3
-                 #geovar_sfc_geomz: surface_geopotential_height #MPAS
+                 #geovar_sfc_geomz: surface_altitude #MPAS
            defer to post: true
 
          # ------------------
@@ -106,7 +106,7 @@
            action:
              name: assign error
              error parameter: 3.0  # m/s
-           #defer to post: true
+           defer to post: true
 
          ## Ajusted error after initial assignment (qcmod.f90)
          #- filter: Perform Action
@@ -142,7 +142,7 @@
                  variable: windNorthward
                  inflation factor: 0.0
                  #geovar_sfc_geomz: surface_geometric_height #FV3
-                 #geovar_sfc_geomz: surface_geopotential_height #MPAS
+                 #geovar_sfc_geomz: surface_altitude #MPAS
            defer to post: true
 
          - filter: Bounds Check
@@ -199,9 +199,12 @@
          #  - variable: MetaData/latitude
          #  - variable: MetaData/longitude
          #  - variable: MetaData/pressure
-         #  - variable: ObsType/airTemperature
-         #  - variable: ObsValue/airTemperature
-         #  - variable: QCflagsData/airTemperature
+         #  - variable: ObsType/windEastward
+         #  - variable: ObsValue/windEastward
+         #  - variable: ObsType/windNorthward
+         #  - variable: ObsValue/windNorthward
+         #  - variable: QCflagsData/windEastward
+         #  - variable: QCflagsData/windNorthward
 
          - filter: GOMsaver
            filename: ./data/geovals/msonet_geovals_rrfs.nc4

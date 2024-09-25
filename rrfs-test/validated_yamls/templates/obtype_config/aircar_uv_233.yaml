@@ -1,5 +1,5 @@
      - obs space:
-         name: aircraft
+         name: aircar
          obsdatain:
            engine:
              type: H5File
@@ -7,7 +7,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_uv_233.nc4
+             obsfile: AIRCAR_hofxs_uv_233.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -211,9 +211,12 @@
          #  - variable: MetaData/latitude
          #  - variable: MetaData/longitude
          #  - variable: MetaData/pressure
-         #  - variable: ObsType/airTemperature
-         #  - variable: ObsValue/airTemperature
-         #  - variable: QCflagsData/airTemperature
+         #  - variable: ObsType/windEastward
+         #  - variable: ObsValue/windEastward
+         #  - variable: ObsType/windNorthward
+         #  - variable: ObsValue/windNorthward
+         #  - variable: QCflagsData/windEastward
+         #  - variable: QCflagsData/windNorthward
 
          - filter: GOMsaver
-           filename: ./data/geovals/aircft_geovals_rrfs.nc4
+           filename: ./data/geovals/aircar_geovals_rrfs.nc4
