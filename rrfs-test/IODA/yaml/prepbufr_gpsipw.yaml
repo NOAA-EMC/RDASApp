@@ -1,4 +1,4 @@
-# (C) Copyright 2020 NOAA/NWS/NCEP/EMC
+# (C) Copyright 2024 NOAA/NWS/NCEP/EMC
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -6,20 +6,20 @@
 observations:
   - obs space:
       name: bufr
-
-      obsdatain: "./prepbufr"
+      obsdatain: "./bufr/2024052700.rap.t00z.prepbufr.tm00"
 
       exports:
         #group_by_variable: prepbufrDataLvlCat
         subsets:
           - GPSIPW    # GPS - INTEGRATED PRECIPITABLE WATER AND TOTAL ZENITH DELAY REPORTS
         variables:
+          # MetaData
           timestamp:
             timeoffset:
               timeOffset: "*/DHR"
               transforms:
                 - scale: 3600
-              referenceTime: @referenceTime@
+              referenceTime: "2024-05-27T00:00:00Z"
           timeOffset:
             query: "*/DHR"
           longitude:
@@ -30,11 +30,11 @@ observations:
             query: "*/SID"
           stationElevation:
             query: "*/ELV"
+            type: float
           prepbufrReportType:
             query: "*/TYP"
           dumpReportType:
             query: "*/T29"
-
           prepbufrDataLvlCat:
             query: "*/CAT"
 
@@ -72,8 +72,8 @@ observations:
         - name: "MetaData/timeOffset"
           coordinates: "longitude latitude"
           source: variables/timeOffset
-          longName: "Observation Time Offset from Reference Time"
-          units: "Seconds"
+          longName: "Observation Time Minus Reference Time"
+          units: "Hours"
 
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
@@ -98,7 +98,7 @@ observations:
         - name: "MetaData/stationElevation"
           coordinates: "longitude latitude"
           source: variables/stationElevation
-          longName: "Height of Station"
+          longName: "Elevation of Station"
           units: "Meter"
 
         - name: "MetaData/prepbufrReportType"

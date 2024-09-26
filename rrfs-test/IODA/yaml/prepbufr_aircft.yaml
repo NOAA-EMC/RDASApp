@@ -1,28 +1,26 @@
-# (C) Copyright 2022 NOAA/NWS/NCEP/EMC
-# #
-# # This software is licensed under the terms of the Apache Licence Version 2.0
-# # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# (C) Copyright 2024 NOAA/NWS/NCEP/EMC
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
 observations:
   - obs space:
       name: bufr
-      
-
-      obsdatain: "./prepbufr"
+      obsdatain: "./bufr/2024052700.rap.t00z.prepbufr.tm00"
 
       exports:
-        #group_by: prepbufrDataLevelCategory
+        #group_by: prepbufrDataLvlCat
         subsets:
-          - AIRCAR    # MDCRS ACARS AIRCRAFT REPORTS (ACID)
+          #- AIRCAR    # MDCRS ACARS AIRCRAFT REPORTS (ACID)
           - AIRCFT    # AIREP, PIREP, AMDAR, TAMDAR AIRCRAFT REPORTS (ACID)
         variables:
-          #MetaData
+          # MetaData
           timestamp:
             timeoffset:
               timeOffset: "*/DHR"
               transforms:
                 - scale: 3600
-              referenceTime: @referenceTime@
+              referenceTime: "2024-05-27T00:00:00Z"
           timeOffset:
             query: "*/DHR"
           longitude:
@@ -31,112 +29,110 @@ observations:
             query: "*/YOB"
           stationIdentification:
             query: "*/SID"
-          aircraftFlightNumber:
-            query: "[*/ACID, */ACID_SEQ/ACID]"
-          prepbufrDataLevelCategory:
-            query: "*/PRSLEVLA/CAT"
+          stationElevation:
+            query: "*/ELV"
+            type: float
           prepbufrReportType:
             query: "*/TYP"
           dumpReportType:
             query: "*/T29"
           prepbufrDataLvlCat:
-            query: "*/PRSLEVLA/CAT"
+            query: "*/PRSLEVLA{1}/CAT"
           aircraftPhase:
-            query: "*/PRSLEVLA/ACFT_SEQ/POAF"
-          stationElevation:
-            query: "*/ELV"
-            type: float
+            query: "*/PRSLEVLA{1}/ACFT_SEQ/POAF"
+          aircraftFlightNumber:
+            query: "[*/ACID, */ACID_SEQ/ACID]"
 
           pressure:
-            query: "*/PRSLEVLA/P___INFO/P__EVENT{1}/POB"
+            query: "*/PRSLEVLA{1}/P___INFO/P__EVENT{1}/POB"
             transforms:
               - scale: 100
           pressureQualityMarker:
-            query: "*/PRSLEVLA/P___INFO/P__EVENT{1}/PQM"
+            query: "*/PRSLEVLA{1}/P___INFO/P__EVENT{1}/PQM"
           pressureError:
-            query: "*/PRSLEVLA/P___INFO/P__BACKG/POE"
+            query: "*/PRSLEVLA{1}/P___INFO/P__BACKG/POE"
             transforms:
               - scale: 100
           pressureTunedError:
-            query: "*/PRSLEVLA/P___INFO/P__POSTP/POETU"
+            query: "*/PRSLEVLA{1}/P___INFO/P__POSTP/POETU"
             transforms:
               - scale: 100
 
           heightOfObservation:
-            query: "*/PRSLEVLA/Z___INFO/Z__EVENT{1}/ZOB"
+            query: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT{1}/ZOB"
             type: float
           heightOfObservationQualityMark:
-            query: "*/PRSLEVLA/Z___INFO/Z__EVENT{1}/ZQM"
+            query: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT{1}/ZQM"
 
-          #ObsValue
           specificHumidity:
-            query: "*/PRSLEVLA/Q___INFO/Q__EVENT{1}/QOB"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__EVENT{1}/QOB"
             type: float
             transforms:
               - scale: 0.000001
           specificHumidityQualityMarker:
-            query: "*/PRSLEVLA/Q___INFO/Q__EVENT{1}/QQM"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__EVENT{1}/QQM"
           relativeHumidityError:
-            query: "*/PRSLEVLA/Q___INFO/Q__BACKG/QOE"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__BACKG/QOE"
             transforms:
               - scale: 0.1
           relativeHumidityTunedError:
-            query: "*/PRSLEVLA/Q___INFO/Q__POSTP/QOETU"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__POSTP/QOETU"
             transforms:
               - scale: 0.1
 
           dewpointTemperature:
-            query: "*/PRSLEVLA/Q___INFO/TDO"
+            query: "*/PRSLEVLA{1}/Q___INFO/TDO"
             transforms:
               - offset: 273.15
 
           airTemperature:
-            query: "*/PRSLEVLA/T___INFO/T__EVENT{1}/TOB"
+            query: "*/PRSLEVLA{1}/T___INFO/T__EVENT{1}/TOB"
             transforms:
               - offset: 273.15
           airTemperatureQualityMarker:
-            query: "*/PRSLEVLA/T___INFO/T__EVENT{1}/TQM"
+            query: "*/PRSLEVLA{1}/T___INFO/T__EVENT{1}/TQM"
           airTemperatureError:
-            query: "*/PRSLEVLA/T___INFO/T__BACKG/TOE"
+            query: "*/PRSLEVLA{1}/T___INFO/T__BACKG/TOE"
           airTemperatureTunedError:
-            query: "*/PRSLEVLA/T___INFO/T__POSTP/TOETU"
+            query: "*/PRSLEVLA{1}/T___INFO/T__POSTP/TOETU"
 
           windEastward:
-            query: "*/PRSLEVLA/W___INFO/W__EVENT{1}/UOB"
+            query: "*/PRSLEVLA{1}/W___INFO/W__EVENT{1}/UOB"
           windNorthward:
-            query: "*/PRSLEVLA/W___INFO/W__EVENT{1}/VOB"
+            query: "*/PRSLEVLA{1}/W___INFO/W__EVENT{1}/VOB"
           windQualityMarker:
-            query: "*/PRSLEVLA/W___INFO/W__EVENT{1}/WQM"
+            query: "*/PRSLEVLA{1}/W___INFO/W__EVENT{1}/WQM"
           windError:
-            query: "*/PRSLEVLA/W___INFO/W__BACKG/WOE"
+            query: "*/PRSLEVLA{1}/W___INFO/W__BACKG/WOE"
           windTunedError:
-            query: "*/PRSLEVLA/W___INFO/W__POSTP/WOETU"
+            query: "*/PRSLEVLA{1}/W___INFO/W__POSTP/WOETU"
             transform:
               - scale: 0.514444
 
     ioda:
       backend: netcdf
-      obsdataout: "./ioda_aircraft.nc"
+      obsdataout: "./ioda_aircft.nc"
 
       dimensions:
         - name: Level
           path: "*/PRSLEVLA"
         - name: pevent_Dim
-          path: "*/PRSLEVLA/P___INFO/P__EVENT"
+          path: "*/PRSLEVLA{1}/P___INFO/P__EVENT"
         - name: qevent_Dim
-          path: "*/PRSLEVLA/Q___INFO/Q__EVENT"
+          path: "*/PRSLEVLA{1}/Q___INFO/Q__EVENT"
         - name: tevent_Dim
-          path: "*/PRSLEVLA/T___INFO/T__EVENT"
+          path: "*/PRSLEVLA{1}/T___INFO/T__EVENT"
         - name: wevent_Dim
-          path: "*/PRSLEVLA/W___INFO/W__EVENT"
+          path: "*/PRSLEVLA{1}/W___INFO/W__EVENT"
         - name: zevent_Dim
-          path: "*/PRSLEVLA/Z___INFO/Z__EVENT"
+          path: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT"
         - name: drft_Dim
-          path: "*/PRSLEVLA/DRFTINFO"
+          path: "*/PRSLEVLA{1}/DRFTINFO"
 
 
       variables:
-        #MetaData
+
+        # MetaData
         - name: "MetaData/dateTime"
           coordinates: "longitude latitude"
           source: variables/timestamp
@@ -146,42 +142,40 @@ observations:
         - name: "MetaData/timeOffset"
           coordinates: "longitude latitude"
           source: variables/timeOffset
-          longName: "Observation Time Offset from Reference Time"
-          units: "Seconds"
+          longName: "Observation Time Minus Reference Time"
+          units: "Hours"
 
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
           source: variables/stationIdentification
           longName: "Station/Aircraft ID"
-
-        - name: "MetaData/latitude"
-          coordinates: "longitude latitude"
-          source: variables/latitude
-          longName: "Latitude"
-          units: "degree_north"
-          range: [-90, 90]
+          units: ""
 
         - name: "MetaData/longitude"
           coordinates: "longitude latitude"
           source: variables/longitude
           longName: "Longitude"
-          units: "degree_east"
+          units: "degrees_east"
           range: [0, 360]
 
-        - name: "MetaData/aircraftFlightNumber"
+        - name: "MetaData/latitude"
           coordinates: "longitude latitude"
-          source: variables/aircraftFlightNumber
-          longName: "Aircraft Flight Number"
+          source: variables/latitude
+          longName: "Latitude"
+          units: "degrees_north"
+          range: [-90, 90]
 
-        - name: "MetaData/prepbufrDataLevelCategory"
+        - name: "MetaData/stationElevation"
           coordinates: "longitude latitude"
-          source: variables/prepbufrDataLevelCategory
-          longName: "Prepbufr Data Level Category"
+          source: variables/stationElevation
+          longName: "Elevation of Station"
+          units: "Meter"
 
         - name: "MetaData/prepbufrReportType"
           coordinates: "longitude latitude"
           source: variables/prepbufrReportType
           longName: "Prepbufr Report Type"
+          units: ""
 
         - name: "MetaData/dumpReportType"
           coordinates: "longitude latitude"
@@ -199,12 +193,13 @@ observations:
           coordinates: "longitude latitude"
           source: variables/aircraftPhase
           longName: "Aircraft Flight Phase"
+          units: ""
 
-        - name: "MetaData/stationElevation"
+        - name: "MetaData/aircraftFlightNumber"
           coordinates: "longitude latitude"
-          source: variables/stationElevation
-          longName: "Elevation of Station"
-          units: "Meter"
+          source: variables/aircraftFlightNumber
+          longName: "Aircraft Flight Number"
+          units: ""
 
         - name: "MetaData/height"
           coordinates: "longitude latitude"
@@ -243,7 +238,7 @@ observations:
           longName: "windNorthward Report Type"
           units: ""
 
-        #ObsValue
+        # ObsValue
         - name: "ObsValue/specificHumidity"
           coordinates: "longitude latitude"
           source: variables/specificHumidity
@@ -265,13 +260,13 @@ observations:
         - name: "ObsValue/windEastward"
           coordinates: "longitude latitude"
           source: variables/windEastward
-          longName: "U component of Wind"
+          longName: "Eastward Wind"
           units: "Meter Second-1"
 
         - name: "ObsValue/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windNorthward
-          longName: "V component of Wind"
+          longName: "Northward Wind"
           units: "Meter Second-1"
 
         # Quality Marker
@@ -295,10 +290,15 @@ observations:
           source: variables/airTemperatureQualityMarker
           longName: "Temperature Quality Marker"
 
-        - name: "QualityMarker/wind"
+        - name: "QualityMarker/windEastward"
           coordinates: "longitude latitude"
           source: variables/windQualityMarker
-          longName: "U, V-Component of Wind Quality Marker"
+          longName: "U-Component of Wind Quality Marker"
+
+        - name: "QualityMarker/windNorthward"
+          coordinates: "longitude latitude"
+          source: variables/windQualityMarker
+          longName: "V-Component of Wind Quality Marker"
 
         # ObsError
         - name: "ObsError/pressure"
@@ -319,10 +319,16 @@ observations:
           longName: "Temperature Error"
           units: "Kelvin"
 
-        - name: "ObsError/wind"
+        - name: "ObsError/windEastward"
           coordinates: "longitude latitude"
           source: variables/windError
-          longName: "East and Northward wind error"
+          longName: "Eastward wind error"
+          units: "Meter Second-1"
+
+        - name: "ObsError/windNorthward"
+          coordinates: "longitude latitude"
+          source: variables/windError
+          longName: "Northward wind error"
           units: "Meter Second-1"
 
         # Tuned ObsError
@@ -344,8 +350,14 @@ observations:
           longName: "Analysis-Tuned Temperature Error"
           units: "Kelvin"
 
-        - name: "TunedObsError/wind"
+        - name: "TunedObsError/windEastward"
           coordinates: "longitude latitude"
           source: variables/windTunedError
-          longName: "Analysis-Tuned East and Northward wind error"
+          longName: "Analysis-Tuned Eastward wind error"
+          units: "Meter Second-1"
+
+        - name: "TunedObsError/windNorthward"
+          coordinates: "longitude latitude"
+          source: variables/windTunedError
+          longName: "Analysis-Tuned Northward wind error"
           units: "Meter Second-1"
