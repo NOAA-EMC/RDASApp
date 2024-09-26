@@ -5,24 +5,29 @@
 #basic_config="mpasjedi_3dvar.yaml"
 basic_config="mpasjedi_en3dvar.yaml"
 
-# Define the aircraft observation type configs as an array
-aircraft_obtype_configs=(
+
+# Define the aircar observation type configs as an array
+aircar_obtype_configs=(
+    "aircar_airTemperature_133.yaml"
+    "aircar_uv_233.yaml"
+    "aircar_specificHumidity_133.yaml"
+)
+
+# Define the aircft observation type configs as an array
+aircft_obtype_configs=(
     "aircft_airTemperature_130.yaml"
     "aircft_airTemperature_131.yaml"
-    "aircft_airTemperature_133.yaml"
     "aircft_airTemperature_134.yaml"
     "aircft_airTemperature_135.yaml"
-    "aircft_specificHumidity_133.yaml"
     "aircft_specificHumidity_134.yaml"
     "aircft_uv_230.yaml"
     "aircft_uv_231.yaml"
-    "aircft_uv_233.yaml"
     "aircft_uv_234.yaml"
     "aircft_uv_235.yaml"
 )
 
-# Define mesonet observation type configs as an array
-mesonet_obtype_configs=(
+# Define msonet observation type configs as an array
+msonet_obtype_configs=(
     "msonet_airTemperature_188.yaml"
     "msonet_specificHumidity_188.yaml"
     "msonet_stationPressure_188.yaml"
@@ -51,11 +56,10 @@ temp_yaml="temp.yaml"
 rm -f $conv_yaml  # Remove any existing file
 rm -f $temp_yaml  # Remove any existing file
 
-# First, concatenate all aircraft obtypes into the super yaml
-process_obtypes "aircraft_obtype_configs[@]" "data/obs/ioda_aircraft.nc" "$temp_yaml"
-
-# Then, concatenate all mesonet obtypes into the same super yaml
-process_obtypes "mesonet_obtype_configs[@]" "data/obs/ioda_mesonet.nc" "$temp_yaml"
+# Concatenate all obtypes into the super yaml
+process_obtypes "aircar_obtype_configs[@]" "data/obs/ioda_aircar_dc.nc" "$temp_yaml"
+process_obtypes "aircft_obtype_configs[@]" "data/obs/ioda_aircft_dc.nc" "$temp_yaml"
+process_obtypes "msonet_obtype_configs[@]" "data/obs/ioda_msonet_dc.nc" "$temp_yaml"
 
 # Copy the basic configuration yaml into the super yaml
 cp -p templates/basic_config/$basic_config ./$conv_yaml
