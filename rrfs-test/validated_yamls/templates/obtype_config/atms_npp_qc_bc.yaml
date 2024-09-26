@@ -29,7 +29,7 @@
          variational bc:
            predictors:
            - name: constant
-           - name: lapse_rate
+           - name: lapseRate
              order: 2
              tlapse: &atms_npp_tlapse  data/obs/atms_npp.tlapse.txt
            - name: lapseRate
