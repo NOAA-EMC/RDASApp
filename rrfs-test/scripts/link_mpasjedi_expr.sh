@@ -20,8 +20,9 @@ echo "expdir is at: ${expdir}"
 
 ${RDASApp}/ush/init.sh
 ln -snf ${RDASApp}/fix/physics/* .
-mkdir -p graphinfo stream_list
+mkdir -p graphinfo stream_list testoutput
 ln -snf ${RDASApp}/fix/graphinfo/* graphinfo/
+ln -snf ${RDASApp}/rrfs-test/testoutput/* testoutput/
 cp -rp ${RDASApp}/fix/stream_list/* stream_list/
 cp ${RDASApp}/sorc/mpas-jedi/test/testinput/obsop_name_map.yaml .
 cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/keptvars.yaml .
@@ -32,6 +33,8 @@ cp ${RDASApp}/rrfs-test/testinput_expr/streams.atmosphere .
 cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_letkf.yaml .
 cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_getkf.yaml .
+cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_getkf_observer.yaml .
+cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_getkf_solver.yaml .
 if [[ "${exprname}" == "atl_2024052700" ]]; then
   sed -i -e "s/conus12km_mpas.graph/atl12km.graph/" ./namelist.atmosphere
   sed -i -e "s/conus12km-401km11levels/atl12km-401km11levels/" ./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
@@ -44,12 +47,11 @@ cp ${RDASApp}/rrfs-test/ush/mpasjedi_spread.py .
 
 mkdir -p data
 cd data
-mkdir -p bumploc bkg obs obs_ctest ens ref
+mkdir -p bumploc bkg obs obs_ctest ens
 ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/${BUMPLOC}
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc static.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs_ctest/* obs_ctest/
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/ens/* ens/
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/ref/* ref/
 
