@@ -2794,7 +2794,7 @@ output: # for outputting mean posterior
   stream name: analysis 
 
 test:
-  reference filename: data/ref/rrfs-mpasjedi-getkf.ref
+  reference filename: testoutput/rrfs-mpasjedi-getkf.ref
   test output filename: ./rrfs-mpasjedi-getkf.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6

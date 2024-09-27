@@ -2839,7 +2839,7 @@ cost function:
            #filename: ./data/geovals/msonet_geovals_rrfs.nc4
 
 test:
-  reference filename: data/ref/rrfs-mpasjedi-ens3dvar.ref
+  reference filename: testoutput/rrfs-mpasjedi-ens3dvar.ref
   test output filename: ./rrfs-mpasjedi-ens3dvar.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6
