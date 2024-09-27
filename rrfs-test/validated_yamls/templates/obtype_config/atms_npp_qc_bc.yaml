@@ -18,7 +18,7 @@
            obs options:
              Sensor_ID: atms_npp
              EndianType: little_endian
-             CoefficientPath: data/crtm_2.4.0/
+             CoefficientPath: data/crtm/
              IRVISlandCoeff: IGBP
            linear obs operator:
              Absorbers: [H2O, O3]
