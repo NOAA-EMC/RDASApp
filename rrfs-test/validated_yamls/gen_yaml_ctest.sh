@@ -1,13 +1,23 @@
 #!/bin/bash
 
-# Define the basic configuration YAML
-#basic_config="mpasjedi_en3dvar.yaml"
-basic_config="mpasjedi_getkf_observer.yaml"
-#basic_config="mpasjedi_getkf_solver.yaml"
-#basic_config="mpasjedi_letkf_observer.yaml"
-#basic_config="mpasjedi_letkf_solver.yaml"
+# Define the basic configuration YAMLs
+basic_configs=(
+    "mpasjedi_en3dvar.yaml"
+    "mpasjedi_getkf_observer.yaml"
+    "mpasjedi_getkf_solver.yaml"
+    "mpasjedi_letkf_observer.yaml"
+    "mpasjedi_letkf_solver.yaml"
+)
 
-
+# CTest yaml outputs 
+ctest_names=(
+    "rrfs_mpasjedi_2024052700_Ens3Dvar.yaml"
+    "rrfs_mpasjedi_2024052700_getkf_observer.yaml"
+    "rrfs_mpasjedi_2024052700_getkf_solver.yaml"
+    "rrfs_mpasjedi_2024052700_letkf_observer.yaml"
+    "rrfs_mpasjedi_2024052700_letkf_solver.yaml"
+)
+    
 # Define the aircar observation type configs as an array
 aircar_obtype_configs=(
     "aircar_airTemperature_133.yaml"
@@ -61,32 +71,40 @@ process_obtypes() {
     sed -i "s#@DISTRIBUTION@#\"${distribution}\"#" ./$temp_yaml
 }
 
-# Create the super yaml (conv.yaml)
-conv_yaml="conv.yaml"
-temp_yaml="temp.yaml"
+# Loop over basic config yamls 
+iconfig=0
+for basic_config in "${basic_configs[@]}"; do
 
-rm -f $conv_yaml  # Remove any existing file
-rm -f $temp_yaml  # Remove any existing file
+  # Create the super yaml (conv.yaml)
+  conv_yaml="${ctest_names[$iconfig]}"
+  temp_yaml="temp.yaml"
 
-# Concatenate all obtypes into the super yaml
-process_obtypes "$basic_config" "aircar_obtype_configs[@]" "data/obs_ctest/ioda_aircar_dc.nc" "$temp_yaml"
-process_obtypes "$basic_config" "aircft_obtype_configs[@]" "data/obs_ctest/ioda_aircft_dc.nc" "$temp_yaml"
-process_obtypes "$basic_config" "msonet_obtype_configs[@]" "data/obs_ctest/ioda_msonet_dc.nc" "$temp_yaml"
+  rm -f $conv_yaml  # Remove any existing file
+  rm -f $temp_yaml  # Remove any existing file
 
-# Copy the basic configuration yaml into the super yaml
-cp -p templates/basic_config/$basic_config ./$conv_yaml
+  # Concatenate all obtypes into the super yaml
+  process_obtypes "$basic_config" "aircar_obtype_configs[@]" "data/obs_ctest/ioda_aircar_dc.nc" "$temp_yaml"
+  process_obtypes "$basic_config" "aircft_obtype_configs[@]" "data/obs_ctest/ioda_aircft_dc.nc" "$temp_yaml"
+  process_obtypes "$basic_config" "msonet_obtype_configs[@]" "data/obs_ctest/ioda_msonet_dc.nc" "$temp_yaml"
 
-# Replace @OBSERVATIONS@ placeholder with the contents of the combined yaml
-sed -i '/@OBSERVATIONS@/{
+  # Copy the basic configuration yaml into the super yaml
+  cp -p templates/basic_config/$basic_config ./$conv_yaml
+
+  # Replace @OBSERVATIONS@ placeholder with the contents of the combined yaml
+  sed -i '/@OBSERVATIONS@/{
     r ./'"${temp_yaml}"'
     d
-}' ./$conv_yaml
+  }' ./$conv_yaml
 
-# Replace the @OBSFILE@ placeholder with a dummy filename (can customize as needed)
-sed -i "s#@OBSFILE@#\"data/obs_ctest/combined_obs_file.nc\"#" ./$conv_yaml
+  # Replace the @OBSFILE@ placeholder with a dummy filename (can customize as needed)
+  sed -i "s#@OBSFILE@#\"data/obs_ctest/combined_obs_file.nc\"#" ./$conv_yaml
 
-echo "Super YAML created in ${conv_yaml}"
+  echo "Super YAML created in ${conv_yaml}"
 
-# Remove the old temporary yaml
-rm -f $temp_yaml
+  # Move to testinput and remove the old temporary yaml
+  mv $conv_yaml ../testinput/$conv_yaml
+  rm -f $temp_yaml
+
+  iconfig=$((iconfig+1))
+done
 
