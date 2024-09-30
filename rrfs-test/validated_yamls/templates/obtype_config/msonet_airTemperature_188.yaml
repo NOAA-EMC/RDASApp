@@ -144,5 +144,5 @@
          #  - variable: ObsValue/airTemperature
          #  - variable: QCflagsData/airTemperature
 
-         - filter: GOMsaver
-           filename: ./data/geovals/msonet_geovals_rrfs.nc4
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

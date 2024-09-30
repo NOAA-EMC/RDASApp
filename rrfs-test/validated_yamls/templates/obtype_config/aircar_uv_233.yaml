@@ -230,5 +230,5 @@
          #  - variable: QCflagsData/windEastward
          #  - variable: QCflagsData/windNorthward
 
-         - filter: GOMsaver
-           filename: ./data/geovals/aircar_geovals_rrfs.nc4
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/aircar_geovals_rrfs.nc4

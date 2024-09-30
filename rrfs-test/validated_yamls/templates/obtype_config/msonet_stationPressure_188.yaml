@@ -142,5 +142,5 @@
          #  - variable: ObsValue/stationPressure
          #  - variable: QCflagsData/stationPressure
 
-         - filter: GOMsaver
-           filename: ./data/geovals/msonet_geovals_rrfs.nc4
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

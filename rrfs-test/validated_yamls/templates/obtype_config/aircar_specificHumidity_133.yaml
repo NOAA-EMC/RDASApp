@@ -161,5 +161,5 @@
          #  - variable: ObsValue/specificHumidity
          #  - variable: QCflagsData/specificHumidity
 
-         - filter: GOMsaver
-           filename: ./data/geovals/aircar_geovals_rrfs.nc4
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/aircar_geovals_rrfs.nc4
