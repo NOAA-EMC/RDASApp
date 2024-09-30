@@ -27,10 +27,11 @@ observations:
 @OBSERVATIONS@
 
 driver:
+  read HX from disk: true
   save posterior ensemble: false
   save prior mean: true
   save posterior mean: true
-  do posterior observer: false
+  do posterior observer: true
 
 time window:
        begin: 2024-05-26T23:00:00Z

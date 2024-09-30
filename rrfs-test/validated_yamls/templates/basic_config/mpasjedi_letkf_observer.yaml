@@ -8,7 +8,7 @@ geometry:
   streams_file: ./streams.atmosphere
   deallocate non-da fields: true
   interpolation type: unstructured
-  iterator dimension: 2
+  iterator dimension: 3
 
 increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
 
@@ -27,22 +27,16 @@ observations:
 @OBSERVATIONS@
 
 driver:
-  save posterior ensemble: false
-  save prior mean: true
-  save posterior mean: true
-  do posterior observer: false
+  run as observer only: true
+  update obs config with geometry info: false
 
 time window:
        begin: 2024-05-26T23:00:00Z
        length: PT2H
 
 local ensemble DA:
-  solver: GETKF
+  solver: LETKF
   use linear observer: true
-  vertical localization: # current settings use 12 modulated members
-    fraction of retained variance: 0.850
-    lengthscale: 0.55
-    lengthscale units: logp
   inflation:
     rtps: 0.95
     rtpp: 0.6
@@ -57,7 +51,7 @@ output: # for outputting mean posterior
   stream name: analysis 
 
 test:
-  reference filename: data/ref/rrfs-mpasjedi-getkf.ref
-  test output filename: ./rrfs-mpasjedi-getkf.out
+  reference filename: data/ref/rrfs-mpasjedi-letkf.ref
+  test output filename: ./rrfs-mpasjedi-letkf.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6
