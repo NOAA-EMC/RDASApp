@@ -14,8 +14,8 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_letkf_2022052619"   "fv3jedi_
 # MPAS-JEDI tests 
 set(rrfs_mpasjedi_tests)
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_Ens3Dvar"       "mpasjedi_variational.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_letkf"          "mpasjedi_enkf.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf"          "mpasjedi_enkf.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_letkf_observer" "mpasjedi_enkf.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_letkf_solver"   "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_observer" "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_solver"   "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        "mpasjedi_error_covariance_toolbox.x")
@@ -76,6 +76,7 @@ if(FV3_DYCORE)
          set(MPI_ARGS "${MPI_ARGS} --exclusive")
       endif()   
       set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=4")
+      set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
 
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
@@ -104,6 +105,13 @@ if(FV3_DYCORE)
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
 			TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
+                        COMMAND  ${exe} )
+	elseif ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_letkf_solver")
+           ecbuild_add_test( TARGET ${target_test}
+                        MPI      120
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                        ARGS     ${target_test}.yaml
+			TEST_DEPENDS "rrfs_mpasjedi_2024052700_letkf_observer"
                         COMMAND  ${exe} )
 	 else()
            ecbuild_add_test( TARGET ${target_test}
