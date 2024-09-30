@@ -144,17 +144,17 @@ observations:
           coordinates: "longitude latitude"
           source: variables/pwQualityMarker
           longName: "Total Precipitable Water Quality Marker"
-          
+
         # ObsError
         - name: "ObsError/totalPrecipitableWater"
           coordinates: "longitude latitude"
           source: variables/pwError
           longName: "Total Precipitable Water Observation Error"
           units: "Millimeter"
-          
-        # Tuned ObsError
-        - name: "TunedObsError/totalPrecipitableWater"
-          coordinates: "longitude latitude"
-          source: variables/pwTunedError
-          longName: "Analysis-Tuned Total Precipitable Water Observation Error"
-          units: "Millimeter"
+
+#        # Tuned ObsError
+#        - name: "TunedObsError/totalPrecipitableWater"
+#          coordinates: "longitude latitude"
+#          source: variables/pwTunedError
+#          longName: "Analysis-Tuned Total Precipitable Water Observation Error"
+#          units: "Millimeter"

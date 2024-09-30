@@ -294,12 +294,12 @@ observations:
         - name: "QualityMarker/windEastward"
           coordinates: "longitude latitude"
           source: variables/windQualityMarker
-          longName: "U-Component of Wind Quality Marker"
+          longName: "windEastward Quality Marker"
 
         - name: "QualityMarker/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windQualityMarker
-          longName: "V-Component of Wind Quality Marker"
+          longName: "windNorthward Quality Marker"
 
         # ObsError
         - name: "ObsError/pressure"
@@ -332,33 +332,33 @@ observations:
           longName: "Northward wind error"
           units: "Meter Second-1"
 
-        # Tuned ObsError
-        - name: "TunedObsError/pressure"
-          coordinates: "longitude latitude"
-          source: variables/pressureTunedError
-          longName: "Analysis-Tuned Pressure Observation Error"
-          units: "Pa"
-
-        - name: "TunedObsError/relativeHumidity"
-          coordinates: "longitude latitude"
-          source: variables/relativeHumidityTunedError
-          longName: "Analysis-Tuned Relative Humidity Error"
-          units: "1"
-
-        - name: "TunedObsError/airTemperature"
-          coordinates: "longitude latitude"
-          source: variables/airTemperatureTunedError
-          longName: "Analysis-Tuned Temperature Error"
-          units: "Kelvin"
-
-        - name: "TunedObsError/windEastward"
-          coordinates: "longitude latitude"
-          source: variables/windTunedError
-          longName: "Analysis-Tuned Eastward wind error"
-          units: "Meter Second-1"
-
-        - name: "TunedObsError/windNorthward"
-          coordinates: "longitude latitude"
-          source: variables/windTunedError
-          longName: "Analysis-Tuned Northward wind error"
-          units: "Meter Second-1"
+#        # Tuned ObsError
+#        - name: "TunedObsError/pressure"
+#          coordinates: "longitude latitude"
+#          source: variables/pressureTunedError
+#          longName: "Analysis-Tuned Pressure Observation Error"
+#          units: "Pa"
+#
+#        - name: "TunedObsError/relativeHumidity"
+#          coordinates: "longitude latitude"
+#          source: variables/relativeHumidityTunedError
+#          longName: "Analysis-Tuned Relative Humidity Error"
+#          units: "1"
+#
+#        - name: "TunedObsError/airTemperature"
+#          coordinates: "longitude latitude"
+#          source: variables/airTemperatureTunedError
+#          longName: "Analysis-Tuned Temperature Error"
+#          units: "Kelvin"
+#
+#        - name: "TunedObsError/windEastward"
+#          coordinates: "longitude latitude"
+#          source: variables/windTunedError
+#          longName: "Analysis-Tuned Eastward wind error"
+#          units: "Meter Second-1"
+#
+#        - name: "TunedObsError/windNorthward"
+#          coordinates: "longitude latitude"
+#          source: variables/windTunedError
+#          longName: "Analysis-Tuned Northward wind error"
+#          units: "Meter Second-1"
