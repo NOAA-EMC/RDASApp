@@ -48,13 +48,13 @@ msonet_obtype_configs=(
 
 # Function to concatenate all obtypes into one file
 process_obtypes() {
-    local ctesttype="$1"
+    local ctest="$1"
     local obtype_configs=("${!2}")  # Accept array as input
     local obs_filename="$3"
     local temp_yaml="$4"
 
     # Determine the ctest type to select the observation distribution
-    if [ $ctesttype == *"solver"* ]; then
+    if [[ $ctest == *"solver"* ]]; then
         distribution="Halo"
     else
         distribution="RoundRobin"
@@ -64,8 +64,19 @@ process_obtypes() {
     for obtype_config in "${obtype_configs[@]}"; do
         echo "   $obtype_config"
         cat ./templates/obtype_config/$obtype_config >> ./$temp_yaml
+
+        # For EnKF solver ctests, replace obsfile path with output from corresponding observer ctest
+	if [[ $ctest == *"solver"* ]]; then 
+	   previous_path=`sed -n '/obsdataout/{n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$obtype_config`
+   	   int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest::-5}\//gI")
+	   new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
+	   obs_filename=${new_path}
+           sed -i "s#@OBSFILE@#\"${obs_filename}\"#" ./$temp_yaml
+	fi 
+
     done
-    # Replace the @OBSFILE@ placeholder with the appropriate observation file
+
+    # Replace the @OBSFILE@ placeholder with the appropriate observation file (if it hasn't been done already)
     sed -i "s#@OBSFILE@#\"${obs_filename}\"#" ./$temp_yaml
     # Replace the @DISTRIBUTION@ placeholder with the appropriate observation distribution
     sed -i "s#@DISTRIBUTION@#\"${distribution}\"#" ./$temp_yaml
@@ -83,9 +94,9 @@ for basic_config in "${basic_configs[@]}"; do
   rm -f $temp_yaml  # Remove any existing file
 
   # Concatenate all obtypes into the super yaml
-  process_obtypes "$basic_config" "aircar_obtype_configs[@]" "data/obs_ctest/ioda_aircar_dc.nc" "$temp_yaml"
-  process_obtypes "$basic_config" "aircft_obtype_configs[@]" "data/obs_ctest/ioda_aircft_dc.nc" "$temp_yaml"
-  process_obtypes "$basic_config" "msonet_obtype_configs[@]" "data/obs_ctest/ioda_msonet_dc.nc" "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "aircar_obtype_configs[@]" "data/obs_ctest/ioda_aircar_dc.nc" "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "aircft_obtype_configs[@]" "data/obs_ctest/ioda_aircft_dc.nc" "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "msonet_obtype_configs[@]" "data/obs_ctest/ioda_msonet_dc.nc" "$temp_yaml"
 
   # Copy the basic configuration yaml into the super yaml
   cp -p templates/basic_config/$basic_config ./$conv_yaml
