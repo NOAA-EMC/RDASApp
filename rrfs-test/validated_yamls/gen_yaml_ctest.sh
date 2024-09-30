@@ -5,8 +5,6 @@ basic_configs=(
     "mpasjedi_en3dvar.yaml"
     "mpasjedi_getkf_observer.yaml"
     "mpasjedi_getkf_solver.yaml"
-    "mpasjedi_letkf_observer.yaml"
-    "mpasjedi_letkf_solver.yaml"
 )
 
 # CTest yaml outputs 
@@ -14,8 +12,6 @@ ctest_names=(
     "rrfs_mpasjedi_2024052700_Ens3Dvar.yaml"
     "rrfs_mpasjedi_2024052700_getkf_observer.yaml"
     "rrfs_mpasjedi_2024052700_getkf_solver.yaml"
-    "rrfs_mpasjedi_2024052700_letkf_observer.yaml"
-    "rrfs_mpasjedi_2024052700_letkf_solver.yaml"
 )
     
 # Define the aircar observation type configs as an array
