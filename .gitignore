@@ -159,3 +159,7 @@ install*/
 expr
 fix/INIT_DONE
 fix/.agent
+
+# Ignore the intermediate yamls created for rrfs-test ctests
+rrfs-test/validated_yamls/temp.yaml
+rrfs-test/validated_yamls/conv.yaml
