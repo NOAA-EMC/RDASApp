@@ -42,7 +42,7 @@ local ensemble DA:
   use linear observer: true
   vertical localization: # current settings use 12 modulated members
     fraction of retained variance: 0.850
-    lengthscale: 0.55
+    lengthscale: 0.50
     lengthscale units: logp
   inflation:
     rtps: 0.95
