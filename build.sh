@@ -150,7 +150,6 @@ if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
   cd ${BUILD_DIR}
 fi
 
-
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE"
 # Configure
 echo "Configuring ..."
