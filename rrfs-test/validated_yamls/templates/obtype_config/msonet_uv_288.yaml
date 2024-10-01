@@ -2,7 +2,7 @@
          name: msonet
          distribution:
            name: @DISTRIBUTION@
-           halo size: 500e3
+           halo size: 100e3
          obsdatain:
            engine:
              type: H5File
@@ -44,11 +44,6 @@
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 300e3 # orig
-         - localization method: Vertical localization
-           vertical lengthscale: 6000
-           ioda vertical coordinate: height
-           ioda vertical coordinate group: MetaData
-           localization function: Gaspari Cohn
 
        obs filters:
          # ------------------
