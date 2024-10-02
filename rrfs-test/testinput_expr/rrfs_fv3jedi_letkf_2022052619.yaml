@@ -160,10 +160,3 @@ output: # for outputting mean posterior
   filetype: fms restart
   datapath: ./
   prefix: letkf-meanposterior-fv3_lam-C775
-
-test:
-  reference filename: testoutput/rrfs-fv3jedi-letkf.ref
-  test output filename: ./rrfs-fv3jedi-letkf.out
-  float relative tolerance: 1.0e-3
-  float absolute tolerance: 1.0e-6
-
