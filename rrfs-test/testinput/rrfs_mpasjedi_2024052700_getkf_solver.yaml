@@ -8,7 +8,7 @@ geometry:
   streams_file: ./streams.atmosphere
   deallocate non-da fields: true
   interpolation type: unstructured
-  iterator dimension: 3
+  iterator dimension: 2
 
 increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
 
@@ -32,11 +32,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/rap.t00z.singleobs.ADPUPA.tm00.nc4
+             obsfile: ../rundir-rrfs_mpasjedi_2024052700_getkf_observer/adpupa_hofx.nc4
          obsdataout:
            engine:
              type: H5File
-             obsfile: ./adpupa_hofx.nc4
+             obsfile: ./adpupa_hofx_solver.nc4
          simulated variables: [airTemperature]
          observed variables: [airTemperature]
        obs operator:
@@ -46,11 +46,6 @@ observations:
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 300e3 # orig
-         - localization method: Vertical localization
-           vertical lengthscale: 6000
-           ioda vertical coordinate: height
-           ioda vertical coordinate group: MetaData
-           localization function: Gaspari Cohn
        obs filters:
          - filter: Perform Action
            filter variables:
@@ -61,18 +56,23 @@ observations:
            defer to post: true
 
 driver:
+  read HX from disk: true
   save posterior ensemble: false
   save prior mean: true
   save posterior mean: true
-  do posterior observer: false
+  do posterior observer: true
 
 time window:
        begin: 2024-05-26T23:00:00Z
        length: PT2H
 
 local ensemble DA:
-  solver: LETKF
+  solver: GETKF
   use linear observer: true
+  vertical localization: # current settings use 12 modulated members
+    fraction of retained variance: 0.850
+    lengthscale: 0.55
+    lengthscale units: logp
   inflation:
     rtps: 0.95
     rtpp: 0.6
@@ -87,7 +87,7 @@ output: # for outputting mean posterior
   stream name: analysis 
 
 test:
-  reference filename: testoutput/rrfs-mpasjedi-letkf.ref
-  test output filename: ./rrfs-mpasjedi-letkf.out
+  reference filename: testoutput/rrfs-mpasjedi-getkf-solver.ref
+  test output filename: ./rrfs-mpasjedi-getkf-solver.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6
