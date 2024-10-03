@@ -53,4 +53,5 @@ ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc 
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/restart.2024-05-27_00.00.00.nc static.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/ens/* ens/
+ln -snf ${RDASApp}/fix/crtm/2.4.0 crtm
 
