@@ -31,7 +31,6 @@ observations:
             query: "*/SID"
           stationElevation:
             query: "*/ELV"
-            type: float
           prepbufrReportType:
             query: "*/TYP"
           dumpReportType:
@@ -60,7 +59,6 @@ observations:
 
           heightOfObservation:
             query: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT{1}/ZOB"
-            type: float
           heightOfObservationQualityMark:
             query: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT{1}/ZQM"
 
@@ -155,14 +153,14 @@ observations:
           coordinates: "longitude latitude"
           source: variables/longitude
           longName: "Longitude"
-          units: "degrees_east"
+          units: "degree_east"
           range: [0, 360]
 
         - name: "MetaData/latitude"
           coordinates: "longitude latitude"
           source: variables/latitude
           longName: "Latitude"
-          units: "degrees_north"
+          units: "degree_north"
           range: [-90, 90]
 
         - name: "MetaData/stationElevation"
