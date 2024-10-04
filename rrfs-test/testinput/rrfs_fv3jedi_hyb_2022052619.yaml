@@ -225,7 +225,7 @@ output:
   prefix: hybens3dvar-fv3_lam-C775 #Ens3dvar-fv3_lam-C775
   frequency: PT1H
 test:
-  reference filename: Data/testinput/rrfs-fv3jedi-hyb.ref
+  reference filename: testoutput/rrfs-fv3jedi-hyb.ref
   test output filename: rrfs-fv3jedi-hyb.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6

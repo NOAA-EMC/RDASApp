@@ -8,7 +8,7 @@ geometry:
   streams_file: ./streams.atmosphere
   deallocate non-da fields: true
   interpolation type: unstructured
-  iterator dimension: 3
+  iterator dimension: 2
 
 increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
 
@@ -27,8 +27,7 @@ observations:
      - obs space:
          name: sonde
          distribution:
-           name: Halo
-           halo size: 1000e3
+           name: RoundRobin
          obsdatain:
            engine:
              type: H5File
@@ -46,11 +45,6 @@ observations:
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 300e3 # orig
-         - localization method: Vertical localization
-           vertical lengthscale: 6000
-           ioda vertical coordinate: height
-           ioda vertical coordinate group: MetaData
-           localization function: Gaspari Cohn
        obs filters:
          - filter: Perform Action
            filter variables:
@@ -61,33 +55,27 @@ observations:
            defer to post: true
 
 driver:
-  save posterior ensemble: false
-  save prior mean: true
-  save posterior mean: true
-  do posterior observer: false
+  run as observer only: true
+  update obs config with geometry info: false
 
 time window:
        begin: 2024-05-26T23:00:00Z
        length: PT2H
 
 local ensemble DA:
-  solver: LETKF
+  solver: GETKF
   use linear observer: true
+  vertical localization: # current settings use 12 modulated members
+    fraction of retained variance: 0.850
+    lengthscale: 0.55
+    lengthscale units: logp
   inflation:
     rtps: 0.95
     rtpp: 0.6
     mult: 1.1
 
-output mean prior:
-  filename: ./bkg.$Y-$M-$D_$h.$m.$s.nc
-  stream name: background
-
-output: # for outputting mean posterior
-  filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
-  stream name: analysis 
-
 test:
-  reference filename: testoutput/rrfs-mpasjedi-letkf.ref
-  test output filename: ./rrfs-mpasjedi-letkf.out
+  reference filename: testoutput/rrfs-mpasjedi-getkf-observer.ref
+  test output filename: ./rrfs-mpasjedi-getkf-observer.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6
