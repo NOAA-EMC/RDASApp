@@ -69,6 +69,8 @@ observations:
               - scale: 100
           pressureTunedError:
             query: "*/PRSLEVEL/P___INFO/P__POSTP/POETU"
+            transforms:
+              - scale: 100
 
           heightOfObservation:
             query: "*/PRSLEVEL/Z___INFO/Z__EVENT{1}/ZOB"
