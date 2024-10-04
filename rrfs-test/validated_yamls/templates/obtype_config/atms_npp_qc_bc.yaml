@@ -1,13 +1,16 @@
      - obs space:
          name: atms_npp
+         distribution:
+           name: @DISTRIBUTION@
+           halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/atms_npp_obs_2024052700.nc
+             obsfile: @OBSFILE@
          obsdataout:
            engine:
              type: H5File
-             obsfile: ./rass_atms_obs_2024052700.nc4
+             obsfile: rass_atms_obs_2024052700.nc4
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: &atms_npp_channels 1-22
@@ -22,16 +25,19 @@
              IRVISlandCoeff: IGBP
            linear obs operator:
              Absorbers: [H2O, O3]
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
 
        obs bias:
-         input file:  data/obs/atms_npp.satbias.nc4
+         input file:  data/obs_ctest/atms_npp.satbias.nc4
          output file: ./out_atms_npp.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &atms_npp_tlapse  data/obs/atms_npp.tlapse.txt
+             tlapse: &atms_npp_tlapse  data/obs_ctest/atms_npp.tlapse.txt
            - name: lapseRate
              tlapse: *atms_npp_tlapse
            - name: emissivityJacobian
@@ -48,7 +54,7 @@
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/atms_npp.satbias_cov.nc4
+             input file: data/obs_ctest/atms_npp.satbias_cov.nc4
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
