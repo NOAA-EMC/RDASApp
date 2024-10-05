@@ -68,11 +68,11 @@ cost function:
     streams_file: ./streams.atmosphere
     deallocate non-da fields: true
     interpolation type: unstructured
-  analysis variables: *incvars 
+  analysis variables: *incvars
   background:
     state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
-    filename: data/restart.2024-05-27_00.00.00.nc
-    date: *analysisDate 
+    filename: data/mpasout.2024-05-27_00.00.00.nc
+    date: *analysisDate
   background error:
     covariance model: ensemble
     localization:
@@ -92,40 +92,12 @@ cost function:
     members from template:
       template:
         <<: *memberConfig
-        filename: ./data/ens/mem%iMember%/restart.2024-05-27_00.00.00.nc
+        filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
       pattern: %iMember%
       start: 1
-      zero padding: 2 
+      zero padding: 3
       nmembers: 30
+
   observations:
      observers:
-     - obs space:
-         name: sonde  
-         obsdatain:
-           engine:
-             type: H5File
-             obsfile: data/obs/rap.t00z.singleobs.ADPUPA.tm00.nc4
-         obsdataout:
-           engine:
-             type: H5File
-             obsfile: ./adpupa_hofx.nc4
-         simulated variables: [airTemperature]
-         observed variables: [airTemperature]
-       obs operator:
-         name: VertInterp
-       obs error:
-         covariance model: diagonal
-       obs filters:
-         - filter: Perform Action
-           filter variables:
-           - name: airTemperature
-           action:
-             name: assign error
-             error parameter: 1.2  # K
-           defer to post: true
-
-test:
-  reference filename: testoutput/rrfs-mpasjedi-ens3dvar.ref
-  test output filename: ./rrfs-mpasjedi-ens3dvar.out
-  float relative tolerance: 1.0e-3
-  float absolute tolerance: 1.0e-6
+@OBSERVATIONS@
