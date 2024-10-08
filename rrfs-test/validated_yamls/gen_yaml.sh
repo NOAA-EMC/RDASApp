@@ -2,8 +2,11 @@
 
 # Define the basic configuration YAML
 #basic_config="fv3jedi_hyb3denvar.yaml"
-#basic_config="mpasjedi_3dvar.yaml"
-basic_config="mpasjedi_en3dvar.yaml"
+basic_config="mpasjedi_3dvar.yaml"
+#basic_config="mpasjedi_en3dvar.yaml"
+
+# Which observation distribution to use? Halo or RoundRobin
+distribution="Halo"
 
 
 # Define the aircar observation type configs as an array
@@ -46,7 +49,9 @@ process_obtypes() {
         cat ./templates/obtype_config/$obtype_config >> ./$temp_yaml
     done
     # Replace the @OBSFILE@ placeholder with the appropriate observation file
-    sed -i "s#@OBSFILE@#\"${obs_filename}\"#" ./$temp_yaml
+    sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
+    # Replace the @DISTRIBUTION@ placeholder with the appropriate observation distribution
+    sed -i "s#@DISTRIBUTION@#${distribution}#" ./$temp_yaml
 }
 
 # Create the super yaml (conv.yaml)
@@ -71,7 +76,7 @@ sed -i '/@OBSERVATIONS@/{
 }' ./$conv_yaml
 
 # Replace the @OBSFILE@ placeholder with a dummy filename (can customize as needed)
-sed -i "s#@OBSFILE@#\"data/obs/combined_obs_file.nc\"#" ./$conv_yaml
+sed -i "s#@OBSFILE@#data/obs/combined_obs_file.nc#" ./$conv_yaml
 
 echo "Super YAML created in ${conv_yaml}"
 

@@ -93,14 +93,14 @@ cost function:
       template:
         <<: *memberConfig
         filename: ./data/ens/mem%iMember%/restart.2024-05-27_00.00.00.nc
-      pattern: %iMember%
+      pattern: "%iMember%"
       start: 1
       zero padding: 2
       nmembers: 30
 
   observations:
      observers:
-@OBSERVATIONS@
+        "@OBSERVATIONS@"
 
 test:
   reference filename: testoutput/rrfs-mpasjedi-ens3dvar.ref

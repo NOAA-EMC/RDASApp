@@ -95,4 +95,4 @@ cost function:
 
   observations:
      observers:
-@OBSERVATIONS@
+        "@OBSERVATIONS@"

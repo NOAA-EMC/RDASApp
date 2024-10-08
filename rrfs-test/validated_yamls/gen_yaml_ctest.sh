@@ -72,15 +72,15 @@ process_obtypes() {
    	   int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest::-5}\//gI")
 	   new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
 	   obs_filename=${new_path}
-           sed -i "s#@OBSFILE@#\"${obs_filename}\"#" ./$temp_yaml
+           sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
 	fi 
 
     done
 
     # Replace the @OBSFILE@ placeholder with the appropriate observation file (if it hasn't been done already)
-    sed -i "s#@OBSFILE@#\"${obs_filename}\"#" ./$temp_yaml
+    sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
     # Replace the @DISTRIBUTION@ placeholder with the appropriate observation distribution
-    sed -i "s#@DISTRIBUTION@#\"${distribution}\"#" ./$temp_yaml
+    sed -i "s#@DISTRIBUTION@#${distribution}#" ./$temp_yaml
 }
 
 # Loop over basic config yamls 
@@ -110,7 +110,7 @@ for basic_config in "${basic_configs[@]}"; do
   }' ./$conv_yaml
 
   # Replace the @OBSFILE@ placeholder with a dummy filename (can customize as needed)
-  sed -i "s#@OBSFILE@#\"data/obs_ctest/combined_obs_file.nc\"#" ./$conv_yaml
+  sed -i "s#@OBSFILE@#data/obs_ctest/combined_obs_file.nc#" ./$conv_yaml
 
   echo "Super YAML created in ${conv_yaml}"
 

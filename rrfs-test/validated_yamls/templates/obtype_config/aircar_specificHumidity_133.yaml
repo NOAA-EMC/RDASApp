@@ -1,12 +1,12 @@
      - obs space:
          name: aircar
          distribution:
-           name: @DISTRIBUTION@
+           name: "@DISTRIBUTION@"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: @OBSFILE@
+             obsfile: "@OBSFILE@"
          obsdataout:
            engine:
              type: H5File
