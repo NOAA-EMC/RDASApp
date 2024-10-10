@@ -90,10 +90,11 @@ cost function:
                 alias:
                 - in code: common
                   in file: fixed_250km_0.3
-
               drivers:
                  multivariate strategy: duplicated
                  read local nicas: true
+              model:
+                 level for 2d variables: last
       weight:
         value: 0.9
 
