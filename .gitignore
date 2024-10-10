@@ -159,8 +159,3 @@ install*/
 expr
 fix/INIT_DONE
 fix/.agent
-
-# Ignore the yamls created by gen_yaml_ctest.sh
-rrfs-test/testinput/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
-rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_observer.yaml
-rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_solver.yaml
