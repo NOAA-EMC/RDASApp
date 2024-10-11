@@ -47,7 +47,7 @@ cp ${RDASApp}/rrfs-test/ush/mpasjedi_spread.py .
 
 mkdir -p data
 cd data
-mkdir -p bumploc bkg obs ens
+mkdir -p bumploc obs ens
 ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/${BUMPLOC}
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/mpasout.2024-05-27_00.00.00.nc .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/invariant.nc invariant.nc

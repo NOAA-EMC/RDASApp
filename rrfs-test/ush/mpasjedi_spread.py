@@ -17,8 +17,7 @@ warnings.filterwarnings('ignore')
 
 # MPAS info
 jstatic = "data/static.nc"  # to load the MPAS lat/lon
-ens_file = "restart.2024-05-27_00.00.00.nc"
-#ens_file = "mpasout.2024-05-27_00.00.00.nc"
+ens_file = "mpasout.2024-05-27_00.00.00.nc"
 nmems = 30
 
 # Plotting options
