@@ -50,7 +50,7 @@
                name: ObsFunction/ObsErrorModelStepwiseLinear
                options:
                  xvar:
-                   name: ObsValue/specificHumidity
+                   name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07] 
 
@@ -110,11 +110,11 @@
            - name: specificHumidity
            action:
              name: assign error
-             error parameter: 1.0 # K
+             error parameter: 5.0
            where:
            - variable:
                name: TempObsErrorData/specificHumidity
-             maxvalue: 1.0
+             maxvalue: 5.0
            - variable:
                name: TempObsErrorData/specificHumidity
              value: is_valid
@@ -126,11 +126,11 @@
            - name: specificHumidity
            action:
              name: assign error
-             error parameter: 3.0 # K
+             error parameter: 50.0
            where:
            - variable:
                name: TempObsErrorData/specificHumidity
-             minvalue: 3.0
+             minvalue: 50.0
            - variable:
                name: TempObsErrorData/specificHumidity
              value: is_valid
@@ -156,7 +156,7 @@
            apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
-           threshold: 3.5
+           threshold: 4.9
            action:
              name: reject
            where:

@@ -1,5 +1,5 @@
      - obs space:
-         name: msonet_uv_288
+         name: msonet_winds_288
          obsdatain:
            engine:
              type: H5File
@@ -7,7 +7,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: MSONET_hofxs_uv_288.nc4
+             obsfile: MSONET_hofxs_winds_288.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -26,7 +26,7 @@
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
            #gsi geovals:
-           #  filename: "obsout/sfc_uv_geoval_2022052619.nc4"
+           #  filename: "obsout/sfc_winds_geoval_2022052619.nc4"
            #  levels_are_top_down: False
            variables:
            - name: windEastward
@@ -40,24 +40,24 @@
 
        obs filters:
          # ------------------
-         # windEastward
+         # winds
          # ------------------
          # 288
          # Initial error assignment
          - filter: Perform Action
            filter variables:
            - name: windEastward
+           - name: windNorthward
            where:
            - variable: ObsType/windEastward
              is_in: 288
            action:
              name: assign error
-             #error parameter: 3.0  # m/s
              error function:
                name: ObsFunction/ObsErrorModelStepwiseLinear
                options:
                  xvar:
-                   name: ObsValue/windEastward
+                   name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0]
            defer to post: true
@@ -76,29 +76,6 @@
                options:
                  variable: windEastward
                  inflation factor: 4.0
-
-         # ------------------
-         # windNorthward
-         # ------------------
-         # 288
-         # Initial error assignment
-         - filter: Perform Action
-           filter variables:
-           - name: windNorthward
-           where:
-           - variable: ObsType/windNorthward
-             is_in: 288
-           action:
-             name: assign error
-             #error parameter: 3.0  # m/s
-             error function:
-               name: ObsFunction/ObsErrorModelStepwiseLinear
-               options:
-                 xvar:
-                   name: ObsValue/windNorthward
-                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
-                 errors: [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0]
-           defer to post: true
 
          # error inflation based on pressure check (setupw.f90)
          - filter: Perform Action
@@ -426,24 +403,9 @@
            apply at iterations: 0,1
            filter variables:
            - name: windEastward
-           minvalue: -200
-           maxvalue: 200
-           where:
-           - variable: ObsType/windEastward
-             is_in: 288
-           action:
-             name: reject
-
-         # Bounds Check
-         - filter: Bounds Check
-           apply at iterations: 0,1
-           filter variables:
            - name: windNorthward
-           minvalue: -200
-           maxvalue: 200
-           where:
-           - variable: ObsType/windNorthward
-             is_in: 288
+           minvalue: -130
+           maxvalue: 130
            action:
              name: reject
 

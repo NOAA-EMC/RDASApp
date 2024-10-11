@@ -48,7 +48,6 @@
              is_in: 188
            action:
              name: assign error
-             #error parameter: 53.89 #Pa
              error function:
                name: ObsFunction/ObsErrorModelStepwiseLinear
                options:
@@ -109,7 +108,7 @@
            - name: stationPressure
            action:
              name: assign error
-             error parameter: 100.00 # Pa
+             error parameter: 100.00
            where:
            - variable:
                name: TempObsErrorData/stationPressure
@@ -125,7 +124,7 @@
            - name: stationPressure
            action:
              name: assign error
-             error parameter: 300.0 # Pa
+             error parameter: 300.0
            where:
            - variable:
                name: TempObsErrorData/stationPressure
