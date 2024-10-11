@@ -43,6 +43,7 @@ sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/mpasjedi
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/mpasjedi_expr/run_jedi.sh > run_jedi.sh
 cp ${RDASApp}/rrfs-test/ush/colormap.py .
 cp ${RDASApp}/rrfs-test/ush/mpasjedi_increment_singleob.py .
+cp ${RDASApp}/rrfs-test/ush/mpasjedi_increment_fulldom.py .
 cp ${RDASApp}/rrfs-test/ush/mpasjedi_spread.py .
 
 mkdir -p data
