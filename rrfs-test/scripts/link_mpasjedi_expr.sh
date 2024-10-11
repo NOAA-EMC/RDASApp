@@ -50,7 +50,7 @@ cd data
 mkdir -p bumploc bkg obs ens
 ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/${BUMPLOC}
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/mpasout.2024-05-27_00.00.00.nc .
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/static.nc static.nc
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/invariant.nc invariant.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/ens/* ens/
 ln -snf ${RDASApp}/fix/crtm/2.4.0 crtm
