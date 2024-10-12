@@ -101,7 +101,7 @@ cost function:
 
   observations:
      observers:
-@OBSERVATIONS@
+        "@OBSERVATIONS@"
 
 variational:
   minimizer:

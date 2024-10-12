@@ -8,7 +8,7 @@ geometry:
   streams_file: ./streams.atmosphere
   deallocate non-da fields: true
   interpolation type: unstructured
-  iterator dimension: 3
+  iterator dimension: 2
 
 increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
 
@@ -17,50 +17,17 @@ background:
       template:
         <<: *memberConfig
         filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
-      pattern: %iMember%
+      pattern: "%iMember%"
       start: 1
-      zero padding: 2
+      zero padding: 3
       nmembers: 30
 
 observations:
      observers:
-     - obs space:
-         name: sonde
-         distribution:
-           name: Halo
-           halo size: 1000e3
-         obsdatain:
-           engine:
-             type: H5File
-             obsfile: data/obs/rap.t00z.singleobs.ADPUPA.tm00.nc4
-         obsdataout:
-           engine:
-             type: H5File
-             obsfile: ./adpupa_hofx.nc4
-         simulated variables: [airTemperature]
-         observed variables: [airTemperature]
-       obs operator:
-         name: VertInterp
-       obs error:
-         covariance model: diagonal
-       obs localizations:
-         - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
-         - localization method: Vertical localization
-           vertical lengthscale: 6000
-           ioda vertical coordinate: height
-           ioda vertical coordinate group: MetaData
-           localization function: Gaspari Cohn
-       obs filters:
-         - filter: Perform Action
-           filter variables:
-           - name: airTemperature
-           action:
-             name: assign error
-             error parameter: 1.2  # K
-           defer to post: true
+        "@OBSERVATIONS@"
 
 driver:
+  read HX from disk: true
   save posterior ensemble: false
   save prior mean: true
   save posterior mean: true
@@ -71,8 +38,12 @@ time window:
        length: PT2H
 
 local ensemble DA:
-  solver: LETKF
+  solver: GETKF
   use linear observer: true
+  vertical localization: # current settings use 12 modulated members
+    fraction of retained variance: 0.850
+    lengthscale: 0.50
+    lengthscale units: logp
   inflation:
     rtps: 0.95
     rtpp: 0.6
@@ -87,7 +58,7 @@ output: # for outputting mean posterior
   stream name: analysis 
 
 test:
-  reference filename: testoutput/rrfs-mpasjedi-letkf.ref
-  test output filename: ./rrfs-mpasjedi-letkf.out
+  reference filename: testoutput/rrfs-mpasjedi-getkf-solver.ref
+  test output filename: ./rrfs-mpasjedi-getkf-solver.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6

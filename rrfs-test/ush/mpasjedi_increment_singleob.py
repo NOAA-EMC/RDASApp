@@ -19,7 +19,7 @@ warnings.filterwarnings('ignore')
 
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
-lev = 1                 # 1=sfc, 55=toa
+lev = 23                # 1=sfc, 55=toa
 clevmax_incr = 2.0      # max contour level for colorbar increment plots
 decimals = 2            # number of decimals to round for text boxes
 plot_box_width = 8.     # define size of plot domain (units: lat/lon degrees)
@@ -168,7 +168,7 @@ triang.set_mask(mask)
 
 # Plot the data using triangulation
 clevs, cm, units, longname = plot_T_inc(jedi_inc, clevmax_incr)
-c1 = m1.tricontourf(triang, jedi_inc, clevs, cmap=cm, extend='both', transform=ccrs.PlateCarree())
+c1 = m1.tricontourf(triang, jedi_inc, clevs, cmap=cm, extend='both')
 
 # Scatter the single ob location
 m1.scatter(singleob_lon, singleob_lat, color='g', marker='o', s=2)

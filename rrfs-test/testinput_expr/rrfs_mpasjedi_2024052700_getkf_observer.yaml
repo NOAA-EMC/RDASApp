@@ -1,0 +1,75 @@
+_member: &memberConfig
+  date: &analysisDate '2024-05-27T00:00:00Z'
+  state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
+  stream name: ensemble
+
+geometry:
+  nml_file: ./namelist.atmosphere
+  streams_file: ./streams.atmosphere
+  deallocate non-da fields: true
+  interpolation type: unstructured
+  iterator dimension: 2
+
+increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
+
+background: 
+    members from template:
+      template:
+        <<: *memberConfig
+        filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
+      pattern: %iMember%
+      start: 1
+      zero padding: 3
+      nmembers: 30
+
+observations:
+     observers:
+     - obs space:
+         name: sonde
+         distribution:
+           name: RoundRobin
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: data/obs/rap.t00z.singleobs.ADPUPA.tm00.nc4
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: ./adpupa_hofx.nc4
+         simulated variables: [airTemperature]
+         observed variables: [airTemperature]
+       obs operator:
+         name: VertInterp
+       obs error:
+         covariance model: diagonal
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+       obs filters:
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error parameter: 1.2  # K
+           defer to post: true
+
+driver:
+  run as observer only: true
+  update obs config with geometry info: false
+
+time window:
+       begin: 2024-05-26T23:00:00Z
+       length: PT2H
+
+local ensemble DA:
+  solver: GETKF
+  use linear observer: true
+  vertical localization: # current settings use 12 modulated members
+    fraction of retained variance: 0.850
+    lengthscale: 0.55
+    lengthscale units: logp
+  inflation:
+    rtps: 0.95
+    rtpp: 0.6
+    mult: 1.1
