@@ -67,7 +67,7 @@ cost function:
       template:
         <<: *memberConfig
         filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
-      pattern: %iMember%
+      pattern: "%iMember%"
       start: 1
       zero padding: 3 
       nmembers: 30
