@@ -46,7 +46,7 @@ cost function:
   background:
     state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
     filename: data/mpasout.2024-05-27_00.00.00.nc
-    date: *analysisDate 
+    date: *analysisDate
   background error:
     covariance model: ensemble
     localization:
@@ -69,7 +69,7 @@ cost function:
         filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
       pattern: "%iMember%"
       start: 1
-      zero padding: 3 
+      zero padding: 3
       nmembers: 30
 
   observations:
@@ -3513,7 +3513,7 @@ cost function:
 
 
 test:
-  reference filename: data/ref/rrfs-mpasjedi-ens3dvar.ref
+  reference filename: testoutput/rrfs-mpasjedi-ens3dvar.ref
   test output filename: ./rrfs-mpasjedi-ens3dvar.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6
