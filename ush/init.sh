@@ -6,13 +6,16 @@ basedir="$(dirname "$ushdir")"
 
 case ${MACHINE_ID} in
   hera)
-    RDAS_DATA=/scratch1/NCEPDEV/fv3-cam/RDAS_DATA
+    RDAS_DATA=/scratch2/BMC/rtrr/RDAS_DATA
     ;;
   jet)
     RDAS_DATA=/lfs5/BMC/nrtrr/RDAS_DATA
     ;;
   orion|hercules)
     RDAS_DATA=/work/noaa/zrtrr/RDAS_DATA
+    ;;
+  gaeaC6)
+    RDAS_DATA=/gpfs/f6/bil-fire10-oar/world-shared/rrfsfix/RDAS_DATA
     ;;
   *)
     echo "platform not supported: ${MACHINE_ID}"

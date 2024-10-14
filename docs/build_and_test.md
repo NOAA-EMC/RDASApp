@@ -14,4 +14,7 @@ Run `./build.sh -h` to learn more about command line options supported by build.
 ```
     ush/run_rrfs_tests.sh $account
 ```
-Where `$account` is your valid slurm resource account (e.g., `fv3-cam`, `da-cpu`, `wrfruc`, `rtrr`, `nrtrr`, etc.). 
+Where `$account` is your valid slurm resource account (e.g., `fv3-cam`, `da-cpu`, `wrfruc`, `rtrr`, `nrtrr`, etc.).   
+- To run ctest mannualy without using the above bash script, follow these two steps first:  
+`source ush/load_rdas.sh`    
+`export SLURM_ACCOUNT=$account`
