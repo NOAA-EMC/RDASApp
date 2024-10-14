@@ -15,10 +15,10 @@ case ${MACHINE_ID} in
     RDAS_DATA=/work/noaa/zrtrr/RDAS_DATA
     ;;
   gaeaC6)
-    RDAS_DATA=/gpfs/f6/bil-fire10-oar/world-shared/rrfsfix/RDAS_DATA
+    RDAS_DATA=/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/RDAS_DATA
     ;;
   gaeaC5)
-    RDAS_DATA=/gpfs/f5/gsl-glo/world-shared/rrfsfix/RDAS_DATA
+    RDAS_DATA=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/RDAS_DATA
     ;;
   *)
     echo "platform not supported: ${MACHINE_ID}"
