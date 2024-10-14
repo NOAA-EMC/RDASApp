@@ -17,6 +17,9 @@ case ${MACHINE_ID} in
   gaeaC6)
     RDAS_DATA=/gpfs/f6/bil-fire10-oar/world-shared/rrfsfix/RDAS_DATA
     ;;
+  gaeaC5)
+    RDAS_DATA=/gpfs/f6/gsl-glo/world-shared/rrfsfix/RDAS_DATA
+    ;;
   *)
     echo "platform not supported: ${MACHINE_ID}"
     ;;
