@@ -1,6 +1,7 @@
 #!/bin/sh
 #SBATCH --account=rtrr
-#SBATCH --qos=batch
+#SBATCH --qos=batch # use the normal queue on Gaea
+###SBATCH -M c6 # for Gaea
 ###SBATCH --partition=kjet
 ###SBATCH --reservation=rrfsens
 #SBATCH --ntasks=120
@@ -16,7 +17,9 @@ inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml # FOR ENVAR
 #inputfile=./rrfs_mpasjedi_2024052700_letkf.yaml # FOR LETKF
 #inputfile=./rrfs_mpasjedi_2024052700_getkf.yaml # FOR GETKF
 
-. /apps/lmod/lmod/init/sh
+if [[ -s /apps/lmod/lmod/init/sh ]]; then
+  . /apps/lmod/lmod/init/sh
+fi
 
 module purge
 source ${RDASApp}/ush/detect_machine.sh 
