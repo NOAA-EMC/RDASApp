@@ -21,10 +21,10 @@ case $(hostname -f) in
   dlogin0[1-9].dogwood.wcoss2.ncep.noaa.gov) MACHINE_ID=wcoss2 ;; ### dogwood01-9
   dlogin10.dogwood.wcoss2.ncep.noaa.gov)     MACHINE_ID=wcoss2 ;; ### dogwood10
 
-  gaea|gaea5[1-8])     MACHINE_ID=gaeaC5 ;;
-  gaea6[1-8])          MACHINE_ID=gaeaC6 ;;
-  gaea.ncrc.gov|gaea5[1-8].ncrc.gov) MACHINE_ID=gaeaC5 ;;
-  gaea6[1-8].ncrc.gov)               MACHINE_ID=gaeaC6 ;;
+  gaea|gaea5[1-8])     MACHINE_ID=gaea ;;
+  gaea6[1-8])          MACHINE_ID=gaea ;;
+  gaea.ncrc.gov|gaea5[1-8].ncrc.gov) MACHINE_ID=gaea ;;
+  gaea6[1-8].ncrc.gov)               MACHINE_ID=gaea ;;
 
   hfe0[1-9]) MACHINE_ID=hera ;; ### hera01-09
   hfe1[0-2]) MACHINE_ID=hera ;; ### hera10-12
@@ -84,11 +84,10 @@ elif [[ -d /work ]]; then
     MACHINE_ID=orion
   fi
 elif [[ -d /gpfs/f5 && -d /ncrc ]]; then
-  # We are on GAEA_C5.
-  MACHINE_ID=gaeaC5
+  # We are on GAEA
+  MACHINE_ID=gaea
 elif [[ -d /gpfs/f6 && -d /ncrc ]]; then
-  # We are on GAEA_C5.
-  MACHINE_ID=gaeaC6
+  MACHINE_ID=gaea
 elif [[ -d /data/prod ]]; then
   # We are on SSEC's S4
   MACHINE_ID=s4
