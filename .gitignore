@@ -154,6 +154,7 @@ install*/
 !/bundle/ioda-data
 !/bundle/fv3-jedi-data
 !/bundle/mpas-jedi-data
+!/bundle/fix
 
 # 
 expr
