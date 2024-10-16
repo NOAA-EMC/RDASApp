@@ -12,7 +12,6 @@ rrfs_fv3jedi_tests=(
     "rrfs_fv3jedi_letkf_2022052619"
 )
 
-
 # MPAS-JEDI tests
 rrfs_mpasjedi_tests=(
     "rrfs_mpasjedi_2024052700_Ens3Dvar"
@@ -65,4 +64,4 @@ if [[ $DYCORE == "MPASJEDI" || $DYCORE == "BOTH" ]]; then
    done
 fi
 
-
+echo All done.
