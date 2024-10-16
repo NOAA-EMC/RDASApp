@@ -1,6 +1,7 @@
 #!/bin/sh
 #SBATCH --account=rtrr
-#SBATCH --qos=batch
+#SBATCH --qos=batch # use the normal queue on Gaea
+###SBATCH -M c6 # for Gaea
 ###SBATCH --partition=bigmem
 ###SBATCH --partition=kjet
 ###SBATCH --reservation=rrfsens
@@ -13,7 +14,9 @@
 
 RDASApp=@RDASApp@
 
-. /apps/lmod/lmod/init/sh
+if [[ -s /apps/lmod/lmod/init/sh ]]; then
+  . /apps/lmod/lmod/init/sh
+fi
 
 module purge
 source ${RDASApp}/ush/detect_machine.sh 
