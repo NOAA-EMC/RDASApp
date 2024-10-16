@@ -34,11 +34,10 @@ if variable == "airTemperature":
 
 # JEDI data
 datapath = "./"
-jstatic      = "./data/static.nc"                 # to load the MPAS lat/lon
+jstatic      = "./data/invariant.nc"                 # to load the MPAS lat/lon
 
 janalysis   = "./ana.2024-05-27_00.00.00.nc"            # analysis file
-jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"            # background file
-#jbackgrnd   = "./data/mpasout.2024-05-27_00.00.00.nc"            # background file
+jbackgrnd   = "./data/mpasout.2024-05-27_00.00.00.nc"            # background file
 
 ###################################################################################
 # Set cartopy shapefile path

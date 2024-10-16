@@ -65,7 +65,7 @@
 	ignore = all
 [submodule "sorc/mpas"]
 	path = sorc/mpas
-	url = https://github.com/jcsda-internal/MPAS-Model
+	url = https://github.com/MPAS-Dev/MPAS-Model
 	branch = release-stable 
 	ignore = all
 [submodule "sorc/mpas-jedi"]

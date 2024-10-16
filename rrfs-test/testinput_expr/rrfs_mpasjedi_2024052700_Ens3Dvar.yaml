@@ -1,41 +1,3 @@
-
-# application-agnostic anchors that specify observation errors
-# applicable to Variational, HofX3D
-
-# reusable latitude bands for all observation types
-_conventional obs localizations: &heightAndHorizObsLoc
-  _blank: null
-
-_nonconventional obs localizations: &horizObsLoc
-  _blank: null
-
-_obs space: &ObsSpace
-  obs perturbations seed: 1
-  io pool:
-    max pool size: 10
-  distribution:
-    name: RoundRobin
-
-_obs error diagonal: &ObsErrorDiagonal
-  covariance model: diagonal
-  # Note: the same 'obs perturbations seed' must be used for all members for the 'zero-mean perturbations' option to work
-  zero-mean perturbations: true
-  member: 1
-  number of members: 1
-
-_get values: &GetValues
-  nnearest: 3
-
-_multi iteration filter: &multiIterationFilter
-  apply at iterations: 0,1,2,3,4,5
-# ObsAnchors and ObsErrorAnchors are automatically prepended above this line
-_iteration: &iterationConfig
-  geometry:
-    nml_file: ./namelist.atmosphere
-    streams_file: ./streams.atmosphere
-    deallocate non-da fields: true
-    interpolation type: unstructured
-  gradient norm reduction: 1e-3
 _member: &memberConfig
   date: &analysisDate '2024-05-27T00:00:00Z'
   state variables: &incvars [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal]
@@ -48,11 +10,23 @@ variational:
   minimizer:
     algorithm: DRPCG
   iterations:
-  - <<: *iterationConfig
+  - geometry:
+      nml_file: ./namelist.atmosphere
+      streams_file: ./streams.atmosphere
+      deallocate non-da fields: true
+      interpolation type: unstructured
+    gradient norm reduction: 1e-3
     diagnostics:
       departures: ombg
     ninner: 50
-  - <<: *iterationConfig
+  - geometry:
+      nml_file: ./namelist.atmosphere
+      streams_file: ./streams.atmosphere
+      deallocate non-da fields: true
+      interpolation type: unstructured
+    gradient norm reduction: 1e-3
+    diagnostics:
+      departures: ombg
     ninner: 50
 final:
   diagnostics:
@@ -68,11 +42,11 @@ cost function:
     streams_file: ./streams.atmosphere
     deallocate non-da fields: true
     interpolation type: unstructured
-  analysis variables: *incvars 
+  analysis variables: *incvars
   background:
     state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
-    filename: data/restart.2024-05-27_00.00.00.nc
-    date: *analysisDate 
+    filename: data/mpasout.2024-05-27_00.00.00.nc
+    date: *analysisDate
   background error:
     covariance model: ensemble
     localization:
@@ -92,10 +66,10 @@ cost function:
     members from template:
       template:
         <<: *memberConfig
-        filename: ./data/ens/mem%iMember%/restart.2024-05-27_00.00.00.nc
-      pattern: %iMember%
+        filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
+      pattern: "%iMember%"
       start: 1
-      zero padding: 2 
+      zero padding: 3
       nmembers: 30
   observations:
      observers:

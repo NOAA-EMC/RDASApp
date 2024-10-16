@@ -31,13 +31,12 @@ if variable == "airTemperature":
 
 # JEDI data
 datapath = "./"
-jstatic      = "./data/static.nc"                 # to load the MPAS lat/lon
+jstatic      = "./data/invariant.nc"                 # to load the MPAS lat/lon
 jdiag        = "adpupa_hofx.nc4"                  # obs diag file
 
 # FOR HYBRID (or ENVAR)
 janalysis   = "./ana.2024-05-27_00.00.00.nc"           # analysis file
-jbackgrnd   = "./data/restart.2024-05-27_00.00.00.nc"  # background file (control member)
-#jbackgrnd   = "./data/mpasout.2024-05-27_00.00.00.nc"  # background file (control member)
+jbackgrnd   = "./data/mpasout.2024-05-27_00.00.00.nc"  # background file (control member)
 
 # FOR LETKF
 #janalysis   = "./ana.2024-05-27_00.00.00.nc"           # analysis file
@@ -56,7 +55,7 @@ print(f"{jdiag}")
 
 # FROM JEDI diag
 jncdiag = Dataset(jdiag, mode='r')
-if 'mpasout' or 'restart' in jbackgrnd:
+if 'mpasout' in jbackgrnd:
     # Assuming Var run
     oberr_input = jncdiag.groups["EffectiveError0"].variables[f"{variable}"][:][0]
     oberr_final = jncdiag.groups["EffectiveError2"].variables[f"{variable}"][:][0]

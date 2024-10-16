@@ -98,8 +98,8 @@ elif [[ $DYCORE == "MPAS" ]]; then
   mkdir -p data; cd data
   mkdir -p bumploc bkg obs ens
   ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/bumploc/* bumploc/.
-  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/bkg/restart.2024-05-27_00.00.00.nc .
-  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/bkg/restart.2024-05-27_00.00.00.nc static.nc
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/bkg/mpasout.2024-05-27_00.00.00.nc .
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/invariant.nc invariant.nc
   ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/obs/* obs/
   ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/ens/* ens/
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_bump_template.sh run_bump.sh

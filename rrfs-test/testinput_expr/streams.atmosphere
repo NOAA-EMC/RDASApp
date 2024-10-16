@@ -1,15 +1,15 @@
 <streams>
-<immutable_stream name="static"
+<immutable_stream name="invariant"
                   type="input"
                   precision="single"
-                  filename_template="data/static.nc"
+                  filename_template="data/invariant.nc"
                   io_type="pnetcdf,cdf5"
                   input_interval="initial_only" />
 
 <immutable_stream name="input"
                   type="input"
                   precision="single"
-                  filename_template="data/restart.2024-05-27_00.00.00.nc"
+                  filename_template="data/mpasout.2024-05-27_00.00.00.nc"
                   io_type="pnetcdf,cdf5"
                   input_interval="initial_only" />
 
