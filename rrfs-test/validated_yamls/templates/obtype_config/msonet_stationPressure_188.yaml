@@ -1,5 +1,5 @@
      - obs space:
-         name: msonet
+         name: msonet_stationPressure_188
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 100e3
@@ -36,8 +36,17 @@
          # ------------------
          # stationPressure
          # ------------------
-         # Initial error assignment
          # 188
+         # Reject all obs with QualityMarker > 3
+         - filter: RejectList
+           apply at iterations: 0,1
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 188
+           - variable: QualityMarker/stationPressure
+             is_in: 4-15
+
+         # Initial error assignment
          - filter: Perform Action
            filter variables:
            - name: stationPressure
@@ -46,36 +55,27 @@
              is_in: 188
            action:
              name: assign error
-             ##error parameter: 0.5389 #mb (units in GSI oberrtable)
-             error parameter: 53.89 #Pa
-             #error function:
-             #  name: ObsFunction/ObsErrorModelStepwiseLinear
-             #  options:
-             #    xvar:
-             #      name: ObsValue/stationPressure
-             #    xvals: [60000, 59999]
-             #    #errors: [53.89, 0.10000E+12]
-             #    errors: [53.89, 53.89]
-           defer to post: true
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: ObsValue/stationPressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11]
 
-         ## Ajusted error after initial assignment (qcmod.f90)
-         #- filter: Perform Action
-         #  filter variables:
-         #  - name: stationPressure
-         #  where:
-         #  - variable: ObsType/stationPressure
-         #    is_in: 188
-         #  action:
-         #    name: inflate error
-         #    inflation variable:
-         #      name: ObsFunction/ObsErrorFactorConventional
-         #      options:
-         #        test QCflag: PreQC
-         #        test QCthreshold: 3
-         #        inflate variables: [stationPressure]
-         #        pressure: MetaData/pressure
-         #        distance threshold: -1.
-         #  defer to post: true
+         # Ajusted error after initial assignment
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 188
+           - variable: QualityMarker/stationPressure
+             is_in: 3
+           defer to post: true
 
          # error inflation based on setupps.f90
          - filter: Perform Action
@@ -86,30 +86,106 @@
              is_in: 188
            action:
              name: inflate error
-             #inflation factor: 1.7143
              inflation variable:
                name: ObsFunction/ObsErrorFactorSfcPressure
-           defer to post: true
 
+         # Bounds Check
          - filter: Bounds Check
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
-           minvalue: 0.0
+           minvalue: 55000.0
            maxvalue: 120000.0
 
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           assignments:
+           - name: TempObsErrorData/stationPressure
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/stationPressure
+           defer to post: true
+
+         # set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error parameter: 100.00
+           where:
+           - variable:
+               name: TempObsErrorData/stationPressure
+             maxvalue: 100.0
+           - variable:
+               name: TempObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
+
+         # set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error parameter: 300.0
+           where:
+           - variable:
+               name: TempObsErrorData/stationPressure
+             minvalue: 300.0
+           - variable:
+               name: TempObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
+
+         # Gross Error Check
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
-           absolute threshold: 5.0
            threshold: 5.0
+           action:
+             name: reject
            where:
            - variable: ObsType/stationPressure
              is_in: 188
+           - variable: QualityMarker/stationPressure
+             is_not_in: 3
+           defer to post: true
+
+         # Gross Error Check: threshold*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           threshold: 3.5
            action:
              name: reject
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 188
+           - variable: QualityMarker/stationPressure
+             is_in: 3
+           defer to post: true
 
+         # Re-assign err ObsErrorData <--- TempObsErrorData
+         # after gross error check.
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error function: TempObsErrorData/stationPressure
+           where:
+           - variable:
+               name: TempObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
+
+         # Time window filter
          - filter: Domain Check
            apply at iterations: 0,1
            where:
@@ -118,12 +194,12 @@
                minvalue: -0.10
                maxvalue: 0.10
 
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           min_spacing: PT30M
-           seed_time: *analysisDate
-           category_variable:
-             name: MetaData/stationIdentification
+         #- filter: Temporal Thinning
+         #  apply at iterations: 0,1
+         #  min_spacing: PT00M
+         #  seed_time: *analysisDate
+         #  category_variable:
+         #    name: MetaData/stationIdentification
 
          ## Print filter data
          #- filter: Print Filter Data

@@ -1,5 +1,5 @@
      - obs space:
-         name: msonet
+         name: msonet_airTemperature_188
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 100e3
@@ -42,8 +42,8 @@
          # ------------------
          # airTemperature
          # ------------------
-         # Initial error assignment
          # 188
+         # Initial error assignment
          - filter: Perform Action
            filter variables:
            - name: airTemperature
@@ -52,27 +52,27 @@
              is_in: 188
            action:
              name: assign error
-             error parameter: 4.0  # K
-           defer to post: true
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0]
 
-         ## Ajusted error after initial assignment (qcmod.f90)
-         #- filter: Perform Action
-         #  filter variables:
-         #  - name: airTemperature
-         #  where:
-         #  - variable: ObsType/airTemperature
-         #    is_in: 188
-         #  action:
-         #    name: inflate error
-         #    inflation variable:
-         #      name: ObsFunction/ObsErrorFactorConventional
-         #      options:
-         #        test QCflag: PreQC
-         #        test QCthreshold: 3
-         #        inflate variables: [airTemperature]
-         #        pressure: MetaData/pressure
-         #        distance threshold: -1.
-         #  defer to post: true
+         # Ajusted error after initial assignment
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
+           - variable: QualityMarker/airTemperature
+             is_in: 3
+           defer to post: true
 
          # error inflation based on pressure check (setupt.f90)
          - filter: Perform Action
@@ -83,16 +83,13 @@
              is_in: 188
            action:
              name: inflate error
-             #inflation factor: 1.09757
              inflation variable:
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
                  variable: airTemperature
-                 inflation factor: 0.0
-                 #geovar_sfc_geomz: surface_geometric_height #FV3
-                 #geovar_sfc_geomz: surface_altitude #MPAS
-           defer to post: true
+                 inflation factor: 8.0
 
+         # Bounds Check
          - filter: Bounds Check
            apply at iterations: 0,1
            filter variables:
@@ -100,18 +97,95 @@
            minvalue: 100
            maxvalue: 400
 
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           assignments:
+           - name: TempObsErrorData/airTemperature
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/airTemperature
+           defer to post: true
+
+         # set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error parameter: 1.0
+           where:
+           - variable:
+               name: TempObsErrorData/airTemperature
+             maxvalue: 1.0
+           - variable:
+               name: TempObsErrorData/airTemperature
+             value: is_valid
+           defer to post: true
+
+         # set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error parameter: 3.0
+           where:
+           - variable:
+               name: TempObsErrorData/airTemperature
+             minvalue: 3.0
+           - variable:
+               name: TempObsErrorData/airTemperature
+             value: is_valid
+           defer to post: true
+
+         # Gross Error Check
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
            - name: airTemperature
-           absolute threshold: 5.0
            threshold: 5.0
+           action:
+             name: reject
            where:
            - variable: ObsType/airTemperature
              is_in: 188
+           - variable: QualityMarker/airTemperature
+             is_not_in: 3
+           defer to post: true
+
+         # Gross Error Check: threshold*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           threshold: 3.5
            action:
              name: reject
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
+           - variable: QualityMarker/airTemperature
+             is_in: 3
+           defer to post: true
 
+         # Re-assign err ObsErrorData <--- TempObsErrorData
+         # after gross error check.
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error function: TempObsErrorData/airTemperature
+           where:
+           - variable:
+               name: TempObsErrorData/airTemperature
+             value: is_valid
+           defer to post: true
+
+         # Time window filter
          - filter: Domain Check
            apply at iterations: 0,1
            where:
@@ -120,12 +194,12 @@
                minvalue: -0.10
                maxvalue: 0.10
 
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           min_spacing: PT30M
-           seed_time: *analysisDate
-           category_variable:
-             name: MetaData/stationIdentification
+         #- filter: Temporal Thinning
+         #  apply at iterations: 0,1
+         #  min_spacing: PT00M
+         #  seed_time: *analysisDate
+         #  category_variable:
+         #    name: MetaData/stationIdentification
 
          ## Print filter data
          #- filter: Print Filter Data
