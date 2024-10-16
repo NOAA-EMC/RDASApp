@@ -41,12 +41,11 @@ if [ $? -ne 0 ]; then
 fi
 
 # add to pythonpath the necessary libraries
-PYIODALIB=`echo $DIR_ROOT/build/lib/python3.?`
+PYIODALIB=`echo $DIR_ROOT/build/lib/python3.*`
 export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
 
 #----- python and json -----
 # first specify what observation types will be processed by a script
-#BUFR_py="msonet"
 BUFR_py="msonet_prepbufr"
 
 for obtype in $BUFR_py; do

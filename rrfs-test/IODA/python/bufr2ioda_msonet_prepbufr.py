@@ -87,7 +87,7 @@ def bufr_to_ioda(config, logger):
     logger.info(f"reference_time = {reference_time}")
 
     bufrfile = f"{cycle_type}.t{hh}z.{data_format}.tm00"
-    DATA_PATH = './rap.t19z.prepbufr.tm00'
+    DATA_PATH = os.path.join(dump_dir, bufrfile)
     if not os.path.isfile(DATA_PATH):
         logger.info(f"DATA_PATH {DATA_PATH} does not exist")
         return
@@ -317,8 +317,8 @@ def bufr_to_ioda(config, logger):
     dims = {'Location': np.arange(0, lat.shape[0])}
 
     # Create IODA ObsSpace
-    iodafile = f"{cycle_type}.t{hh}z.{data_format}.{data_type}.tm00.api.nc"
-    OUTPUT_PATH = os.path.join(iodafile)
+    iodafile = f"{cycle_type}.t{hh}z.{data_type}.tm00.api.nc"
+    OUTPUT_PATH = os.path.join(ioda_dir, iodafile)
     logger.info(f"Create output file: {OUTPUT_PATH}")
     obsspace = ioda_ospace.ObsSpace(OUTPUT_PATH, mode='w', dim_dict=dims)
 
