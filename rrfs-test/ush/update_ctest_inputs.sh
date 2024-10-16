@@ -30,7 +30,7 @@ src_yaml=${CMAKE_SOURCE_DIR}/rrfs-test/testinput
 if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then 
    for ctest in "${rrfs_fv3jedi_tests[@]}"; do
       case=${ctest}
-      echo Updating ${case}...
+      echo "Updating ${case}..."
       casedir=${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
       src_casedir=${rrfs_test_data_local}/rrfs-data_fv3jedi_2022052619
       ln -snf ${src_casedir}/DataFix ${casedir}/DataFix
@@ -45,7 +45,7 @@ fi
 if [[ $DYCORE == "MPASJEDI" || $DYCORE == "BOTH" ]]; then 
    for ctest in "${rrfs_mpasjedi_tests[@]}"; do
       case=${ctest}
-      echo Updating ${case}...
+      echo "Updating ${case}..."
       casedir=${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
       src_casedir=${rrfs_test_data_local}/rrfs-data_mpasjedi_2024052700
       ln -snf ${src_casedir}/data ${casedir}/data
@@ -64,4 +64,4 @@ if [[ $DYCORE == "MPASJEDI" || $DYCORE == "BOTH" ]]; then
    done
 fi
 
-echo All done.
+echo "All done."
