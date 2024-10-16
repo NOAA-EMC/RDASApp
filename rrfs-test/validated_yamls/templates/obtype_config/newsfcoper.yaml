@@ -1,0 +1,68 @@
+    - obs space:
+        name: Surface
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: Data/obs/sfc_obs_2022052619.nc4
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: obsout_sfc.nc4
+#----------------------------------------------------------------------
+# The variables need to be in consistent order with the geovars_list
+# of the new "SfcCorrected" operator as below.
+#----------------------------------------------------------------------
+        simulated variables: [airTemperature, specificHumidity, windEastward, windNorthward, stationPressure]
+
+      obs operator:
+        name: Composite
+        components:
+        - name: SfcCorrected
+          da_sfc_scheme: WRFDA
+#         da_sfc_scheme: UKMO
+#         da_sfc_scheme: GSL
+#---- apply scaling factor to surface winds ----
+          use_fact10: true
+
+          variables:
+          - name: airTemperature
+          - name: specificHumidity
+          - name: windEastward
+          - name: windNorthward
+
+        - name: SfcPCorrected
+          variables:
+          - name: stationPressure
+          da_psfc_scheme: WRFDA   # or UKMO
+
+      linear obs operator:
+        name: Composite
+        components:
+        - name: Identity
+          variables:
+          - name: airTemperature
+          - name: specificHumidity
+          - name: windEastward
+          - name: windNorthward
+        - name: Identity
+          variables:
+          - name: stationPressure
+      obs error:
+        covariance model: diagonal
+
+      obs filters:
+      - filter: PreQC
+        maxvalue: 3
+#
+      - filter: Difference Check
+        apply at iterations: 0,1
+        reference: MetaData/stationElevation
+        value: GeoVaLs/surface_altitude
+        threshold: 500
+
+      - filter: Background Check
+        apply at iterations: 0,1
+        threshold: 10
+
+      - filter: GOMsaver
+        filename: geoval_out.nc
