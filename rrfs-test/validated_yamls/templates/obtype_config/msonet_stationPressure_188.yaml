@@ -1,9 +1,12 @@
      - obs space:
          name: msonet_stationPressure_188
+         distribution:
+           name: "@DISTRIBUTION@"
+           halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: @OBSFILE@
+             obsfile: "@OBSFILE@"
          obsdataout:
            engine:
              type: H5File
@@ -24,6 +27,10 @@
 
        obs error:
          covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
 
        obs filters:
          # ------------------
@@ -206,5 +213,5 @@
          #  - variable: ObsValue/stationPressure
          #  - variable: QCflagsData/stationPressure
 
-         - filter: GOMsaver
-           filename: ./data/geovals/msonet_geovals_rrfs.nc4
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

@@ -1,5 +1,8 @@
      - obs space:
          name: msonet_winds_288
+         distribution:
+           name: "@DISTRIBUTION@"
+           halo size: 100e3
          obsdatain:
            engine:
              type: H5File
@@ -37,6 +40,10 @@
 
        obs error:
          covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
 
        obs filters:
          # ------------------
