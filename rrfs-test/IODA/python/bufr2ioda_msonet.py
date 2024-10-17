@@ -76,7 +76,7 @@ def bufr_to_ioda(config, logger):
     logger.info(f"reference_time = {reference_time}")
 
     bufrfile = f"{cycle_type}.t{hh}z.{data_type}.tm00.{data_format}"
-    DATA_PATH = '/work2/noaa/da/pkumar/dump/rap.t00z.msonet.tm00.bufr_d'
+    DATA_PATH = os.path.join(dump_dir, bufrfile)
     if not os.path.isfile(DATA_PATH):
         logger.info(f"DATA_PATH {DATA_PATH} does not exist")
         return
@@ -269,8 +269,8 @@ def bufr_to_ioda(config, logger):
     dims = {'Location': np.arange(0, clath.shape[0])}
 
     # Create IODA ObsSpace
-    iodafile = f"{cycle_type}.t{hh}z.{data_type}.tm00.api.nc"
-    OUTPUT_PATH = os.path.join(iodafile)
+    iodafile = f"{cycle_type}.t{hh}z.{data_type}.tm00.{data_format}.api.nc"
+    OUTPUT_PATH = os.path.join(ioda_dir, iodafile)
     logger.info(f"Create output file: {OUTPUT_PATH}")
     obsspace = ioda_ospace.ObsSpace(OUTPUT_PATH, mode='w', dim_dict=dims)
 
