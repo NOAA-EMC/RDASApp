@@ -1,68 +1,18 @@
 _member: &memberConfig
   date: &analysisDate '2024-05-27T00:00:00Z'
-  state variables: &incvars [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal]
+  state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
   stream name: ensemble
 
-output:
-  filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
-  stream name: analysis
-variational:
-  minimizer:
-    algorithm: DRPCG
-  iterations:
-  - geometry:
-      nml_file: ./namelist.atmosphere
-      streams_file: ./streams.atmosphere
-      deallocate non-da fields: true
-      interpolation type: unstructured
-    gradient norm reduction: 1e-3
-    diagnostics:
-      departures: ombg
-    ninner: 50
-  - geometry:
-      nml_file: ./namelist.atmosphere
-      streams_file: ./streams.atmosphere
-      deallocate non-da fields: true
-      interpolation type: unstructured
-    gradient norm reduction: 1e-3
-    diagnostics:
-      departures: ombg
-    ninner: 50
-final:
-  diagnostics:
-    departures: oman
-cost function:
-  cost type: 3D-Var
-  time window:
-     begin: '2024-05-26T21:00:00Z'
-     length: PT6H
-  jb evaluation: false
-  geometry:
-    nml_file: ./namelist.atmosphere
-    streams_file: ./streams.atmosphere
-    deallocate non-da fields: true
-    interpolation type: unstructured
-  analysis variables: *incvars
-  background:
-    state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
-    filename: data/restart.2024-05-27_00.00.00.nc
-    date: *analysisDate
-  background error:
-    covariance model: ensemble
-    localization:
-      localization method: SABER
-      saber central block:
-        saber block name: BUMP_NICAS
-        active variables: *incvars
-        read:
-          io:
-            data directory: data/bumploc/conus12km-401km11levels
-            files prefix: bumploc_401km11levels
-          drivers:
-            multivariate strategy: duplicated
-            read local nicas: true
-          model:
-            level for 2d variables: last
+geometry:
+  nml_file: ./namelist.atmosphere
+  streams_file: ./streams.atmosphere
+  deallocate non-da fields: true
+  interpolation type: unstructured
+  iterator dimension: 2
+
+increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
+
+background: 
     members from template:
       template:
         <<: *memberConfig
@@ -72,17 +22,17 @@ cost function:
       zero padding: 2
       nmembers: 30
 
-  observations:
+observations:
      observers:
      - obs space:
          name: aircar
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircar_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCAR_hofxs_airTemperature_133.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -225,12 +175,12 @@ cost function:
      - obs space:
          name: aircar
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircar_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCAR_hofxs_uv_233.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -454,12 +404,12 @@ cost function:
      - obs space:
          name: aircar
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircar_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCAR_hofxs_specificHumidity_133.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -614,12 +564,12 @@ cost function:
      - obs space:
          name: aircft
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCFT_hofxs_airTemperature_130.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -762,12 +712,12 @@ cost function:
      - obs space:
          name: aircft
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCFT_hofxs_airTemperature_131.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -910,12 +860,12 @@ cost function:
      - obs space:
          name: aircft
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCFT_hofxs_airTemperature_134.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -1058,12 +1008,12 @@ cost function:
      - obs space:
          name: aircft
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCFT_hofxs_airTemperature_135.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -1206,12 +1156,12 @@ cost function:
      - obs space:
          name: aircft
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCFT_hofxs_specificHumidity_134.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -1366,12 +1316,12 @@ cost function:
      - obs space:
          name: aircft
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCFT_hofxs_uv_230.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -1595,12 +1545,12 @@ cost function:
      - obs space:
          name: aircft
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCFT_hofxs_uv_231.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -1824,12 +1774,12 @@ cost function:
      - obs space:
          name: aircft
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCFT_hofxs_uv_234.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -2053,12 +2003,12 @@ cost function:
      - obs space:
          name: aircft
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/AIRCFT_hofxs_uv_235.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -2282,12 +2232,12 @@ cost function:
      - obs space:
          name: msonet
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_msonet_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/MSONET_hofxs_airTemperature_188.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -2425,12 +2375,12 @@ cost function:
      - obs space:
          name: msonet
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_msonet_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/MSONET_hofxs_specificHumidity_188.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -2569,12 +2519,12 @@ cost function:
      - obs space:
          name: msonet
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_msonet_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/MSONET_hofxs_stationPressure_188.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -2710,12 +2660,12 @@ cost function:
      - obs space:
          name: msonet
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_msonet_dc.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/MSONET_hofxs_uv_288.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -2927,12 +2877,12 @@ cost function:
      - obs space:
          name: atms_npp
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/atms_npp_obs_2024052700.nc"
+             obsfile: "../rundir-rrfs_mpasjedi_2024052700_getkf_observer/rass_atms_obs_2024052700.nc4"
          obsdataout:
            engine:
              type: H5File
@@ -3512,8 +3462,39 @@ cost function:
 
 
 
+driver:
+  read HX from disk: true
+  save posterior ensemble: false
+  save prior mean: true
+  save posterior mean: true
+  do posterior observer: false
+
+time window:
+       begin: 2024-05-26T23:00:00Z
+       length: PT2H
+
+local ensemble DA:
+  solver: GETKF
+  use linear observer: true
+  vertical localization: # current settings use 12 modulated members
+    fraction of retained variance: 0.850
+    lengthscale: 0.50
+    lengthscale units: logp
+  inflation:
+    rtps: 0.95
+    rtpp: 0.6
+    mult: 1.1
+
+output mean prior:
+  filename: ./bkg.$Y-$M-$D_$h.$m.$s.nc
+  stream name: background
+
+output: # for outputting mean posterior
+  filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
+  stream name: analysis 
+
 test:
-  reference filename: testoutput/rrfs-mpasjedi-ens3dvar.ref
-  test output filename: ./rrfs-mpasjedi-ens3dvar.out
+  reference filename: testoutput/rrfs-mpasjedi-getkf-solver.ref
+  test output filename: ./rrfs-mpasjedi-getkf-solver.out
   float relative tolerance: 1.0e-3
   float absolute tolerance: 1.0e-6

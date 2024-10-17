@@ -44,9 +44,3 @@ background error:
           date: *validDate
           stream name: control
 
-test:
-  reference filename: testoutput/rrfs-mpasjedi-bump.ref
-  test output filename: ./rrfs-mpasjedi-bump.out
-  float relative tolerance: 1.0e-5
-  float absolute tolerance: 1.0e-6
-

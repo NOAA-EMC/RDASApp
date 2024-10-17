@@ -1,0 +1,148 @@
+     - obs space:
+         name: aircft
+         distribution:
+           name: "@DISTRIBUTION@"
+           halo size: 100e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "@OBSFILE@"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: AIRCFT_hofxs_airTemperature_134.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [airTemperature]
+         simulated variables: [airTemperature]
+
+       obs operator:
+         name: Composite
+         components:
+         - name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           #gsi geovals:
+           #  filename: "obsout/aircraft_tsen_geoval_2022052619.nc4"
+           #  levels_are_top_down: False
+           variables:
+           - name: airTemperature
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+         # ------------------
+         # airTemperature
+         # ------------------
+         # Initial error assignment
+         # 134
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 134
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [1.3806, 1.2566, 1.1252, 1.0055, 0.90851, 0.83495, 0.78541, 0.75802, 0.7454, 0.74532, 0.76976, 0.83782, 0.95649, 1.108, 1.2625, 1.3975, 1.5033, 1.5792, 1.6299, 1.6614, 1.6799, 1.6901, 1.6953, 1.6979, 1.6991, 1.6995, 1.6997, 1.6996, 1.6993, 1.6989, 1.6984, 1.6968, 1.6914]
+           defer to post: true
+
+         ## Ajusted error after initial assignment (qcmod.f90)
+         #- filter: Perform Action
+         #  filter variables:
+         #  - name: airTemperature
+         #  where:
+         #  - variable: ObsType/airTemperature
+         #    is_in: 134
+         #  action:
+         #    name: inflate error
+         #    inflation variable:
+         #      name: ObsFunction/ObsErrorFactorConventional
+         #      options:
+         #        test QCflag: PreQC
+         #        test QCthreshold: 3
+         #        inflate variables: [airTemperature]
+         #        pressure: MetaData/pressure
+         #        distance threshold: -1.
+         #  defer to post: true
+
+         # error inflation based on pressure check (setupt.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 134
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: airTemperature
+                 inflation factor: 0.0
+                 #geovar_sfc_geomz: surface_geometric_height #FV3
+                 #geovar_sfc_geomz: surface_altitude #MPAS
+           defer to post: true
+
+         - filter: Bounds Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           minvalue: 100
+           maxvalue: 400
+
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           absolute threshold: 7.0
+           threshold: 7.0
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 134
+           action:
+             name: reject
+
+         - filter: Domain Check
+           apply at iterations: 0,1
+           where:
+             - variable:
+                 name: MetaData/timeOffset
+               minvalue: -0.75
+               maxvalue: 0.75
+
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           min_spacing: PT30M
+           seed_time: *analysisDate
+           category_variable:
+             name: MetaData/stationIdentification
+
+         ## Print filter data
+         #- filter: Print Filter Data
+         #  message: Printing filter data
+         #  summary: true
+         #  variables:
+         #  - variable: MetaData/latitude
+         #  - variable: MetaData/longitude
+         #  - variable: MetaData/pressure
+         #  - variable: ObsType/airTemperature
+         #  - variable: ObsValue/airTemperature
+         #  - variable: QCflagsData/airTemperature
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/aircft_geovals_rrfs.nc4
