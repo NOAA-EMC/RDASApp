@@ -107,6 +107,8 @@ def bufr_to_ioda(config, logger):
     # MetaData
     q.add('latitude', '*/YOB')
     q.add('longitude', '*/XOB')
+    q.add('dataProviderOrigin', '*/PRVSTG')
+    q.add('dataProviderSubOrigin', '*/SPRVSTG')
     q.add('stationIdentification', '*/SID')
     q.add('stationElevation', '*/ELV')
     q.add('timeOffset', '*/DHR')
@@ -165,6 +167,8 @@ def bufr_to_ioda(config, logger):
     lat = r.get('latitude')
     lon = r.get('longitude')
     lon[lon > 180] -= 360  # Convert Longitude from [0,360] to [-180,180]
+    prvstg = r.get('dataProviderOrigin')
+    sprvstg = r.get('dataProviderSubOrigin')
     sid = r.get('stationIdentification')
     elv = r.get('stationElevation', type='float')
     pob = r.get('pressure')
@@ -214,6 +218,8 @@ def bufr_to_ioda(config, logger):
     # Check prepBUFR variable generic dimension and type
     logger.debug(f'     lat       shape = {lat.shape}')
     logger.debug(f'     lon       shape = {lon.shape}')
+    logger.debug(f'     prvstg    shape = {prvstg.shape}')
+    logger.debug(f'     sprvstg   shape = {sprvstg.shape}')
     logger.debug(f'     sid       shape = {sid.shape}')
     logger.debug(f'     elv       shape = {elv.shape}')
     logger.debug(f'     dhr       shape = {dhr.shape}')
@@ -243,6 +249,8 @@ def bufr_to_ioda(config, logger):
 
     logger.debug(f'     lat       type  = {lat.dtype}')
     logger.debug(f'     lon       type  = {lon.dtype}')
+    logger.debug(f'     prvstg    type  = {prvstg.dtype}')
+    logger.debug(f'     sprvstg   type  = {sprvstg.dtype}')
     logger.debug(f'     sid       type  = {sid.dtype}')
     logger.debug(f'     elv       type  = {elv.dtype}')
     logger.debug(f'     dhr       type  = {dhr.dtype}')
@@ -382,6 +390,16 @@ def bufr_to_ioda(config, logger):
         .write_attr('valid_range', np.array([-180, 180], dtype=np.float32)) \
         .write_attr('long_name', 'Longitude') \
         .write_data(lon)
+
+    # MetaData: Data Provider Origin
+    obsspace.create_var('MetaData/dataProviderOrigin', dtype=prvstg.dtype, fillval=prvstg.fill_value) \
+        .write_attr('long_name', 'Mesonet Provider ID String') \
+        .write_data(prvstg)
+
+    # MetaData: Data Provider Sub Origin
+    obsspace.create_var('MetaData/dataProviderSubOrigin', dtype=sprvstg.dtype, fillval=sprvstg.fill_value) \
+        .write_attr('long_name', 'Mesonet SubProvider ID String') \
+        .write_data(sprvstg)
 
     # MetaData: Station Identification
     obsspace.create_var('MetaData/stationIdentification', dtype=sid.dtype, fillval=sid.fill_value) \
