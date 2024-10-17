@@ -9,9 +9,10 @@ observations:
       obsdatain: "./bufr/2024052700.rap.t00z.prepbufr.tm00"
 
       exports:
-        #group_by_variable: prepbufrDataLvlCat
+        #group_by: prepbufrDataLvlCat
         subsets:
-          - SATWND    # SATELLITE-DERIVED WIND REPORTS (SAID)
+          - AIRCAR    # MDCRS ACARS AIRCRAFT REPORTS (ACID)
+          #- AIRCFT    # AIREP, PIREP, AMDAR, TAMDAR AIRCRAFT REPORTS (ACID)
         variables:
           # MetaData
           timestamp:
@@ -35,93 +36,96 @@ observations:
           dumpReportType:
             query: "*/T29"
           prepbufrDataLvlCat:
-            query: "*/CAT"
-          satelliteID:
-            query: "*/SAID"
+            query: "*/PRSLEVLA{1}/CAT"
+          aircraftPhase:
+            query: "*/PRSLEVLA{1}/ACFT_SEQ/POAF"
+          aircraftFlightNumber:
+            query: "[*/ACID, */ACID_SEQ/ACID]"
 
           pressure:
-            query: "*/P___INFO/P__EVENT{1}/POB"
+            query: "*/PRSLEVLA{1}/P___INFO/P__EVENT{1}/POB"
             transforms:
               - scale: 100
           pressureQualityMarker:
-            query: "*/P___INFO/P__EVENT{1}/PQM"
+            query: "*/PRSLEVLA{1}/P___INFO/P__EVENT{1}/PQM"
           pressureError:
-            query: "*/P___INFO/P__BACKG/POE"
+            query: "*/PRSLEVLA{1}/P___INFO/P__BACKG/POE"
             transforms:
               - scale: 100
           pressureTunedError:
-            query: "*/P___INFO/P__POSTP/POETU"
+            query: "*/PRSLEVLA{1}/P___INFO/P__POSTP/POETU"
             transforms:
               - scale: 100
 
           heightOfObservation:
-            query: "*/Z___INFO/Z__EVENT{1}/ZOB"
+            query: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT{1}/ZOB"
           heightOfObservationQualityMark:
-            query: "*/Z___INFO/Z__EVENT{1}/ZQM"
+            query: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT{1}/ZQM"
 
           specificHumidity:
-            query: "*/Q___INFO/Q__EVENT{1}/QOB"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__EVENT{1}/QOB"
             type: float
             transforms:
               - scale: 0.000001
           specificHumidityQualityMarker:
-            query: "*/Q___INFO/Q__EVENT{1}/QQM"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__EVENT{1}/QQM"
           relativeHumidityError:
-            query: "*/Q___INFO/Q__BACKG/QOE"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__BACKG/QOE"
             transforms:
               - scale: 0.1
           relativeHumidityTunedError:
-            query: "*/Q___INFO/Q__POSTP/QOETU"
+            query: "*/PRSLEVLA{1}/Q___INFO/Q__POSTP/QOETU"
             transforms:
               - scale: 0.1
 
           dewpointTemperature:
-            query: "*/Q___INFO/TDO"
+            query: "*/PRSLEVLA{1}/Q___INFO/TDO"
             transforms:
               - offset: 273.15
 
           airTemperature:
-            query: "*/T___INFO/T__EVENT{1}/TOB"
+            query: "*/PRSLEVLA{1}/T___INFO/T__EVENT{1}/TOB"
             transforms:
               - offset: 273.15
           airTemperatureQualityMarker:
-            query: "*/T___INFO/T__EVENT{1}/TQM"
+            query: "*/PRSLEVLA{1}/T___INFO/T__EVENT{1}/TQM"
           airTemperatureError:
-            query: "*/T___INFO/T__BACKG/TOE"
+            query: "*/PRSLEVLA{1}/T___INFO/T__BACKG/TOE"
           airTemperatureTunedError:
-            query: "*/T___INFO/T__POSTP/TOETU"
+            query: "*/PRSLEVLA{1}/T___INFO/T__POSTP/TOETU"
 
           windEastward:
-            query: "*/W___INFO/W__EVENT{1}/UOB"
+            query: "*/PRSLEVLA{1}/W___INFO/W__EVENT{1}/UOB"
           windNorthward:
-            query: "*/W___INFO/W__EVENT{1}/VOB"
+            query: "*/PRSLEVLA{1}/W___INFO/W__EVENT{1}/VOB"
           windQualityMarker:
-            query: "*/W___INFO/W__EVENT{1}/WQM"
+            query: "*/PRSLEVLA{1}/W___INFO/W__EVENT{1}/WQM"
           windError:
-            query: "*/W___INFO/W__BACKG/WOE"
+            query: "*/PRSLEVLA{1}/W___INFO/W__BACKG/WOE"
           windTunedError:
-            query: "*/W___INFO/W__POSTP/WOETU"
+            query: "*/PRSLEVLA{1}/W___INFO/W__POSTP/WOETU"
             transform:
               - scale: 0.514444
 
-          percentConfidence:
-            query: "*/PCCF_SEQ/QIFN"
-
     ioda:
       backend: netcdf
-      obsdataout: "./ioda_satwnd.nc"
+      obsdataout: "./ioda_aircar.nc"
 
       dimensions:
+        - name: Level
+          path: "*/PRSLEVLA"
         - name: pevent_Dim
-          path: "*/P___INFO/P__EVENT"
+          path: "*/PRSLEVLA{1}/P___INFO/P__EVENT"
         - name: qevent_Dim
-          path: "*/Q___INFO/Q__EVENT"
+          path: "*/PRSLEVLA{1}/Q___INFO/Q__EVENT"
         - name: tevent_Dim
-          path: "*/T___INFO/T__EVENT"
+          path: "*/PRSLEVLA{1}/T___INFO/T__EVENT"
         - name: wevent_Dim
-          path: "*/W___INFO/W__EVENT"
+          path: "*/PRSLEVLA{1}/W___INFO/W__EVENT"
         - name: zevent_Dim
-          path: "*/Z___INFO/Z__EVENT"
+          path: "*/PRSLEVLA{1}/Z___INFO/Z__EVENT"
+        - name: drft_Dim
+          path: "*/PRSLEVLA{1}/DRFTINFO"
 
 
       variables:
@@ -142,13 +146,7 @@ observations:
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
           source: variables/stationIdentification
-          longName: "Station ID"
-          units: ""
-
-        - name: "MetaData/satelliteIdentification"
-          coordinates: "longitude latitude"
-          source: variables/satelliteID
-          longName: "Satellite Identification"
+          longName: "Station/Aircraft ID"
           units: ""
 
         - name: "MetaData/longitude"
@@ -189,10 +187,16 @@ observations:
           longName: "Prepbufr Data Level Category"
           units: ""
 
-        - name: "MetaData/percentConfidence"
+        - name: "MetaData/aircraftFlightPhase"
           coordinates: "longitude latitude"
-          source: variables/percentConfidence
-          longName: "Percent Confidence Based on EUMETSAT Quality Index without Forecast"
+          source: variables/aircraftPhase
+          longName: "Aircraft Flight Phase"
+          units: ""
+
+        - name: "MetaData/aircraftFlightNumber"
+          coordinates: "longitude latitude"
+          source: variables/aircraftFlightNumber
+          longName: "Aircraft Flight Number"
           units: ""
 
         - name: "MetaData/height"
