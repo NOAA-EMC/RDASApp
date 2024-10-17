@@ -1,0 +1,11 @@
+{
+  "data_format"     : "prepbufr",
+  "data_type"       : "MSONET",
+  "cycle_type"      : "rap",
+  "cycle_datetime"  : "{{ current_cycle | to_YMDH }}",
+  "dump_directory"  : "{{ DMPDIR }}",
+  "ioda_directory"  : "{{ COM_OBS }}",
+  "subsets"         : [ "MSONET" ],
+  "data_provider"   : "U.S. NOAA",
+  "data_description": "MESONET SURFACE REPORTS (COOPERATIVE NETWORKS)"
+}
