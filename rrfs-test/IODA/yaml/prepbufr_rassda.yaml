@@ -178,14 +178,14 @@ observations:
           coordinates: "longitude latitude"
           source: variables/longitude
           longName: "Longitude"
-          units: "degree_east"
+          units: "degrees_east"
           range: [0, 360]
 
         - name: "MetaData/latitude"
           coordinates: "longitude latitude"
           source: variables/latitude
           longName: "Latitude"
-          units: "degree_north"
+          units: "degrees_north"
           range: [-90, 90]
 
         - name: "MetaData/stationElevation"
