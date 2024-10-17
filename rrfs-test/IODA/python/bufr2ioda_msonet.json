@@ -1,0 +1,13 @@
+{
+  "data_format"     : "bufr_d",
+  "data_type"       : "msonet",
+  "cycle_type"      : "rap",
+  "cycle_datetime"  : "{{ current_cycle | to_YMDH }}",
+  "dump_directory"  : "{{ DMPDIR }}",
+  "ioda_directory"  : "{{ COM_OBS }}",
+  "subsets"         : [ "NC255004" ],
+  #"subsets"         : [ "NC255001, NC255002, NC255003, NC255004, NC255005, NC255006, NC255007, NC255008, NC255009, NC255010, NC255011, NC255012, NC255014, NC255015, NC255016, NC255017, NC255018, NC255019, NC255020, NC255021, NC255022, NC255023, NC255024, NC255025, NC255026, NC255027, NC255028, NC255029, NC255031, NC255101, NC255030" ],
+  "source"          : "NCEP data tank",
+  "data_provider"   : "U.S. NOAA",
+  "data_description": "Mesonet from MADIS",
+}
