@@ -77,10 +77,10 @@ while getopts "p:c:m:j:hvfsx" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules | jet)
+  hera | orion | hercules | jet | gaea )
     echo "Building RDASApp on $BUILD_TARGET"
     echo "  Build initiated `date`"
-    source $dir_root/ush/module-setup.sh
+    [[ "${BUILD_TARGET}" != *gaea* ]] && source $dir_root/ush/module-setup.sh
     module use $dir_root/modulefiles
     module load RDAS/$BUILD_TARGET.$COMPILER
     CMAKE_OPTS+=" -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON -DMACHINE_ID=$MACHINE_ID"
@@ -95,7 +95,7 @@ esac
 # Set default number of build jobs based on machine
 if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nodes
   BUILD_JOBS=${BUILD_JOBS:-4}
-else # hera, hercules, jet
+else # hera, hercules, jet, gaea
   BUILD_JOBS=${BUILD_JOBS:-6}
 fi
 
