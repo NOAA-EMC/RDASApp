@@ -26,15 +26,18 @@
            IRVISlandCoeff: IGBP
          linear obs operator:
            Absorbers: [H2O, O3]
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
        obs bias:
-         input file: data/obs/amsua_n19.satbias.nc4
+         input file: "@BIASFILE@"
          output file: out_amsua_n19.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &amsua_n19_tlapse data/obs/amsua_n19.tlapse.txt
+             tlapse: &amsua_n19_tlapse "@LAPSEFILE@"
            - name: lapseRate
              tlapse: *amsua_n19_tlapse
            - name: emissivityJacobian
@@ -51,7 +54,7 @@
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/amsua_n19.satbias_cov.nc4
+             input file: "@COVFILE@"
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
