@@ -121,15 +121,14 @@ endif()
 
 
 # bufr2ioda ctests 
-set(IODA_CONV_COMP_TOL "5.0e-4")
 set(case "rrfs_bufr2ioda_msonet")
 set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
 if (NOT EXISTS "${casedir}")
    file(MAKE_DIRECTORY ${casedir})
 endif()
 file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
-file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
 configure_file(${src_casedir}/data/obs/bufr/rap.t00z.prepbufr.tm00 ${casedir}/prepbufr COPYONLY)
+file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
 set(IODA_CONV_COMP_TOL "5.0e-4")
 set(MPI_ARGS "--time=00:05:00 --exclusive")
 ecbuild_add_test( TARGET  ${case}
