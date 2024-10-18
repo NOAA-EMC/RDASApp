@@ -46,6 +46,10 @@ msonet_obtype_configs=(
 atms_obtype_configs=(
     "atms_npp_qc_bc.yaml"
 )
+# Define AMSUA observation type configs as an array
+amsua_obtype_configs=(
+    "amsua_n19.yaml"
+)
 
 # Function to concatenate all obtypes into one file
 process_obtypes() {
@@ -99,6 +103,7 @@ for basic_config in "${basic_configs[@]}"; do
   process_obtypes "${ctest_names[$iconfig]}" "aircft_obtype_configs[@]" "data/obs_ctest/ioda_aircft_dc.nc"          "$temp_yaml"
   process_obtypes "${ctest_names[$iconfig]}" "msonet_obtype_configs[@]" "data/obs_ctest/ioda_msonet_dc.nc"          "$temp_yaml"
   process_obtypes "${ctest_names[$iconfig]}" "atms_obtype_configs[@]"   "data/obs_ctest/atms_npp_obs_2024052700.nc" "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "amsua_obtype_configs[@]"  "data/obs_ctest/ioda_amsua_n19_dc.nc"      "$temp_yaml"
 
   # Copy the basic configuration yaml into the super yaml
   cp -p templates/basic_config/$basic_config ./$conv_yaml
