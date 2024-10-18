@@ -118,3 +118,29 @@ if(FV3_DYCORE)
       endif()
 
 endif()
+
+
+# bufr2ioda ctests 
+set(IODA_CONV_COMP_TOL "5.0e-4")
+set(case "rrfs_bufr2ioda_msonet")
+set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
+if (NOT EXISTS "${casedir}")
+   file(MAKE_DIRECTORY ${casedir})
+endif()
+file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
+file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
+configure_file(${src_casedir}/data/obs/bufr/rap.t00z.prepbufr.tm00 ${casedir}/prepbufr COPYONLY)
+set(IODA_CONV_COMP_TOL "5.0e-4")
+set(MPI_ARGS "--time=00:05:00 --exclusive")
+ecbuild_add_test( TARGET  ${case}
+	          MPI     1
+                  TYPE    SCRIPT
+                  COMMAND bash
+		  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
+		  ARGS    ${CMAKE_SOURCE_DIR}/rrfs-test/ush/iodaconv_comp_rrfs.sh
+                          netcdf
+                          "${CMAKE_BINARY_DIR}/bin/bufr2ioda.x ${case}.yaml"
+                          data/obs/bufr2ioda_ctest/ioda_mesonet.nc 
+                          ioda_mesonet.nc 
+			  ${IODA_CONV_COMP_TOL}
+                  DEPENDS bufr2ioda.x )
