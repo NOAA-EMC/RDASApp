@@ -4,7 +4,10 @@
 #
 # argument 1: what type of file to compare; netcdf or odb
 # argument 2: the command to run the ioda converter
-# argument 3: the filename to test
+# argument 3: the reference file name 
+# argument 4: the test file name to compare against
+# argument 5: the tolerance for differences between the files
+# argument 6: verbose option
 
 set -eu
 
