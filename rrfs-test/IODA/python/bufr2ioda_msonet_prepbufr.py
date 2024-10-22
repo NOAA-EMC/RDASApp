@@ -166,7 +166,7 @@ def bufr_to_ioda(config, logger):
     # MetaData
     lat = r.get('latitude')
     lon = r.get('longitude')
-    lon[lon > 180] -= 360  # Convert Longitude from [0,360] to [-180,180]
+    #lon[lon > 180] -= 360  # Convert Longitude from [0,360] to [-180,180]
     prvstg = r.get('dataProviderOrigin')
     sprvstg = r.get('dataProviderSubOrigin')
     sid = r.get('stationIdentification')
@@ -387,7 +387,7 @@ def bufr_to_ioda(config, logger):
     # MetaData: Longitude
     obsspace.create_var('MetaData/longitude', dtype=lon.dtype, fillval=lon.fill_value) \
         .write_attr('units', 'degrees_east') \
-        .write_attr('valid_range', np.array([-180, 180], dtype=np.float32)) \
+        .write_attr('valid_range', np.array([0, 360], dtype=np.float32)) \
         .write_attr('long_name', 'Longitude') \
         .write_data(lon)
 
@@ -509,7 +509,7 @@ def bufr_to_ioda(config, logger):
         .write_data(vobqm)
 
     # ObsError: Pressure Observation Error
-    obsspace.create_var('ObsError/pressure', dtype=poboe.dtype, fillval=poboe.fill_value) \
+    obsspace.create_var('ObsError/stationPressure', dtype=poboe.dtype, fillval=poboe.fill_value) \
         .write_attr('units', 'Pa') \
         .write_attr('long_name', 'Pressure Observation Error') \
         .write_data(poboe)
