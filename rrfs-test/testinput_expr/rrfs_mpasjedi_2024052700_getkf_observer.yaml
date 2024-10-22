@@ -16,10 +16,10 @@ background:
     members from template:
       template:
         <<: *memberConfig
-        filename: ./data/ens/mem%iMember%/restart.2024-05-27_00.00.00.nc
-      pattern: %iMember%
+        filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
+      pattern: "%iMember%"
       start: 1
-      zero padding: 2
+      zero padding: 3
       nmembers: 30
 
 observations:
