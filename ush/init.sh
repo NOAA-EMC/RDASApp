@@ -14,6 +14,15 @@ case ${MACHINE_ID} in
   orion|hercules)
     RDAS_DATA=/work/noaa/zrtrr/RDAS_DATA
     ;;
+  gaea)
+    if [[ -d /gpfs/f5 ]]; then
+      RDAS_DATA=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/RDAS_DATA
+    elif [[ -d /gpfs/f6 ]]; then
+      RDAS_DATA=/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/RDAS_DATA
+    else
+      echo "unsupported gaea cluster: ${MACHINE_ID}"
+    fi
+    ;;
   *)
     echo "platform not supported: ${MACHINE_ID}"
     ;;
