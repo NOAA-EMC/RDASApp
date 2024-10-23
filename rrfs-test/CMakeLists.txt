@@ -130,7 +130,7 @@ if(MPAS_DYCORE)
       file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
       configure_file(${src_casedir}/data/obs/bufr/rap.t00z.prepbufr.tm00 ${casedir}/prepbufr COPYONLY)
       file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
-      set(MPI_ARGS "--time=00:05:00 --exclusive")
+      set(MPI_ARGS "--time=00:05:00 --mem=64G")
       set(IODA_CONV_COMP_TOL "5.0e-4")
       ecbuild_add_test( TARGET  ${case}
 	                MPI     1
