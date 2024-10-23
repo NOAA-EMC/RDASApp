@@ -50,9 +50,9 @@
            apply at iterations: 0,1
            where:
              - variable:
-                 name: MetaData/timeOffset
-               minvalue: -0.10
-               maxvalue: 0.10
+                 name: MetaData/timeOffset # units: s
+               minvalue: -360
+               maxvalue:  360
            action:
              name: reduce obs space
 
