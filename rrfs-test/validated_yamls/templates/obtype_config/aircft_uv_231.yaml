@@ -202,6 +202,8 @@
              is_in: 231
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -209,6 +211,8 @@
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data

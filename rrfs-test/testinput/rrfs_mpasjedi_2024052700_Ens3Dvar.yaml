@@ -200,6 +200,8 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -0.75
                maxvalue: 0.75
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -207,6 +209,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -426,6 +430,8 @@ cost function:
              is_in: 233
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -433,6 +439,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -589,6 +597,8 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -0.75
                maxvalue: 0.75
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -596,6 +606,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -737,6 +749,8 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -0.75
                maxvalue: 0.75
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -744,6 +758,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -885,6 +901,9 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -1.00
                maxvalue: 1.00
+           action:
+             name: reduce obs space
+
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -892,6 +911,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -1033,6 +1054,8 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -0.75
                maxvalue: 0.75
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -1040,6 +1063,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -1181,6 +1206,8 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -0.75
                maxvalue: 0.75
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -1188,6 +1215,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -1341,6 +1370,8 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -0.75
                maxvalue: 0.75
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -1348,6 +1379,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -1567,6 +1600,8 @@ cost function:
              is_in: 230
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -1574,6 +1609,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -1796,6 +1833,8 @@ cost function:
              is_in: 231
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -1803,6 +1842,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -2025,6 +2066,8 @@ cost function:
              is_in: 234
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -2032,6 +2075,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -2254,6 +2299,8 @@ cost function:
              is_in: 235
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -2261,6 +2308,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -2400,6 +2449,8 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -0.10
                maxvalue: 0.10
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -2407,6 +2458,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -2544,6 +2597,8 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -0.10
                maxvalue: 0.10
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -2551,6 +2606,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -2685,6 +2742,8 @@ cost function:
                  name: MetaData/timeOffset
                minvalue: -0.10
                maxvalue: 0.10
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -2692,6 +2751,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data
@@ -2899,6 +2960,8 @@ cost function:
              is_in: 288
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -2906,6 +2969,8 @@ cost function:
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data

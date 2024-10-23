@@ -117,6 +117,8 @@
                  name: MetaData/timeOffset
                minvalue: -0.10
                maxvalue: 0.10
+           action:
+             name: reduce obs space
 
          - filter: Temporal Thinning
            apply at iterations: 0,1
@@ -124,6 +126,8 @@
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
+           action:
+             name: reduce obs space
 
          ## Print filter data
          #- filter: Print Filter Data

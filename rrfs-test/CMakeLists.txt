@@ -30,11 +30,7 @@ set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
 if(FV3_DYCORE)
 
       message(STATUS "MACHINE_ID is " ${MACHINE_ID})
-      if("${MACHINE_ID}" STREQUAL "orion")
-         message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
-         set(RESTORE_MPI_ARGS ${MPI_ARGS})
-         set(MPI_ARGS "${MPI_ARGS} --exclusive")
-      endif()   
+      set(RESTORE_MPI_ARGS ${MPI_ARGS})
 
       get_all_keys(rrfs_fv3jedi_tests caselist)
       foreach(case ${caselist})
@@ -51,30 +47,24 @@ if(FV3_DYCORE)
          file(CREATE_LINK ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput SYMBOLIC)
          file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir} )
          set(target_test ${case})
+         if("${MACHINE_ID}" STREQUAL "orion")
+            message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
+            set(MPI_ARGS "${MPI_ARGS} --exclusive")
+         endif()   
          ecbuild_add_test( TARGET ${target_test}
                         MPI      80
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
+          set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
 
-      if("${MACHINE_ID}" STREQUAL "orion")
-          set(MPI_ARGS ${RESTORE_MPI_ARGS})
-      endif()
+endif()
 
-
-   endif()
-
-   if(MPAS_DYCORE)
+if(MPAS_DYCORE)
 
       message(STATUS "MACHINE_ID is " ${MACHINE_ID})
-      if("${MACHINE_ID}" STREQUAL "orion")
-         message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
-         set(RESTORE_MPI_ARGS ${MPI_ARGS})
-         set(MPI_ARGS "${MPI_ARGS} --exclusive")
-      endif()   
-      set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=4")
-      set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
+      set(RESTORE_MPI_ARGS ${MPI_ARGS})
 
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
@@ -97,7 +87,12 @@ if(FV3_DYCORE)
 	 file(COPY ${bl_FILES} DESTINATION ${casedir})
 	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
+         if("${MACHINE_ID}" STREQUAL "orion")
+            message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
+            set(MPI_ARGS "${MPI_ARGS} --exclusive")
+         endif()   
 	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
+           set(MPI_ARGS "${MPI_ARGS} --time=00:15:00 --ntasks-per-node=4")
            ecbuild_add_test( TARGET ${target_test}
                         MPI      120
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
@@ -105,16 +100,14 @@ if(FV3_DYCORE)
 			TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
                         COMMAND  ${exe} )
 	 else()
+           set(MPI_ARGS "${MPI_ARGS} --time=00:10:00 --ntasks-per-node=4")
            ecbuild_add_test( TARGET ${target_test}
                         MPI      120
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
 	 endif()
+         set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
-
-      if("${MACHINE_ID}" STREQUAL "orion")
-          set(MPI_ARGS ${RESTORE_MPI_ARGS})
-      endif()
 
 endif()
