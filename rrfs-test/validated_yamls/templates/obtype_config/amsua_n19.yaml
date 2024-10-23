@@ -31,7 +31,7 @@
            lengthscale: 300e3 # orig
        obs bias:
          input file: data/obs/amsua_n19.satbias.nc4
-         output file: out_amsua_n19.satbias.nc
+         output file: out_amsua_n19.satbias.nc4
          variational bc:
            predictors:
            - name: constant
@@ -58,7 +58,7 @@
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_amsua_n19.satbias_cov.nc
+           output file: out_amsua_n19.satbias_cov.nc4
        obs filters:
        - filter: BlackList
          filter variables:
