@@ -5,7 +5,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: "@OBSFILE@"
+             obsfile: data/obs/amsua_n19_obs.2024052700.nc
          obsdataout:
            engine:
              type: H5File
@@ -30,14 +30,14 @@
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 300e3 # orig
        obs bias:
-         input file: "@BIASFILE@"
+         input file: data/obs/amsua_n19.satbias.nc4
          output file: out_amsua_n19.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &amsua_n19_tlapse "@LAPSEFILE@"
+             tlapse: &amsua_n19_tlapse data/obs/amsua_n19.tlapse.txt
            - name: lapseRate
              tlapse: *amsua_n19_tlapse
            - name: emissivityJacobian
@@ -54,7 +54,7 @@
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: "@COVFILE@"
+             input file: data/obs/amsua_n19.satbias_cov.nc4
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
