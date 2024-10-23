@@ -56,7 +56,7 @@ if(FV3_DYCORE)
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
-          set(MPI_ARGS ${RESTORE_MPI_ARGS})
+         set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
 
 endif()
@@ -68,45 +68,45 @@ if(MPAS_DYCORE)
 
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
-	       get_from_dictionary(rrfs_mpasjedi_tests case exe)
+	 get_from_dictionary(rrfs_mpasjedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_mpasjedi_2024052700")
          if (NOT EXISTS "${casedir}")
            file(MAKE_DIRECTORY ${casedir})
          endif()
-	       file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
-	       file(CREATE_LINK ${src_casedir}/graphinfo ${casedir}/graphinfo SYMBOLIC)
-	       file(CREATE_LINK ${src_casedir}/stream_list ${casedir}/stream_list SYMBOLIC)
-	       file(CREATE_LINK ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput SYMBOLIC)
-	       file(COPY ${src_casedir}/streams.atmosphere DESTINATION ${casedir})
-	       file(COPY ${src_casedir}/namelist.atmosphere DESTINATION ${casedir})
-	       file(COPY ${src_casedir}/geovars.yaml DESTINATION ${casedir})
-	       file(COPY ${src_casedir}/keptvars.yaml DESTINATION ${casedir})
-	       file(COPY ${src_casedir}/obsop_name_map.yaml DESTINATION ${casedir})
-	       file(GLOB bl_FILES "${src_casedir}/*.*BL")
-	       file(COPY ${bl_FILES} DESTINATION ${casedir})
-	       file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
+	 file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
+	 file(CREATE_LINK ${src_casedir}/graphinfo ${casedir}/graphinfo SYMBOLIC)
+	 file(CREATE_LINK ${src_casedir}/stream_list ${casedir}/stream_list SYMBOLIC)
+	 file(CREATE_LINK ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput SYMBOLIC)
+	 file(COPY ${src_casedir}/streams.atmosphere DESTINATION ${casedir})
+	 file(COPY ${src_casedir}/namelist.atmosphere DESTINATION ${casedir})
+	 file(COPY ${src_casedir}/geovars.yaml DESTINATION ${casedir})
+	 file(COPY ${src_casedir}/keptvars.yaml DESTINATION ${casedir})
+	 file(COPY ${src_casedir}/obsop_name_map.yaml DESTINATION ${casedir})
+	 file(GLOB bl_FILES "${src_casedir}/*.*BL")
+	 file(COPY ${bl_FILES} DESTINATION ${casedir})
+	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
          if("${MACHINE_ID}" STREQUAL "orion")
             message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
             set(MPI_ARGS "${MPI_ARGS} --exclusive")
          endif()   
-	       if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
-           set(MPI_ARGS "${MPI_ARGS} --time=00:15:00 --ntasks-per-node=4")
-           ecbuild_add_test( TARGET ${target_test}
-                        MPI      120
-			                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${target_test}.yaml
-			                  TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
-                        COMMAND  ${exe} )
-	       else()
-           set(MPI_ARGS "${MPI_ARGS} --time=00:10:00 --ntasks-per-node=4")
-           ecbuild_add_test( TARGET ${target_test}
-                        MPI      120
-			                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${target_test}.yaml
-                        COMMAND  ${exe} )
-	       endif()
+	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
+            set(MPI_ARGS "${MPI_ARGS} --time=00:15:00 --ntasks-per-node=4")
+            ecbuild_add_test( TARGET ${target_test}
+                              MPI      120
+			      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                              ARGS     ${target_test}.yaml
+			      TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
+                              COMMAND  ${exe} )
+	 else()
+            set(MPI_ARGS "${MPI_ARGS} --time=00:10:00 --ntasks-per-node=4")
+            ecbuild_add_test( TARGET ${target_test}
+                              MPI      120
+			      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                              ARGS     ${target_test}.yaml
+                              COMMAND  ${exe} )
+	 endif()
          set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
 
@@ -128,17 +128,17 @@ if(MPAS_DYCORE)
       set(IODA_CONV_COMP_TOL "5.0e-4")
       ecbuild_add_test( TARGET  ${case}
 	                MPI     1
-                  TYPE    SCRIPT
-                  COMMAND bash
-          		    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
-           		    ARGS    ${CMAKE_SOURCE_DIR}/rrfs-test/ush/iodaconv_comp_rrfs.sh
-                          netcdf
-                          "${CMAKE_BINARY_DIR}/bin/bufr2ioda.x ${case}.yaml"
-                          data/obs/ioda_mesonet.nc
-                          ioda_mesonet.nc 
-			                    ${IODA_CONV_COMP_TOL}
-                  DEPENDS bufr2ioda.x )
-       set(MPI_ARGS ${RESTORE_MPI_ARGS})
+                        TYPE    SCRIPT
+                        COMMAND bash
+          		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
+           		ARGS    ${CMAKE_SOURCE_DIR}/rrfs-test/ush/iodaconv_comp_rrfs.sh
+                                netcdf
+                                "${CMAKE_BINARY_DIR}/bin/bufr2ioda.x ${case}.yaml"
+                                data/obs/ioda_mesonet.nc
+                                ioda_mesonet.nc 
+			        ${IODA_CONV_COMP_TOL}
+                        DEPENDS bufr2ioda.x )
+      set(MPI_ARGS ${RESTORE_MPI_ARGS})
 
 endif()
 
