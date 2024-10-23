@@ -6,7 +6,7 @@
 observations:
   - obs space:
       name: bufr
-      obsdatain: "./bufr/2024052700.rap.t00z.prepbufr.tm00"
+      obsdatain: "./bufr/prepbufr"
 
       exports:
         #group_by_variable: prepbufrDataLvlCat
@@ -20,9 +20,11 @@ observations:
               timeOffset: "*/DHR"
               transforms:
                 - scale: 3600
-              referenceTime: "2024-05-27T00:00:00Z"
+              referenceTime: "2022-05-26T19:00:00Z"
           timeOffset:
             query: "*/DHR"
+            transforms:
+              - scale: 3600
           longitude:
             query: "*/XOB"
           latitude:
@@ -31,6 +33,7 @@ observations:
             query: "*/SID"
           stationElevation:
             query: "*/ELV"
+            #type: float
           prepbufrReportType:
             query: "*/TYP"
           dumpReportType:
@@ -59,6 +62,7 @@ observations:
 
           heightOfObservation:
             query: "*/Z___INFO/Z__EVENT{1}/ZOB"
+            #type: float
           heightOfObservationQualityMark:
             query: "*/Z___INFO/Z__EVENT{1}/ZQM"
 
@@ -180,7 +184,7 @@ observations:
           coordinates: "longitude latitude"
           source: variables/timeOffset
           longName: "Observation Time Minus Reference Time"
-          units: "Hours"
+          units: "s"
 
         - name: "MetaData/stationIdentification"
           coordinates: "longitude latitude"
@@ -192,21 +196,21 @@ observations:
           coordinates: "longitude latitude"
           source: variables/longitude
           longName: "Longitude"
-          units: "degrees_east"
+          units: "degree_east"
           range: [0, 360]
 
         - name: "MetaData/latitude"
           coordinates: "longitude latitude"
           source: variables/latitude
           longName: "Latitude"
-          units: "degrees_north"
+          units: "degree_north"
           range: [-90, 90]
 
         - name: "MetaData/stationElevation"
           coordinates: "longitude latitude"
           source: variables/stationElevation
           longName: "Elevation of Station"
-          units: "Meter"
+          units: "m"
 
         - name: "MetaData/prepbufrReportType"
           coordinates: "longitude latitude"
@@ -236,7 +240,7 @@ observations:
           coordinates: "longitude latitude"
           source: variables/heightOfObservation
           longName: "Height"
-          units: "Meter"
+          units: "m"
 
         - name: "MetaData/pressure"
           coordinates: "longitude latitude"
@@ -286,25 +290,25 @@ observations:
           coordinates: "longitude latitude"
           source: variables/airTemperature
           longName: "Temperature"
-          units: "Kelvin"
+          units: "K"
 
         - name: "ObsValue/dewpointTemperature"
           coordinates: "longitude latitude"
           source: variables/dewpointTemperature
           longName: "Dewpoint Temperature"
-          units: "Kelvin"
+          units: "K"
 
         - name: "ObsValue/windEastward"
           coordinates: "longitude latitude"
           source: variables/windEastward
           longName: "Eastward Wind"
-          units: "Meter Second-1"
+          units: "m s-1"
 
         - name: "ObsValue/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windNorthward
           longName: "Northward Wind"
-          units: "Meter Second-1"
+          units: "m s-1"
 
         - name: "ObsValue/stationPressure"
           coordinates: "longitude latitude"
@@ -322,19 +326,19 @@ observations:
           coordinates: "longitude latitude"
           source: variables/seaTemperature
           longName: "Sea Temperature"
-          units: "Kelvin"
+          units: "K"
 
         - name: "ObsValue/depthBelowSeaSurface"
           coordinates: "longitude latitude"
           source: variables/depthBelowSeaSurface
           longName: "Depth Below Sea Surface"
-          units: "Meter"
+          units: "m"
 
         - name: "ObsValue/heightOfWaves"
           coordinates: "longitude latitude"
           source: variables/heightOfWaves
           longName: "Height of Waves"
-          units: "Meter"
+          units: "m"
 
         - name: "ObsValue/presentWeather"
           coordinates: "longitude latitude"
@@ -345,7 +349,7 @@ observations:
           coordinates: "longitude latitude"
           source: variables/maximumWindGustSpeed
           longName: "Maximum Wind Gust Speed"
-          units: "Meter Second-1"
+          units: "m s-1"
 
         - name: "ObsValue/verticalSignificance"
           coordinates: "longitude latitude"
@@ -361,7 +365,7 @@ observations:
           coordinates: "longitude latitude"
           source: variables/heightOfBaseOfCloud
           longName: "Height of Base of Cloud"
-          units: "Meter"
+          units: "m"
 
         - name: "ObsValue/cloudCoverTotal"
           coordinates: "longitude latitude"
@@ -432,25 +436,25 @@ observations:
           coordinates: "longitude latitude"
           source: variables/airTemperatureError
           longName: "Temperature Error"
-          units: "Kelvin"
+          units: "K"
 
         - name: "ObsError/windEastward"
           coordinates: "longitude latitude"
           source: variables/windError
           longName: "Eastward wind error"
-          units: "Meter Second-1"
+          units: "m s-1"
 
         - name: "ObsError/windNorthward"
           coordinates: "longitude latitude"
           source: variables/windError
           longName: "Northward wind error"
-          units: "Meter Second-1"
+          units: "m s-1"
 
         - name: "ObsError/seaTemperature"
           coordinates: "longitude latitude"
           source: variables/seaTemperatureError
           longName: "Sea Temperature Observation Error"
-          units: "Kelvin"
+          units: "K"
 
 #        # Tuned ObsError
 #        - name: "TunedObsError/stationPressure"
@@ -469,16 +473,16 @@ observations:
 #          coordinates: "longitude latitude"
 #          source: variables/airTemperatureTunedError
 #          longName: "Analysis-Tuned Temperature Error"
-#          units: "Kelvin"
+#          units: "K"
 #
 #        - name: "TunedObsError/windEastward"
 #          coordinates: "longitude latitude"
 #          source: variables/windTunedError
 #          longName: "Analysis-Tuned Eastward wind error"
-#          units: "Meter Second-1"
+#          units: "m s-1"
 #
 #        - name: "TunedObsError/windNorthward"
 #          coordinates: "longitude latitude"
 #          source: variables/windTunedError
 #          longName: "Analysis-Tuned Northward wind error"
-#          units: "Meter Second-1"
+#          units: "m s-1"
