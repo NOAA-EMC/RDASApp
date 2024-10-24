@@ -11,7 +11,7 @@ observations:
       exports:
         #group_by_variable: prepbufrDataLvlCat
         subsets:
-          - SATWND    # SATELLITE-DERIVED WIND REPORTS (SAID)
+          - MSONET    # MESONET SURFACE REPORTS
         variables:
           # MetaData
           timestamp:
@@ -39,20 +39,26 @@ observations:
             query: "*/T29"
           prepbufrDataLvlCat:
             query: "*/CAT"
-          satelliteID:
-            query: "*/SAID"
+          dataProviderOrigin:
+            query: "*/PRVSTG"
+          dataProviderSubOrigin:
+            query: "*/SPRVSTG"
 
           pressure:
             query: "*/P___INFO/P__EVENT{1}/POB"
             transforms:
               - scale: 100
-          pressureQualityMarker:
+          stationPressure:
+            query: "*/P___INFO/P__EVENT{1}/POB"
+            transforms:
+              - scale: 100
+          stationPressureQualityMarker:
             query: "*/P___INFO/P__EVENT{1}/PQM"
-          pressureError:
+          stationPressureError:
             query: "*/P___INFO/P__BACKG/POE"
             transforms:
               - scale: 100
-          pressureTunedError:
+          stationPressureTunedError:
             query: "*/P___INFO/P__POSTP/POETU"
             transforms:
               - scale: 100
@@ -108,12 +114,22 @@ observations:
             transform:
               - scale: 0.514444
 
-          percentConfidence:
-            query: "*/PCCF_SEQ/QIFN"
+          pressureReducedToMeanSeaLevel:
+            query: "*/PMSL_SEQ/PMO"
+            transforms:
+              - scale: 100
+          pressureReducedToMeanSeaLevelQualityMarker:
+            query: "*/PMSL_SEQ/PMQ"
+
+          horizontalVisibility:
+            query: "*/VISB2SEQ/HOVI"
+            type: float
+          maximumWindGustSpeed:
+            query: "*/GUST2SEQ/MXGS"
 
     ioda:
       backend: netcdf
-      obsdataout: "./ioda_satwnd.nc"
+      obsdataout: "./ioda_msonet.nc"
 
       dimensions:
         - name: pevent_Dim
@@ -147,12 +163,6 @@ observations:
           coordinates: "longitude latitude"
           source: variables/stationIdentification
           longName: "Station ID"
-          units: ""
-
-        - name: "MetaData/satelliteIdentification"
-          coordinates: "longitude latitude"
-          source: variables/satelliteID
-          longName: "Satellite Identification"
           units: ""
 
         - name: "MetaData/longitude"
@@ -193,10 +203,16 @@ observations:
           longName: "Prepbufr Data Level Category"
           units: ""
 
-        - name: "MetaData/percentConfidence"
+        - name: "MetaData/dataProviderOrigin"
           coordinates: "longitude latitude"
-          source: variables/percentConfidence
-          longName: "Percent Confidence Based on EUMETSAT Quality Index without Forecast"
+          source: variables/dataProviderOrigin
+          longName: "Mesonet Provider ID String"
+          units: ""
+
+        - name: "MetaData/dataProviderSubOrigin"
+          coordinates: "longitude latitude"
+          source: variables/dataProviderSubOrigin
+          longName: "Mesonet SubProvider ID String"
           units: ""
 
         - name: "MetaData/height"
@@ -236,6 +252,12 @@ observations:
           longName: "windNorthward Report Type"
           units: ""
 
+        - name: "ObsType/stationPressure"
+          coordinates: "longitude latitude"
+          source: variables/prepbufrReportType
+          longName: "Pressure"
+          units: ""
+
         # ObsValue
         - name: "ObsValue/specificHumidity"
           coordinates: "longitude latitude"
@@ -267,10 +289,34 @@ observations:
           longName: "Northward Wind"
           units: "m s-1"
 
-        # Quality Marker
-        - name: "QualityMarker/pressure"
+        - name: "ObsValue/stationPressure"
           coordinates: "longitude latitude"
-          source: variables/pressureQualityMarker
+          source: variables/stationPressure
+          longName: "Station Pressure"
+          units: "Pa"
+
+        - name: "ObsValue/pressureReducedToMeanSeaLevel"
+          coordinates: "longitude latitude"
+          source: variables/pressureReducedToMeanSeaLevel
+          longName: "Mean Sea-Level Pressure"
+          units: "Pa"
+
+        - name: "ObsValue/horizontalVisibility"
+          coordinates: "longitude latitude"
+          source: variables/horizontalVisibility
+          longName: "Horizontal Visibility"
+          units: "m"
+
+        - name: "ObsValue/maximumWindGustSpeed"
+          coordinates: "longitude latitude"
+          source: variables/maximumWindGustSpeed
+          longName: "Maximum Wind Gust Speed"
+          units: "m s-1"
+
+        # Quality Marker
+        - name: "QualityMarker/stationPressure"
+          coordinates: "longitude latitude"
+          source: variables/stationPressureQualityMarker
           longName: "Pressure Quality Marker"
 
         - name: "QualityMarker/height"
@@ -298,10 +344,15 @@ observations:
           source: variables/windQualityMarker
           longName: "windNorthward Quality Marker"
 
-        # ObsError
-        - name: "ObsError/pressure"
+        - name: "QualityMarker/pressureReducedToMeanSeaLevel"
           coordinates: "longitude latitude"
-          source: variables/pressureError
+          source: variables/pressureReducedToMeanSeaLevelQualityMarker
+          longName: "Mean Sea Level Pressure Quality Marker"
+
+        # ObsError
+        - name: "ObsError/stationPressure"
+          coordinates: "longitude latitude"
+          source: variables/stationPressureError
           longName: "Pressure Observation Error"
           units: "Pa"
 
@@ -330,9 +381,9 @@ observations:
           units: "m s-1"
 
 #        # Tuned ObsError
-#        - name: "TunedObsError/pressure"
+#        - name: "TunedObsError/stationPressure"
 #          coordinates: "longitude latitude"
-#          source: variables/pressureTunedError
+#          source: variables/stationPressureTunedError
 #          longName: "Analysis-Tuned Pressure Observation Error"
 #          units: "Pa"
 #
