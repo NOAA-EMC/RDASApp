@@ -363,8 +363,6 @@
                  name: MetaData/timeOffset # units: s
                minvalue: -360
                maxvalue:  360
-           action:
-             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: Perform Action
@@ -509,5 +507,5 @@
            action:
              name: reject
 
-         - filter: GOMsaver
-           filename: ./data/geovals/msonet_geovals_rrfs.nc4
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

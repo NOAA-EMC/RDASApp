@@ -59,8 +59,6 @@
                  name: MetaData/timeOffset # units: s
                minvalue: -360
                maxvalue:  360
-           action:
-             name: reduce obs space
 
          # Initial error assignment
          - filter: Perform Action

@@ -53,8 +53,6 @@
                  name: MetaData/timeOffset # units: s
                minvalue: -360
                maxvalue:  360
-           action:
-             name: reduce obs space
 
          # Initial error assignment
          - filter: Perform Action
@@ -97,10 +95,10 @@
              name: inflate error
              inflation variable:
                name: ObsFunction/ObsErrorFactorSfcPressure
-               #options:
-               #  geovar_geomz: geopotential_height
+               options:
+                 geovar_geomz: geopotential_height
                #  geovar_sfc_geomz: surface_geometric_height
-               #  station_altitude: height
+                 station_altitude: height
 
          # Bounds Check
          - filter: Bounds Check
