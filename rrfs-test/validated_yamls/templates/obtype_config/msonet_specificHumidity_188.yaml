@@ -136,7 +136,7 @@
            - name: specificHumidity
            action:
              name: assign error
-             error parameter: &error_min 50.0
+             error parameter: &error_max 50.0
            where:
            - variable:
                name: ObsErrorData/specificHumidity

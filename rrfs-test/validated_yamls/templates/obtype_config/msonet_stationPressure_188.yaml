@@ -97,10 +97,10 @@
              name: inflate error
              inflation variable:
                name: ObsFunction/ObsErrorFactorSfcPressure
-               options:
-                 geovar_geomz: geopotential_height
-                 geovar_sfc_geomz: surface_geometric_height
-                 station_altitude: height
+               #options:
+               #  geovar_geomz: geopotential_height
+               #  geovar_sfc_geomz: surface_geometric_height
+               #  station_altitude: height
 
          # Bounds Check
          - filter: Bounds Check
