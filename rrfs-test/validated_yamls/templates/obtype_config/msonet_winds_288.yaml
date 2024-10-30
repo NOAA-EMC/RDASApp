@@ -364,6 +364,16 @@
                minvalue: -360
                maxvalue:  360
 
+         # Online domain check
+         - filter: Bounds Check
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
          # Reject all obs with QualityMarker > 3
          - filter: Perform Action
            apply at iterations: 0,1
