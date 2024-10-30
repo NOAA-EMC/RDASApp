@@ -57,8 +57,7 @@
          # Online domain check
          - filter: Bounds Check
            filter variables:
-           - name: windEastward
-           - name: windNorthward
+           - name: stationPressure
            test variables:
            - name:  GeoVaLs/observable_domain_mask
            minvalue: 0.0
