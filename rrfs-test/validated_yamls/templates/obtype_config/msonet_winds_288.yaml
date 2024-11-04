@@ -453,9 +453,9 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 288 ]
-               cgross:     &cgross    [ 5.0 ]
-               error_min:  &error_min [ 1.0 ]
-               error_max:  &error_max [ 5.0 ]
+               cgross:     [ 5.0 ]
+               error_min:  [ 1.0 ]
+               error_max:  [ 5.0 ]
                variable: windEastward
            where:
            - variable: QualityMarker/windEastward
@@ -471,9 +471,9 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 288 ]
-               cgross:     *cgross
-               error_min:  *error_min
-               error_max:  *error_max
+               cgross:     [ 5.0 ]
+               error_min:  [ 1.0 ]
+               error_max:  [ 5.0 ]
                variable: windNorthward
            where:
            - variable: QualityMarker/windNorthward
@@ -489,9 +489,9 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 288 ]
-               cgross:     &cgross0_7 [ 3.5 ]
-               error_min:  *error_min
-               error_max:  *error_max
+               cgross:     [ 3.5 ]
+               error_min:  [ 1.0 ]
+               error_max:  [ 5.0 ]
                variable: windEastward
            where:
            - variable: QualityMarker/windEastward
@@ -507,9 +507,9 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 288 ]
-               cgross:     *cgross0_7
-               error_min:  *error_min
-               error_max:  *error_max
+               cgross:     [ 3.5 ]
+               error_min:  [ 1.0 ]
+               error_max:  [ 5.0 ]
                variable: windNorthward
            where:
            - variable: QualityMarker/windNorthward
