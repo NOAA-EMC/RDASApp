@@ -20,7 +20,8 @@
        obs operator:
          name: SfcPCorrected
          da_psfc_scheme: GSI
-         geovar_sfc_geomz: surface_geopotential_height
+         #geovar_sfc_geomz: surface_geopotential_height
+         geovar_sfc_geomz: geopotential_height_at_surface
          geovar_geomz: geopotential_height
        linear obs operator:
          name: Identity
