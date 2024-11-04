@@ -86,7 +86,7 @@ elif [[ $DYCORE == "MPAS" ]]; then
   mkdir -p graphinfo stream_list
   ln -sf ${RDAS_DATA}/fix/graphinfo/* graphinfo/
   cp -rp ${RDAS_DATA}/fix/stream_list/* stream_list/
-  cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/bumploc.yaml .
+  cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_bumploc.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/namelist.atmosphere .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_letkf.yaml .
