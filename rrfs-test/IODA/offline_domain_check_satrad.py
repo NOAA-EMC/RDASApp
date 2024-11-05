@@ -2,7 +2,7 @@
 import netCDF4 as nc
 import numpy as np
 from matplotlib.path import Path
-from scipy.spatial import ConvexHull
+from scipy.spatial import ConvexHull, Delaunay
 from timeit import default_timer as timer
 import argparse
 import warnings
@@ -14,6 +14,9 @@ import cartopy.feature as cfeature
 import matplotlib.ticker as mticker
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from operator import itemgetter
+import shapely.speedups
+
+shapely.speedups.enable()
 
 """
 This program determines if observations are in/outside of a convex hull
@@ -46,6 +49,102 @@ def toc(tic=tic, label=""):
     mins = int((elapsed % 3600) // 60)
     secs = int(elapsed % 3600 % 60)
     print(f"{label}({elapsed:.2f}s), {hrs:02}:{mins:02}:{secs:02}")
+
+def alpha_shape(points, alpha, only_outer=True):
+    """
+    Solution from Iddo Hanniel (https://stackoverflow.com/questions/50549128/boundary-enclosing-a-given-set-of-points)
+    Compute the alpha shape (concave hull) of a set of points
+    :param points: np.array of shape (n,2) points.
+    :param alpha: alpha value.
+    :param only_outer: boolean value to specify if we keep only the outer border
+    or also inner edges.
+    :return: set of (i,j) pairs representing edges of the alpha-shape. (i,j) are
+    the indices in the points array.
+    """
+    assert points.shape[0] > 3, "Need at least four points"
+
+    def add_edge(edges, i, j):
+        """
+        Add an edge between the i-th and j-th points,
+        if not in the list already
+        """
+        if (i, j) in edges or (j, i) in edges:
+            # already added
+            assert (j, i) in edges, "Can't go twice over same directed edge right?"
+            if only_outer:
+                # if both neighboring triangles are in shape, it's not a boundary edge
+                edges.remove((j, i))
+            return
+        edges.add((i, j))
+
+    points = points.data
+    tri = Delaunay(points)
+    edges = set()
+    # Loop over triangles:
+    # ia, ib, ic = indices of corner points of the triangle
+    for ia, ib, ic in tri.vertices:
+        pa = points[ia]
+        pb = points[ib]
+        pc = points[ic]
+        # Computing radius of triangle circumcircle
+        # www.mathalino.com/reviewer/derivation-of-formulas/derivation-of-formula-for-radius-of-circumcircle
+        a = np.sqrt((pa[0] - pb[0]) ** 2 + (pa[1] - pb[1]) ** 2)
+        b = np.sqrt((pb[0] - pc[0]) ** 2 + (pb[1] - pc[1]) ** 2)
+        c = np.sqrt((pc[0] - pa[0]) ** 2 + (pc[1] - pa[1]) ** 2)
+        s = (a + b + c) / 2.0
+        area = np.sqrt(s * (s - a) * (s - b) * (s - c))
+        circum_r = a * b * c / (4.0 * area)
+        if circum_r < alpha:
+            add_edge(edges, ia, ib)
+            add_edge(edges, ib, ic)
+            add_edge(edges, ic, ia)
+    return edges
+
+def find_edges_with(i, edge_set):
+    i_first = [j for (x,j) in edge_set if x==i]
+    i_second = [j for (j,x) in edge_set if x==i]
+    return i_first, i_second
+
+def stitch_boundaries(edges):
+    """
+    Sort the edges computed by alpha_shape 
+    """
+    edge_set = edges.copy()
+    boundary_lst = []
+    while len(edge_set) > 0:
+        boundary = []
+        edge0 = edge_set.pop()
+        boundary.append(edge0)
+        last_edge = edge0
+        while len(edge_set) > 0:
+            i,j = last_edge
+            j_first, j_second = find_edges_with(j, edge_set)
+            if j_first:
+                edge_set.remove((j, j_first[0]))
+                edge_with_j = (j, j_first[0])
+                boundary.append(edge_with_j)
+                last_edge = edge_with_j
+            elif j_second:
+                edge_set.remove((j_second[0], j))
+                edge_with_j = (j, j_second[0])  # flip edge rep
+                boundary.append(edge_with_j)
+                last_edge = edge_with_j
+
+            if edge0[0] == last_edge[1]:
+                break
+
+        boundary_lst.append(boundary)
+    return boundary_lst
+
+def shrink_boundary(points, centroid, factor=0.01):
+    new_points = []
+    for point in points:
+        direction = point - centroid
+        distance_to_centroid = np.linalg.norm(direction)
+        direction_normalized = direction / distance_to_centroid
+        new_point = point - factor * direction_normalized * distance_to_centroid
+        new_points.append(new_point)
+    return np.array(new_points)
 
 tic1 = tic()
 
@@ -99,44 +198,32 @@ else:
 print(f"Max/Min grid Lat: {np.max(grid_lat)}, {np.min(grid_lat)}")
 print(f"Max/Min grid Lon: {np.max(grid_lon)-360}, {np.min(grid_lon)-360}\n")
 
-# Flatten the grid lat/lon arrays and pair them as coordinates
-grid_polygon = np.vstack((grid_lon.flatten(), grid_lat.flatten())).T
-grid_polygon = np.ma.filled(grid_polygon, np.nan)
-grid_polygon = grid_polygon[~np.isnan(grid_polygon).any(axis=1)]
+# Get the points along the edge of the domain and sort
+points = np.vstack([grid_lon, grid_lat]).T
+edges = alpha_shape(points, alpha=0.25, only_outer = True)
+edges_sorted = stitch_boundaries(edges)
 
-# Create convex hull from grid points
-hull = ConvexHull(grid_polygon)
-hull_points = grid_polygon[hull.vertices]
+# Now grab the lat/lon points of the boundary (could be improved)
+edge_points = []
+for idx in edges_sorted[0]:
+    ipt = idx[0]; jpt = idx[1]
+    point_1 = points[ipt]
+    point_2 = points[jpt]
+    edge_points.append(point_1)
+    edge_points.append(point_2)
+edge_points = np.asarray(edge_points)
 
-# Compute the centroid of the convex hull
-centroid = np.mean(hull_points, axis=0)
-
-# Function to shrink the boundary points
-def shrink_boundary(points, centroid, factor=0.04):
-    new_points = []
-    for point in points:
-        direction = point - centroid
-        distance_to_centroid = np.linalg.norm(direction)
-        direction_normalized = direction / distance_to_centroid
-        new_point = point - factor * direction_normalized * distance_to_centroid
-        new_points.append(new_point)
-    return np.array(new_points)
-
-# Shrink the hull boundary
-shrunken_points = shrink_boundary(hull_points, centroid, factor=hull_shrink_factor)
-
-# Ensure the boundary is closed
-if not np.array_equal(shrunken_points[0], shrunken_points[-1]):
-    shrunken_points = np.vstack([shrunken_points, shrunken_points[0]])
+# Shrink the hull boundary to avoid problems right at the boundary
+centroid = np.nanmean(edge_points, axis=0)
+edge_points = shrink_boundary(edge_points, centroid, factor=hull_shrink_factor)
 
 # Create a Path object for the polygon domain
-domain_path = Path(shrunken_points)
+domain_path = Path(edge_points)
 
 # Extract observation latitudes and longitudes
 obs_lat = obs_ds.groups['MetaData'].variables['latitude'][:]
 obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
 obs_lon = np.where(obs_lon < 0, obs_lon + 360, obs_lon)
-
 
 #print(f"Max/Min obs Lat: {np.max(obs_lat)}, {np.min(obs_lat)}")
 #print(f"Max/Min obs Lon: {np.max(obs_lon)}, {np.min(obs_lon)}\n")
@@ -256,8 +343,6 @@ fig = plt.figure(figsize=(7,4))
 m1 = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
 #m1 = fig.add_subplot(1, 1, 1, projection=ccrs.LambertConformal())
 adjusted_lon = np.where(grid_lon > 180, grid_lon - 360, grid_lon)
-adjusted_shrunken_points = np.copy(shrunken_points)
-adjusted_shrunken_points[:, 0] = np.where(shrunken_points[:, 0] > 180, shrunken_points[:, 0] - 360, shrunken_points[:, 0])
 
 # Determine extent for plot domain
 half = plot_box_width / 2.
@@ -288,7 +373,7 @@ gl1.ylabel_style = {'size': 5, 'color': 'gray'}
 # Plot the domain and the observations
 #m1.fill(adjusted_lon.flatten(), grid_lat.flatten(), color='b', label='Domain Boundary', zorder=1, transform=ccrs.PlateCarree())
 m1.scatter(adjusted_lon.flatten(), grid_lat.flatten(), c='b', s=1, label='Domain Boundary', zorder=2)
-m1.plot(adjusted_shrunken_points[:, 0], shrunken_points[:, 1], 'r-', label='Convex Hull', zorder=10, transform=ccrs.PlateCarree())
+m1.plot(edge_points[:, 0], edge_points[:, 1], 'tab:purple', label='Concave Hull', zorder=10, transform=ccrs.PlateCarree())
 
 # Plot included observations
 included_lat = obs_lat[inside_indices]
@@ -313,7 +398,6 @@ plt.scatter(excluded_lon, excluded_lat, c='r', s=2, label=f'Excluded Observation
 plt.xlabel('Longitude')
 plt.ylabel('Latitude')
 plt.legend(loc='upper right')
-#plt.legend(loc='upper left')
 plt.title(f'{dycore} Domain and Observations ({hull_shrink_factor*100}%)')
 plt.tight_layout()
 plt.savefig(f'./domain_check_{dycore}.png')
