@@ -107,7 +107,7 @@ def find_edges_with(i, edge_set):
 
 def stitch_boundaries(edges):
     """
-    Sort the edges computed by alpha_shape
+    Sort the edges computed by alpha_shape 
     """
     edge_set = edges.copy()
     boundary_lst = []
@@ -195,8 +195,8 @@ elif 'latCell' in grid_ds.variables and 'lonCell' in grid_ds.variables:  # MPAS 
 else:
     raise ValueError("Unrecognized grid format: 'grid_lat'/'grid_lon' or 'latCell'/'lonCell' not found.")
 
-print(f"Max/Min Lat: {np.max(grid_lat)}, {np.min(grid_lat)}")
-print(f"Max/Min Lon: {np.max(grid_lon)-360}, {np.min(grid_lon)-360}\n")
+print(f"Max/Min grid Lat: {np.max(grid_lat)}, {np.min(grid_lat)}")
+print(f"Max/Min grid Lon: {np.max(grid_lon)-360}, {np.min(grid_lon)-360}\n")
 
 # Get the points along the edge of the domain and sort
 points = np.vstack([grid_lon, grid_lat]).T
@@ -223,6 +223,10 @@ domain_path = Path(edge_points)
 # Extract observation latitudes and longitudes
 obs_lat = obs_ds.groups['MetaData'].variables['latitude'][:]
 obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
+obs_lon = np.where(obs_lon < 0, obs_lon + 360, obs_lon)
+
+#print(f"Max/Min obs Lat: {np.max(obs_lat)}, {np.min(obs_lat)}")
+#print(f"Max/Min obs Lon: {np.max(obs_lon)}, {np.min(obs_lon)}\n")
 
 # Pair the observation lat/lon as coordinates
 obs_coords = np.vstack((obs_lon, obs_lat)).T
@@ -243,11 +247,34 @@ except:
 fout = nc.Dataset(outfile, 'w')
 
 # Create dimensions and variables in the new file
-fout.createDimension('Location', len(inside_indices))
-fout.createVariable('Location', 'int64', 'Location')
-fout.variables['Location'][:] = 0
-for attr in obs_ds.variables['Location'].ncattrs():  # Attributes for Location variable
-    fout.variables['Location'].setncattr(attr, obs_ds.variables['Location'].getncattr(attr))
+location_size = len(inside_indices)
+channel_size = obs_ds.dimensions['Channel'].size if 'Channel' in obs_ds.dimensions else 0  # Use the second dimension's size if exists
+
+# Channel variable
+if '_FillValue' in obs_ds.variables['Channel'].ncattrs():
+    fill_value = obs_ds.variables['Channel'].getncattr('_FillValue')
+else:
+    fill_value = 2147483647
+if 'Channel' not in fout.dimensions and channel_size > 0:
+    fout.createDimension('Channel', channel_size)
+    fout.createVariable('Channel', 'int32', 'Channel', fill_value=fill_value)
+    fout.variables['Channel'][:] = np.arange(channel_size) + 1 #since python indicies start at 0
+    for attr in obs_ds.variables['Channel'].ncattrs():  # Attributes for Location variable
+        if attr != '_FillValue':
+           fout.variables['Channel'].setncattr(attr, obs_ds.variables['Channel'].getncattr(attr))
+
+# Location variable
+if '_FillValue' in obs_ds.variables['Channel'].ncattrs():
+    fill_value = obs_ds.variables['Channel'].getncattr('_FillValue')
+else:
+    fill_value = 2147483647
+if 'Location' not in fout.dimensions:
+    fout.createDimension('Location', location_size)
+    fout.createVariable('Location', 'int32', 'Location', fill_value=fill_value)
+    fout.variables['Location'][:] = 0
+    for attr in obs_ds.variables['Location'].ncattrs():  # Attributes for Location variable
+        if attr != '_FillValue':
+           fout.variables['Location'].setncattr(attr, obs_ds.variables['Location'].getncattr(attr))
 
 # Copy all non-grouped attributes into the new file
 for attr in obs_ds.ncattrs():  # Attributes for the main file
@@ -259,17 +286,37 @@ for group in groups:
     g = fout.createGroup(group)
     for var in obs_ds.groups[group].variables:
         invar = obs_ds.groups[group].variables[var]
-        try:  # Non-string variables
-            vartype = invar.dtype
-            fill = invar.getncattr('_FillValue')
-            g.createVariable(var, vartype, 'Location', fill_value=fill)
-        except:  # String variables
-            g.createVariable(var, 'str', 'Location')
-        g.variables[var][:] = invar[:][inside_indices]
-        # Copy attributes for this variable
-        for attr in invar.ncattrs():
-            if '_FillValue' in attr: continue
-            g.variables[var].setncattr(attr, invar.getncattr(attr))
+        vartype = invar.dtype
+        fill = invar.getncattr('_FillValue')
+        dimensions = invar.dimensions
+
+        # Create a new variable with the correct dimensions
+        if len(dimensions) == 1:  # One-dimensional variable
+            try:
+                g.createVariable(var, vartype, dimensions, fill_value=fill)
+            except:
+                g.createVariable(var, 'str', dimensions, fill_value=fill)
+            g.variables[var][:] = invar[:][inside_indices]
+            # Copy attributes for this variable
+            for attr in invar.ncattrs():
+                if '_FillValue' in attr: continue
+                g.variables[var].setncattr(attr, invar.getncattr(attr))
+
+        elif len(dimensions) == 2:  # Two-dimensional variable
+            try:
+                g.createVariable(var, vartype, dimensions, fill_value=fill)
+            except:
+                g.createVariable(var, 'str', dimensions, fill_value=fill)
+            for idy in range(0, len(invar[0,:])): # new method for slicing very large 2d arrays
+                g.variables[var][:,idy] = itemgetter(*inside_indices)(invar[:,idy])
+
+            # Copy attributes for this variable
+            for attr in invar.ncattrs():
+                if '_FillValue' in attr: continue
+                g.variables[var].setncattr(attr, invar.getncattr(attr))
+
+        else:
+            raise NotImplementedError("Handling for more than two dimensions not implemented.")
 
 # Close the datasets
 obs_ds.close()
