@@ -1,0 +1,202 @@
+     - obs space:
+         name: adpsfc_stationPressure_187
+         distribution:
+           name: "@DISTRIBUTION@"
+           halo size: 100e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "@OBSFILE@"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: hofx_adpsfc_stationPressure_187.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [stationPressure]
+         simulated variables: [stationPressure]
+
+       obs operator:
+         name: SfcPCorrected
+         da_psfc_scheme: GSI
+         geovar_sfc_geomz: surface_geopotential_height
+         geovar_geomz: geopotential_height
+       linear obs operator:
+         name: Identity
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+         # ------------------
+         # stationPressure (187)
+         # ------------------
+         # Reject all obs with ObsType /= 187, QualityMarker = 4 -15
+         - filter: RejectList
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           - variable: QualityMarker/stationPressure
+             is_in: 4-15
+
+         # Time window filter
+         - filter: Domain Check
+           where:
+           - variable:
+               name: MetaData/timeOffset
+             minvalue: -900
+             maxvalue:  900
+
+         # Temporal thinning filter
+         - filter: Temporal Thinning
+           min_spacing: PT30M
+           seed_time: *analysisDate
+           category_variable:
+             name: MetaData/stationIdentification
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable:
+               name: ObsType/stationPressure
+             is_in: 187
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9]
+
+         # Ajusted error after initial assignment
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           - variable: QualityMarker/stationPressure
+             is_in: 3
+
+      # Error inflation based on setupps.f90
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in: 187
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsFunction/ObsErrorFactorSfcPressure
+            options:
+              geovar_geomz: geopotential_height
+              #geovar_sfc_geomz: surface_geometric_height
+              station_altitude: height
+
+      # Create temporary ObsErrorData
+      - filter: Variable Assignment
+        assignments:
+        - name: TempObsErrorData/stationPressure
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: ObsErrorData/stationPressure
+
+      # Set ObsError set "error parameter" if < "max value"
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        action:
+          name: assign error
+          error parameter: 100.0
+        where:
+        - variable:
+            name: ObsErrorData/stationPressure
+          maxvalue: 100.0
+        - variable:
+            name: ObsErrorData/stationPressure
+          value: is_valid
+
+      # Set ObsError set "error parameter" if > "min value"
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        action:
+          name: assign error
+          error parameter: 300.0
+        where:
+        - variable:
+            name: ObsErrorData/stationPressure
+          minvalue: 300.0
+        - variable:
+            name: ObsErrorData/stationPressure
+          value: is_valid
+
+      # Gross Error Check
+      - filter: Background Check
+        filter variables:
+        - name: stationPressure
+        threshold: 5.0
+        where:
+        - variable: ObsType/stationPressure
+          is_in: 187
+        - variable: QualityMarker/stationPressure
+          is_not_in: 3
+        action:
+          name: reject
+
+      # Gross Error Check
+      - filter: Background Check
+        filter variables:
+        - name: stationPressure
+        threshold: 3.5
+        where:
+        - variable: ObsType/stationPressure
+          is_in: 187
+        - variable: QualityMarker/stationPressure
+          is_in: 3
+        action:
+          name: reject
+
+      ## Re-assign err ObsErrorData <--- TempObsErrorData
+      # after gross error check.
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        action:
+          name: assign error
+          error function: TempObsErrorData/stationPressure
+        where:
+        - variable:
+            name: TempObsErrorData/stationPressure
+          value: is_valid
+
+         ## Print filter data
+         #- filter: Print Filter Data
+         #  message: Printing filter data
+         #  summary: true
+         #  variables:
+         #  - variable: MetaData/latitude
+         #  - variable: MetaData/longitude
+         #  - variable: MetaData/pressure
+         #  - variable: ObsType/stationPressure
+         #  - variable: ObsValue/stationPressure
+         #  - variable: QCflagsData/stationPressure
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/msonet_geovals_rrfs.nc4
