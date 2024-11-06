@@ -126,11 +126,11 @@
            - name: airTemperature
            action:
              name: assign error
-             error parameter: &error_min 1.0
+             error parameter: 1.0
            where:
            - variable:
                name: ObsErrorData/airTemperature
-             maxvalue: *error_min
+             maxvalue: 1.0
            - variable:
                name: ObsErrorData/airTemperature
              value: is_valid
@@ -141,11 +141,11 @@
            - name: airTemperature
            action:
              name: assign error
-             error parameter: &error_max 3.0
+             error parameter: 3.0
            where:
            - variable:
                name: ObsErrorData/airTemperature
-             minvalue: *error_max
+             minvalue: 3.0
            - variable:
                name: ObsErrorData/airTemperature
              value: is_valid

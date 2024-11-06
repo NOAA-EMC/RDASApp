@@ -135,11 +135,11 @@
            - name: stationPressure
            action:
              name: assign error
-             error parameter: &error_min 100.0
+             error parameter: 100.0
            where:
            - variable:
                name: ObsErrorData/stationPressure
-             maxvalue: *error_min
+             maxvalue: 100.0
            - variable:
                name: ObsErrorData/stationPressure
              value: is_valid
@@ -150,11 +150,11 @@
            - name: stationPressure
            action:
              name: assign error
-             error parameter: &error_max 300.0
+             error parameter: 300.0
            where:
            - variable:
                name: ObsErrorData/stationPressure
-             minvalue: *error_max
+             minvalue: 300.0
            - variable:
                name: ObsErrorData/stationPressure
              value: is_valid

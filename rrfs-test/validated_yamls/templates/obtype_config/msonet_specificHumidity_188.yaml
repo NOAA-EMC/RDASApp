@@ -128,11 +128,11 @@
            - name: specificHumidity
            action:
              name: assign error
-             error parameter: &error_min 5.0
+             error parameter: 5.0
            where:
            - variable:
                name: ObsErrorData/specificHumidity
-             maxvalue: *error_min
+             maxvalue: 5.0
            - variable:
                name: ObsErrorData/specificHumidity
              value: is_valid
@@ -143,11 +143,11 @@
            - name: specificHumidity
            action:
              name: assign error
-             error parameter: &error_max 50.0
+             error parameter: 50.0
            where:
            - variable:
                name: ObsErrorData/specificHumidity
-             minvalue: *error_max
+             minvalue: 50.0
            - variable:
                name: ObsErrorData/specificHumidity
              value: is_valid
