@@ -223,6 +223,7 @@ domain_path = Path(edge_points)
 # Extract observation latitudes and longitudes
 obs_lat = obs_ds.groups['MetaData'].variables['latitude'][:]
 obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
+obs_lon = np.where(obs_lon < 0, obs_lon + 360, obs_lon)
 
 # Pair the observation lat/lon as coordinates
 obs_coords = np.vstack((obs_lon, obs_lat)).T
