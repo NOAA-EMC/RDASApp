@@ -111,6 +111,7 @@
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
+           apply at iterations: 0,1
            assignments:
            - name: TempObsErrorData/airTemperature
              type: float
@@ -119,9 +120,11 @@
                options:
                  variables:
                  - name: ObsErrorData/airTemperature
+           defer to post: true
 
          # Set ObsError set "error parameter" if < "max value"
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            action:
@@ -134,9 +137,11 @@
            - variable:
                name: ObsErrorData/airTemperature
              value: is_valid
+           defer to post: true
 
          # Set ObsError set "error parameter" if > "min value"
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            action:
@@ -149,6 +154,7 @@
            - variable:
                name: ObsErrorData/airTemperature
              value: is_valid
+           defer to post: true
 
          # Gross Error Check
          - filter: Background Check
@@ -162,6 +168,7 @@
            - variable: ObsType/airTemperature
            - variable: QualityMarker/airTemperature
              is_not_in: 3
+           defer to post: true
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
@@ -175,9 +182,11 @@
            - variable: ObsType/airTemperature
            - variable: QualityMarker/airTemperature
              is_in: 3
+           defer to post: true
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            action:
@@ -187,6 +196,7 @@
            - variable:
                name: TempObsErrorData/airTemperature
              value: is_valid
+           defer to post: true
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

@@ -447,6 +447,7 @@
 
          # Gross Error Check
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            function absolute threshold:
@@ -465,6 +466,7 @@
 
          # Gross Error Check
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windNorthward
            function absolute threshold:
@@ -483,6 +485,7 @@
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            function absolute threshold:
@@ -501,6 +504,7 @@
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windNorthward
            function absolute threshold:

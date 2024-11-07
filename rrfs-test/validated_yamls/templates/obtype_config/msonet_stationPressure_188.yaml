@@ -120,6 +120,7 @@
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
+           apply at iterations: 0,1
            assignments:
            - name: TempObsErrorData/stationPressure
              type: float
@@ -128,9 +129,11 @@
                options:
                  variables:
                  - name: ObsErrorData/stationPressure
+           defer to post: true
 
          # Set ObsError set "error parameter" if < "max value"
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: stationPressure
            action:
@@ -143,9 +146,11 @@
            - variable:
                name: ObsErrorData/stationPressure
              value: is_valid
+           defer to post: true
 
          # Set ObsError set "error parameter" if > "min value"
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: stationPressure
            action:
@@ -158,35 +163,39 @@
            - variable:
                name: ObsErrorData/stationPressure
              value: is_valid
+           defer to post: true
 
          # Gross Error Check
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
-           threshold: 50.0
+           threshold: 5.0
            action:
              name: reject
            where:
            - variable: ObsType/stationPressure
            - variable: QualityMarker/stationPressure
              is_not_in: 3
+           defer to post: true
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
-           threshold: 35.0
+           threshold: 3.5
            action:
              name: reject
            where:
            - variable: ObsType/stationPressure
            - variable: QualityMarker/stationPressure
              is_in: 3
+           defer to post: true
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: stationPressure
            action:
@@ -196,6 +205,7 @@
            - variable:
                name: TempObsErrorData/stationPressure
              value: is_valid
+           defer to post: true
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

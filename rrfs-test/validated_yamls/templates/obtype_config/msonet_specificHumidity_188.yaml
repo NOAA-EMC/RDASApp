@@ -113,6 +113,7 @@
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
+           apply at iterations: 0,1
            assignments:
            - name: TempObsErrorData/specificHumidity
              type: float
@@ -121,9 +122,11 @@
                options:
                  variables:
                  - name: ObsErrorData/specificHumidity
+           defer to post: true
 
          # Set ObsError set "error parameter" if < "max value"
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            action:
@@ -136,9 +139,11 @@
            - variable:
                name: ObsErrorData/specificHumidity
              value: is_valid
+           defer to post: true
 
          # Set ObsError set "error parameter" if > "min value"
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            action:
@@ -151,6 +156,7 @@
            - variable:
                name: ObsErrorData/specificHumidity
              value: is_valid
+           defer to post: true
 
          # Gross Error Check
          - filter: Background Check
@@ -164,6 +170,7 @@
            - variable: ObsType/specificHumidity
            - variable: QualityMarker/specificHumidity
              is_not_in: 3
+           defer to post: true
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
@@ -177,9 +184,11 @@
            - variable: ObsType/specificHumidity
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           defer to post: true
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            action:
@@ -189,6 +198,7 @@
            - variable:
                name: TempObsErrorData/specificHumidity
              value: is_valid
+           defer to post: true
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4
