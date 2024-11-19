@@ -1,7 +1,7 @@
 time window:
        begin: 2022-05-26T18:00:00Z
        length: PT2H
-increment variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,specific_humidity,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
+increment variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
 geometry:
   fms initialization:
     namelist filename: DataFix/fmsmpp.nml
@@ -25,7 +25,7 @@ background:
       template:
         datetime: 2022-05-26T19:00:00Z
         filetype: fms restart
-        state variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,specific_humidity,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
+        state variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
         datapath: Data/inputs/mem%mem%/
         filename_core: 20220526.190000.fv_core.res.tile1.nc
         filename_trcr: 20220526.190000.fv_tracer.res.tile1.nc
