@@ -355,6 +355,18 @@
            - variable: MetaData/stationIdentification
              is_in: ["KBIT","KBRX","KHLD","KBFU","KCMS","KPER","KDRC"]
 
+         # Reject all obs with QualityMarker > 3
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: QualityMarker/windEastward
+             is_in: 4-15
+           action:
+             name: reject
+
          # Time window filter
          - filter: Domain Check
            apply at iterations: 0,1
@@ -373,18 +385,6 @@
            - name:  GeoVaLs/observable_domain_mask
            minvalue: 0.0
            maxvalue: 0.5
-
-         # Reject all obs with QualityMarker > 3
-         - filter: Perform Action
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           where:
-           - variable: QualityMarker/windEastward
-             is_in: 4-15
-           action:
-             name: reject
 
          # Initial error assignment
          - filter: Perform Action
@@ -469,6 +469,7 @@
              is_not_in: 3
            action:
              name: reject
+           defer to post: true
 
          # Gross Error Check
          - filter: Background Check
@@ -488,6 +489,7 @@
              is_not_in: 3
            action:
              name: reject
+           defer to post: true
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
@@ -507,6 +509,7 @@
              is_in: 3
            action:
              name: reject
+           defer to post: true
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
@@ -526,6 +529,19 @@
              is_in: 3
            action:
              name: reject
+           defer to post: true
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           min_spacing: PT06M
+           seed_time: *analysisDate
+           category_variable:
+             name: MetaData/stationIdentification
+           defer to post: true
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

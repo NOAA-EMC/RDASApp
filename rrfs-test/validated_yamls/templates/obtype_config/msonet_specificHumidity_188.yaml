@@ -200,5 +200,14 @@
              value: is_valid
            defer to post: true
 
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           min_spacing: PT06M
+           seed_time: *analysisDate
+           category_variable:
+             name: MetaData/stationIdentification
+           defer to post: true
+
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4
