@@ -1,24 +1,5 @@
-> **NOTE:** To use this template, remove any sections or lines that are not needed, and delete this line before submitting your PR.
+> **NOTE:** Please go to the `Preview` tab and select the appropriate sub-template.
 
-## Description
-> Provide a detailed description of this PR and what changes were made.
-
-## Issue(s) addressed
-> What issues does this fix?
-Results are documented in Issue
-- Add your issue number here.
-
-## Dependencies (if applicable)
-List the other PRs that this PR is dependent on:
--
--
-- ...
-
-## Sample Result (optional)
-> Add a screenshot with the final result.
-
-## Checklist
-- [ ] Unit tests added/updated (if applicable).
-- [ ] I have done a self review of my code.
-- [ ] I have tested the feature locally.
-- [ ] I have run the rrfs-test unit test.
+* [Feature](?expand=1&template=feature_pr.md)
+* [Bugfix](?expand=1&template=bugfix_pr.md)
+* [Sync Submodules](?expand=1&template=sync_submodule_pr.md)
