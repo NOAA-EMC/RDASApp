@@ -131,7 +131,7 @@ final:
 output:
   filetype: fms restart
   datapath: ./
-  prefix: hybens3dvar-fv3_lam-C775 #Ens3dvar-fv3_lam-C775
+  prefix: ens3dvar-fv3_lam-C775 #Ens3dvar-fv3_lam-C775
   frequency: PT1H
 test:
   reference filename: testoutput/rrfs-fv3jedi-ens3dvar.ref
