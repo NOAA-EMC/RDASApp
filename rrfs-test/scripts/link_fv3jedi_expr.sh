@@ -15,6 +15,7 @@ cd ${expdir}
 echo "expdir is at: ${expdir}"
 
 ${RDASApp}/ush/init.sh
+cp -r ${RDASApp}/rrfs-test/testoutput ./testoutput
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_hyb.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_Ens3Dvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_letkf.yaml . 
