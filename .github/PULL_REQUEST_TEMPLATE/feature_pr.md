@@ -1,5 +1,4 @@
-> **NOTE:** To use this template, remove any sections or lines that are not needed, and dele
-te this line before submitting your PR.
+> **NOTE:** To use this template, remove any sections or lines that are not needed, and delete this line before submitting your PR.
 
 ## Description
 > Provide a detailed description of this PR and what changes were made.
