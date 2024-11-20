@@ -11,13 +11,13 @@ geometry:
  io_layout: [1,1]
  ntiles: 1 
 background:
-  datetime: 2022-05-26T19:00:00Z
+  datetime: 2024-05-27T00:00:00Z
   filetype: fms restart
   datapath: Data/bkg
-  filename_core: fv3_dynvars.nc
-  filename_trcr: fv3_tracer.nc
-  filename_sfcd: fv3_sfcdata.nc
-  filename_cplr: coupler.res
+  filename_core: 20240527.000000.fv_core.res.tile1.nc
+  filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
+  filename_sfcd: 20240527.000000.sfc_data.nc
+  filename_cplr: 20240527.000000.coupler.res
   state variables: [air_temperature,surface_pressure] 
 background error:
   covariance model: SABER
