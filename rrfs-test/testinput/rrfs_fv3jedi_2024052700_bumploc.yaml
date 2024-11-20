@@ -2,12 +2,12 @@ geometry:
  fms initialization:
    namelist filename: DataFix/fmsmpp.nml
    field table filename: DataFix/field_table
- namelist filename: DataFix/input_lam_C775.nml
- akbk: DataFix/fix/akbk61.nc
+ namelist filename: DataFix/input_lam_13KM_NP16X10.nml
+ akbk: DataFix/fix/akbk66.nc
  field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
  # input.nml
- npz: 60
- layout: [8,10]
+ npz: 65
+ layout: [16,10]
  io_layout: [1,1]
  ntiles: 1 
 background:
@@ -27,7 +27,7 @@ background error:
       general:
         universe length-scale: 250.0e3
       io:
-        files prefix: Data/bump_new/fv3jedi_bumpparameters_nicas_lam_atm
+        files prefix: DataFix/bump_new/fv3jedi_bumpparameters_nicas_lam_atm
         alias:
         - in code: air_temperature
           in file: fixed_250km_0.3
@@ -68,7 +68,7 @@ background error:
       - parameter: cor_rh
         file:
           filetype: fms restart
-          datapath: Data/bump_new/
+          datapath: DataFix/bump_new/
           filename_core: bumpparameters_nicas_lam_atm.cor_rh.fv_core.res.nc
           filename_trcr: bumpparameters_nicas_lam_atm.cor_rh.fv_tracer.res.nc
           filename_sfcd: bumpparameters_nicas_lam_atm.cor_rh.sfc_data.nc
@@ -77,7 +77,7 @@ background error:
       - parameter: cor_rv
         file:
           filetype: fms restart
-          datapath: Data/bump_new/
+          datapath: DataFix/bump_new/
           filename_core: bumpparameters_nicas_lam_atm.cor_rv.fv_core.res.nc
           filename_trcr: bumpparameters_nicas_lam_atm.cor_rv.fv_tracer.res.nc
           filename_sfcd: bumpparameters_nicas_lam_atm.cor_rv.sfc_data.nc

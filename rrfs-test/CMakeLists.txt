@@ -52,7 +52,7 @@ if(FV3_DYCORE)
          file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir} )
          set(target_test ${case})
          ecbuild_add_test( TARGET ${target_test}
-                        MPI      80
+                        MPI      160
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )

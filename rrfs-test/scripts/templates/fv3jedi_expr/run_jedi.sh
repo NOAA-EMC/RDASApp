@@ -4,7 +4,7 @@
 ###SBATCH -M c6 # for Gaea
 ###SBATCH --partition=kjet
 ###SBATCH --reservation=rrfsens
-#SBATCH --ntasks=120
+#SBATCH --ntasks=160
 #SBATCH -t 00:58:00
 #SBATCH --job-name=fv3jedi_test
 #SBATCH -o log.jedi
@@ -33,5 +33,5 @@ ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
 
-srun -l -n 120 ${RDASApp}/build/bin/fv3jedi_var.x    ./$inputfile    log.out # FOR HYB/ENVAR
-#srun -l -n 120 ${RDASApp}/build/bin/fv3jedi_letkf.x    ./$inputfile    log.out # FOR LETKF
+srun -l -n 160 ${RDASApp}/build/bin/fv3jedi_var.x    ./$inputfile    log.out # FOR HYB/ENVAR
+#srun -l -n 160 ${RDASApp}/build/bin/fv3jedi_letkf.x    ./$inputfile    log.out # FOR LETKF

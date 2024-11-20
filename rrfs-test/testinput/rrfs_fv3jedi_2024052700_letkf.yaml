@@ -6,12 +6,12 @@ geometry:
   fms initialization:
     namelist filename: DataFix/fmsmpp.nml
     field table filename: DataFix/field_table
-  namelist filename: DataFix/input_lam_C775.nml
+  namelist filename: DataFix/input_lam_13KM_NP16X10.nml
   field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
-  akbk: DataFix/fix/akbk61.nc
+  akbk: DataFix/fix/akbk66.nc
   # input.nml
-  npz: 60
-  layout: [8,10]
+  npz: 65
+  layout: [16,10]
   io_layout: [1,1]
   ntiles: 1 
   fieldsets:
