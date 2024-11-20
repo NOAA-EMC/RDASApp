@@ -18,8 +18,7 @@ assignees: ''
 > If this is a new feature: What does the new code need to accomplish? Does it require new software dependencies?
 
 ## Acceptance Criteria (Definition of Done)
-> What does it mean for this to be finished? Please add links to relevant PRs. Links may be 
-added later if a PR has not yet been created.
+> What does it mean for this to be finished? Please add links to relevant PRs. Links may be added later if a PR has not yet been created.
 - Link any relevant pull requests here:
   - PR #
   - PR #
@@ -28,4 +27,5 @@ added later if a PR has not yet been created.
 > What must be done before this can be done? Add issue or PR dependencies as appropriate
 > Does this block progress on other issues? Add this issue as a dependency to issues as appropriate
 
-
+## Additional information (optional)
+> Add any other context about the problem here.

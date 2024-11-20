@@ -1,12 +1,12 @@
 > **NOTE:** To use this template, remove any sections or lines that are not needed, and delete this line before submitting your PR.
 
+> **NOTE:** If you would like to switch templates, you can manually change the URL by selecting a different template or removing the template parameter entirely. Example: To return to a generic PR, remove the "?expand=1&template=xxx.md" from the URL, then you can reselect the template.
+
 ## Description
 > Provide a detailed description of this PR and what changes were made.
 
 ## Issue(s) addressed
-> What issues does this fix?
-Results are documented in Issue
-- Add your issue number here.
+Resolves/Results are documented in Issue #
 
 ## Dependencies (if applicable)
 List the other PRs that this PR is dependent on:
@@ -14,11 +14,7 @@ List the other PRs that this PR is dependent on:
 -
 - ...
 
-## Sample Result (optional)
-> Add a screenshot with the final result.
-
 ## Checklist
+- [ ] I have performed a self-review of my own code.
+- [ ] I have run rrfs tests before creating the PR (if applicable).
 - [ ] Unit tests added/updated (if applicable).
-- [ ] I have done a self review of my code.
-- [ ] I have tested the feature locally.
-- [ ] I have run the rrfs-test unit test.

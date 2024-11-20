@@ -1,5 +1,6 @@
-> **NOTE:** To use this template, remove any sections or lines that are not needed, and dele
-te this line before submitting your PR.
+> **NOTE:** To use this template, remove any sections or lines that are not needed, and delete this line before submitting your PR.
+
+> **NOTE:** If you would like to switch templates, you can manually change the URL by selecting a different template or removing the template parameter entirely. Example: To return to a generic PR, remove the "?expand=1&template=xxx.md" from the URL, then you can reselect the template.
 
 Updated instructions for syncing submodules with upstream repositories can be found [here](https://github.com/NOAA-EMC/RDASApp/wiki/Sync-RDASApp-submodule-with-upstream-repositories).
 Instructions for working with submodule can be found [here](https://github.com/NOAA-EMC/RDASApp/wiki/Working-with-RDASApp-submodules)
@@ -15,9 +16,8 @@ This PR updates the RDASApp submodules to align with the latest changes in their
 ```
 
 #### 2. Staged `ctest-data` Updates (if applicable)
-> What staged data were updated? Clearly state current and updated hases for each. 
+> What staged data were updated? Clearly state current and updated hases for each.
 ```
-* fix/jcsda/ufo-data fe102e1->fffd9fa
 ```
 #### 3. Test Reference Updates (if applicable)
 ```
@@ -26,7 +26,7 @@ This PR updates the RDASApp submodules to align with the latest changes in their
 #### 4. Ctest Results (required)
 > All ctests (e.g., ufo, fv3jedi, mpasjedi, etc.) must be run on at least one machine (e.g., Hera, Jet, Orion).
 > The `rrfs-test` ctest must be run on all supported machines.
-> Copy and paste the result of any failed cetests below and double check with the documentation if failing tests are expected.
+> Copy and paste the result of any failed ctests below and double check with the documentation if failing tests are expected.
 ```
 ```
 

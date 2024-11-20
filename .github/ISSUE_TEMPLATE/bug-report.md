@@ -14,9 +14,7 @@ assignees: ''
 > If this is not a bug, use the general issue template.
 
 ## Steps to Reproduce (if applicable)
-
 > What computer are you running on?
-> What compilers/modules are you using?
 > Steps to reproduce the behavior
 
 1.
@@ -30,7 +28,7 @@ assignees: ''
 ## Screenshots (optional)
 > Add screenshots to help explain your problem.
 
-## Suggested Solution (if applicable)
+## Suggested Solution (if known)
 > If you have an idea of how to fix the issue, describe it here.
 
 ## Acceptance Criteria (Definition of Done)
@@ -38,6 +36,10 @@ assignees: ''
 - Link any relevant pull requests here:
   - PR #
   - PR #
+
+## Dependencies
+> What must be done before this can be done? Add issue or PR dependencies as appropriate
+> Does this block progress on other issues? Add this issue as a dependency to issues as appropriate
 
 ## Additional information (optional)
 > Add any other context about the problem here.
