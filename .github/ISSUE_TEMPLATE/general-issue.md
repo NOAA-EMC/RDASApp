@@ -1,14 +1,13 @@
 ---
 name: General issue template
 about: Use this template for general issues
-title: "[New issue]"
+title: "[new issue]"
 labels: ''
 assignees: ''
 
 ---
 
-> **NOTE:** To use this template, remove any sections or lines that are not needed, and dele
-te this line before submitting your PR.
+> **NOTE:** To use this template, remove any sections or lines that are not needed, and delete this line before submitting your PR.
 
 ## Description
 > Provide a detailed description of this issue.
@@ -22,11 +21,11 @@ te this line before submitting your PR.
 > What does it mean for this to be finished? Please add links to relevant PRs. Links may be 
 added later if a PR has not yet been created.
 - Link any relevant pull requests here:
-  - PR #1 [Link to PR][#]
-  - PR #2 [Link to PR][#]
+  - PR #
+  - PR #
 
 ## Dependencies
-> What must be done before this can be done? Add issue or PR dependencies in ZenHub as appropriate
-> Does this block progress on other issues? Add this issue as a dependency to other ZenHub issues as appropriate
+> What must be done before this can be done? Add issue or PR dependencies as appropriate
+> Does this block progress on other issues? Add this issue as a dependency to issues as appropriate
 
 

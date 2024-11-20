@@ -7,7 +7,7 @@ te this line before submitting your PR.
 ## Issue(s) addressed
 > What issues does this fix?
 Results are documented in Issue
-- Add you issue number here.
+- Add your issue number here.
 
 ## Dependencies (if applicable)
 List the other PRs that this PR is dependent on:
@@ -16,7 +16,7 @@ List the other PRs that this PR is dependent on:
 - ...
 
 ## Sample Result (optional)
-> If applicable, add a screenshot with the final result.
+> Add a screenshot with the final result.
 
 ## Checklist
 - [ ] Unit tests added/updated (if applicable).

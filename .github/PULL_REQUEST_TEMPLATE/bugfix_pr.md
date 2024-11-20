@@ -13,7 +13,7 @@ te this line before submitting your PR.
 2. etc.
 
 ## Issue(s) addressed
-Resolves Issue #1 [Link to Issue][#]
+Resolves Issue #
 
 ## Checklist
 - [ ] I have performed a self-review of my own code.

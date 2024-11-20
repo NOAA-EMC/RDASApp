@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Report a bug in the project
-title: "[Bug]"
+title: "[bug]"
 labels: 'bug'
 assignees: ''
 
@@ -11,7 +11,7 @@ assignees: ''
 
 ## Current behavior (describe the bug)
 > Provide a detailed description of this bug.
-> If this is not a bug, use the general issue template. 
+> If this is not a bug, use the general issue template.
 
 ## Steps to Reproduce (if applicable)
 
@@ -27,8 +27,8 @@ assignees: ''
 ## Expected behavior
 > What you expect to happen.
 
-## Screenshots
-> If applicable, add screenshots to help explain your problem.
+## Screenshots (optional)
+> Add screenshots to help explain your problem.
 
 ## Suggested Solution (if applicable)
 > If you have an idea of how to fix the issue, describe it here.
@@ -36,8 +36,8 @@ assignees: ''
 ## Acceptance Criteria (Definition of Done)
 > What does it mean for this to be finished? Please add links to relevant PRs. Links may be added later if a PR has not yet been created.
 - Link any relevant pull requests here:
-  - PR #1 [Link to PR][#]
-  - PR #2 [Link to PR][#]
+  - PR #
+  - PR #
 
 ## Additional information (optional)
 > Add any other context about the problem here.
