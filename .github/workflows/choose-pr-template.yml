@@ -1,8 +1,0 @@
-templates:
-  - name: "Feature"
-    path: ".github/PULL_REQUEST_TEMPLATE/feature_pr.md"
-  - name: "Bugfix"
-    path: ".github/PULL_REQUEST_TEMPLATE/bugfix_pr.md"
-  - name: "Sync Submodule"
-    path: ".github/PULL_REQUEST_TEMPLATE/sync_submodule_pr.md"
-
