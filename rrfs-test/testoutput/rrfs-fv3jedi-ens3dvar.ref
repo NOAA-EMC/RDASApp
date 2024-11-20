@@ -1,0 +1,45 @@
+CostJb   : Nonlinear Jb = 0.0000000000000000e+00
+CostJo   : Nonlinear Jo(sonde) = 1.2310051075237272e+01, nobs = 1, Jo/n = 1.2310051075237272e+01, err = 1.2000000476837158e+00
+CostFunction: Nonlinear J = 1.2310051075237272e+01
+DRPCGMinimizer: reduction in residual norm = 1.3872516431562799e-41
+CostFunction::addIncrement: Analysis: 
+----------------------------------------------------------------------------------------------------
+State print | number of fields = 10 | cube sphere face size: C420
+eastward_wind                                | Min:-2.7017492294311523e+01 Max:+5.2821491241455078e+01 RMS:+1.3292638389041382e+01
+northward_wind                               | Min:-3.9898376464843750e+01 Max:+3.8607715606689453e+01 RMS:+6.4371706229260255e+00
+u_component_of_native_D_grid_wind            | Min:-2.6893013000488281e+01 Max:+5.2978866577148438e+01 RMS:+1.3369333894958322e+01
+v_component_of_native_D_grid_wind            | Min:-3.7761562347412109e+01 Max:+4.1704360961914062e+01 RMS:+6.3101529603868389e+00
+air_temperature                              | Min:+1.9402590942382812e+02 Max:+3.1449734497070312e+02 RMS:+2.5823302348921669e+02
+air_pressure_thickness                       | Min:+1.4039907836914062e+02 Max:+3.3267851562500000e+03 RMS:+1.7747166959246422e+03
+water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.4484865367412567e-02 RMS:+5.5259929605535373e-03
+cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+3.5491219023242593e-04 RMS:+2.6466693180263312e-06
+cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+1.4309773687273264e-03 RMS:+1.9256935244694531e-05
+ozone_mass_mixing_ratio                      | Min:+4.4753472039360531e-09 Max:+1.6040661648730747e-05 RMS:+4.4486309256640487e-06
+----------------------------------------------------------------------------------------------------
+
+
+
+CostJb   : Nonlinear Jb = 1.158973645819928
+CostJo   : Nonlinear Jo(sonde) = 6.992593540575902, nobs = 1, Jo/n = 6.992593540575902, err = 1.200000047683716
+CostFunction: Nonlinear J = 8.15156718639583
+DRPCGMinimizer: reduction in residual norm = 1.216030095855452e-28
+CostFunction::addIncrement: Analysis: 
+----------------------------------------------------------------------------------------------------
+State print | number of fields = 10 | cube sphere face size: C420
+eastward_wind                                | Min:-2.7017492294311523e+01 Max:+5.2821491241455078e+01 RMS:+1.3292635669163506e+01
+northward_wind                               | Min:-3.9898376464843750e+01 Max:+3.8607715606689453e+01 RMS:+6.4371700584727440e+00
+u_component_of_native_D_grid_wind            | Min:-2.6893013000488281e+01 Max:+5.2978866577148438e+01 RMS:+1.3369331202004119e+01
+v_component_of_native_D_grid_wind            | Min:-3.7761562347412109e+01 Max:+4.1704360961914062e+01 RMS:+6.3101523631817482e+00
+air_temperature                              | Min:+1.9402590942382812e+02 Max:+3.1449734497070312e+02 RMS:+2.5823302462630699e+02
+air_pressure_thickness                       | Min:+1.4039907836914062e+02 Max:+3.3267851562500000e+03 RMS:+1.7747167047470689e+03
+water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.4484865367412567e-02 RMS:+5.5259930161185638e-03
+cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+3.5491219023242593e-04 RMS:+2.6466693180263312e-06
+cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+1.4309773687273264e-03 RMS:+1.9256935244694531e-05
+ozone_mass_mixing_ratio                      | Min:+4.4753472039360531e-09 Max:+1.6040661648730747e-05 RMS:+4.4486309255157951e-06
+----------------------------------------------------------------------------------------------------
+
+
+
+CostJb   : Nonlinear Jb = 1.165739689381842
+CostJo   : Nonlinear Jo(sonde) = 6.973953037594973, nobs = 1, Jo/n = 6.973953037594973, err = 1.200000047683716
+CostFunction: Nonlinear J = 8.139692726976815
