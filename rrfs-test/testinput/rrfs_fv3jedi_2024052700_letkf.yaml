@@ -39,97 +39,35 @@ background:
 observations:
      observers:
      - obs space:
-         name: Aircraft
-         distribution: 
+         name: sonde
+         distribution:
            name: Halo
-           halo size: 1250e3
+           halo size: 1000e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: Data/obs/rass_tsen_obs_2024052700.nc4
+             obsfile: Data/obs/rap.t00z.singleobs.ADPUPA.tm00.nc4
          obsdataout:
            engine:
              type: H5File
-             obsfile: rass_tsen_obs_2024052700_hofx.nc4
+             obsfile: ./adpupa_hofx.nc4
          simulated variables: [airTemperature]
+         observed variables: [airTemperature]
        obs operator:
          name: VertInterp
        obs error:
          covariance model: diagonal
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 200e3
+           lengthscale: 300e3
        obs filters:
-       - filter: Bounds Check
-         filter variables:
-         - name: airTemperature@GsiUseFlag 
-         minvalue: 0.5 
-         maxvalue: 1.5 
-         action:
-            name: accept 
-
-     - obs space:
-         name: Aircraft
-         distribution: 
-           name: Halo
-           halo size: 1250e3
-         obsdatain:
-           engine:
-             type: H5File
-             obsfile: Data/obs/sondes_tsen_obs_2024052700.nc4
-         obsdataout:
-           engine:
-             type: H5File
-             obsfile: sondes_tsen_obs_2024052700_hofx.nc4
-         simulated variables: [airTemperature]
-       obs operator:
-         name: VertInterp
-       obs error:
-         covariance model: diagonal
-       obs localizations:
-         - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 200e3
-       obs filters:
-       - filter: Bounds Check
-         filter variables:
-         - name: airTemperature@GsiUseFlag 
-         minvalue: 0.5 
-         maxvalue: 1.5 
-         action:
-            name: accept 
-
-     - obs space:
-         name: Sonde 
-         distribution: 
-           name: Halo
-           halo size: 1250e3
-         engine:
-         type: H5File
-         obsdatain:
-           engine:
-             type: H5File
-             obsfile: Data/obs/sondes_q_obs_2024052700.nc4
-         obsdataout:
-           engine:
-             type: H5File
-             obsfile: sondes_q_obs_2024052700_hofx.nc4
-         simulated variables: [specificHumidity]
-       obs operator:
-         name: VertInterp
-       obs error:
-         covariance model: diagonal
-       obs localizations:
-         - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 200e3
-       obs filters:
-       - filter: Bounds Check
-         filter variables:
-         - name: specificHumidity@GsiUseFlag 
-         minvalue: 0.5 
-         maxvalue: 1.5 
-         action:
-            name: accept 
-
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error parameter: 1.2  # K
+           defer to post: true
 
 
 driver:
