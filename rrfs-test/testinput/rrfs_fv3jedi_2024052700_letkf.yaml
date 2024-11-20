@@ -1,12 +1,12 @@
 time window:
-       begin: 2024-05-27T00:00:00Z
+       begin: 2024-05-26T23:00:00Z
        length: PT2H
 increment variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
 geometry:
   fms initialization:
     namelist filename: DataFix/fmsmpp.nml
     field table filename: DataFix/field_table
-  namelist filename: DataFix/input_lam_13KM_NP16X10.nml
+  namelist filename: DataFix/input_lam_C775_NP16X10.nml
   field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
   akbk: DataFix/fix/akbk66.nc
   # input.nml

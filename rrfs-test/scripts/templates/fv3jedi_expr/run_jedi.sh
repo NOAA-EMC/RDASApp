@@ -13,7 +13,8 @@
 
 RDASApp=@RDASApp@
 
-inputfile=./rrfs_fv3jedi_2024052700_hyb.yaml # FOR HYB
+inputfile=./rrfs_fv3jedi_2024052700_Ens3Dvar.yaml # FOR EnVar
+#inputfile=./rrfs_fv3jedi_2024052700_hyb.yaml # FOR HYB
 #inputfile=./rrfs_fv3jedi_2024052700_letkf.yaml # FOR LETKF
 
 if [[ -s /apps/lmod/lmod/init/sh ]]; then

@@ -16,7 +16,9 @@ echo "expdir is at: ${expdir}"
 
 ${RDASApp}/ush/init.sh
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_hyb.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_Ens3Dvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_letkf.yaml . 
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_bumploc.yaml ./bumploc.yaml
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_expr/run_bump.sh > run_bump.sh
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_expr/run_jedi.sh > run_jedi.sh
 cp ${RDASApp}/rrfs-test/ush/colormap.py . 

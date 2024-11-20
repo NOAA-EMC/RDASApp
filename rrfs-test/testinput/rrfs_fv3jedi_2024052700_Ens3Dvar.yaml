@@ -1,15 +1,15 @@
 cost function:
   cost type: 3D-Var
   time window:
-      begin: 2024-05-27T00:00:00Z
-      length: PT2H
+      begin: 2024-05-26T21:00:00Z
+      length: PT6H
   analysis variables: &3dvars [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
 
   geometry:
     fms initialization:
       namelist filename: DataFix/fmsmpp.nml
       field table filename: DataFix/field_table
-    namelist filename: DataFix/input_lam_13KM_NP16X10.nml
+    namelist filename: DataFix/input_lam_C775_NP16X10.nml
     field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
     akbk: DataFix/fix/akbk66.nc
     # input.nml
@@ -31,113 +31,59 @@ cost function:
     state variables: [eastward_wind,northward_wind,u_component_of_native_D_grid_wind,v_component_of_native_D_grid_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
   background error:
     covariance model: ensemble
-      members from template:
-        template:
-          datetime: 2024-05-27T00:00:00Z
-          filetype: fms restart
-          state variables: *3dvars
-          datapath: Data/inputs/mem%mem%/
-          filename_core: 20240527.000000.fv_core.res.tile1.nc
-          filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
-          filename_sfcd: 20240527.000000.sfc_data.nc
-          filename_sfcw: 20240527.000000.fv_srf_wnd.res.nc
-          filename_cplr: 20240527.000000.coupler.res
-        pattern: "%mem%"
-        nmembers: 20 
-        zero padding: 3
-      localization:
-        localization method: SABER
-        saber central block:
-          saber block name: BUMP_NICAS
-          active variables: *3dvars 
-          read:
-            io:
-              files prefix: DataFix/bump_new/fv3jedi_bumpparameters_nicas_lam_atm
-              alias:
-              - in code: common
-                in file: fixed_250km_0.3
-            drivers:
-               multivariate strategy: duplicated
-               read local nicas: true
-            model:
-               level for 2d variables: last
-
+    members from template:
+      template:
+        datetime: 2024-05-27T00:00:00Z
+        filetype: fms restart
+        state variables: *3dvars
+        datapath: Data/inputs/mem%mem%/
+        filename_core: 20240527.000000.fv_core.res.tile1.nc
+        filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
+        filename_sfcd: 20240527.000000.sfc_data.nc
+        filename_sfcw: 20240527.000000.fv_srf_wnd.res.nc
+        filename_cplr: 20240527.000000.coupler.res
+      pattern: "%mem%"
+      nmembers: 20 
+      zero padding: 3
+    localization:
+      localization method: SABER
+      saber central block:
+        saber block name: BUMP_NICAS
+        active variables: *3dvars 
+        read:
+          io:
+            files prefix: DataFix/bump_new/bumploc_300km_0.3vloc
+          drivers:
+             multivariate strategy: duplicated
+             read local nicas: true
+          model:
+             level for 2d variables: last
   observations:
      observers:
-     - obs space:
-         name: Aircraft
-         obsdatain:
-           engine:
-             type: H5File
-             obsfile: Data/obs/rass_tsen_obs_2024052700.nc4
-         obsdataout:
-           engine:
-             type: H5File
-             obsfile: rass_tsen_obs_2024052700_hofx.nc4
-         simulated variables: [airTemperature]
-         observed variables: [airTemperature]
-       obs operator:
-         name: VertInterp
-       obs error:
-         covariance model: diagonal
-       obs filters:
-       - filter: Bounds Check
-         filter variables:
-         - name: airTemperature@GsiUseFlag 
-         minvalue: 0.5 
-         maxvalue: 1.5 
-         action:
-            name: accept 
-
-     - obs space:
-         name: sonde  
-         obsdatain:
-           engine:
-             type: H5File
-             obsfile: Data/obs/sondes_tsen_obs_2024052700.nc4
-         obsdataout:
-           engine:
-             type: H5File
-             obsfile: rass_tsen_obs_2024052700_hofx.nc4
-         simulated variables: [airTemperature]
-         observed variables: [airTemperature]
-       obs operator:
-         name: VertInterp
-       obs error:
-         covariance model: diagonal
-       obs filters:
-       - filter: Bounds Check
-         filter variables:
-         - name: airTemperature@GsiUseFlag 
-         minvalue: 0.5 
-         maxvalue: 1.5 
-         action:
-            name: accept 
-
-
      - obs space:
          name: sonde
          obsdatain:
            engine:
              type: H5File
-             obsfile: Data/obs/sondes_uv_obs_2024052700.nc4
-         simulated variables: [windEastward, windNorthward]
+             obsfile: Data/obs/rap.t00z.singleobs.ADPUPA.tm00.nc4
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: ./adpupa_hofx.nc4
+         simulated variables: [airTemperature]
+         observed variables: [airTemperature]
        obs operator:
          name: VertInterp
-         vertical coordinate: air_pressure
-         observation vertical coordinate: pressure
-         interpolation method: log-linear
        obs error:
-         covariance model: diagonal ufo
+         covariance model: diagonal
        obs filters:
-       - filter: PreQC
-         maxvalue: 3
-       - filter: Background Check
-         filter variables:
-         - name: windEastward
-         - name: windNorthward
-         threshold: 6.0
-       monitoring only: true
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           action:
+             name: assign error
+             error parameter: 1.2  # K
+           defer to post: true
 
 
 variational:
@@ -150,7 +96,7 @@ variational:
       fms initialization:
         namelist filename: DataFix/fmsmpp.nml
         field table filename: DataFix/field_table
-      namelist filename: DataFix/input_lam_13KM_NP16X10.nml
+      namelist filename: DataFix/input_lam_C775_NP16X10.nml
       field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
       akbk: DataFix/fix/akbk66.nc
       # input.nml
@@ -168,7 +114,7 @@ variational:
       fms initialization:
         namelist filename: DataFix/fmsmpp.nml
         field table filename: DataFix/field_table
-      namelist filename: DataFix/input_lam_13KM_NP16X10.nml
+      namelist filename: DataFix/input_lam_C775_NP16X10.nml
       field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
       akbk: DataFix/fix/akbk66.nc
       # input.nml
