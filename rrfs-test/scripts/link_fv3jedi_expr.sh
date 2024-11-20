@@ -1,0 +1,29 @@
+#!/bin/bash
+RDASApp=$( git rev-parse --show-toplevel 2>/dev/null )
+if [[ -z ${RDASApp} ]]; then
+  echo "Not under a clone of RDASApp!"
+  echo "Please delete line 2-7 and set RDASApp variable mannually"
+  exit
+fi
+
+#RDASApp="/path/to/RDASApp"  # set this variable if line2-7 was removed
+BUMPLOC="conus12km-401km11levels"
+exprname="fv3_2024052700"
+expdir=${RDASApp}/expr/${exprname}  # can be set to any directory 
+mkdir -p ${expdir}
+cd ${expdir}
+echo "expdir is at: ${expdir}"
+
+${RDASApp}/ush/init.sh
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_hyb_2022052619.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_letkf_2022052619.yaml . 
+sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_expr/run_bump.sh > run_bump.sh
+sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_expr/run_jedi.sh > run_jedi.sh
+cp ${RDASApp}/rrfs-test/ush/colormap.py . 
+cp ${RDASApp}/rrfs-test/ush/fv3jedi_increment_singleob.py .
+cp ${RDASApp}/rrfs-test/ush/fv3jedi_increment_fulldom.py . 
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data Data
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/DataFix DataFix
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data_static Data_static
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/INPUT INPUT
+

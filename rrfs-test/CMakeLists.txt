@@ -8,8 +8,8 @@ include(funcs.cmake)
 
 # FV3-JEDI tests
 set(rrfs_fv3jedi_tests)
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_hyb_2022052619"     "fv3jedi_var.x")
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_letkf_2022052619"   "fv3jedi_letkf.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_hyb"     "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_letkf"   "fv3jedi_letkf.x")
 
 # MPAS-JEDI tests 
 set(rrfs_mpasjedi_tests)
@@ -40,7 +40,7 @@ if(FV3_DYCORE)
       foreach(case ${caselist})
          get_from_dictionary(rrfs_fv3jedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
-         set(src_casedir "${rrfs-test_data_local}/rrfs-data_fv3jedi_2022052619")
+         set(src_casedir "${rrfs-test_data_local}/rrfs-data_fv3jedi_2024052700")
          if (NOT EXISTS "${casedir}")
            file(MAKE_DIRECTORY ${casedir})
          endif()
