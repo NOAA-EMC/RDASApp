@@ -147,8 +147,6 @@ if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
   $dir_root/rrfs-test/scripts/link_fv3jedi_expr.sh
 fi
 
-exit
-
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE"
 # Configure
 echo "Configuring ..."
