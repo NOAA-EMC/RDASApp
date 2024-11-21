@@ -92,6 +92,9 @@ def bufr_to_ioda(config, logger):
     q.add('stationIdentification', '*/SSTN')
     q.add('height', '*/HSMSL')
     q.add('heightOfAntenna', '*/HSALG')
+    q.add('volumeIndex', '*/VOID')
+    q.add('scanIndex', '*/SCID')
+    q.add('ppiVolume', '*/VOCP')
 
     # ObsValue
     q.add('beamAzimuthAngle', '*/ANAZ')
@@ -99,13 +102,10 @@ def bufr_to_ioda(config, logger):
     q.add('gateRange', '*/NL2RW{1}/DIST125M')
     q.add('radialVelocity', '*/NL2RW{1}/DMVR')
     q.add('spectralWidth', '*/NL2RW{1}/DVSW')
-    q.add('ppiVolume', '*/VOID')
-    q.add('ppiIndex', '*/SCID')
     q.add('unfoldingVelocity', '*/HNQV')
-    q.add('volumeCoveragePattern', '*/VOCP')
 
     # QualityMarker
-    q.add('windAlongRadialLineQM', '*/QCRW')
+    q.add('radialVelocityQM', '*/QCRW')
 
     end_time = time.time()
     running_time = end_time - start_time
@@ -137,6 +137,9 @@ def bufr_to_ioda(config, logger):
     sstn = r.get('stationIdentification', 'spectralWidth')
     hsmsl = r.get('height', 'spectralWidth')
     hsalg = r.get('heightOfAntenna', 'spectralWidth')
+    void     = r.get('volumeIndex', 'spectralWidth')
+    scid     = r.get('sacnIndex', 'spectralWidth')
+    vocp     = r.get('ppiVolume', 'spectralWidth')
 
     # MetaData/Observation Time
     year = r.get('year')
@@ -158,13 +161,10 @@ def bufr_to_ioda(config, logger):
     dist125m = r.get('gateRange', 'spectralWidth')
     dist125m *= 125
     dmrv     = r.get('radialVelocity', 'spectralWidth')
-    void     = r.get('ppiVolume', 'spectralWidth')
-    scid     = r.get('ppiIndex', 'spectralWidth')
     hnqv     = r.get('unfoldingVelocity', 'spectralWidth')
-    vocp     = r.get('volumeCoveragePattern', 'spectralWidth')
 
     # QualityMarker
-    qcrw = r.get('windAlongRadialLineQM', 'spectralWidth')
+    qcrw = r.get('radialVelocityQM', 'spectralWidth')
 
     logger.info('Executing QuerySet Done!')
     end_time = time.time()
@@ -178,16 +178,16 @@ def bufr_to_ioda(config, logger):
     logger.debug(f'     sstn          shape = {sstn.shape}')
     logger.debug(f'     hsmsl         shape = {hsmsl.shape}')
     logger.debug(f'     hsalg         shape = {hsalg.shape}')
+    logger.debug(f'     void          shape = {void.shape}')
+    logger.debug(f'     scid          shape = {scid.shape}')
+    logger.debug(f'     vocp          shape = {vocp.shape}')
 
     logger.debug(f'     anaz          shape = {anaz.shape}')
     logger.debug(f'     anel          shape = {anel.shape}')
     logger.debug(f'     dist125m      shape = {dist125m.shape}')
     logger.debug(f'     dmrv          shape = {dmrv.shape}')
     logger.debug(f'     dvsw          shape = {dvsw.shape}')
-    logger.debug(f'     void          shape = {void.shape}')
-    logger.debug(f'     scid          shape = {scid.shape}')
     logger.debug(f'     hnqv          shape = {hnqv.shape}')
-    logger.debug(f'     vocp          shape = {vocp.shape}')
 
 
     logger.debug(f'     qcrw          shape = {qcrw.shape}')
@@ -197,16 +197,16 @@ def bufr_to_ioda(config, logger):
     logger.debug(f'     sstn          type = {sstn.dtype}')
     logger.debug(f'     hsmsl         type = {hsmsl.dtype}')
     logger.debug(f'     hsalg         type = {hsalg.dtype}')
+    logger.debug(f'     void          type = {void.dtype}')
+    logger.debug(f'     scid          type = {scid.dtype}')
+    logger.debug(f'     vocp          type = {vocp.dtype}')
 
     logger.debug(f'     anaz          type = {anaz.dtype}')
     logger.debug(f'     anel          type = {anel.dtype}')
     logger.debug(f'     dist125m      type = {dist125m.dtype}')
     logger.debug(f'     dmrv          type = {dmrv.dtype}')
     logger.debug(f'     dvsw          type = {dvsw.dtype}')
-    logger.debug(f'     void          type = {void.dtype}')
-    logger.debug(f'     scid          type = {scid.dtype}')
     logger.debug(f'     hnqv          type = {hnqv.dtype}')
-    logger.debug(f'     vocp          type = {vocp.dtype}')
 
     logger.debug(f'     qcrw          type = {qcrw.dtype}')
 
@@ -272,6 +272,21 @@ def bufr_to_ioda(config, logger):
         .write_attr('long_name', 'Height Of Antenna Above Ground') \
         .write_data(hsalg)
 
+    # MetaData: Radar Volume Id
+    obsspace.create_var('MetaData/volumeIndex', dtype=void.dtype, fillval=void.fill_value) \
+        .write_attr('long_name', 'Radar Volume Id') \
+        .write_data(void)
+
+    # MetaData: Radar Scan Id
+    obsspace.create_var('MetaData/scanIndex', dtype=scid.dtype, fillval=scid.fill_value) \
+        .write_attr('long_name', 'Radar Scan Id') \
+        .write_data(scid)
+
+    # MetaData: Volume Coverage Pattern
+    obsspace.create_var('MetaData/ppiVolume', dtype=vocp.dtype, fillval=vocp.fill_value) \
+        .write_attr('long_name', 'Volume Coverage Pattern') \
+        .write_data(vocp)
+
     # ObsValue: Antenna Azimuth Angle
     obsspace.create_var('ObsValue/beamAzimuthAngle', dtype=anaz.dtype, fillval=anaz.fill_value) \
         .write_attr('units', 'degree') \
@@ -297,20 +312,10 @@ def bufr_to_ioda(config, logger):
         .write_data(dmrv)
 
     # ObsValue: Doppler Velocity Spectral Width
-    obsspace.create_var('ObsValue/spectralWidth', dtype=dvsw.dtype, fillval=dvsw.fill_value) \
-        .write_attr('units', 'm s-1') \
-        .write_attr('long_name', 'Doppler Velocity Spectral Width') \
-        .write_data(dvsw)
-
-    # ObsValue: Radar Volume Id
-    obsspace.create_var('ObsValue/ppiVolume', dtype=void.dtype, fillval=void.fill_value) \
-        .write_attr('long_name', 'Radar Volume Id') \
-        .write_data(void)
-
-    # ObsValue: Radar Scan Id
-    obsspace.create_var('ObsValue/ppiIndex', dtype=scid.dtype, fillval=scid.fill_value) \
-        .write_attr('long_name', 'Radar Scan Id') \
-        .write_data(scid)
+    #obsspace.create_var('ObsValue/spectralWidth', dtype=dvsw.dtype, fillval=dvsw.fill_value) \
+    #    .write_attr('units', 'm s-1') \
+    #    .write_attr('long_name', 'Doppler Velocity Spectral Width') \
+    #    .write_data(dvsw)
 
     # ObsValue: Unfolding Velocity (to compute Nyquist frequency)
     obsspace.create_var('ObsValue/unfoldingVelocity', dtype=hnqv.dtype, fillval=hnqv.fill_value) \
@@ -318,13 +323,8 @@ def bufr_to_ioda(config, logger):
         .write_attr('long_name', 'Unfolding Velocity (to compute Nyquist frequency)') \
         .write_data(hnqv)
 
-    # ObsValue: Volume Coverage Pattern
-    obsspace.create_var('ObsValue/volumeCoveragePattern', dtype=vocp.dtype, fillval=vocp.fill_value) \
-        .write_attr('long_name', 'Volume Coverage Pattern') \
-        .write_data(vocp)
-
     # QlalityMarker: Quality Marker For Wind Along Radial Line 
-    obsspace.create_var('QualityMarker/unfoldingVelocity', dtype=qcrw.dtype, fillval=qcrw.fill_value) \
+    obsspace.create_var('QualityMarker/radialVelocity', dtype=qcrw.dtype, fillval=qcrw.fill_value) \
         .write_attr('long_name', 'Quality Marker For Wind Along Radial Line') \
         .write_data(qcrw)
 
