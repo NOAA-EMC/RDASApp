@@ -6,7 +6,7 @@ basic_config="mpasjedi_3dvar.yaml"
 #basic_config="mpasjedi_en3dvar.yaml"
 
 # Which observation distribution to use? Halo or RoundRobin
-distribution="Halo"
+distribution="RoundRobin"
 
 
 # Define the aircar observation type configs as an array
@@ -34,7 +34,7 @@ msonet_obtype_configs=(
     "msonet_airTemperature_188.yaml"
     "msonet_specificHumidity_188.yaml"
     "msonet_stationPressure_188.yaml"
-    "msonet_uv_288.yaml"
+    "msonet_winds_288.yaml"
 )
 
 # Function to concatenate all obtypes into one file
