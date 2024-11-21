@@ -63,7 +63,7 @@ cost function:
               filename_cplr: 20220526.190000.stddev.coupler.res
               date: 2022-05-26T19:00:00Z
       weight:
-        value: 0.1
+        value: 0.15
 
     - covariance:
         covariance model: ensemble
@@ -97,7 +97,7 @@ cost function:
                  multivariate strategy: duplicated
                  read local nicas: true
       weight:
-        value: 0.9
+        value: 0.85
 
   observations:
      observers:
