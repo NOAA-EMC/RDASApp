@@ -54,7 +54,7 @@
 
          # Temporal thinning filter
          - filter: Temporal Thinning
-           min_spacing: PT30M
+           min_spacing: PT06M
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
