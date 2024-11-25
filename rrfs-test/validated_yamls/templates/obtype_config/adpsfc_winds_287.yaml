@@ -21,9 +21,6 @@
          name: Composite
          components:
          - name: VertInterp
-           variables:
-           - name: windEastward
-           - name: windNorthward
            hofx_scaling: true
            hofx scaling field: wind_reduction_factor_at_10m
            hofx scaling field group: GeoVaLs
@@ -31,6 +28,9 @@
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
+           variables:
+           - name: windEastward
+           - name: windNorthward
 
        linear obs operator:
           name: Identity
@@ -48,6 +48,7 @@
          # ------------------
          # Reject all obs with ObsType /= 287, QualityMarker = 4 -15
          - filter: RejectList
+           apply at iterations: 0,1
            where:
            - variable: ObsType/windEastward
              is_not_in: 287
@@ -58,6 +59,7 @@
 
          # Time window filter
          - filter: Domain Check
+           apply at iterations: 0,1
            where:
            - variable:
                name: MetaData/timeOffset
@@ -66,6 +68,7 @@
 
          # Temporal thinning filter
          - filter: Temporal Thinning
+           apply at iterations: 0,1
            min_spacing: PT30M
            seed_time: *analysisDate
            category_variable:
@@ -116,6 +119,7 @@
 
          # Gross Error Check
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            function absolute threshold:
@@ -131,8 +135,10 @@
              is_not_in: 3
            action:
              name: reject
+           defer to post: true
 
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windNorthward
            function absolute threshold:
@@ -148,8 +154,10 @@
              is_not_in: 3
            action:
              name: reject
+           defer to post: true
 
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            function absolute threshold:
@@ -165,8 +173,10 @@
              is_in: 3
            action:
              name: reject
+           defer to post: true
 
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: windNorthward
            function absolute threshold:
@@ -182,6 +192,7 @@
              is_in: 3
            action:
              name: reject
+           defer to post: true
 
          ## Print filter data
          #- filter: Print Filter Data

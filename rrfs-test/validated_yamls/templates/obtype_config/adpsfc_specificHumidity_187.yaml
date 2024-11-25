@@ -21,12 +21,12 @@
          name: Composite
          components:
          - name: VertInterp
-           variables:
-           - name: specificHumidity
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
+           variables:
+           - name: specificHumidity
 
        obs error:
          covariance model: diagonal
@@ -41,6 +41,7 @@
          # ------------------
          # Reject all obs with ObsType /= 187, QualityMarker = 4 -15
          - filter: RejectList
+           apply at iterations: 0,1
            where:
            - variable: ObsType/specificHumidity
              is_in: 187
@@ -49,6 +50,7 @@
 
          # Time window filter
          - filter: Domain Check
+           apply at iterations: 0,1
            where:
            - variable:
                name: MetaData/timeOffset
@@ -57,6 +59,7 @@
 
          # Temporal thinning filter
          - filter: Temporal Thinning
+           apply at iterations: 0,1
            min_spacing: PT30M
            seed_time: *analysisDate
            category_variable:
@@ -111,6 +114,7 @@
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
+           apply at iterations: 0,1
            assignments:
            - name: TempObsErrorData/specificHumidity
              type: float
@@ -119,9 +123,11 @@
                options:
                  variables:
                  - name: ObsErrorData/specificHumidity
+           defer to post: true
 
          # Set ObsError set "error parameter" if < "max value"
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            action:
@@ -134,9 +140,11 @@
            - variable:
                name: ObsErrorData/specificHumidity
              value: is_valid
+           defer to post: true
 
          # Set ObsError set "error parameter" if > "min value"
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            action:
@@ -149,9 +157,11 @@
            - variable:
                name: ObsErrorData/specificHumidity
              value: is_valid
+           defer to post: true
 
          # Gross Error Check
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            threshold: 7.0
@@ -162,9 +172,11 @@
              is_not_in: 3
            action:
              name: reject
+           defer to post: true
 
          # Gross Error Check
          - filter: Background Check
+           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            threshold: 4.9
@@ -175,10 +187,12 @@
              is_in: 3
            action:
              name: reject
+           defer to post: true
 
          # Re-assign err ObsErrorData <--- TempObsErrorData
          # after gross error check.
          - filter: Perform Action
+           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            action:
@@ -188,6 +202,7 @@
            - variable:
                name: TempObsErrorData/specificHumidity
              value: is_valid
+           defer to post: true
 
          ## Print filter data
          #- filter: Print Filter Data

@@ -38,6 +38,7 @@
          # ------------------
          # Reject all obs with ObsType /= 187, QualityMarker = 4 -15
          - filter: RejectList
+           apply at iterations: 0,1
            where:
            - variable: ObsType/stationPressure
              is_in: 187
@@ -46,6 +47,7 @@
 
          # Time window filter
          - filter: Domain Check
+           apply at iterations: 0,1
            where:
            - variable:
                name: MetaData/timeOffset
@@ -54,6 +56,7 @@
 
          # Temporal thinning filter
          - filter: Temporal Thinning
+           apply at iterations: 0,1
            min_spacing: PT06M
            seed_time: *analysisDate
            category_variable:
@@ -90,101 +93,113 @@
            - variable: QualityMarker/stationPressure
              is_in: 3
 
-      # Error inflation based on setupps.f90
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: ObsType/stationPressure
-          is_in: 187
-        action:
-          name: inflate error
-          inflation variable:
-            name: ObsFunction/ObsErrorFactorSfcPressure
-            options:
-              geovar_geomz: geopotential_height
-              #geovar_sfc_geomz: surface_geometric_height
-              station_altitude: height
+         # Error inflation based on setupps.f90
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorSfcPressure
+               options:
+                 geovar_geomz: geopotential_height
+                 #geovar_sfc_geomz: surface_geometric_height
+                 station_altitude: height
 
-      # Create temporary ObsErrorData
-      - filter: Variable Assignment
-        assignments:
-        - name: TempObsErrorData/stationPressure
-          type: float
-          function:
-            name: ObsFunction/Arithmetic
-            options:
-              variables:
-              - name: ObsErrorData/stationPressure
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           assignments:
+           - name: TempObsErrorData/stationPressure
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/stationPressure
+           defer to post: true
 
-      # Set ObsError set "error parameter" if < "max value"
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        action:
-          name: assign error
-          error parameter: 100.0
-        where:
-        - variable:
-            name: ObsErrorData/stationPressure
-          maxvalue: 100.0
-        - variable:
-            name: ObsErrorData/stationPressure
-          value: is_valid
+         # Set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error parameter: 100.0
+           where:
+           - variable:
+               name: ObsErrorData/stationPressure
+             maxvalue: 100.0
+           - variable:
+               name: ObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
 
-      # Set ObsError set "error parameter" if > "min value"
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        action:
-          name: assign error
-          error parameter: 300.0
-        where:
-        - variable:
-            name: ObsErrorData/stationPressure
-          minvalue: 300.0
-        - variable:
-            name: ObsErrorData/stationPressure
-          value: is_valid
+         # Set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error parameter: 300.0
+           where:
+           - variable:
+               name: ObsErrorData/stationPressure
+             minvalue: 300.0
+           - variable:
+               name: ObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
 
-      # Gross Error Check
-      - filter: Background Check
-        filter variables:
-        - name: stationPressure
-        threshold: 5.0
-        where:
-        - variable: ObsType/stationPressure
-          is_in: 187
-        - variable: QualityMarker/stationPressure
-          is_not_in: 3
-        action:
-          name: reject
+         # Gross Error Check
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           threshold: 5.0
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           - variable: QualityMarker/stationPressure
+             is_not_in: 3
+           action:
+             name: reject
+           defer to post: true
 
-      # Gross Error Check
-      - filter: Background Check
-        filter variables:
-        - name: stationPressure
-        threshold: 3.5
-        where:
-        - variable: ObsType/stationPressure
-          is_in: 187
-        - variable: QualityMarker/stationPressure
-          is_in: 3
-        action:
-          name: reject
+         # Gross Error Check
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           threshold: 3.5
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           - variable: QualityMarker/stationPressure
+             is_in: 3
+           action:
+             name: reject
+           defer to post: true
 
-      ## Re-assign err ObsErrorData <--- TempObsErrorData
-      # after gross error check.
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        action:
-          name: assign error
-          error function: TempObsErrorData/stationPressure
-        where:
-        - variable:
-            name: TempObsErrorData/stationPressure
-          value: is_valid
+         ## Re-assign err ObsErrorData <--- TempObsErrorData
+         # after gross error check.
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error function: TempObsErrorData/stationPressure
+           where:
+           - variable:
+               name: TempObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
 
          ## Print filter data
          #- filter: Print Filter Data
