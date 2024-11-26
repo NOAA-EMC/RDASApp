@@ -66,14 +66,6 @@
              minvalue: -900
              maxvalue:  900
 
-         # Temporal thinning filter
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           min_spacing: PT30M
-           seed_time: *analysisDate
-           category_variable:
-             name: MetaData/stationIdentification
-
          ## Online domain check
          #- filter: Bounds Check
          #  filter variables:
@@ -192,6 +184,15 @@
              is_in: 3
            action:
              name: reject
+           defer to post: true
+
+         # Temporal thinning filter
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           min_spacing: PT30M
+           seed_time: *analysisDate
+           category_variable:
+             name: MetaData/stationIdentification
            defer to post: true
 
          ## Print filter data

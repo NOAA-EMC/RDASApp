@@ -57,14 +57,6 @@
              minvalue: -900
              maxvalue:  900
 
-         # Temporal thinning filter
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           min_spacing: PT30M
-           seed_time: *analysisDate
-           category_variable:
-             name: MetaData/stationIdentification
-
          # Initial error assignment
          - filter: Perform Action
            filter variables:
@@ -192,6 +184,15 @@
            - variable:
                name: TempObsErrorData/airTemperature
              value: is_valid
+           defer to post: true
+
+         # Temporal thinning filter
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           min_spacing: PT30M
+           seed_time: *analysisDate
+           category_variable:
+             name: MetaData/stationIdentification
            defer to post: true
 
          #- filter: Print Filter Data

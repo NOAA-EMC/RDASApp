@@ -54,14 +54,6 @@
              minvalue: -900
              maxvalue:  900
 
-         # Temporal thinning filter
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           min_spacing: PT06M
-           seed_time: *analysisDate
-           category_variable:
-             name: MetaData/stationIdentification
-
          # Initial error assignment
          - filter: Perform Action
            filter variables:
@@ -199,6 +191,15 @@
            - variable:
                name: TempObsErrorData/stationPressure
              value: is_valid
+           defer to post: true
+
+         # Temporal thinning filter
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           min_spacing: PT00M
+           seed_time: *analysisDate
+           category_variable:
+             name: MetaData/stationIdentification
            defer to post: true
 
          ## Print filter data
