@@ -27,6 +27,9 @@
              IRVISlandCoeff: IGBP
            linear obs operator:
              Absorbers: [H2O, O3]
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
 
        obs bias:
          input file:  data/obs/atms_npp.satbias.nc4
