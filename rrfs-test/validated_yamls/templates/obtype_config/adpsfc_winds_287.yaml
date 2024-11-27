@@ -109,6 +109,26 @@
                options:
                  variable: windEastward
                  inflation factor: 4.0
+                 SetSfcWndObsHeight: true
+                 AddObsHeightToStationElevation: true
+                 AssumedSfcWndObsHeight: 10
+
+         - filter: Perform Action
+           filter variables:
+           - name: windNorthward
+           where:
+           - variable: ObsType/windNorthward
+             is_in: 287
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windNorthward
+                 inflation factor: 4.0
+                 SetSfcWndObsHeight: true
+                 AddObsHeightToStationElevation: true
+                 AssumedSfcWndObsHeight: 10
 
          # Gross Error Check
          - filter: Background Check
