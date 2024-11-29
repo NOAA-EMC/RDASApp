@@ -1,0 +1,70 @@
+     - obs space:
+         name: Groundgnss  
+         distribution:
+           name: "@DISTRIBUTION@"
+           halo size: 100e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: single_ztd_obs_2024052700.nc
+#            obsfile: ioda/2024052700.rap.t00z.ztd.tm00.bufr_d.nc
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: ztd_single_diag_out_2024052700.nc4
+#-------------------------------------------------------
+#         io pool:
+## to be consistent with the ntask number
+#           max pool size: 120
+#           write multiple files: true
+#-------------------------------------------------------
+
+         simulated variables: [zenithTotalDelay]
+         observed variables: [zenithTotalDelay]
+
+       obs operator:
+         name: GroundgnssMetOffice
+#        variables:
+#        - name: zenithTotalDelay
+
+       linear obs operator:
+         name: GroundgnssMetOffice
+#        variables:
+#        - name: zenithTotalDelay
+
+         observation alias file: obsop_name_map.yaml
+#------------------------------------------------
+         vertical coordinate: height
+         observation vertical coordinate: height
+         interpolation method: linear
+#or ---------------------------------------------
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+       - filter: PreQC
+         maxvalue: 10
+
+       - filter: Difference Check
+         reference: MetaData/stationElevation
+         value: GeoVaLs/surface_altitude
+         threshold: 300
+ 
+#      - filter: Background Check
+#        apply at iterations: 0,1
+#        threshold: 6
+
+       - filter: Bounds Check
+         filter variables:
+         - name: zenithTotalDelay
+         test variables:
+         - name:  GeoVaLs/observable_domain_mask
+         minvalue: 0.0
+         maxvalue: 0.5   # keep OBS in MPAS domain interior
+
+       - filter: GOMsaver
+         filename: geoval_ztd_single.nc
