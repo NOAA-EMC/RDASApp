@@ -14,8 +14,8 @@
 RDASApp=@RDASApp@
 
 inputfile=./rrfs_fv3jedi_2024052700_Ens3Dvar.yaml # FOR EnVar
-#inputfile=./rrfs_fv3jedi_2024052700_hyb.yaml # FOR HYB
-#inputfile=./rrfs_fv3jedi_2024052700_letkf.yaml # FOR LETKF
+#inputfile=./rrfs_fv3jedi_2024052700_getkf_observer.yaml # FOR GETKF
+#inputfile=./rrfs_fv3jedi_2024052700_getkf_solver.yaml # FOR GETKF
 
 if [[ -s /apps/lmod/lmod/init/sh ]]; then
   . /apps/lmod/lmod/init/sh
@@ -35,4 +35,4 @@ ulimit -v unlimited
 ulimit -a
 
 srun -l -n 160 ${RDASApp}/build/bin/fv3jedi_var.x    ./$inputfile    log.out # FOR HYB/ENVAR
-#srun -l -n 160 ${RDASApp}/build/bin/fv3jedi_letkf.x    ./$inputfile    log.out # FOR LETKF
+#srun -l -n 160 ${RDASApp}/build/bin/fv3jedi_letkf.x    ./$inputfile    log.out # FOR GETKF

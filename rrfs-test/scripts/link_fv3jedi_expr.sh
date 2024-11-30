@@ -16,9 +16,9 @@ echo "expdir is at: ${expdir}"
 
 ${RDASApp}/ush/init.sh
 cp -r ${RDASApp}/rrfs-test/testoutput ./testoutput
-cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_hyb.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_Ens3Dvar.yaml .
-cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_letkf.yaml . 
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_observer.yaml . 
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_solver.yaml . 
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_bumploc.yaml ./bumploc.yaml
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_expr/run_bump.sh > run_bump.sh
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_expr/run_jedi.sh > run_jedi.sh
@@ -29,4 +29,3 @@ ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data Data
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/DataFix DataFix
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data_static Data_static
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/INPUT INPUT
-
