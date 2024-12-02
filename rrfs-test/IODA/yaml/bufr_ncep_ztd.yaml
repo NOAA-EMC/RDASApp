@@ -10,8 +10,8 @@ observations:
       obsdatain: "./2024052700.rap.t00z.gpsipw.tm00.bufr_d"
 
       exports:
-#       subsets:
-#         - NC012004
+        subsets:
+          - NC012004
         variables:
           # MetaData
           timestamp:
