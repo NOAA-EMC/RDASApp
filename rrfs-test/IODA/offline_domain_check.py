@@ -187,6 +187,8 @@ obs_ds = nc.Dataset(obs_filename, 'r')
 if 'grid_lat' in grid_ds.variables and 'grid_lon' in grid_ds.variables:  # FV3 grid
     grid_lat = grid_ds.variables['grid_lat'][:, :]
     grid_lon = grid_ds.variables['grid_lon'][:, :]
+    grid_lat = grid_lat.flatten()
+    grid_lon = grid_lon.flatten()
     dycore = "FV3"
 elif 'latCell' in grid_ds.variables and 'lonCell' in grid_ds.variables:  # MPAS grid
     grid_lat = np.degrees(grid_ds.variables['latCell'][:])  # Convert radians to degrees
