@@ -46,11 +46,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCAR_hofxs_airTemperature_133.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCAR_airTemperature_133.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCAR_hofxs_airTemperature_133.nc4
+             obsfile: jdiag_AIRCAR_airTemperature_133.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -194,11 +194,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCAR_hofxs_uv_233.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCAR_uv_233.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCAR_hofxs_uv_233.nc4
+             obsfile: jdiag_AIRCAR_uv_233.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -423,11 +423,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCAR_hofxs_specificHumidity_133.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCAR_specificHumidity_133.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCAR_hofxs_specificHumidity_133.nc4
+             obsfile: jdiag_AIRCAR_specificHumidity_133.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -583,11 +583,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCFT_hofxs_airTemperature_130.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCFT_airTemperature_130.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_airTemperature_130.nc4
+             obsfile: jdiag_AIRCFT_airTemperature_130.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -731,11 +731,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCFT_hofxs_airTemperature_131.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCFT_airTemperature_131.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_airTemperature_131.nc4
+             obsfile: jdiag_AIRCFT_airTemperature_131.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -879,11 +879,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCFT_hofxs_airTemperature_134.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCFT_airTemperature_134.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_airTemperature_134.nc4
+             obsfile: jdiag_AIRCFT_airTemperature_134.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -1027,11 +1027,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCFT_hofxs_airTemperature_135.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCFT_airTemperature_135.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_airTemperature_135.nc4
+             obsfile: jdiag_AIRCFT_airTemperature_135.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -1175,11 +1175,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCFT_hofxs_specificHumidity_134.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCFT_specificHumidity_134.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_specificHumidity_134.nc4
+             obsfile: jdiag_AIRCFT_specificHumidity_134.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -1335,11 +1335,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCFT_hofxs_uv_230.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCFT_uv_230.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_uv_230.nc4
+             obsfile: jdiag_AIRCFT_uv_230.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -1564,11 +1564,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCFT_hofxs_uv_231.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCFT_uv_231.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_uv_231.nc4
+             obsfile: jdiag_AIRCFT_uv_231.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -1793,11 +1793,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCFT_hofxs_uv_234.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCFT_uv_234.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_uv_234.nc4
+             obsfile: jdiag_AIRCFT_uv_234.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -2022,11 +2022,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/AIRCFT_hofxs_uv_235.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_AIRCFT_uv_235.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: AIRCFT_hofxs_uv_235.nc4
+             obsfile: jdiag_AIRCFT_uv_235.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -2251,11 +2251,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/MSONET_hofxs_airTemperature_188.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_MSONET_airTemperature_188.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: MSONET_hofxs_airTemperature_188.nc4
+             obsfile: jdiag_MSONET_airTemperature_188.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -2394,11 +2394,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/MSONET_hofxs_specificHumidity_188.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_MSONET_specificHumidity_188.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: MSONET_hofxs_specificHumidity_188.nc4
+             obsfile: jdiag_MSONET_specificHumidity_188.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -2538,11 +2538,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/MSONET_hofxs_stationPressure_188.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_MSONET_stationPressure_188.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: MSONET_hofxs_stationPressure_188.nc4
+             obsfile: jdiag_MSONET_stationPressure_188.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -2679,11 +2679,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/MSONET_hofxs_uv_288.nc4"
+             obsfile: "../rundir-rrfs_fv3jedi_2024052700_getkf_observer/jdiag_MSONET_uv_288.nc4"
          obsdataout:
            engine:
              type: H5File
-             obsfile: MSONET_hofxs_uv_288.nc4
+             obsfile: jdiag_MSONET_uv_288.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
