@@ -2,73 +2,58 @@ geometry:
  fms initialization:
    namelist filename: DataFix/fmsmpp.nml
    field table filename: DataFix/field_table
- namelist filename: DataFix/input_lam_C775.nml
- akbk: DataFix/fix/akbk61.nc
+ namelist filename: DataFix/input_lam_C775_NP16X10.nml
+ akbk: DataFix/fix/akbk66.nc
  field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
  # input.nml
- npz: 60
- layout: [8,10]
+ npz: 65
+ layout: [16,10]
  io_layout: [1,1]
  ntiles: 1 
 background:
-  datetime: 2022-05-26T19:00:00Z
+  datetime: 2024-05-27T00:00:00Z
   filetype: fms restart
   datapath: Data/bkg
-  filename_core: fv3_dynvars.nc
-  filename_trcr: fv3_tracer.nc
-  filename_sfcd: fv3_sfcdata.nc
-  filename_cplr: coupler.res
-  state variables: [air_temperature,surface_pressure] 
+  filename_core: 20240527.000000.fv_core.res.tile1.nc
+  filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
+  filename_sfcd: 20240527.000000.sfc_data.nc
+  filename_cplr: 20240527.000000.coupler.res
+  state variables: [eastward_wind,northward_wind,u_component_of_native_D_grid_wind,v_component_of_native_D_grid_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
 background error:
   covariance model: SABER
   saber central block:
     saber block name: BUMP_NICAS
     calibration:
       general:
-        universe length-scale: 250.0e3
+        universe length-scale: 300.0e3
       io:
-        files prefix: Data/bump_new/fv3jedi_bumpparameters_nicas_lam_atm
-        alias:
-        - in code: air_temperature
-          in file: fixed_250km_0.3
-        - in code: surface_pressure
-          in file: fixed_250km
+        files prefix: bumploc_300km_0.3vloc
 
       drivers:
-        multivariate strategy: univariate 
+        multivariate strategy: duplicated
         compute nicas: true
         write local nicas: true
+        internal dirac test: false
       nicas:
-        resolution: 6
+        resolution: 8.0
         explicit length-scales: true
         horizontal length-scale:
-        - groups:
-          - air_temperature
-          value: 250000.0
-        - groups:
-          - surface_pressure
-          value: 250000.0
-
+        - groups: [common]
+          value: 300000.0
         vertical length-scale:
-        - groups:
-          - air_temperature
+        - groups: [common]
           value: 0.3
-        - groups:
-          - surface_pressure
-          value: 0.0
-
-      grids:
-      - model:
-          variables:
-          - air_temperature
-      - model:
-          variables:
-          - surface_pressure
+#      grids:
+#      - model:
+#          variables:
+#          - air_temperature
+#      - model:
+#          variables:
+#          - surface_pressure
       output model files:
       - parameter: cor_rh
         file:
           filetype: fms restart
-          datapath: Data/bump_new/
           filename_core: bumpparameters_nicas_lam_atm.cor_rh.fv_core.res.nc
           filename_trcr: bumpparameters_nicas_lam_atm.cor_rh.fv_tracer.res.nc
           filename_sfcd: bumpparameters_nicas_lam_atm.cor_rh.sfc_data.nc
@@ -77,7 +62,6 @@ background error:
       - parameter: cor_rv
         file:
           filetype: fms restart
-          datapath: Data/bump_new/
           filename_core: bumpparameters_nicas_lam_atm.cor_rv.fv_core.res.nc
           filename_trcr: bumpparameters_nicas_lam_atm.cor_rv.fv_tracer.res.nc
           filename_sfcd: bumpparameters_nicas_lam_atm.cor_rv.sfc_data.nc

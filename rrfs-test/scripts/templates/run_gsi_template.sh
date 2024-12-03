@@ -30,7 +30,7 @@ cp -p Data/bkg/* .
 
 srun --label @YOUR_PATH_TO_GSI@/build/src/gsi/gsi.x
 
-ANAL_TIME=2022052619
+ANAL_TIME=@ANAL_TIME@
 # Loop over first and last outer loops to generate innovation
 # diagnostic files for indicated observation types (groups)
 #
