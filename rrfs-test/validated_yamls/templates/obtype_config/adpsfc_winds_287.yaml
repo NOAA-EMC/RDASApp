@@ -46,7 +46,7 @@
          # ------------------
          # wind (287)
          # ------------------
-         # Reject all obs with ObsType /= 287, QualityMarker = 4 -15
+         # Reject all observations with QualityMarker > 3
          - filter: RejectList
            apply at iterations: 0,1
            where:
@@ -82,9 +82,8 @@
            - name: windEastward
            - name: windNorthward
            where:
-           - variable:
-               name: ObsType/windEastward
-               is_in: 287
+           - variable: ObsType/windEastward
+             is_in: 287
            action:
              name: assign error
              error function:
@@ -95,7 +94,7 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874]
 
-         # error inflation based on pressure check (setupw.f90)
+         # Error inflation based on pressure check (setupw.f90)
          - filter: Perform Action
            filter variables:
            - name: windEastward
@@ -129,6 +128,17 @@
                  SetSfcWndObsHeight: true
                  AddObsHeightToStationElevation: true
                  AssumedSfcWndObsHeight: 10
+
+         # Bounds Check
+         - filter: Bounds Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           minvalue: -130
+           maxvalue: 130
+           action:
+             name: reject
 
          # Gross Error Check
          - filter: Background Check
@@ -169,6 +179,7 @@
              name: reject
            defer to post: true
 
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:

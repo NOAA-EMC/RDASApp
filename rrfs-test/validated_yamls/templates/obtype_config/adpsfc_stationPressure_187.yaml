@@ -36,7 +36,7 @@
          # ------------------
          # stationPressure (187)
          # ------------------
-         # Reject all obs with ObsType /= 187, QualityMarker = 4 -15
+         # Reject all observations with QualityMarker > 3
          - filter: RejectList
            apply at iterations: 0,1
            where:
@@ -68,8 +68,7 @@
            filter variables:
            - name: stationPressure
            where:
-           - variable:
-               name: ObsType/stationPressure
+           - variable: ObsType/stationPressure
              is_in: 187
            action:
              name: assign error
@@ -107,8 +106,16 @@
                name: ObsFunction/ObsErrorFactorSfcPressure
                options:
                  geovar_geomz: geopotential_height
-                 #geovar_sfc_geomz: surface_geometric_height
+                 #geovar_sfc_geomz: geopotential_height_at_surface
                  station_altitude: height
+
+         # Bounds Check
+         - filter: Bounds Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           minvalue: 20000.0
+           maxvalue: 120000.0
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -172,7 +179,7 @@
              name: reject
            defer to post: true
 
-         # Gross Error Check
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:

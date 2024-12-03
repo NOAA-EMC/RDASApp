@@ -39,7 +39,7 @@
          # ------------------
          # airTemperature (187)
          # ------------------
-         # Reject all obs with ObsType /= 187, QualityMarker = 4 -15
+         # Reject all observations with QualityMarker > 3
          - filter: RejectList
            apply at iterations: 0,1
            where:
@@ -71,8 +71,7 @@
            filter variables:
            - name: airTemperature
            where:
-           - variable:
-               name: ObsType/airTemperature
+           - variable: ObsType/airTemperature
              is_in: 187
            action:
              name: assign error
@@ -84,7 +83,7 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585]
 
-         # error inflation based on pressure check (setupt.f90)
+         # Error inflation based on pressure check (setupt.f90)
          - filter: Perform Action
            filter variables:
            - name: airTemperature
@@ -102,6 +101,14 @@
                  # needs to be added to UFO to align with the ramp
                  # options for temperature and humidity in GSI.
                  #surface observation error ramp: true
+
+         # Bounds Check
+         - filter: Bounds Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           minvalue: 100
+           maxvalue: 400
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -165,7 +172,7 @@
              name: reject
            defer to post: true
 
-         # Gross Error Check
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
