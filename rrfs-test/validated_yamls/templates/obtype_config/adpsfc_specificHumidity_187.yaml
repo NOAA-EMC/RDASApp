@@ -188,8 +188,7 @@
              name: reject
            defer to post: true
 
-         # Re-assign err ObsErrorData <--- TempObsErrorData
-         # after gross error check.
+         # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
          - filter: Perform Action
            apply at iterations: 0,1
            filter variables:
@@ -203,7 +202,7 @@
              value: is_valid
            defer to post: true
 
-         # Temporal thinning filter
+         # Duplicate Check
          - filter: Temporal Thinning
            apply at iterations: 0,1
            min_spacing: PT30M
@@ -211,18 +210,6 @@
            category_variable:
              name: MetaData/stationIdentification
            defer to post: true
-
-         ## Print filter data
-         #- filter: Print Filter Data
-         #  message: Printing filter data
-         #  summary: true
-         #  variables:
-         #  - variable: MetaData/latitude
-         #  - variable: MetaData/longitude
-         #  - variable: MetaData/pressure
-         #  - variable: ObsType/specificHumidity
-         #  - variable: ObsValue/specificHumidity
-         #  - variable: QCflagsData/specificHumidity
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

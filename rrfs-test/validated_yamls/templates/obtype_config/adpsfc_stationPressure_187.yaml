@@ -80,19 +80,6 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9]
 
-         # Ajusted error after initial assignment
-         - filter: Perform Action
-           filter variables:
-           - name: stationPressure
-           action:
-             name: inflate error
-             inflation factor: 1.2
-           where:
-           - variable: ObsType/stationPressure
-             is_in: 187
-           - variable: QualityMarker/stationPressure
-             is_in: 3
-
          # Error inflation based on setupps.f90
          - filter: Perform Action
            filter variables:
@@ -194,8 +181,7 @@
              name: reject
            defer to post: true
 
-         ## Re-assign err ObsErrorData <--- TempObsErrorData
-         # after gross error check.
+         # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
          - filter: Perform Action
            apply at iterations: 0,1
            filter variables:
@@ -209,7 +195,7 @@
              value: is_valid
            defer to post: true
 
-         # Temporal thinning filter
+         # Duplicate Check
          - filter: Temporal Thinning
            apply at iterations: 0,1
            min_spacing: PT00M
@@ -217,18 +203,6 @@
            category_variable:
              name: MetaData/stationIdentification
            defer to post: true
-
-         ## Print filter data
-         #- filter: Print Filter Data
-         #  message: Printing filter data
-         #  summary: true
-         #  variables:
-         #  - variable: MetaData/latitude
-         #  - variable: MetaData/longitude
-         #  - variable: MetaData/pressure
-         #  - variable: ObsType/stationPressure
-         #  - variable: ObsValue/stationPressure
-         #  - variable: QCflagsData/stationPressure
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

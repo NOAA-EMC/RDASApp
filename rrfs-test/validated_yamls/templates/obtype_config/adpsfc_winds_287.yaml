@@ -218,7 +218,7 @@
              name: reject
            defer to post: true
 
-         # Temporal thinning filter
+         # Duplicate Check
          - filter: Temporal Thinning
            apply at iterations: 0,1
            min_spacing: PT30M
@@ -226,21 +226,6 @@
            category_variable:
              name: MetaData/stationIdentification
            defer to post: true
-
-         ## Print filter data
-         #- filter: Print Filter Data
-         #  message: Printing filter data
-         #  summary: true
-         #  variables:
-         #  - variable: MetaData/latitude
-         #  - variable: MetaData/longitude
-         #  - variable: MetaData/pressure
-         #  - variable: ObsType/windEastward
-         #  - variable: ObsValue/windEastward
-         #  - variable: ObsType/windNorthward
-         #  - variable: ObsValue/windNorthward
-         #  - variable: QCflagsData/windEastward
-         #  - variable: QCflagsData/windNorthward
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4
