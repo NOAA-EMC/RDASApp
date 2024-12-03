@@ -138,7 +138,7 @@ def bufr_to_ioda(config, logger):
     hsmsl = r.get('height', 'spectralWidth')
     hsalg = r.get('heightOfAntenna', 'spectralWidth')
     void     = r.get('volumeIndex', 'spectralWidth')
-    scid     = r.get('sacnIndex', 'spectralWidth')
+    scid     = r.get('scanIndex', 'spectralWidth')
     vocp     = r.get('ppiVolume', 'spectralWidth')
 
     # MetaData/Observation Time
