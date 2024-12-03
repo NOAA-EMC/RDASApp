@@ -32,11 +32,11 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: ../rundir-rrfs_mpasjedi_2024052700_getkf_observer/adpupa_hofx.nc4
+             obsfile: ../rundir-rrfs_mpasjedi_2024052700_getkf_observer/jdiag_adpupa.nc4
          obsdataout:
            engine:
              type: H5File
-             obsfile: ./adpupa_hofx_solver.nc4
+             obsfile: ./jdiag_adpupa_solver.nc4
          simulated variables: [airTemperature]
          observed variables: [airTemperature]
        obs operator:

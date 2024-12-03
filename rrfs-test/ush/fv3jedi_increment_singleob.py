@@ -42,7 +42,7 @@ datapath = "./"
 janalysis = f"{datapath}/hybens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
 jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
 jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
-jdiag = f"{datapath}/{singleob_type}_hofxs_2022052619.nc4"
+jdiag = f"{datapath}/jdiag_{singleob_type}_2022052619.nc4"
 
 ###################################################################################
 # Set cartopy shapefile path

@@ -35,7 +35,7 @@ observations:
          obsdataout:
            engine:
              type: H5File
-             obsfile: ./adpupa_hofx.nc4
+             obsfile: ./jdiag_adpupa.nc4
          simulated variables: [airTemperature]
          observed variables: [airTemperature]
        obs operator:
