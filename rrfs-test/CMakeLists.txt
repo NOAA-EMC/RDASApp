@@ -145,8 +145,8 @@ if(MPAS_DYCORE)
            		ARGS    ${CMAKE_SOURCE_DIR}/rrfs-test/ush/iodaconv_comp_rrfs.sh
                                 netcdf
                                 "${CMAKE_BINARY_DIR}/bin/bufr2ioda.x ${case}.yaml"
-                                data/obs/ioda_mesonet.nc
-                                ioda_mesonet.nc 
+                                data/obs/ioda_msonet.nc
+                                ioda_msonet.nc 
 			        ${IODA_CONV_COMP_TOL}
                         DEPENDS bufr2ioda.x )
 
