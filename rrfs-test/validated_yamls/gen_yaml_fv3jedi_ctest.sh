@@ -93,11 +93,11 @@ for basic_config in "${basic_configs[@]}"; do
   rm -f $temp_yaml  # Remove any existing file
 
   # Concatenate all obtypes into the super yaml
-  process_obtypes "${ctest_names[$iconfig]}" "aircar_obtype_configs[@]" "Data/obs_ctest/ioda_aircar_dc.nc"          "$temp_yaml"
-  process_obtypes "${ctest_names[$iconfig]}" "aircft_obtype_configs[@]" "Data/obs_ctest/ioda_aircft_dc.nc"          "$temp_yaml"
-  process_obtypes "${ctest_names[$iconfig]}" "msonet_obtype_configs[@]" "Data/obs_ctest/ioda_msonet_dc.nc"          "$temp_yaml"
-  process_obtypes "${ctest_names[$iconfig]}" "atms_obtype_configs[@]"   "Data/obs_ctest/atms_npp_obs_2024052700.nc" "$temp_yaml"
-  #process_obtypes "${ctest_names[$iconfig]}" "amsua_obtype_configs[@]"  "Data/obs_ctest/ioda_amsua_n19_dc.nc"      "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "aircar_obtype_configs[@]" "Data/obs/ioda_aircar_dc.nc"          "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "aircft_obtype_configs[@]" "Data/obs/ioda_aircft_dc.nc"          "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "msonet_obtype_configs[@]" "Data/obs/ioda_msonet_dc.nc"          "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "atms_obtype_configs[@]"   "Data/obs/atms_npp_obs_2024052700.nc" "$temp_yaml"
+  #process_obtypes "${ctest_names[$iconfig]}" "amsua_obtype_configs[@]"  "Data/obs/ioda_amsua_n19_dc.nc"      "$temp_yaml"
 
   # Copy the basic configuration yaml into the super yaml
   cp -p templates/basic_config/$basic_config ./$conv_yaml
@@ -109,7 +109,7 @@ for basic_config in "${basic_configs[@]}"; do
   }' ./$conv_yaml
 
   # Replace the @OBSFILE@ placeholder with a dummy filename (can customize as needed)
-  sed -i "s#@OBSFILE@#Data/obs_ctest/combined_obs_file.nc#" ./$conv_yaml
+  sed -i "s#@OBSFILE@#Data/obs/combined_obs_file.nc#" ./$conv_yaml
 
   echo "Super YAML created in ${conv_yaml}"
 
