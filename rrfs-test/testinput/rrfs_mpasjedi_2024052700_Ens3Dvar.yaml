@@ -2925,7 +2925,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs/atms_npp_obs_2024052700.nc"
+             obsfile: "data/obs/atms_npp_obs_2024052700_dc.nc"
          obsdataout:
            engine:
              type: H5File

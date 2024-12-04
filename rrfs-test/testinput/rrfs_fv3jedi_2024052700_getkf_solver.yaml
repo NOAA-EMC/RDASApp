@@ -2897,7 +2897,7 @@ observations:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/atms_npp_obs_2024052700.nc"
+             obsfile: "Data/obs/atms_npp_obs_2024052700_dc.nc"
          obsdataout:
            engine:
              type: H5File
