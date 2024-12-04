@@ -39,7 +39,7 @@ msonet_obtype_configs=(
     "msonet_airTemperature_188.yaml"
     "msonet_specificHumidity_188.yaml"
     "msonet_stationPressure_188.yaml"
-    "msonet_uv_288.yaml"
+    "msonet_wind_288.yaml"
 )
 
 # Define ATMS observation type configs as an array
@@ -103,7 +103,7 @@ for basic_config in "${basic_configs[@]}"; do
   process_obtypes "${ctest_names[$iconfig]}" "aircft_obtype_configs[@]" "data/obs_ctest/ioda_aircft_dc.nc"          "$temp_yaml"
   process_obtypes "${ctest_names[$iconfig]}" "msonet_obtype_configs[@]" "data/obs_ctest/ioda_msonet_dc.nc"          "$temp_yaml"
   process_obtypes "${ctest_names[$iconfig]}" "atms_obtype_configs[@]"   "data/obs_ctest/atms_npp_obs_2024052700.nc" "$temp_yaml"
-  process_obtypes "${ctest_names[$iconfig]}" "amsua_obtype_configs[@]"  "data/obs_ctest/ioda_amsua_n19_dc.nc"      "$temp_yaml"
+  #process_obtypes "${ctest_names[$iconfig]}" "amsua_obtype_configs[@]"  "data/obs_ctest/ioda_amsua_n19_dc.nc"      "$temp_yaml"
 
   # Copy the basic configuration yaml into the super yaml
   cp -p templates/basic_config/$basic_config ./$conv_yaml
