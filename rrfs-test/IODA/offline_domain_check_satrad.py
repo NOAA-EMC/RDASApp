@@ -187,6 +187,8 @@ obs_ds = nc.Dataset(obs_filename, 'r')
 if 'grid_lat' in grid_ds.variables and 'grid_lon' in grid_ds.variables:  # FV3 grid
     grid_lat = grid_ds.variables['grid_lat'][:, :]
     grid_lon = grid_ds.variables['grid_lon'][:, :]
+    grid_lat = grid_lat.flatten()
+    grid_lon = grid_lon.flatten()
     dycore = "FV3"
 elif 'latCell' in grid_ds.variables and 'lonCell' in grid_ds.variables:  # MPAS grid
     grid_lat = np.degrees(grid_ds.variables['latCell'][:])  # Convert radians to degrees
@@ -296,7 +298,11 @@ for group in groups:
                 g.createVariable(var, vartype, dimensions, fill_value=fill)
             except:
                 g.createVariable(var, 'str', dimensions, fill_value=fill)
-            g.variables[var][:] = invar[:][inside_indices]
+            # If variable has only dimensions of channel then we do not need to process it 
+            if g.variables[var].dimensions[0] == 'Channel': 
+                g.variables[var][:] = invar[:][:]
+            else: 
+                g.variables[var][:] = invar[:][inside_indices]
             # Copy attributes for this variable
             for attr in invar.ncattrs():
                 if '_FillValue' in attr: continue
