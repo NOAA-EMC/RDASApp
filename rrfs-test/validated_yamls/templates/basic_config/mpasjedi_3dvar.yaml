@@ -16,8 +16,6 @@ variational:
       deallocate non-da fields: true
       interpolation type: unstructured
     gradient norm reduction: 1e-3
-    diagnostics:
-      departures: ombg
     ninner: 50
   - geometry:
       nml_file: ./namelist.atmosphere
@@ -26,9 +24,6 @@ variational:
       interpolation type: unstructured
     gradient norm reduction: 1e-3
     ninner: 50
-final:
-  diagnostics:
-    departures: oman
 cost function:
   cost type: 3D-Var
   time window:

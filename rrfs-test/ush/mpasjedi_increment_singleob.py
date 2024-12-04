@@ -32,7 +32,7 @@ if variable == "airTemperature":
 # JEDI data
 datapath = "./"
 jstatic      = "./data/invariant.nc"                 # to load the MPAS lat/lon
-jdiag        = "adpupa_hofx.nc4"                  # obs diag file
+jdiag        = "jdiag_adpupa.nc4"                  # obs diag file
 
 # FOR HYBRID (or ENVAR)
 janalysis   = "./ana.2024-05-27_00.00.00.nc"           # analysis file
