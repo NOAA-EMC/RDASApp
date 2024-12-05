@@ -20,7 +20,7 @@ observations:
               timeOffset: "*/DHR"
               transforms:
                 - scale: 3600
-              referenceTime: "2022-05-26T19:00:00Z"
+              referenceTime: "@REFERENCETIME@"
           timeOffset:
             query: "*/DHR"
             transforms:
