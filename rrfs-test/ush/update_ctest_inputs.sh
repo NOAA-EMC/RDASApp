@@ -8,8 +8,9 @@ DYCORE="BOTH" # [FV3JEDI, MPASJEDI, BOTH]
 
 # FV3-JEDI tests
 rrfs_fv3jedi_tests=(
-    "rrfs_fv3jedi_hyb_2022052619"
-    "rrfs_fv3jedi_letkf_2022052619"
+    "rrfs_fv3jedi_2024052700_Ens3Dvar"
+    "rrfs_fv3jedi_2024052700_getkf_observer"
+    "rrfs_fv3jedi_2024052700_getkf_solver"
 )
 
 # MPAS-JEDI tests
@@ -32,7 +33,7 @@ if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then
       case=${ctest}
       echo "Updating ${case}..."
       casedir=${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
-      src_casedir=${rrfs_test_data_local}/rrfs-data_fv3jedi_2022052619
+      src_casedir=${rrfs_test_data_local}/rrfs-data_fv3jedi_2024052700
       ln -snf ${src_casedir}/DataFix ${casedir}/DataFix
       ln -snf ${src_casedir}/Data_static ${casedir}/Data_static
       ln -snf ${src_casedir}/INPUT ${casedir}/INPUT

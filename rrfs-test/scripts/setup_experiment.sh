@@ -154,6 +154,7 @@ if [[ $GSI_TEST_DATA == "YES" ]]; then
   sed -i "s#@YOUR_PATH_TO_GSI@#${YOUR_PATH_TO_GSI}#g" ./run_gsi.sh
   sed -i "s#@SLURM_ACCOUNT@#${SLURM_ACCOUNT}#g"       ./run_gsi.sh
   sed -i "s#@MACHINE_ID@#${MACHINE_ID}#g"             ./run_gsi.sh
+  sed -i "s#ANAL_TIME@#2022052619#g"                  ./run_gsi.sh
   cp -p $YOUR_PATH_TO_RDASAPP/rrfs-test/scripts/templates/run_gsi_ncdiag_template.sh run_gsi_ncdiag.sh
   sed -i "s#@YOUR_PATH_TO_RDASAPP@#${YOUR_PATH_TO_RDASAPP}#g" ./run_gsi_ncdiag.sh
   sed -i "s#@MACHINE_ID@#${MACHINE_ID}#g"                     ./run_gsi_ncdiag.sh
