@@ -1,0 +1,208 @@
+     - obs space:
+         name: adpsfc_stationPressure_187
+         distribution:
+           name: "@DISTRIBUTION@"
+           halo size: 100e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "@OBSFILE@"
+         obsdataout:
+           engine:
+             type: H5File
+             obsfile: hofx_adpsfc_stationPressure_187.nc4
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         observed variables: [stationPressure]
+         simulated variables: [stationPressure]
+
+       obs operator:
+         name: SfcPCorrected
+         da_psfc_scheme: GSI
+         geovar_sfc_geomz: geopotential_height_at_surface
+         geovar_geomz: geopotential_height
+       linear obs operator:
+         name: Identity
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
+
+       obs filters:
+         # ------------------
+         # stationPressure (187)
+         # ------------------
+         # Reject all observations with QualityMarker > 3
+         - filter: RejectList
+           apply at iterations: 0,1
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           - variable: QualityMarker/stationPressure
+             is_in: 4-15
+
+         # Time window filter
+         - filter: Domain Check
+           apply at iterations: 0,1
+           where:
+           - variable:
+               name: MetaData/timeOffset
+             minvalue: -900
+             maxvalue:  900
+
+         # Online domain check
+         - filter: Bounds Check
+           filter variables:
+           - name: stationPressure
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+
+         # Initial error assignment
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9, 1E9]
+
+         # Error inflation based on setupps.f90
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorSfcPressure
+               options:
+                 geovar_geomz: geopotential_height
+                 #geovar_sfc_geomz: geopotential_height_at_surface
+                 station_altitude: height
+
+         # Bounds Check
+         - filter: Bounds Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           minvalue: 20000.0
+           maxvalue: 120000.0
+
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           assignments:
+           - name: TempObsErrorData/stationPressure
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/stationPressure
+           defer to post: true
+
+         # Set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error parameter: 100.0
+           where:
+           - variable:
+               name: ObsErrorData/stationPressure
+             maxvalue: 100.0
+           - variable:
+               name: ObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
+
+         # Set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error parameter: 300.0
+           where:
+           - variable:
+               name: ObsErrorData/stationPressure
+             minvalue: 300.0
+           - variable:
+               name: ObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
+
+         # Gross Error Check
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           threshold: 5.0
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           - variable: QualityMarker/stationPressure
+             is_not_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           threshold: 3.5
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 187
+           - variable: QualityMarker/stationPressure
+             is_in: 3
+           action:
+             name: reject
+           defer to post: true
+
+         # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
+         - filter: Perform Action
+           apply at iterations: 0,1
+           filter variables:
+           - name: stationPressure
+           action:
+             name: assign error
+             error function: TempObsErrorData/stationPressure
+           where:
+           - variable:
+               name: TempObsErrorData/stationPressure
+             value: is_valid
+           defer to post: true
+
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           min_spacing: PT00M
+           seed_time: *analysisDate
+           category_variable:
+             name: MetaData/stationIdentification
+           defer to post: true
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/msonet_geovals_rrfs.nc4
