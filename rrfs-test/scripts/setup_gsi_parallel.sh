@@ -9,10 +9,8 @@
 
 ###### USER INPUT #####
 SLURM_ACCOUNT="fv3-cam"
-#YOUR_EXPERIMENT_DIR="/path/to/your/desired/experiment/directory/jedi-assim_test"
-YOUR_EXPERIMENT_DIR="/scratch1/BMC/zrtrr/Samuel.Degelia/GSI_parallel"
-#YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
-YOUR_PATH_TO_GSI="/scratch1/BMC/zrtrr/Samuel.Degelia/GSI"
+YOUR_EXPERIMENT_DIR="/path/to/your/desired/experiment/directory/jedi-assim_test"
+YOUR_PATH_TO_GSI="/path/to/your/installation/of/GSI"
 YOUR_GSI_CASE="2024052700"
 #######################
 
