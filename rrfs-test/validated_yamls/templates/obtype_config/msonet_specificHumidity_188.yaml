@@ -10,7 +10,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: hofx_msonet_specificHumidity_188.nc4
+             obsfile: jdiag_msonet_specificHumidity_188.nc4
              allow overwrite: true
          io pool:
            max pool size: 1

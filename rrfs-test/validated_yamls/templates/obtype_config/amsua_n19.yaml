@@ -9,7 +9,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: amsua_n19_hofx.2024052700.nc4 
+             obsfile: jdiag_amsua_n19.2024052700.nc4 
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: &amsua_n19_channels 1-15
