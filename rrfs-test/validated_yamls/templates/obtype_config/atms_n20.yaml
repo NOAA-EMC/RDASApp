@@ -9,7 +9,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: atms_n20_hofx.nc4
+             obsfile: jdiag_atms_n20.nc4
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: &atms_n20_channels 1-22
