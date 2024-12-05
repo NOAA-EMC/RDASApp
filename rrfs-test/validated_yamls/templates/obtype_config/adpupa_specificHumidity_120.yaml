@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: hofx_adpupa_specificHumidity_120.nc4
+             obsfile: jdiag_adpupa_specificHumidity_120.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
