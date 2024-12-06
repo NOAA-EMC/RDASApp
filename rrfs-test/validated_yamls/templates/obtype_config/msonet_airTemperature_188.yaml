@@ -57,8 +57,8 @@
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
-               minvalue: -360
-               maxvalue:  360
+               minvalue: -900
+               maxvalue:  900
 
          # Online domain check
          - filter: Bounds Check
@@ -161,7 +161,7 @@
            apply at iterations: 0,1
            filter variables:
            - name: airTemperature
-           threshold: 5.0
+           threshold: 1.1
            action:
              name: reject
            where:
@@ -175,7 +175,7 @@
            apply at iterations: 0,1
            filter variables:
            - name: airTemperature
-           threshold: 3.5
+           threshold: 0.77
            action:
              name: reject
            where:
@@ -201,7 +201,7 @@
          # Duplicate Check
          - filter: Temporal Thinning
            apply at iterations: 0,1
-           min_spacing: PT06M
+           min_spacing: PT15M
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
