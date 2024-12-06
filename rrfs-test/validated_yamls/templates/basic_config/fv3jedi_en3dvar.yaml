@@ -66,8 +66,8 @@ variational:
   minimizer:
     algorithm: DRPCG
   iterations:
-  - ninner: 5
-    gradient norm reduction: 1e-60
+  - ninner: 50
+    gradient norm reduction: 1e-3
     geometry:
       fms initialization:
         namelist filename: DataFix/fmsmpp.nml
@@ -82,8 +82,8 @@ variational:
       ntiles: 1
       fieldsets:
       - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
-  - ninner: 5
-    gradient norm reduction: 1e-60
+  - ninner: 50
+    gradient norm reduction: 1e-3
     geometry:
       fms initialization:
         namelist filename: DataFix/fmsmpp.nml

@@ -108,7 +108,7 @@ variational:
     algorithm: DRPCG    # Derber-Rosati Conjugate Gradients
   iterations:
   - ninner: 50
-    gradient norm reduction: 1e-60
+    gradient norm reduction: 1e-3
     geometry:
       fms initialization:
         namelist filename: DataFix/fmsmpp.nml
@@ -124,7 +124,7 @@ variational:
       fieldsets:
       - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
   - ninner: 50
-    gradient norm reduction: 1e-60
+    gradient norm reduction: 1e-3
     geometry:
       fms initialization:
         namelist filename: DataFix/fmsmpp.nml
