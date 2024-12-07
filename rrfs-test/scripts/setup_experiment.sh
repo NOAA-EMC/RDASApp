@@ -89,6 +89,7 @@ elif [[ $DYCORE == "MPAS" ]]; then
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_bumploc.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/namelist.atmosphere .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
+  cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_Hybrid.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_letkf.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_getkf.yaml .
   cp ${YOUR_PATH_TO_RDASAPP}/rrfs-test/testinput_expr/streams.atmosphere .
@@ -98,6 +99,7 @@ elif [[ $DYCORE == "MPAS" ]]; then
   mkdir -p data; cd data
   mkdir -p bumploc bkg obs ens
   ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/bumploc/* bumploc/.
+  ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/B_static/L55_20241204 B_static
   ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/bkg/mpasout.2024-05-27_00.00.00.nc .
   ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/invariant.nc invariant.nc
   ln -snf ${YOUR_PATH_TO_RDASAPP}/fix/expr_data/${TEST_DATA}/obs/* obs/

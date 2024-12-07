@@ -14,6 +14,7 @@
 RDASApp=@RDASApp@
 
 inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml # FOR ENVAR
+#inputfile=./rrfs_mpasjedi_2024052700_Hybrid.yaml # FOR 3DHybrid
 #inputfile=./rrfs_mpasjedi_2024052700_letkf.yaml # FOR LETKF
 #inputfile=./rrfs_mpasjedi_2024052700_getkf.yaml # FOR GETKF
 
