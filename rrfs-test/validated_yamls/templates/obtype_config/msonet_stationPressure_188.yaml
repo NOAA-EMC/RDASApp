@@ -51,8 +51,8 @@
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
-               minvalue: -360
-               maxvalue:  360
+               minvalue: -900
+               maxvalue:  900
 
          # Online domain check
          - filter: Bounds Check
@@ -123,11 +123,11 @@
            - name: stationPressure
            action:
              name: assign error
-             error parameter: 100.0
+             error parameter: 50.0
            where:
            - variable:
                name: ObsErrorData/stationPressure
-             maxvalue: 100.0
+             maxvalue: 50.0
            - variable:
                name: ObsErrorData/stationPressure
              value: is_valid
@@ -155,7 +155,7 @@
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
-           threshold: 5.0
+           threshold: 4.0
            action:
              name: reject
            where:
@@ -169,7 +169,7 @@
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
-           threshold: 3.5
+           threshold: 2.8
            action:
              name: reject
            where:
@@ -195,11 +195,11 @@
          # Duplicate Check
          - filter: Temporal Thinning
            apply at iterations: 0,1
-           min_spacing: PT06M
+           min_spacing: PT15M
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
-           defer to post: false
+           defer to post: true
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4

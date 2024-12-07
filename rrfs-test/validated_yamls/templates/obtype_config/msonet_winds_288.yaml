@@ -6,7 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: @OBSFILE@
+             obsfile: "@OBSFILE@"
          obsdataout:
            engine:
              type: H5File
@@ -373,8 +373,8 @@
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
-               minvalue: -360
-               maxvalue:  360
+               minvalue: -900
+               maxvalue:  900
 
          # Online domain check
          - filter: Bounds Check
@@ -404,7 +404,7 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0]
 
-         # Error inflation based on pressure check (setupw.f90)
+         # Error inflation (windEastward) based on pressure check (setupw.f90)
          - filter: Perform Action
            filter variables:
            - name: windEastward
@@ -422,7 +422,7 @@
                  AddObsHeightToStationElevation: true
                  AssumedSfcWndObsHeight: 10
 
-         # Error inflation based on pressure check (setupw.f90)
+         # Error inflation (windNorthward) based on pressure check (setupw.f90)
          - filter: Perform Action
            filter variables:
            - name: windNorthward
@@ -451,7 +451,7 @@
            action:
              name: reject
 
-         # Gross Error Check
+         # Gross Error Check (windEastward)
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
@@ -460,7 +460,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 288 ]
-               cgross:     [ 5.0 ]
+               cgross:     [ 6.0 ]
                error_min:  [ 1.0 ]
                error_max:  [ 5.0 ]
                variable: windEastward
@@ -471,7 +471,7 @@
              name: reject
            defer to post: true
 
-         # Gross Error Check
+         # Gross Error Check (windNorthward)
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
@@ -480,7 +480,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 288 ]
-               cgross:     [ 5.0 ]
+               cgross:     [ 6.0 ]
                error_min:  [ 1.0 ]
                error_max:  [ 5.0 ]
                variable: windNorthward
@@ -491,7 +491,7 @@
              name: reject
            defer to post: true
 
-         # Gross Error Check: cgross*0.7 if QualityMarker=3
+         # Gross Error Check (windEastward): cgross*0.7 if QualityMarker=3
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
@@ -500,7 +500,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 288 ]
-               cgross:     [ 3.5 ]
+               cgross:     [ 4.2 ]
                error_min:  [ 1.0 ]
                error_max:  [ 5.0 ]
                variable: windEastward
@@ -511,7 +511,7 @@
              name: reject
            defer to post: true
 
-         # Gross Error Check: cgross*0.7 if QualityMarker=3
+         # Gross Error Check (windNorthward): cgross*0.7 if QualityMarker=3
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
@@ -520,7 +520,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 288 ]
-               cgross:     [ 3.5 ]
+               cgross:     [ 4.2 ]
                error_min:  [ 1.0 ]
                error_max:  [ 5.0 ]
                variable: windNorthward
@@ -537,7 +537,7 @@
            filter variables:
            - name: windEastward
            - name: windNorthward
-           min_spacing: PT06M
+           min_spacing: PT15M
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
