@@ -181,6 +181,7 @@
                                   0.000,  0.000,  0.000,  0.000,  0.000,
                                   0.020,  0.030,  0.030,  0.030,  0.030,
                                   0.050,  0.100]
+
        # Calculate symmetric observation error
        - filter: Variable Assignment
          assignments:
@@ -263,7 +264,6 @@
            error function:
              name: InitialObsError@DerivedMetaData
              channels: *atms_n20_channels
-
 
        # Step 1: Remove Observations from the Edge of the Scan
        - filter: Domain Check
