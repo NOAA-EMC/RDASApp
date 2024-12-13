@@ -31,15 +31,17 @@ set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
 if(FV3_DYCORE)
 
       message(STATUS "MACHINE_ID is " ${MACHINE_ID})
-      set(RESTORE_MPI_ARGS ${MPI_ARGS})
-      if("${MACHINE_ID}" STREQUAL "orion" OR "${MACHINE_ID}" STREQUAL "hercules")
-         message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
-         set(MPI_ARGS "${MPI_ARGS} --exclusive")
-      endif()   
-      set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
 
       get_all_keys(rrfs_fv3jedi_tests caselist)
       foreach(case ${caselist})
+
+         set(RESTORE_MPI_ARGS ${MPI_ARGS})
+         if("${MACHINE_ID}" STREQUAL "orion" OR "${MACHINE_ID}" STREQUAL "hercules")
+            message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
+            set(MPI_ARGS "${MPI_ARGS} --exclusive")
+         endif()   
+         set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
+
          get_from_dictionary(rrfs_fv3jedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_fv3jedi_2024052700")
@@ -67,24 +69,25 @@ if(FV3_DYCORE)
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
 	 endif()
+         set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
-      set(MPI_ARGS ${RESTORE_MPI_ARGS})
 
 endif()
 
 if(MPAS_DYCORE)
 
       message(STATUS "MACHINE_ID is " ${MACHINE_ID})
-      set(RESTORE_MPI_ARGS ${MPI_ARGS})
-      if("${MACHINE_ID}" STREQUAL "orion" OR "${MACHINE_ID}" STREQUAL "hercules")
-         message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
-         set(MPI_ARGS "${MPI_ARGS} --exclusive")
-      endif()   
-      set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=4")
-      set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
 
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
+
+         set(RESTORE_MPI_ARGS ${MPI_ARGS})
+         if("${MACHINE_ID}" STREQUAL "orion" OR "${MACHINE_ID}" STREQUAL "hercules")
+            message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
+            set(MPI_ARGS "${MPI_ARGS} --exclusive")
+         endif()   
+         set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
+
 	 get_from_dictionary(rrfs_mpasjedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_mpasjedi_2024052700")
@@ -105,21 +108,22 @@ if(MPAS_DYCORE)
 	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
 	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
+           set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
            ecbuild_add_test( TARGET ${target_test}
-                        MPI      120
+                        MPI      160
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
 			TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
                         COMMAND  ${exe} )
 	 else()
            ecbuild_add_test( TARGET ${target_test}
-                        MPI      120
+                        MPI      160
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
 	 endif()
+         set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
-      set(MPI_ARGS ${RESTORE_MPI_ARGS})
 
       ########################
       ### Bufr2ioda ctests ###

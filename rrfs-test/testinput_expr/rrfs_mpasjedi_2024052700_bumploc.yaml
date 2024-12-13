@@ -5,7 +5,7 @@ geometry:
   nml_file: "./namelist.atmosphere"
   streams_file: "./streams.atmosphere"
   deallocate non-da fields: true
-  bump vunit: "modellevel" # modellevel, height
+  bump vunit: "logp" # modellevel, height, logp
 background:
   state variables: &vars [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal]
   filename: "./data/mpasout.2024-05-27_00.00.00.nc"
@@ -18,7 +18,7 @@ background error:
     saber block name: BUMP_NICAS
     calibration:
       io:
-        files prefix: bumploc_401km11levels
+        files prefix: bumploc_300km_0p3logp
 
       drivers:
         multivariate strategy: duplicated
@@ -33,10 +33,10 @@ background error:
         explicit length-scales: true
         horizontal length-scale:
           - groups: [common]
-            value: 401.0e3
+            value: 300.0e3
         vertical length-scale:
           - groups: [common]
-            value: 11
+            value: 0.3
       output model files:
       - parameter: nicas_norm
         file:

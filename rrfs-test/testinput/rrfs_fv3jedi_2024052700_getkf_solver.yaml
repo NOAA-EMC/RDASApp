@@ -2892,7 +2892,7 @@ observations:
      - obs space:
          name: atms_npp
          distribution:
-           name: "RoundRobin"
+           name: "Halo"
            halo size: 100e3
          obsdatain:
            engine:
