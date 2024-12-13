@@ -3,7 +3,7 @@
 #SBATCH --qos=batch
 ###SBATCH --partition=kjet
 ###SBATCH --reservation=rrfsens
-#SBATCH --ntasks=120
+#SBATCH --ntasks=160
 #SBATCH -t 00:58:00
 #SBATCH --job-name=mpasjedi_test
 #SBATCH -o jedi.log
@@ -39,6 +39,6 @@ fi
 
 jedibin="@YOUR_PATH_TO_RDASAPP@/build/bin"
 # Run JEDI - currently cannot change processor count
-srun -l -n 120 $jedibin/mpasjedi_variational.x ./$inputfile out.log
-#srun -l -n 120 $jedibin/mpasjedi_enkf.x ./$inputfile out.log
+srun -l -n 160 $jedibin/mpasjedi_variational.x ./$inputfile out.log
+#srun -l -n 160 $jedibin/mpasjedi_enkf.x ./$inputfile out.log
 

@@ -4,7 +4,7 @@
 ###SBATCH -M c6 # for Gaea
 ###SBATCH --partition=kjet
 ###SBATCH --reservation=rrfsens
-#SBATCH --ntasks=120
+#SBATCH --ntasks=160
 #SBATCH -t 00:58:00
 #SBATCH --job-name=mpasjedi_test
 #SBATCH -o log.jedi
@@ -34,5 +34,5 @@ ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
 
-srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_variational.x    ./$inputfile    log.out # FOR ENVAR
-#srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_enkf.x    ./$inputfile    log.out # FOR LETKF/GETKF
+srun -l -n 160 ${RDASApp}/build/bin/mpasjedi_variational.x    ./$inputfile    log.out # FOR ENVAR
+#srun -l -n 160 ${RDASApp}/build/bin/mpasjedi_enkf.x    ./$inputfile    log.out # FOR LETKF/GETKF
