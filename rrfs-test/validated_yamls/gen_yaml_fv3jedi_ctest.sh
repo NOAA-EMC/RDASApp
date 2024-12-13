@@ -57,11 +57,12 @@ process_obtypes() {
     local obtype_configs=("${!2}")  # Accept array as input
     local obs_filename="$3"
     local temp_yaml="$4"
-                                                                                                                                                                                                                                                                                   # Determine the ctest type to select the observation distribution
-    if [[ $ctest == *"solver"* ]]; then                                                                                                                                                                                                                                                distribution="Halo"
-    else                                                                                                                                                                                                                                                                               distribution="RoundRobin"
-    fi                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            echo "Appending the following yamls:"
-    for obtype_config in "${obtype_configs[@]}"; do                                                                                                                                                                                                                                    echo "   $obtype_config"
+    
+    # Determine the ctest type to select the observation distribution
+    if [[ $ctest == *"solver"* ]]; then                                                                                                                                                       distribution="Halo"
+    else                                                                                                                                                                                      distribution="RoundRobin"
+    fi                                                                                                                                                                                                                                                                                                                                                                            echo "Appending the following yamls:"
+    for obtype_config in "${obtype_configs[@]}"; do                                                                                                                                            echo "   $obtype_config"
         cat ./templates/obtype_config/$obtype_config >> ./$temp_yaml
 
         # For EnKF solver ctests, replace obsfile path with output from corresponding observer ctest
