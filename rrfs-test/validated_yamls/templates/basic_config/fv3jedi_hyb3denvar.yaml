@@ -123,8 +123,6 @@ variational:
       ntiles: 1
       fieldsets:
       - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
-    diagnostics:
-      departures: ombg
   - ninner: 50
     gradient norm reduction: 1e-60
     geometry:
@@ -141,10 +139,6 @@ variational:
       ntiles: 1
       fieldsets:
       - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
-final:
-  diagnostics:
-    departures: oman
-
 output:
   filetype: fms restart
   datapath: ./

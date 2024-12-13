@@ -1,0 +1,12 @@
+{
+    "data_format": "bufr_d",
+    "data_type": "nexrad",
+    "cycle_type": "rap",
+    "cycle_datetime": "{{ current_cycle | to_YMDH }}",
+    "dump_directory": "{{ DMPDIR }}",
+    "ioda_directory": "{{ COM_OBS }}",
+    "subsets": [ "NC006010", "NC006011", "NC006012", "NC006013", "NC006014", "NC006015", "NC006016", "NC006017", "NC006018", "NC006019", "NC006020", "NC006021", "NC006022", "NC006023", "NC006024", "NC006025", "NC006026", "NC006027", "NC006028", "NC006029", "NC006030", "NC006031", "NC006032", "NC006033", "NC006040", "NC006041", "NC006042", "NC006043", "NC006044", "NC006045", "NC006046", "NC006047", "NC006048", "NC006049", "NC006050", "NC006051", "NC006052", "NC006053", "NC006054", "NC006055", "NC006056", "NC006057", "NC006058", "NC006059", "NC006060", "NC006061", "NC006062", "NC006063" ],
+    "source": "NCEP data tank",
+    "data_provider": "U.S. NOAA",
+    "data_description": "NEXRAD radial wind superobs",
+}

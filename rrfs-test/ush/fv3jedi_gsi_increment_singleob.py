@@ -54,7 +54,7 @@ datapath = "./"
 janalysis = f"{datapath}/hybens3dvar-fv3_lam-C775.fv_core.res.nc"
 jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
 jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
-#jdiag = f"{datapath}/{singleob_type}_hofxs_{variable}_2022052619.nc4"
+#jdiag = f"{datapath}/jdiag_{singleob_type}_{variable}_2022052619.nc4"
 jdiag = f"{datapath}/{jdiag}"
 
 #GSI data
