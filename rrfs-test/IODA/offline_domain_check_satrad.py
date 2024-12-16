@@ -258,7 +258,7 @@ else:
 if 'Channel' not in fout.dimensions and channel_size > 0:
     fout.createDimension('Channel', channel_size)
     fout.createVariable('Channel', 'int32', 'Channel', fill_value=fill_value)
-    fout.variables['Channel'][:] = np.arange(channel_size) + 1 #since python indicies start at 0
+    fout.variables['Channel'][:] = obs_ds.variables['Channel'][:]
     for attr in obs_ds.variables['Channel'].ncattrs():  # Attributes for Location variable
         if attr != '_FillValue':
            fout.variables['Channel'].setncattr(attr, obs_ds.variables['Channel'].getncattr(attr))
