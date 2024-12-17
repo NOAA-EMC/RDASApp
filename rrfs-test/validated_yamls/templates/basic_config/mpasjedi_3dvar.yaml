@@ -52,8 +52,8 @@ cost function:
       active variables: *incvars
       read:
         io:
-          data directory: data/bumploc/conus12km-300km_0p3logp
-          files prefix: bumploc_300km_0p3logp
+          data directory: data/bumploc/conus12km-401km_1p095logp
+          files prefix: bumploc_401km_1p095logp
         drivers:
           multivariate strategy: duplicated
           read local nicas: true
