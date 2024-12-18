@@ -147,7 +147,7 @@
          # Error inflation (windNorthward) based on errormod (qcmod.f90)
          - filter: Perform Action
            filter variables:
-           - name: windEastward
+           - name: windNorthward
            where:
            - variable: ObsType/windNorthward
              is_in: 220
@@ -179,7 +179,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 220 ]
-               cgross:     [ 10.0 ]
+               cgross:     [ 8.0 ]
                error_min:  [ 1.4 ]
                error_max:  [ 6.1 ]
                variable: windEastward
@@ -199,7 +199,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 220 ]
-               cgross:     [ 10.0 ]
+               cgross:     [ 8.0 ]
                error_min:  [ 1.4 ]
                error_max:  [ 6.1 ]
                variable: windNorthward
@@ -219,7 +219,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 220 ]
-               cgross:     [ 7.0 ]
+               cgross:     [ 5.6 ]
                error_min:  [ 1.4 ]
                error_max:  [ 6.1 ]
                variable: windEastward
@@ -239,7 +239,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 220 ]
-               cgross:     [ 7.0 ]
+               cgross:     [ 5.6 ]
                error_min:  [ 1.4 ]
                error_max:  [ 6.1 ]
                variable: windNorthward
