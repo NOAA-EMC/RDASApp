@@ -31,6 +31,7 @@ cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_bumploc.yaml ./b
 cp ${RDASApp}/rrfs-test/testinput_expr/namelist.atmosphere .
 cp ${RDASApp}/rrfs-test/testinput_expr/streams.atmosphere .
 cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
+cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_Hybrid.yaml .
 cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_letkf.yaml .
 cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_getkf.yaml .
 cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_getkf_observer.yaml .
@@ -50,6 +51,7 @@ mkdir -p data
 cd data
 mkdir -p bumploc obs obs_ctest ens
 ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/${BUMPLOC}
+ln -snf ${RDASApp}/fix/B_static/L55_20241204 B_static
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/mpasout.2024-05-27_00.00.00.nc .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/invariant.nc invariant.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/
