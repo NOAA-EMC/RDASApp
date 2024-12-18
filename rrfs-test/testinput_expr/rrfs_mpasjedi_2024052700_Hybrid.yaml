@@ -84,7 +84,7 @@ cost function:
           input variables: *ctlvars
           output variables: *incvars
       weight:
-        value: 1.0
+        value: 0.15
     - covariance:
         covariance model: ensemble
         localization:
@@ -110,7 +110,7 @@ cost function:
           zero padding: 3
           nmembers: 30
       weight:
-        value: 0
+        value: 0.85
   observations:
      observers:
      - obs space:
