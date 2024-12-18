@@ -7,7 +7,6 @@ if [[ -z ${RDASApp} ]]; then
 fi
 
 #RDASApp="/path/to/RDASApp"  # set this variable if line2-7 was removed
-BUMPLOC="conus12km-401km11levels"
 exprname="fv3_2024052700"
 expdir=${RDASApp}/expr/${exprname}  # can be set to any directory 
 mkdir -p ${expdir}

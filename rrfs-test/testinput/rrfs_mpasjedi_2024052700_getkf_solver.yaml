@@ -2906,14 +2906,14 @@ observations:
            lengthscale: 300e3 # orig
 
        obs bias:
-         input file:  data/obs_ctest/atms_npp.satbias.nc4
+         input file:  data/obs/atms_npp.satbias.nc4
          output file: ./out_atms_npp.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &atms_npp_tlapse  data/obs_ctest/atms_npp.tlapse.txt
+             tlapse: &atms_npp_tlapse  data/obs/atms_npp.tlapse.txt
            - name: lapseRate
              tlapse: *atms_npp_tlapse
            - name: emissivityJacobian
@@ -2930,7 +2930,7 @@ observations:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs_ctest/atms_npp.satbias_cov.nc4
+             input file: data/obs/atms_npp.satbias_cov.nc4
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
@@ -3470,8 +3470,8 @@ driver:
   do posterior observer: false
 
 time window:
-       begin: 2024-05-26T23:00:00Z
-       length: PT2H
+       begin: 2024-05-26T21:00:00Z
+       length: PT6H
 
 local ensemble DA:
   solver: GETKF
