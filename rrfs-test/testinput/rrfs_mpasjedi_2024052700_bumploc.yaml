@@ -36,7 +36,7 @@ background error:
             value: 401.0e3
         vertical length-scale:
           - groups: [common]
-            value:  11
+            value: 11
       output model files:
       - parameter: nicas_norm
         file:
