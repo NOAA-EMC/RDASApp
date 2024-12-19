@@ -33,7 +33,7 @@ background:
         filename_sfcw: 20240527.000000.fv_srf_wnd.res.tile1.nc
         filename_cplr: 20240527.000000.coupler.res
       pattern: "%mem%"
-      nmembers: 20
+      nmembers: 30
       zero padding: 3
 
 observations:
