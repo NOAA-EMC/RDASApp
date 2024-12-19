@@ -5,7 +5,7 @@
 ###SBATCH --partition=bigmem
 ###SBATCH --partition=kjet
 ###SBATCH --reservation=rrfsens
-#SBATCH --ntasks=120
+#SBATCH --ntasks=160
 #SBATCH -t 00:58:00
 #SBATCH --job-name=mpasjedi_bump
 #SBATCH -o log.bump
@@ -31,4 +31,4 @@ ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
 
-srun -l -n 120 ${RDASApp}/build/bin/mpasjedi_error_covariance_toolbox.x ./bumploc.yaml
+srun -l -n 160 ${RDASApp}/build/bin/mpasjedi_error_covariance_toolbox.x ./bumploc.yaml

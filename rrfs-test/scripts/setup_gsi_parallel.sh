@@ -59,6 +59,12 @@ cd $YOUR_EXPERIMENT_DIR
 # Copy GSI data
 rsync -a ${RDAS_DATA}/gsi_${YOUR_GSI_CASE}/* .
 
+# Copy some fix files from RDASApp repo
+cp -p $RDASApp/rrfs-test/gsi_fix/anavinfo           ./anavinfo
+cp -p $RDASApp/rrfs-test/gsi_fix/convinfo           ./convinfo
+cp -p $RDASApp/rrfs-test/gsi_fix/errtable           ./errtable
+cp -p $RDASApp/rrfs-test/gsi_fix/gsiparm.anl        ./gsiparm.anl
+
 # Copy run scripts and plotting scripts
 cp -p $RDASApp/rrfs-test/scripts/templates/run_gsi_template.sh run_gsi.sh
 sed -i "s#@YOUR_PATH_TO_GSI@#${YOUR_PATH_TO_GSI}#g" ./run_gsi.sh

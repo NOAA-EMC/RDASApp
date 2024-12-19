@@ -7,7 +7,7 @@ if [[ -z ${RDASApp} ]]; then
 fi
 
 #RDASApp="/path/to/RDASApp"  # set this variable if line2-7 was removed
-BUMPLOC="conus12km-401km11levels"
+BUMPLOC="conus12km-401km_1p095logp"
 exprname="mpas_2024052700"
 if [[ "$1" == "atl12km" ]]; then
   BUMPLOC="atl12km-401km11levels"
@@ -48,12 +48,11 @@ cp ${RDASApp}/rrfs-test/ush/mpasjedi_spread.py .
 
 mkdir -p data
 cd data
-mkdir -p bumploc obs obs_ctest ens
+mkdir -p bumploc obs ens
 ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/${BUMPLOC}
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/mpasout.2024-05-27_00.00.00.nc .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/invariant.nc invariant.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs_ctest/* obs_ctest/
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/ens/* ens/
 ln -snf ${RDASApp}/fix/crtm/2.4.0 crtm
 

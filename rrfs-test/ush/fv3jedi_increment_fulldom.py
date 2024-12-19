@@ -22,11 +22,13 @@ warnings.filterwarnings('ignore')
 
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
-lev = 60                # 60=sfc; 1=toa
+lev = 65                # 65=sfc; 1=toa
 clevmax_incr = 5     # max contour level for colorbar increment plots
 decimals = 2            # number of decimals to round for text boxes
-plot_box_width = 70.     # define size of plot domain (units: lat/lon degrees)
-plot_box_height = 30
+plot_box_width = 100.   # define size of plot domain (units: lat/lon degrees)
+plot_box_height = 50.
+cen_lat = 34.5
+cen_lon = -97.5
 
 variable = "airTemperature"
 if variable == "airTemperature":
@@ -35,15 +37,15 @@ if variable == "airTemperature":
 
 # JEDI data
 datapath = "./"
-jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
+jgrid = f"{datapath}/Data/bkg/grid_spec.nc"
 
 # FOR LETKF 
-janalysis = f"{datapath}/letkf-meanposterior-fv3_lam-C775.fv_core.res.nc" # 
-jbackgrnd = f"{datapath}/letkf-meanprior-fv3_lam-C775.fv_core.res.nc"
+#janalysis = f"{datapath}/letkf-meanposterior-fv3_lam-C775.fv_core.res.nc" # 
+#jbackgrnd = f"{datapath}/letkf-meanprior-fv3_lam-C775.fv_core.res.nc"
 
 # FOR HYBRID (or ENVAR)
-#janalysis = f"{datapath}/hybens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
-#jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
+janalysis = f"{datapath}/ens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
+jbackgrnd = f"{datapath}/Data/bkg/20240527.000000.fv_core.res.tile1.nc"
 
 
 ###################################################################################
@@ -81,8 +83,6 @@ fig = plt.figure(figsize=(7,4))
 m1 = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
 
 # Determine extent for plot domain
-cen_lat = 34.5
-cen_lon = -97.5
 half = plot_box_width / 2.
 left = cen_lon - half
 right = cen_lon + half
@@ -106,8 +106,8 @@ m1.add_feature(cfeature.STATES)
 # Gridlines for the subplots
 gl1 = m1.gridlines(crs = ccrs.PlateCarree(), draw_labels = True, linewidth = 0.5, color = 'k', alpha = 0.25, linestyle = '-')
 gl1.xlocator = mticker.FixedLocator([])
-gl1.xlocator = mticker.FixedLocator(np.arange(-180., 181., 10.))
-gl1.ylocator = mticker.FixedLocator(np.arange(-80., 91., 10.))
+gl1.xlocator = mticker.FixedLocator(np.arange(-180., 181., 5.))
+gl1.ylocator = mticker.FixedLocator(np.arange(-80., 91., 5.))
 gl1.xformatter = LONGITUDE_FORMATTER
 gl1.yformatter = LATITUDE_FORMATTER
 gl1.xlabel_style = {'size': 5, 'color': 'gray'}
@@ -136,14 +136,12 @@ cbar1.set_label(units, size=8)
 cbar1.ax.tick_params(labelsize=5, rotation=30)
 
 # Add titles, text, and save the figure
-#plt.suptitle(f"Temperature {plot_var} at Level: {lev+1}\nobtype: {longname}", fontsize = 9, y = 1.05)
-#m1.set_title(f"{title1}", fontsize = 9, y = 0.98)
-#subtitle1_minmax = f"min: {np.around(np.min(jedi), decimals)}\nmax: {np.around(np.max(jedi), decimals)}"
-#m1.text(left, top, f"{subtitle1_minmax}", fontsize = 6, ha='left', va='bottom')
-
+plt.suptitle(f"Temperature {plot_var} at Level: {lev+1}", fontsize=9, y=0.95)
+subtitle1_minmax = f"min: {np.around(np.min(jedi_inc), decimals)}\nmax: {np.around(np.max(jedi_inc), decimals)}"
+m1.text(left * 0.99, bot * 1.01, f"{subtitle1_minmax}", fontsize=6, ha='left', va='bottom')
 if plot_var == "Increment":
     plt.tight_layout()
-    plt.savefig(f"./increment_{variable}.png", dpi=350, bbox_inches='tight')
+    plt.savefig(f"./increment_{variable}.png", dpi=250, bbox_inches='tight')
 
 # Print some final stats
 print(f"Stats:")

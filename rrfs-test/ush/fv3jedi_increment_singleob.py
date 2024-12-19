@@ -22,27 +22,22 @@ warnings.filterwarnings('ignore')
 
 ############ USER INPUT ##########################################################
 plot_var = "Increment"
-
-lev = 60                # 60=sfc; 1=toa
+lev = 65               # 65=sfc; 1=toa
 clevmax_incr = 0.1     # max contour level for colorbar increment plots
 decimals = 4            # number of decimals to round for text boxes
-
 plot_box_width = 5.     # define size of plot domain (units: lat/lon degrees)
-
 singleob_type = "MSONET"
-
 variable = "airTemperature"
-
 if variable == "airTemperature":
     obtype = 't'
     offset = -273.15
 
 # JEDI data
 datapath = "./"
-janalysis = f"{datapath}/hybens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
-jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
-jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
-jdiag = f"{datapath}/jdiag_{singleob_type}_2022052619.nc4"
+jgrid = f"{datapath}/Data/bkg/grid_spec.nc"
+janalysis = f"{datapath}/ens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
+jbackgrnd = f"{datapath}/Data/bkg/20240527.000000.fv_core.res.tile1.nc"
+jdiag = f"{datapath}/jdiag_{singleob_type}_2024052700.nc4"
 
 ###################################################################################
 # Set cartopy shapefile path
