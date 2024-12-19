@@ -52,7 +52,7 @@ cost function:
         active variables: *3dvars
         read:
           io:
-            files prefix: DataFix/bump_401km_0p75sigma_mpi160/bumploc_401km_0p75sigma
+            files prefix: DataFix/bump_401km_0p04sigma_mpi160/bumploc_401km0p04sigma
           drivers:
              multivariate strategy: duplicated
              read local nicas: true

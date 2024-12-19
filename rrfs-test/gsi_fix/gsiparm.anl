@@ -68,7 +68,7 @@ OBS_INPUT::
    n_ens=30,
    l_both_fv3sar_gfs_ens=.false.,n_ens_gfs=0,n_ens_fv3sar=30,
    weight_ens_gfs=1.0,weight_ens_fv3sar=1.0,
-   beta_s0=0.0,s_ens_h=110,s_ens_v=-0.30125,
+   beta_s0=0.0,s_ens_h=110,s_ens_v=3,
    regional_ensemble_option=5,
    pseudo_hybens = .false.,
    grid_ratio_ens = 1,
