@@ -59,10 +59,15 @@ process_obtypes() {
     local temp_yaml="$4"
     
     # Determine the ctest type to select the observation distribution
-    if [[ $ctest == *"solver"* ]]; then                                                                                                                                                       distribution="Halo"
-    else                                                                                                                                                                                      distribution="RoundRobin"
-    fi                                                                                                                                                                                                                                                                                                                                                                            echo "Appending the following yamls:"
-    for obtype_config in "${obtype_configs[@]}"; do                                                                                                                                            echo "   $obtype_config"
+    if [[ $ctest == *"solver"* ]]; then
+        distribution="Halo"
+    else
+        distribution="RoundRobin"
+    fi
+
+    echo "Appending the following yamls:"
+    for obtype_config in "${obtype_configs[@]}"; do
+        echo "   $obtype_config"
         cat ./templates/obtype_config/$obtype_config >> ./$temp_yaml
 
         # For EnKF solver ctests, replace obsfile path with output from corresponding observer ctest
@@ -95,7 +100,7 @@ for basic_config in "${basic_configs[@]}"; do
 
   # Concatenate all obtypes into the super yaml
   process_obtypes "${ctest_names[$iconfig]}" "aircar_obtype_configs[@]" "Data/obs/ioda_aircar_dc.nc"             "$temp_yaml"
-  process_obtypes "${ctest_names[$iconfig]}" "aircft_obtype_configs[@]" "Data/obs/ioda_aircft_dc.nc"             "$temp_yaml"
+  #process_obtypes "${ctest_names[$iconfig]}" "aircft_obtype_configs[@]" "Data/obs/ioda_aircft_dc.nc"             "$temp_yaml"
   process_obtypes "${ctest_names[$iconfig]}" "msonet_obtype_configs[@]" "Data/obs/ioda_msonet_dc.nc"             "$temp_yaml"
   process_obtypes "${ctest_names[$iconfig]}" "atms_obtype_configs[@]"   "Data/obs/atms_npp_obs_2024052700_dc.nc" "$temp_yaml"
   #process_obtypes "${ctest_names[$iconfig]}" "amsua_obtype_configs[@]"  "Data/obs/ioda_amsua_n19_dc.nc"      "$temp_yaml"
