@@ -21,11 +21,6 @@ rrfs_mpasjedi_tests=(
     "rrfs_mpasjedi_2024052700_bumploc"
 )
 
-# bufr2ioda tests
-rrfs_bufr2ioda_tests=(
-    "rrfs_bufr2ioda_msonet"
-)
-
 echo "Use test data from rrfs-test-data repository"
 RDASApp=$( git rev-parse --show-toplevel 2>/dev/null )
 CMAKE_SOURCE_DIR=${RDASApp}/bundle
@@ -66,12 +61,6 @@ if [[ $DYCORE == "MPASJEDI" || $DYCORE == "BOTH" ]]; then
       for bl_FILE in ${src_casedir}/*.*BL; do
          ln -snf ${bl_FILE} ${casedir}/$(basename $bl_FILE)
       done
-      cp ${src_yaml}/${case}.yaml ${casedir}
-   done
-   for ctest in "${rrfs_bufr2ioda_tests[@]}"; do
-      case=${ctest}
-      echo "Updating ${case}..."
-      casedir=${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
       cp ${src_yaml}/${case}.yaml ${casedir}
    done
 fi
