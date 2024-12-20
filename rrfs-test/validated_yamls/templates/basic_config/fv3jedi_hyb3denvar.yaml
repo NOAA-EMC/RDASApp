@@ -79,7 +79,7 @@ cost function:
             filename_sfcw: 20220526.190000.fv_srf_wnd.res.nc
             filename_cplr: 20220526.190000.coupler.res
           pattern: MEM
-          nmembers: 20
+          nmembers: 30
           zero padding: 3
         localization:
           localization method: SABER
