@@ -31,8 +31,8 @@ driver:
   update obs config with geometry info: false
 
 time window:
-       begin: 2024-05-26T23:00:00Z
-       length: PT2H
+       begin: 2024-05-26T21:00:00Z
+       length: PT6H
 
 local ensemble DA:
   solver: GETKF

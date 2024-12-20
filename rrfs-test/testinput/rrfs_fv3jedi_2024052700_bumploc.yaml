@@ -24,10 +24,8 @@ background error:
   saber central block:
     saber block name: BUMP_NICAS
     calibration:
-      general:
-        universe length-scale: 300.0e3
       io:
-        files prefix: bumploc_300km_0.3vloc
+        files prefix: bumploc_401km0p04sigma
 
       drivers:
         multivariate strategy: duplicated
@@ -39,10 +37,10 @@ background error:
         explicit length-scales: true
         horizontal length-scale:
         - groups: [common]
-          value: 300000.0
+          value: 401.0e3
         vertical length-scale:
         - groups: [common]
-          value: 0.3
+          value: 0.04
 #      grids:
 #      - model:
 #          variables:

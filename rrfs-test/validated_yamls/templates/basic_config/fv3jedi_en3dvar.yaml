@@ -1,0 +1,111 @@
+cost function:
+  cost type: 3D-Var
+  time window:
+      begin: 2024-05-26T21:00:00Z
+      length: PT6H
+  analysis variables: &3dvars [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
+
+  geometry:
+    fms initialization:
+      namelist filename: DataFix/fmsmpp.nml
+      field table filename: DataFix/field_table
+    namelist filename: DataFix/input_lam_C775_NP16X10.nml
+    field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+    akbk: DataFix/fix/akbk66.nc
+    # input.nml
+    npz: 65
+    layout: [16,10]
+    io_layout: [1,1]
+    ntiles: 1
+
+
+  background:
+    datetime: &analysisDate 2024-05-27T00:00:00Z
+    filetype: fms restart
+    datapath: Data/bkg
+    filename_core: 20240527.000000.fv_core.res.tile1.nc
+    filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
+    filename_sfcd: 20240527.000000.sfc_data.nc
+    filename_sfcw: 20240527.000000.fv_srf_wnd.res.tile1.nc
+    filename_cplr: 20240527.000000.coupler.res
+    state variables: [eastward_wind,northward_wind,u_component_of_native_D_grid_wind,v_component_of_native_D_grid_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,phis,f10m,slmsk,sheleg,ts,vtype,stype,vfrac,soilt,soilm,u_srf,v_srf]
+  background error:
+    covariance model: ensemble
+    members from template:
+      template:
+        datetime: 2024-05-27T00:00:00Z
+        filetype: fms restart
+        state variables: *3dvars
+        datapath: Data/inputs/mem%mem%/
+        filename_core: 20240527.000000.fv_core.res.tile1.nc
+        filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
+        filename_sfcd: 20240527.000000.sfc_data.nc
+        filename_sfcw: 20240527.000000.fv_srf_wnd.res.tile1.nc
+        filename_cplr: 20240527.000000.coupler.res
+      pattern: "%mem%"
+      nmembers: 30
+      zero padding: 3
+    localization:
+      localization method: SABER
+      saber central block:
+        saber block name: BUMP_NICAS
+        active variables: *3dvars
+        read:
+          io:
+            files prefix: DataFix/bump_401km_0p04sigma_mpi160/bumploc_401km0p04sigma
+          drivers:
+             multivariate strategy: duplicated
+             read local nicas: true
+          model:
+             level for 2d variables: last
+  observations:
+     observers:
+        "@OBSERVATIONS@"
+
+variational:
+  minimizer:
+    algorithm: DRPCG
+  iterations:
+  - ninner: 50
+    gradient norm reduction: 1e-3
+    geometry:
+      fms initialization:
+        namelist filename: DataFix/fmsmpp.nml
+        field table filename: DataFix/field_table
+      namelist filename: DataFix/input_lam_C775_NP16X10.nml
+      field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+      akbk: DataFix/fix/akbk66.nc
+      # input.nml
+      npz: 65
+      layout: [16,10]
+      io_layout: [1,1]
+      ntiles: 1
+      fieldsets:
+      - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
+  - ninner: 50
+    gradient norm reduction: 1e-3
+    geometry:
+      fms initialization:
+        namelist filename: DataFix/fmsmpp.nml
+        field table filename: DataFix/field_table
+      namelist filename: DataFix/input_lam_C775_NP16X10.nml
+      field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+      akbk: DataFix/fix/akbk66.nc
+      # input.nml
+      npz: 65
+      layout: [16,10]
+      io_layout: [1,1]
+      ntiles: 1
+      fieldsets:
+      - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
+
+output:
+  filetype: fms restart
+  datapath: ./
+  prefix: ens3dvar-fv3_lam-C775 #Ens3dvar-fv3_lam-C775
+  frequency: PT1H
+test:
+  reference filename: testoutput/rrfs-fv3jedi-ens3dvar.ref
+  test output filename: rrfs-fv3jedi-ens3dvar.out
+  float relative tolerance: 1.0e-3
+  float absolute tolerance: 1.0e-6

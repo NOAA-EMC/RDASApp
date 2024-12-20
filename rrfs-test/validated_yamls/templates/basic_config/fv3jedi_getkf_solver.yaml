@@ -1,0 +1,76 @@
+time window:
+       begin: 2024-05-26T21:00:00Z
+       length: PT6H
+increment variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
+geometry:
+  fms initialization:
+    namelist filename: DataFix/fmsmpp.nml
+    field table filename: DataFix/field_table
+  namelist filename: DataFix/input_lam_C775_NP16X10.nml
+  field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+  akbk: DataFix/fix/akbk66.nc
+  # input.nml
+  npz: 65
+  layout: [16,10]
+  io_layout: [1,1]
+  ntiles: 1
+  fieldsets:
+    - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
+
+
+background:
+  datetime: &analysisDate 2024-05-27T00:00:00Z
+  filetype: fms restart
+  members from template:
+      template:
+        datetime: 2024-05-27T00:00:00Z
+        filetype: fms restart
+        state variables: [eastward_wind,northward_wind,u_component_of_native_D_grid_wind,v_component_of_native_D_grid_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,phis,f10m,slmsk,sheleg,ts,vtype,stype,vfrac,soilt,soilm,u_srf,v_srf]
+        datapath: Data/inputs/mem%mem%/
+        filename_core: 20240527.000000.fv_core.res.tile1.nc
+        filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
+        filename_sfcd: 20240527.000000.sfc_data.nc
+        filename_sfcw: 20240527.000000.fv_srf_wnd.res.tile1.nc
+        filename_cplr: 20240527.000000.coupler.res
+      pattern: "%mem%"
+      nmembers: 30
+      zero padding: 3
+
+observations:
+     observers:
+        "@OBSERVATIONS@"
+
+driver:
+  read HX from disk: true
+  save posterior ensemble: false
+  save prior mean: true
+  save posterior mean: true
+  do posterior observer: false
+
+local ensemble DA:
+  solver: GETKF
+  use linear observer: true
+  vertical localization: # current settings use 12 modulated members
+    fraction of retained variance: 0.850
+    lengthscale: 0.50
+    lengthscale units: logp
+  inflation:
+    rtps: 0.95
+    rtpp: 0.6
+    mult: 1.1
+
+output mean prior:
+  filetype: fms restart
+  datapath: ./
+  prefix: letkf-meanprior-fv3_lam-C775
+
+output: # for outputting mean posterior
+  filetype: fms restart
+  datapath: ./
+  prefix: letkf-meanposterior-fv3_lam-C775
+
+test:
+  reference filename: testoutput/rrfs-fv3jedi-getkf-solver.ref
+  test output filename: ./rrfs-fv3jedi-getkf-solver.out
+  float relative tolerance: 1.0e-3
+  float absolute tolerance: 1.0e-6

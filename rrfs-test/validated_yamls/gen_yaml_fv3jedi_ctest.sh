@@ -2,18 +2,18 @@
 
 # Define the basic configuration YAMLs
 basic_configs=(
-    "mpasjedi_en3dvar.yaml"
-    "mpasjedi_getkf_observer.yaml"
-    "mpasjedi_getkf_solver.yaml"
+    "fv3jedi_en3dvar.yaml"
+    "fv3jedi_getkf_observer.yaml"
+    "fv3jedi_getkf_solver.yaml"
 )
 
-# CTest yaml outputs 
+# CTest yaml outputs
 ctest_names=(
-    "rrfs_mpasjedi_2024052700_Ens3Dvar.yaml"
-    "rrfs_mpasjedi_2024052700_getkf_observer.yaml"
-    "rrfs_mpasjedi_2024052700_getkf_solver.yaml"
+    "rrfs_fv3jedi_2024052700_Ens3Dvar.yaml"
+    "rrfs_fv3jedi_2024052700_getkf_observer.yaml"
+    "rrfs_fv3jedi_2024052700_getkf_solver.yaml"
 )
-    
+
 # Define the aircar observation type configs as an array
 aircar_obtype_configs=(
     "aircar_airTemperature_133.yaml"
@@ -39,7 +39,7 @@ msonet_obtype_configs=(
     "msonet_airTemperature_188.yaml"
     "msonet_specificHumidity_188.yaml"
     "msonet_stationPressure_188.yaml"
-    "msonet_uv_288.yaml"
+    "msonet_winds_288.yaml"
 )
 
 # Define ATMS observation type configs as an array
@@ -57,7 +57,7 @@ process_obtypes() {
     local obtype_configs=("${!2}")  # Accept array as input
     local obs_filename="$3"
     local temp_yaml="$4"
-
+    
     # Determine the ctest type to select the observation distribution
     if [[ $ctest == *"solver"* ]]; then
         distribution="Halo"
@@ -71,13 +71,13 @@ process_obtypes() {
         cat ./templates/obtype_config/$obtype_config >> ./$temp_yaml
 
         # For EnKF solver ctests, replace obsfile path with output from corresponding observer ctest
-	if [[ $ctest == *"solver"* ]]; then 
-	   previous_path=`sed -n '/obsdataout/{n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$obtype_config`
-   	   int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest::-5}\//gI")
-	   new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
-	   obs_filename=${new_path}
+        if [[ $ctest == *"solver"* ]]; then
+           previous_path=`sed -n '/obsdataout/{n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$obtype_config`
+           int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest::-5}\//gI")
+           new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
+           obs_filename=${new_path}
            sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
-	fi 
+        fi
 
     done
 
@@ -87,7 +87,7 @@ process_obtypes() {
     sed -i "s#@DISTRIBUTION@#${distribution}#" ./$temp_yaml
 }
 
-# Loop over basic config yamls 
+# Loop over basic config yamls
 iconfig=0
 for basic_config in "${basic_configs[@]}"; do
 
@@ -99,11 +99,11 @@ for basic_config in "${basic_configs[@]}"; do
   rm -f $temp_yaml  # Remove any existing file
 
   # Concatenate all obtypes into the super yaml
-  process_obtypes "${ctest_names[$iconfig]}" "aircar_obtype_configs[@]" "data/obs_ctest/ioda_aircar_dc.nc"          "$temp_yaml"
-  process_obtypes "${ctest_names[$iconfig]}" "aircft_obtype_configs[@]" "data/obs_ctest/ioda_aircft_dc.nc"          "$temp_yaml"
-  process_obtypes "${ctest_names[$iconfig]}" "msonet_obtype_configs[@]" "data/obs_ctest/ioda_msonet_dc.nc"          "$temp_yaml"
-  process_obtypes "${ctest_names[$iconfig]}" "atms_obtype_configs[@]"   "data/obs_ctest/atms_npp_obs_2024052700.nc" "$temp_yaml"
-  process_obtypes "${ctest_names[$iconfig]}" "amsua_obtype_configs[@]"  "data/obs_ctest/ioda_amsua_n19_dc.nc"      "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "aircar_obtype_configs[@]" "Data/obs/ioda_aircar_dc.nc"             "$temp_yaml"
+  #process_obtypes "${ctest_names[$iconfig]}" "aircft_obtype_configs[@]" "Data/obs/ioda_aircft_dc.nc"             "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "msonet_obtype_configs[@]" "Data/obs/ioda_msonet_dc.nc"             "$temp_yaml"
+  process_obtypes "${ctest_names[$iconfig]}" "atms_obtype_configs[@]"   "Data/obs/atms_npp_obs_2024052700_dc.nc" "$temp_yaml"
+  #process_obtypes "${ctest_names[$iconfig]}" "amsua_obtype_configs[@]"  "Data/obs/ioda_amsua_n19_dc.nc"      "$temp_yaml"
 
   # Copy the basic configuration yaml into the super yaml
   cp -p templates/basic_config/$basic_config ./$conv_yaml
@@ -115,7 +115,7 @@ for basic_config in "${basic_configs[@]}"; do
   }' ./$conv_yaml
 
   # Replace the @OBSFILE@ placeholder with a dummy filename (can customize as needed)
-  sed -i "s#@OBSFILE@#data/obs_ctest/combined_obs_file.nc#" ./$conv_yaml
+  sed -i "s#@OBSFILE@#Data/obs/combined_obs_file.nc#" ./$conv_yaml
 
   echo "Super YAML created in ${conv_yaml}"
 

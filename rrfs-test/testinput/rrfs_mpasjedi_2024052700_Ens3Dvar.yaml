@@ -75,7 +75,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircar_dc.nc"
+             obsfile: "data/obs/ioda_aircar_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -223,7 +223,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircar_dc.nc"
+             obsfile: "data/obs/ioda_aircar_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -452,7 +452,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircar_dc.nc"
+             obsfile: "data/obs/ioda_aircar_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -612,7 +612,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -760,7 +760,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -908,7 +908,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1056,7 +1056,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1204,7 +1204,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1364,7 +1364,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1593,7 +1593,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1822,7 +1822,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2051,7 +2051,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2280,7 +2280,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_msonet_dc.nc"
+             obsfile: "data/obs/ioda_msonet_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2423,7 +2423,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_msonet_dc.nc"
+             obsfile: "data/obs/ioda_msonet_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2567,7 +2567,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_msonet_dc.nc"
+             obsfile: "data/obs/ioda_msonet_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2708,7 +2708,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/ioda_msonet_dc.nc"
+             obsfile: "data/obs/ioda_msonet_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2925,7 +2925,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs_ctest/atms_npp_obs_2024052700.nc"
+             obsfile: "data/obs/atms_npp_obs_2024052700_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2949,14 +2949,14 @@ cost function:
            lengthscale: 300e3 # orig
 
        obs bias:
-         input file:  data/obs_ctest/atms_npp.satbias.nc4
+         input file:  data/obs/atms_npp.satbias.nc4
          output file: ./out_atms_npp.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &atms_npp_tlapse  data/obs_ctest/atms_npp.tlapse.txt
+             tlapse: &atms_npp_tlapse  data/obs/atms_npp.tlapse.txt
            - name: lapseRate
              tlapse: *atms_npp_tlapse
            - name: emissivityJacobian
@@ -2973,7 +2973,7 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs_ctest/atms_npp.satbias_cov.nc4
+             input file: data/obs/atms_npp.satbias_cov.nc4
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
