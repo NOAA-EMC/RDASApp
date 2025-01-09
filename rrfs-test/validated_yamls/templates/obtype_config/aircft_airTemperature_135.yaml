@@ -204,7 +204,7 @@
            min_spacing: PT90M
            seed_time: "2024-05-27T00:00:00Z"
            category_variable:
-             name: "MetaData/longitude_latitude_pressure"
+             name: MetaData/longitude_latitude_pressure
            defer to post: true
 
          #- filter: GOMsaver
