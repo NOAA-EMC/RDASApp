@@ -57,8 +57,8 @@
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
-               minvalue: -360
-               maxvalue:  360
+               minvalue: -900
+               maxvalue:  900
 
          # Online domain check
          - filter: Bounds Check
@@ -85,7 +85,7 @@
                  xvar:
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
-                 errors: [0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07] 
+                 errors: [0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07]
 
          # Error inflation based on pressure check (setupq.f90)
          - filter: Perform Action
@@ -203,7 +203,7 @@
          # Duplicate Check
          - filter: Temporal Thinning
            apply at iterations: 0,1
-           min_spacing: PT06M
+           min_spacing: PT15M
            seed_time: *analysisDate
            category_variable:
              name: MetaData/stationIdentification
