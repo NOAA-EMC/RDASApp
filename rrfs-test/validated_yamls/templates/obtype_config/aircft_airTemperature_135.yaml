@@ -2,7 +2,7 @@
          name: aircft_airTemperature_135
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -50,6 +50,8 @@
              is_in: 135
            - variable: QualityMarker/airTemperature
              is_in: 4-15
+           action:
+             name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
@@ -59,6 +61,8 @@
                  name: MetaData/timeOffset # units: s
                minvalue: -5400
                maxvalue:  5400
+           action:
+             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -108,6 +112,8 @@
            - name: airTemperature
            minvalue: 100
            maxvalue: 400
+           action:
+             name: reduce obs space
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment

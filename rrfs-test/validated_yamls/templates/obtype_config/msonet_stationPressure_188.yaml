@@ -2,7 +2,7 @@
          name: msonet_stationPressure_188
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -44,6 +44,8 @@
              is_in: 188
            - variable: QualityMarker/stationPressure
              is_in: 4-15
+           action:
+             name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
@@ -53,6 +55,8 @@
                  name: MetaData/timeOffset # units: s
                minvalue: -900
                maxvalue:  900
+           action:
+             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -102,6 +106,8 @@
            - name: stationPressure
            minvalue: 20000.0
            maxvalue: 120000.0
+           action:
+             name: reduce obs space
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
@@ -200,6 +206,8 @@
            category_variable:
              name: MetaData/stationIdentification
            defer to post: true
+           action:
+             name: reduce obs space
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc4
