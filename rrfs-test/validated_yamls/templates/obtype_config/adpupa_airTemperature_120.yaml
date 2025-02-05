@@ -73,6 +73,14 @@
            minvalue: 0.0
            maxvalue: 0.5
 
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           min_spacing: PT90M
+           seed_time: "2024-05-27T00:00:00Z"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+
          # Initial error assignment
          - filter: Perform Action
            filter variables:
