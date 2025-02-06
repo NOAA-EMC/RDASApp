@@ -23,9 +23,7 @@
          simulated variables: [airTemperature]
 
        obs operator:
-         name: Composite
-         components:
-         - name: VertInterp
+           name: VertInterp
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
@@ -35,6 +33,9 @@
            #  levels_are_top_down: False
            variables:
            - name: airTemperature
+
+       linear obs operator:
+         name: VertInterp
 
        obs error:
          covariance model: diagonal
@@ -78,7 +79,7 @@
            category_variable:
              name: MetaData/longitude_latitude_pressure
 
-         # Online domain check
+         # Online regional domain check
          - filter: Bounds Check
            filter variables:
            - name: airTemperature
