@@ -24,9 +24,7 @@
          simulated variables: [windEastward, windNorthward]
 
        obs operator:
-         name: Composite
-         components:
-         - name: VertInterp
+           name: VertInterp
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
@@ -37,9 +35,6 @@
            variables:
            - name: windEastward
            - name: windNorthward
-
-       linear obs operator:
-         name: Identity
 
        obs error:
          covariance model: diagonal
@@ -88,8 +83,8 @@
            seed_time: "2024-05-27T00:00:00Z"
            category_variable:
              name: MetaData/longitude_latitude_pressure
-           #action:
-           #  name: reduce obs space
+           action:
+             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
