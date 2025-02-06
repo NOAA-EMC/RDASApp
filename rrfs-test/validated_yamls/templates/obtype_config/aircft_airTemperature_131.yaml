@@ -69,6 +69,14 @@
            minvalue: 0.0
            maxvalue: 0.5
 
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           min_spacing: PT90M
+           seed_time: "2024-05-27T00:00:00Z"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+
          # Initial error assignment
          - filter: Perform Action
            filter variables:
@@ -85,6 +93,7 @@
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [1.3385, 1.219, 1.0515, 0.8746, 0.73725, 0.66965, 0.66362, 0.66525, 0.65262, 0.63131, 0.59435, 0.54816, 0.51139, 0.49975, 0.51952, 0.59104, 0.71862, 0.85608, 0.95397, 1.0002, 1.0124, 1.0103, 1.0055, 1.0021, 1.0005, 1.0, 0.9999, 0.99991, 0.99994, 1.0, 1.0002, 0.99994, 0.99744]
+
          # Error inflation based on pressure check (setupt.f90)
          - filter: Perform Action
            filter variables:
