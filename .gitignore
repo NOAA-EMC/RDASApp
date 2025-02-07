@@ -160,3 +160,6 @@ install*/
 expr
 fix/INIT_DONE
 fix/.agent
+
+# Ignore the rrfs-test testinput directory since yamls are build with RDASApp
+rrfs-test/testinput
