@@ -17,9 +17,9 @@ add_to_dict() {
 # Dictionary to define the basic configuration yamls and the ctest output names
 declare -A ctest_configs
 keys_ctest=()
-add_to_dict ctest_configs keys_ctest "mpasjedi_en3dvar.yaml"        "rrfs_mpasjedi_2024052700_Ens3Dvar.yaml" 
-add_to_dict ctest_configs keys_ctest "mpasjedi_getkf_observer.yaml" "rrfs_mpasjedi_2024052700_getkf_observer.yaml" 
-add_to_dict ctest_configs keys_ctest "mpasjedi_getkf_solver.yaml"   "rrfs_mpasjedi_2024052700_getkf_solver.yaml" 
+add_to_dict ctest_configs keys_ctest "mpasjedi_en3dvar.yaml"        "rrfs_mpasjedi_2024052700_Ens3Dvar.yaml"
+add_to_dict ctest_configs keys_ctest "mpasjedi_getkf_observer.yaml" "rrfs_mpasjedi_2024052700_getkf_observer.yaml"
+add_to_dict ctest_configs keys_ctest "mpasjedi_getkf_solver.yaml"   "rrfs_mpasjedi_2024052700_getkf_solver.yaml"
 
 
 ########################################################
@@ -89,13 +89,13 @@ process_obtypes() {
            int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest::-5}\//gI")
            new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
            obs_filename=${new_path}
-           sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
-        fi
+	fi 
+        sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
 
     done
 
     # Replace the @OBSFILE@ placeholder with the appropriate observation file (if it hasn't been done already)
-    sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
+    #sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
     # Replace the @DISTRIBUTION@ placeholder with the appropriate observation distribution
     sed -i "s#@DISTRIBUTION@#${distribution}#" ./$temp_yaml
 }

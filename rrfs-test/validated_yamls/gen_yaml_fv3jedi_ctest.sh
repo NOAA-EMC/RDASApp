@@ -89,13 +89,13 @@ process_obtypes() {
            int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest::-5}\//gI")
            new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
            obs_filename=${new_path}
-           sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
-        fi
+	fi 
+        sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
 
     done
 
     # Replace the @OBSFILE@ placeholder with the appropriate observation file (if it hasn't been done already)
-    sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
+    #sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
     # Replace the @DISTRIBUTION@ placeholder with the appropriate observation distribution
     sed -i "s#@DISTRIBUTION@#${distribution}#" ./$temp_yaml
 }
