@@ -27,15 +27,12 @@ cp -rp ${RDASApp}/fix/stream_list/* stream_list/
 cp ${RDASApp}/sorc/mpas-jedi/test/testinput/obsop_name_map.yaml .
 cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/keptvars.yaml .
 cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/geovars.yaml .
-cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_bumploc.yaml ./bumploc.yaml
-cp ${RDASApp}/rrfs-test/testinput_expr/namelist.atmosphere .
-cp ${RDASApp}/rrfs-test/testinput_expr/streams.atmosphere .
-cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
-cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_Hybrid.yaml .
-cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_letkf.yaml .
-cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_getkf.yaml .
-cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_getkf_observer.yaml .
-cp ${RDASApp}/rrfs-test/testinput_expr/rrfs_mpasjedi_2024052700_getkf_solver.yaml .
+cp ${RDASApp}/rrfs-test/testinput/namelist.atmosphere .
+cp ${RDASApp}/rrfs-test/testinput/streams.atmosphere .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_observer.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_solver.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_bumploc.yaml ./bumploc.yaml
 if [[ "${exprname}" == "atl_2024052700" ]]; then
   sed -i -e "s/conus12km_mpas.graph/atl12km.graph/" ./namelist.atmosphere
   sed -i -e "s/conus12km-401km11levels/atl12km-401km11levels/" ./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
