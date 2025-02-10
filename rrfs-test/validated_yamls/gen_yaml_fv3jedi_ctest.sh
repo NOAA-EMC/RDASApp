@@ -31,7 +31,7 @@ declare -A obtype_configs
 keys_obtype=()
 add_to_dict obtype_configs keys_obtype "aircar_airTemperature_133.yaml"    "data/obs/ioda_aircar_dc.nc"
 add_to_dict obtype_configs keys_obtype "aircar_specificHumidity_133.yaml"  "data/obs/ioda_aircar_dc.nc"
-add_to_dict obtype_configs keys_obtype "aircar_winds_233.yaml"             "data/obs/ioda_aircar_dc"
+add_to_dict obtype_configs keys_obtype "aircar_winds_233.yaml"             "data/obs/ioda_aircar_dc.nc"
 add_to_dict obtype_configs keys_obtype "aircft_airTemperature_130.yaml"    "data/obs/ioda_aircft_dc.nc"
 add_to_dict obtype_configs keys_obtype "aircft_airTemperature_131.yaml"    "data/obs/ioda_aircft_dc.nc"
 add_to_dict obtype_configs keys_obtype "aircft_airTemperature_134.yaml"    "data/obs/ioda_aircft_dc.nc"
@@ -54,8 +54,8 @@ add_to_dict obtype_configs keys_obtype "adpupa_specificHumidity_120.yaml"  "data
 add_to_dict obtype_configs keys_obtype "adpupa_winds_220.yaml"             "data/obs/ioda_adpupa_dc.nc"
 add_to_dict obtype_configs keys_obtype "vadwnd_winds_224.yaml"             "data/obs/ioda_vadwnd_dc.nc" 
 add_to_dict obtype_configs keys_obtype "atms_npp_qc_bc.yaml"               "data/obs/atms_npp_obs_2024052700_dc.nc"
-#add_to_dict obtype_configs keys_obtype "atms_n20.yaml"                     "data/obs/ioda_atms_n20.nc" # file missing?
-add_to_dict obtype_configs keys_obtype "amsua_n19.yaml"                    "data/obs/amsua_n19_obs.2024052700_dc.nc" 
+#add_to_dict obtype_configs keys_obtype "atms_n20.yaml"                     "data/obs/ioda_atms_n20.nc" # missing obs, bias files 
+#add_to_dict obtype_configs keys_obtype "amsua_n19.yaml"                    "data/obs/amsua_n19_obs.2024052700_dc.nc"  # missing bias files 
 
 
 #############################
@@ -90,12 +90,12 @@ process_obtypes() {
            new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
            obs_filename=${new_path}
 	fi 
+
+        # Replace the @OBSFILE@ placeholder with the appropriate observation file 
         sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
 
     done
 
-    # Replace the @OBSFILE@ placeholder with the appropriate observation file (if it hasn't been done already)
-    #sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
     # Replace the @DISTRIBUTION@ placeholder with the appropriate observation distribution
     sed -i "s#@DISTRIBUTION@#${distribution}#" ./$temp_yaml
 }
