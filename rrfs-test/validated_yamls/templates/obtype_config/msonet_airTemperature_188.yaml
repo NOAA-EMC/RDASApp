@@ -69,6 +69,14 @@
            minvalue: 0.0
            maxvalue: 0.5
 
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           min_spacing: PT90M
+           seed_time: "2024-05-27T00:00:00Z"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+
          # Initial error assignment
          - filter: Perform Action
            filter variables:
@@ -196,15 +204,6 @@
            - variable:
                name: TempObsErrorData/airTemperature
              value: is_valid
-           defer to post: true
-
-         # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           min_spacing: PT15M
-           seed_time: *analysisDate
-           category_variable:
-             name: MetaData/stationIdentification
            defer to post: true
 
          #- filter: GOMsaver
