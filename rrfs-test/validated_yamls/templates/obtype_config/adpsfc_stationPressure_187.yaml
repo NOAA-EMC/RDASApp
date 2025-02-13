@@ -2,7 +2,7 @@
          name: adpsfc_stationPressure_187
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -163,6 +163,8 @@
            test variables:
            - name:  ObsErrorData/stationPressure
            minvalue: 0.0
+           action:
+             name: reduce obs space
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
@@ -170,6 +172,8 @@
            - name: stationPressure
            minvalue: 20000.0
            maxvalue: 120000.0
+           action:
+             name: reduce obs space
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment

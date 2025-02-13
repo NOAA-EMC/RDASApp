@@ -1,0 +1,12 @@
+{
+    "data_format": "bufr_d",
+    "data_type": "satwnd",
+    "cycle_type": "rap",
+    "cycle_datetime": "{{ current_cycle | to_YMDH }}",
+    "dump_directory": "{{ DMPDIR }}",
+    "ioda_directory": "{{ COM_OBS }}",
+    "subsets": [ "NC005030", "NC005031", "NC005034" ],
+    "source": "NCEP data tank",
+    "data_provider": "U.S. NOAA",
+    "data_description": "SATWND GOES winds",
+}

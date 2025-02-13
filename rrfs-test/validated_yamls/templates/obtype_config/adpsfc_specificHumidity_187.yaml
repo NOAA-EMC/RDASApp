@@ -2,7 +2,7 @@
          name: adpsfc_specificHumidity_187
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -171,6 +171,8 @@
            test variables:
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
+           action:
+             name: reduce obs space
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
@@ -178,6 +180,8 @@
            - name: specificHumidity
            minvalue: 0.0
            maxvalue: 1.0
+           action:
+             name: reduce obs space
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment

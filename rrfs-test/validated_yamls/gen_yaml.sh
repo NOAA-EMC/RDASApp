@@ -12,7 +12,7 @@ distribution="RoundRobin"
 # Define the aircar observation type configs as an array
 aircar_obtype_configs=(
     "aircar_airTemperature_133.yaml"
-    "aircar_uv_233.yaml"
+    "aircar_winds_233.yaml"
     "aircar_specificHumidity_133.yaml"
 )
 
@@ -23,10 +23,10 @@ aircft_obtype_configs=(
     "aircft_airTemperature_134.yaml"
     "aircft_airTemperature_135.yaml"
     "aircft_specificHumidity_134.yaml"
-    "aircft_uv_230.yaml"
-    "aircft_uv_231.yaml"
-    "aircft_uv_234.yaml"
-    "aircft_uv_235.yaml"
+    "aircft_winds_230.yaml"
+    "aircft_winds_231.yaml"
+    "aircft_winds_234.yaml"
+    "aircft_winds_235.yaml"
 )
 
 # Define msonet observation type configs as an array

@@ -2,7 +2,7 @@
          name: aircft_airTemperature_135
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -169,6 +169,8 @@
            test variables:
            - name:  ObsErrorData/airTemperature
            minvalue: 0.0
+           action:
+             name: reduce obs space
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
@@ -176,6 +178,8 @@
            - name: airTemperature
            minvalue: 100
            maxvalue: 400
+           action:
+             name: reduce obs space
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment

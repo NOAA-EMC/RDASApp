@@ -2,7 +2,7 @@
          name: aircft_winds_235
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -213,6 +213,8 @@
            test variables:
            - name:  ObsErrorData/windEastward
            minvalue: 0.0
+           action:
+             name: reduce obs space
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
@@ -223,6 +225,8 @@
            maxvalue: 200
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          # Gross Error Check (windEastward)
          - filter: Background Check
