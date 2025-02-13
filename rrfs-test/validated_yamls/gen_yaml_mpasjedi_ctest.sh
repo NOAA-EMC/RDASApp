@@ -21,7 +21,6 @@ add_to_dict ctest_configs keys_ctest "mpasjedi_en3dvar.yaml"        "rrfs_mpasje
 add_to_dict ctest_configs keys_ctest "mpasjedi_getkf_observer.yaml" "rrfs_mpasjedi_2024052700_getkf_observer.yaml"
 add_to_dict ctest_configs keys_ctest "mpasjedi_getkf_solver.yaml"   "rrfs_mpasjedi_2024052700_getkf_solver.yaml"
 
-
 ########################################################
 ### Edit this section if adding more obs-space yamls ###
 ########################################################

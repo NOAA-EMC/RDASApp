@@ -2,7 +2,7 @@
          name: adpsfc_winds_287
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -56,6 +56,8 @@
            where:
            - variable: QualityMarker/windEastward
              is_in: 4-15
+           action:
+             name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
@@ -65,6 +67,8 @@
                name: MetaData/timeOffset
              minvalue: -900
              maxvalue:  900
+           action:
+             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -86,6 +90,8 @@
            seed_time: "2024-05-27T00:00:00Z"
            category_variable:
              name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
 
          # Initial error assignment
          - filter: Perform Action
@@ -151,6 +157,8 @@
            maxvalue: 130
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          # Gross Error Check (windEastward)
          - filter: Background Check

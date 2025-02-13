@@ -2,7 +2,7 @@
          name: aircft_winds_230
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -60,6 +60,8 @@
              is_in: 4-15
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
@@ -69,6 +71,8 @@
                  name: MetaData/timeOffset # units: s
                minvalue: -5400
                maxvalue:  5400
+           action:
+             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -90,6 +94,8 @@
            seed_time: "2024-05-27T00:00:00Z"
            category_variable:
              name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
 
          # Initial error assignment
          - filter: Perform Action
@@ -149,6 +155,8 @@
            maxvalue: 200
            action:
              name: reject
+           action:
+             name: reduce obs space
 
          # Gross Error Check (windEastward)
          - filter: Background Check

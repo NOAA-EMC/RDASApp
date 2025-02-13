@@ -21,7 +21,6 @@ add_to_dict ctest_configs keys_ctest "fv3jedi_en3dvar.yaml"        "rrfs_fv3jedi
 add_to_dict ctest_configs keys_ctest "fv3jedi_getkf_observer.yaml" "rrfs_fv3jedi_2024052700_getkf_observer.yaml" 
 add_to_dict ctest_configs keys_ctest "fv3jedi_getkf_solver.yaml"   "rrfs_fv3jedi_2024052700_getkf_solver.yaml" 
 
-
 ########################################################
 ### Edit this section if adding more obs-space yamls ###
 ########################################################
