@@ -92,7 +92,7 @@ if(BUILD_RDASBUNDLE)
 endif()
 
 if(MPAS_DYCORE)
-  set(MPAS_DOUBLE_PRECISION "OFF" CACHE STRING "MPAS-Model: Use double precision 64-bit Floating point.")
+  set(MPAS_DOUBLE_PRECISION "ON" CACHE STRING "MPAS-Model: Use double precision 64-bit Floating point.")
   set(MPAS_CORES init_atmosphere atmosphere CACHE STRING "MPAS-Model: cores to build.")
   ecbuild_bundle( PROJECT MPAS SOURCE "../sorc/mpas" )
   option(ENABLE_MPAS_JEDI_DATA "Obtain mpas-jedi test data from mpas-jedi-data repository (vs tarball)" ON)
