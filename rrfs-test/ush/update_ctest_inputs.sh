@@ -37,7 +37,7 @@ if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then
       ln -snf ${src_casedir}/DataFix ${casedir}/DataFix
       ln -snf ${src_casedir}/Data_static ${casedir}/Data_static
       ln -snf ${src_casedir}/INPUT ${casedir}/INPUT
-      ln -snf ${src_casedir}/Data ${casedir}/Data
+      ln -snf ${src_casedir}/data ${casedir}/data
       ln -snf ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput
       cp ${src_yaml}/${case}.yaml ${casedir}
    done
