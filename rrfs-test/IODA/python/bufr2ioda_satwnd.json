@@ -1,15 +1,12 @@
 {
-    "data_format": "satwnd",
-    "data_type": "GOES",
+    "data_format": "bufr_d",
+    "data_type": "satwnd",
     "cycle_type": "rap",
-    "cycle_datetime": "2024052700",
-    "dump_directory": "/scratch1/NCEPDEV/fv3-cam/Hui.Liu/OBS/amvobs/rap.20240527/",
-    "ioda_directory": "./work",
-    "subsets": [
-        "NC005030",
-        "NC005031",
-        "NC005034"
-    ],
-    "data_product": "Satellite winds",
-    "data_description": "AMVs from bufr satwnd"
+    "cycle_datetime": "{{ current_cycle | to_YMDH }}",
+    "dump_directory": "{{ DMPDIR }}",
+    "ioda_directory": "{{ COM_OBS }}",
+    "subsets": [ "NC005030", "NC005031", "NC005034" ],
+    "source": "NCEP data tank",
+    "data_provider": "U.S. NOAA",
+    "data_description": "SATWND GOES winds",
 }
