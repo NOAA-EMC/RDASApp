@@ -52,11 +52,11 @@ add_to_dict obtype_configs keys_obtype "adpsfc_winds_287.yaml"             "data
 add_to_dict obtype_configs keys_obtype "adpupa_airTemperature_120.yaml"    "data/obs/ioda_adpupa_dc.nc"
 add_to_dict obtype_configs keys_obtype "adpupa_specificHumidity_120.yaml"  "data/obs/ioda_adpupa_dc.nc"
 add_to_dict obtype_configs keys_obtype "adpupa_winds_220.yaml"             "data/obs/ioda_adpupa_dc.nc"
-add_to_dict obtype_configs keys_obtype "vadwnd_winds_224.yaml"             "data/obs/ioda_vadwnd_dc.nc" 
-add_to_dict obtype_configs keys_obtype "rassda_airTemperature_126.yaml"    "data/obs/ioda_rassda_dc.nc" 
+#add_to_dict obtype_configs keys_obtype "vadwnd_winds_224.yaml"             "data/obs/ioda_vadwnd_dc.nc"  # waiting for phase 3 
+#add_to_dict obtype_configs keys_obtype "rassda_airTemperature_126.yaml"    "data/obs/ioda_rassda_dc.nc"  # waiting for phase 3 
 add_to_dict obtype_configs keys_obtype "atms_npp_qc_bc.yaml"               "data/obs/atms_npp_obs_2024052700_dc.nc"
-#add_to_dict obtype_configs keys_obtype "atms_n20.yaml"                     "data/obs/ioda_atms_n20.nc" # missing obs, bias files 
-#add_to_dict obtype_configs keys_obtype "amsua_n19.yaml"                    "data/obs/amsua_n19_obs.2024052700_dc.nc"  # missing bias files 
+add_to_dict obtype_configs keys_obtype "atms_n20.yaml"                     "data/obs/atms_n20_obs_2024052700_dc.nc"
+add_to_dict obtype_configs keys_obtype "amsua_n19.yaml"                    "data/obs/amsua_n19_obs.2024052700_dc.nc"
 
 
 #############################
