@@ -272,4 +272,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/msonet_geovals_rrfs.nc4
+         #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc4
