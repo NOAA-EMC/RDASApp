@@ -92,6 +92,9 @@ case ${BUILD_TARGET} in
     ;;
 esac
 
+# tweak sorc/mpas/src/core_init_atmosphere/mpas_init_atm_cases.F to make building work
+sed -i -e "5549 s/.*/call mpas_log_write('Interpolating SOILM000')/" sorc/mpas/src/core_init_atmosphere/mpas_init_atm_cases.F
+
 # Set default number of build jobs based on machine
 if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nodes
   BUILD_JOBS=${BUILD_JOBS:-4}
