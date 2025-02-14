@@ -2,7 +2,7 @@
          name: rassda_airTemperature_126
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 100e3
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
