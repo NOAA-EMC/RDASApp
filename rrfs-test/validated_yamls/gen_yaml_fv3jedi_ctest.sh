@@ -81,7 +81,7 @@ process_obtypes() {
         obtype_config=$key
         obs_filename=${obtype_config_in[$key]}
         echo "   $obtype_config"
-        cat ./templates/obtype_config/$obtype_config >> ./$temp_yaml
+        cp ./templates/obtype_config/$obtype_config ./replace.yaml 
 
         # For EnKF solver ctests, replace obsfile path with output from corresponding observer ctest
         if [[ $ctest == *"solver"* ]]; then
@@ -92,7 +92,9 @@ process_obtypes() {
 	fi 
 
         # Replace the @OBSFILE@ placeholder with the appropriate observation file 
-        sed -i "s#@OBSFILE@#${obs_filename}#" ./$temp_yaml
+        sed -i "s#@OBSFILE@#${obs_filename}#" ./replace.yaml
+        cat ./replace.yaml >> ./$temp_yaml
+        rm ./replace.yaml
 
     done
 
@@ -122,9 +124,6 @@ for basic_config in "${!ctest_configs[@]}"; do
     r ./'"${temp_yaml}"'
     d
   }' ./$conv_yaml
-
-  # Replace the @OBSFILE@ placeholder with a dummy filename (can customize as needed)
-  sed -i "s#@OBSFILE@#data/obs/combined_obs_file.nc#" ./$conv_yaml
 
   # Move to testinput and remove the old temporary yaml
   echo "Super YAML created in ${conv_yaml}"
