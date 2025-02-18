@@ -6,9 +6,8 @@
          obsdatain:
            engine:
              type: H5File
-             #obsfile: "@OBSFILE@"
-             #obsfile: "obsout/sfc_uv_2024052700.nc4"
-             obsfile: "obsout/sfc_uv_obs_2024052700_dc.nc4"
+             obsfile: "@OBSFILE@"
+             #obsfile: "obsout/sfc_uv_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
