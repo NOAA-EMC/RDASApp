@@ -1,5 +1,5 @@
      - obs space:
-         name: msonet_stationPressure_188
+         name: p188=msonet_stationPressure_188
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -10,7 +10,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_msonet_stationPressure_188.nc4
+             obsfile: jdiag_p188.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
