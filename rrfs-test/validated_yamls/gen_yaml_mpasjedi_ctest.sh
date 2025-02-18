@@ -39,7 +39,7 @@ msonet_obtype_configs=(
     "msonet_airTemperature_188.yaml"
     "msonet_specificHumidity_188.yaml"
     "msonet_stationPressure_188.yaml"
-    "msonet_wind_288.yaml"
+    "msonet_winds_288.yaml"
 )
 
 # Define ATMS observation type configs as an array
