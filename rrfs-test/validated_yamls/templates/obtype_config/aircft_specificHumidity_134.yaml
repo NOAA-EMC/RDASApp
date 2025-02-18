@@ -1,5 +1,5 @@
      - obs space:
-         name: aircft_specificHumidity_134
+         name: q134=aircft_specificHumidity_134
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -10,7 +10,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_aircft_specificHumidity_134.nc4
+             obsfile: jdiag_q134.nc4
              allow overwrite: true
          io pool:
            max pool size: 1

@@ -1,5 +1,5 @@
      - obs space:
-         name: adpupa_specificHumidity_120
+         name: q120=adpupa_specificHumidity_120
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_adpupa_specificHumidity_120.nc4
+             obsfile: jdiag_q120.nc4
              allow overwrite: true
          io pool:
            max pool size: 1

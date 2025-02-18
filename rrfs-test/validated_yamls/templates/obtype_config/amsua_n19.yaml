@@ -1,15 +1,15 @@
      - obs space:
-         name: amsua_n19
+         name: amsua_n19=amsua_19
          distribution:
            name: "@DISTRIBUTION@"
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/amsua_n19_obs.2024052700.nc
+             obsfile: data/obs/amsua_n19_obs.2024052700.nc # todo: rrfs-workflow needs "data/obs/ioda_amsua_n19.nc"
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_amsua_n19.2024052700.nc4 
+             obsfile: jdiag_amsua_n19.nc4
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: &amsua_n19_channels 1-15

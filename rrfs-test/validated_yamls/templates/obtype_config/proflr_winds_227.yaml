@@ -1,14 +1,12 @@
      - obs space:
-         name: proflr_winds_227
+         name: uv227=proflr_winds_227
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "@OBSFILE@"
-             #obsfile: "obsout/windprof_obs_2024052700.nc4"
-             #obsfile: "obsout/windprof_obs_2024052700_dc.nc4"
+             obsfile: "@OBSFILE@" # todo: data/obs/ioda_proflr.nc
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -16,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_proflr_winds_227.nc4
+             obsfile: jdiag_uv227.nc4
              allow overwrite: true
          io pool:
            max pool size: 1

@@ -1,5 +1,5 @@
      - obs space:
-         name: atms_npp
+         name: atms_npp=atms_npp
          distribution:
            name: "@DISTRIBUTION@"
          obsdatain:

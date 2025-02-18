@@ -1,5 +1,5 @@
      - obs space:
-         name: aircft_airTemperature_131
+         name: t131=aircft_airTemperature_131
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -10,7 +10,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_aircft_airTemperature_131.nc4
+             obsfile: jdiag_t131.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
