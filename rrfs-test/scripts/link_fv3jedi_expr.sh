@@ -28,7 +28,6 @@ rm -rf Data; mkdir Data
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data/* Data/
 # link correct ioda files
 rm -rf Data/obs; mkdir  Data/obs
-set -x
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data/obs/* Data/obs/  # keep this line for now to be backward compatible
 for dcfile in Data/obs/ioda*dc.nc; do # link to DA runtime prescribed file names
   dcfile=${dcfile##*obs/}
