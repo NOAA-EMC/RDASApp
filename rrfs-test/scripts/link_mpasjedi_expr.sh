@@ -56,6 +56,7 @@ ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/mpasout.2024-05-27_00.00.00.nc 
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/invariant.nc invariant.nc
 # link the correct ioda files
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/  # keep this line for now to be backward compatible
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/ioda_msonet.nc obs/ioda_msonet_ctest.nc
 for dcfile in obs/ioda*dc.nc; do # link to DA runtime prescribed file names
   dcfile=${dcfile##obs/}
   regfile="${dcfile%%_dc.nc}.nc"
