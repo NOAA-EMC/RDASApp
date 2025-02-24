@@ -12,7 +12,7 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_Ens3Dvar"         
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf_observer"   "fv3jedi_letkf.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf_solver"     "fv3jedi_letkf.x")
 
-# MPAS-JEDI tests 
+# MPAS-JEDI tests
 set(rrfs_mpasjedi_tests)
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_Ens3Dvar"       "mpasjedi_variational.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_observer" "mpasjedi_enkf.x")
@@ -39,7 +39,11 @@ if(FV3_DYCORE)
          if("${MACHINE_ID}" STREQUAL "orion" OR "${MACHINE_ID}" STREQUAL "hercules")
             message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
             set(MPI_ARGS "${MPI_ARGS} --exclusive")
-         endif()   
+	 endif()
+	 if("${MACHINE_ID}" STREQUAL "hercules")
+            message(STATUS "Because MACHINE_ID is hercules, also need extra nodes" )
+            set(MPI_ARGS "${MPI_ARGS} --nodes=4")
+         endif()
          set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
 
          get_from_dictionary(rrfs_fv3jedi_tests case exe)
@@ -85,7 +89,11 @@ if(MPAS_DYCORE)
          if("${MACHINE_ID}" STREQUAL "orion" OR "${MACHINE_ID}" STREQUAL "hercules")
             message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
             set(MPI_ARGS "${MPI_ARGS} --exclusive")
-         endif()   
+         endif()
+	 if("${MACHINE_ID}" STREQUAL "hercules")
+            message(STATUS "Because MACHINE_ID is hercules, also need extra nodes" )
+            set(MPI_ARGS "${MPI_ARGS} --nodes=4")
+         endif()
          set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
 
 	 get_from_dictionary(rrfs_mpasjedi_tests case exe)
@@ -153,7 +161,7 @@ if(MPAS_DYCORE)
                                 netcdf
                                 "${CMAKE_BINARY_DIR}/bin/bufr2ioda.x ${case}.yaml"
                                 data/obs/ioda_msonet.nc
-                                ioda_msonet.nc 
+                                ioda_msonet.nc
 			        ${IODA_CONV_COMP_TOL}
                         DEPENDS bufr2ioda.x )
 
