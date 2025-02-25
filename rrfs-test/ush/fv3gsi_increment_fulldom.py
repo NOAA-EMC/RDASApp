@@ -39,7 +39,7 @@ jgrid = "fv3_grid_spec"
 
 # FOR VAR
 janalysis = "./fv3_dynvars" # 
-jbackgrnd = "Data/bkg/fv3_dynvars"
+jbackgrnd = "data/bkg/fv3_dynvars"
 diagfile = 'diag_conv_t_ges.2024052700'
 
 

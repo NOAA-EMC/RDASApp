@@ -1,12 +1,13 @@
      - obs space:
-         name: adpupa_specificHumidity_120
+         name: adpupa_stationPressure_120
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpupa.nc
+             obsfile: "@OBSFILE@"
+             #obsfile: "obsout/sondes_ps_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -14,27 +15,20 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_adpupa_specificHumidity_120.nc4
+             obsfile: jdiag_adpupa_stationPressure_120.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
-         observed variables: [specificHumidity]
-         simulated variables: [specificHumidity]
+         observed variables: [stationPressure]
+         simulated variables: [stationPressure]
 
        obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
-           #gsi geovals:
-           #  filename: "obsout/sondes_q_geoval_2022052619.nc4"
-           #  levels_are_top_down: False
-           variables:
-           - name: specificHumidity
-
+         name: SfcPCorrected
+         da_psfc_scheme: GSI
+         geovar_sfc_geomz: geopotential_height_at_surface
+         geovar_geomz: geopotential_height
        linear obs operator:
-         name: VertInterp
+         name: Identity
 
        obs error:
          covariance model: diagonal
@@ -45,15 +39,15 @@
 
        obs filters:
          # ------------------
-         # specificHumidity (120)
+         # stationPressure (120)
          # ------------------
          # Reject all obs with QualityMarker > 3
          - filter: Perform Action
            apply at iterations: 0,1
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            where:
-           - variable: QualityMarker/specificHumidity
+           - variable: QualityMarker/stationPressure
              is_in: 4-15
            action:
              name: reject
@@ -75,7 +69,7 @@
          - filter: Temporal Thinning
            apply at iterations: 0,1
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            min_spacing: PT90M
            tolerance: PT0H
            seed_time: "2024-05-27T00:00:00Z"
@@ -87,7 +81,7 @@
          # Online regional domain check
          - filter: Bounds Check
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            test variables:
            - name:  GeoVaLs/observable_domain_mask
            minvalue: 0.0
@@ -96,9 +90,9 @@
          # Initial error assignment
          - filter: Perform Action
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            where:
-           - variable: ObsType/specificHumidity
+           - variable: ObsType/stationPressure
              is_in: 120
            action:
              name: assign error
@@ -108,54 +102,53 @@
                  xvar:
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
-                 errors: [0.056103, 0.063026, 0.073388, 0.086305, 0.099672, 0.1121, 0.12347, 0.13337, 0.14214, 0.15031, 0.15641, 0.1594, 0.15962, 0.16026, 0.16419, 0.17154, 0.1798, 0.18754, 0.19339, 0.19701, 0.19887, 0.19966, 0.19993, 0.2, 0.2, 0.2, 0.19999, 0.19999, 0.19999, 0.20001, 0.20004, 0.19999, 0.19949]
+                 errors: [68.115, 68.115, 68.115, 71.307, 74.576, 77.845, 79.791, 81.737, 83.684, 92.441, 101.2, 108.99, 117.75, 128.44, 144.99, 158.58, 182.93, 247.16, 269.54, 315.28, 383.38, 489.46, 577.03, 577.03, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11]
 
-         # Error inflation based on pressure check (setupq.f90)
+         # Error inflation based on pressure check (setupps.f90)
          - filter: Perform Action
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            where:
-           - variable: ObsType/specificHumidity
+           - variable: ObsType/stationPressure
              is_in: 120
            action:
              name: inflate error
              inflation variable:
-               name: ObsFunction/ObsErrorFactorPressureCheck
+               name: ObsFunction/ObsErrorFactorSfcPressure
                options:
-                 variable: specificHumidity
-                 inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: true
+                 geovar_geomz: geopotential_height
+                 geovar_sfc_geomz: geopotential_height_at_surface
 
-         # Error inflation based on errormod (qcmod.f90)
-         - filter: Perform Action
-           filter variables:
-           - name: specificHumidity
-           where:
-           - variable: ObsType/specificHumidity
-             is_in: 120
-           action:
-             name: inflate error
-             inflation variable:
-               name: ObsFunction/ObsErrorFactorConventional
-               options:
-                 inflate variables: [specificHumidity]
-                 pressure: MetaData/pressure
+#         # Error inflation based on errormod (qcmod.f90)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: stationPressure
+#           where:
+#           - variable: ObsType/stationPressure
+#             is_in: 120
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorConventional
+#               options:
+#                 inflate variables: [stationPressure]
+#                 pressure: MetaData/pressure
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            action:
              name: inflate error
              inflation factor: 1.2
            where:
-           - variable: QualityMarker/specificHumidity
+           - variable: QualityMarker/stationPressure
              is_in: 3
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            action:
              name: inflate error
              inflation factor: 1.2
@@ -166,9 +159,9 @@
          # Bounds Check (ObsError)
          - filter: Bounds Check
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            test variables:
-           - name:  ObsErrorData/specificHumidity
+           - name:  ObsErrorData/stationPressure
            minvalue: 0.0
            action:
              name: reduce obs space
@@ -176,9 +169,9 @@
          # Bounds Check (ObsValue)
          - filter: Bounds Check
            filter variables:
-           - name: specificHumidity
-           minvalue: 0.0
-           maxvalue: 1.0
+           - name: stationPressure
+           minvalue: 20000.0
+           maxvalue: 120000.0
            action:
              name: reduce obs space
 
@@ -186,29 +179,29 @@
          - filter: Variable Assignment
            apply at iterations: 0,1
            assignments:
-           - name: TempObsErrorData/specificHumidity
+           - name: TempObsErrorData/stationPressure
              type: float
              function:
                name: ObsFunction/Arithmetic
                options:
                  variables:
-                 - name: ObsErrorData/specificHumidity
+                 - name: ObsErrorData/stationPressure
            defer to post: true
 
          # Set ObsError set "error parameter" if < "max value"
          - filter: Perform Action
            apply at iterations: 0,1
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            action:
              name: assign error
-             error parameter: 5.0
+             error parameter: 100.0
            where:
            - variable:
-               name: ObsErrorData/specificHumidity
-             maxvalue: 5.0
+               name: ObsErrorData/stationPressure
+             maxvalue: 100.0
            - variable:
-               name: ObsErrorData/specificHumidity
+               name: ObsErrorData/stationPressure
              value: is_valid
            defer to post: true
 
@@ -216,16 +209,16 @@
          - filter: Perform Action
            apply at iterations: 0,1
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            action:
              name: assign error
-             error parameter: 50.0
+             error parameter: 300.0
            where:
            - variable:
-               name: ObsErrorData/specificHumidity
-             minvalue: 50.0
+               name: ObsErrorData/stationPressure
+             minvalue: 300.0
            - variable:
-               name: ObsErrorData/specificHumidity
+               name: ObsErrorData/stationPressure
              value: is_valid
            defer to post: true
 
@@ -233,13 +226,13 @@
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
-           - name: specificHumidity
-           threshold: 7.0
+           - name: stationPressure
+           threshold: 4.0
            action:
              name: reject
            where:
-           - variable: ObsType/specificHumidity
-           - variable: QualityMarker/specificHumidity
+           - variable: ObsType/stationPressure
+           - variable: QualityMarker/stationPressure
              is_not_in: 3
            defer to post: true
 
@@ -247,13 +240,13 @@
          - filter: Background Check
            apply at iterations: 0,1
            filter variables:
-           - name: specificHumidity
-           threshold: 4.9
+           - name: stationPressure
+           threshold: 2.8
            action:
              name: reject
            where:
-           - variable: ObsType/specificHumidity
-           - variable: QualityMarker/specificHumidity
+           - variable: ObsType/stationPressure
+           - variable: QualityMarker/stationPressure
              is_in: 3
            defer to post: true
 
@@ -261,13 +254,13 @@
          - filter: Perform Action
            apply at iterations: 0,1
            filter variables:
-           - name: specificHumidity
+           - name: stationPressure
            action:
              name: assign error
-             error function: TempObsErrorData/specificHumidity
+             error function: TempObsErrorData/stationPressure
            where:
            - variable:
-               name: TempObsErrorData/specificHumidity
+               name: TempObsErrorData/stationPressure
              value: is_valid
            defer to post: true
 

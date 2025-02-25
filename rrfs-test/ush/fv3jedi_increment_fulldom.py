@@ -37,7 +37,7 @@ if variable == "airTemperature":
 
 # JEDI data
 datapath = "./"
-jgrid = f"{datapath}/Data/bkg/grid_spec.nc"
+jgrid = f"{datapath}/data/bkg/grid_spec.nc"
 
 # FOR LETKF 
 #janalysis = f"{datapath}/letkf-meanposterior-fv3_lam-C775.fv_core.res.nc" # 
@@ -45,7 +45,7 @@ jgrid = f"{datapath}/Data/bkg/grid_spec.nc"
 
 # FOR HYBRID (or ENVAR)
 janalysis = f"{datapath}/ens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
-jbackgrnd = f"{datapath}/Data/bkg/20240527.000000.fv_core.res.tile1.nc"
+jbackgrnd = f"{datapath}/data/bkg/20240527.000000.fv_core.res.tile1.nc"
 
 
 ###################################################################################
