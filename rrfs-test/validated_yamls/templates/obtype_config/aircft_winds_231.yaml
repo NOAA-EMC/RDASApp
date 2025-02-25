@@ -7,6 +7,10 @@
            engine:
              type: H5File
              obsfile: "@OBSFILE@"
+           obsgrouping:
+             group variables: ["stationIdentification"]
+             sort variable: "pressure"
+             sort order: "descending"
          obsdataout:
            engine:
              type: H5File
@@ -18,12 +22,7 @@
          simulated variables: [windEastward, windNorthward]
 
        obs operator:
-         name: Composite
-         components:
-         - name: VertInterp
-           #hofx_scaling: true
-           #hofx scaling field: wind_reduction_factor_at_10m
-           #hofx scaling field group: GeoVaLs
+           name: VertInterp
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
@@ -36,7 +35,7 @@
            - name: windNorthward
 
        linear obs operator:
-         name: Identity
+         name: VertInterp
 
        obs error:
          covariance model: diagonal
@@ -74,6 +73,20 @@
            action:
              name: reduce obs space
 
+         # Duplicate Check
+         - filter: Temporal Thinning
+           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           min_spacing: PT90M
+           tolerance: PT0H
+           seed_time: "2024-05-27T00:00:00Z"
+           category_variable:
+             name: MetaData/longitude_latitude_pressure
+           action:
+             name: reduce obs space
+
          # Online domain check
          - filter: Bounds Check
            filter variables:
@@ -83,19 +96,6 @@
            - name:  GeoVaLs/observable_domain_mask
            minvalue: 0.0
            maxvalue: 0.5
-
-         # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           seed_time: "2024-05-27T00:00:00Z"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           action:
-             name: reduce obs space
 
          # Initial error assignment
          - filter: Perform Action
@@ -145,9 +145,79 @@
                  variable: windNorthward
                  inflation factor: 4.0
 
-         # Bounds Check
+#         # Error inflation (windEastward) based on errormod (qcmod.f90)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: windEastward
+#           where:
+#           - variable: ObsType/windEastward
+#             is_in: 231
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorConventional
+#               options:
+#                 inflate variables: [windEastward]
+#                 test QCflag: QualityMarker
+#                 test QCthreshold: 3
+#                 distance threshold: 0
+#                 pressure: MetaData/pressure
+
+#         # Error inflation (windNorthward) based on errormod (qcmod.f90)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: windNorthward
+#           where:
+#           - variable: ObsType/windNorthward
+#             is_in: 231
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorConventional
+#               options:
+#                 inflate variables: [windNorthward]
+#                 test QCflag: QualityMarker
+#                 test QCthreshold: 3
+#                 distance threshold: 0
+#                 pressure: MetaData/pressure
+
+         # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: QualityMarker/windEastward
+             is_in: 3
+
+         # Error inflation when observation pressure < 50 hPa (read_prepbufr.f90)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: MetaData/pressure
+             maxvalue: 5000.0
+
+         # Bounds Check (ObsError)
          - filter: Bounds Check
-           apply at iterations: 0,1
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name:  ObsErrorData/windEastward
+           minvalue: 0.0
+           action:
+             name: reduce obs space
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
            filter variables:
            - name: windEastward
            - name: windNorthward
