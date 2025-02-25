@@ -125,14 +125,6 @@ for basic_config in "${!ctest_configs[@]}"; do
     d
   }' ./$conv_yaml
 
-<<<<<<< HEAD
-=======
-  # Replace the @OBSFILE@ placeholder with a dummy filename (can customize as needed)
-  sed -i "s#@OBSFILE@#data/obs/combined_obs_file.nc#" ./$conv_yaml
-
-  echo "Super YAML created in ${conv_yaml}"
-
->>>>>>> upstream/develop
   # Move to testinput and remove the old temporary yaml
   echo "Super YAML created in ${conv_yaml}"
   mv $conv_yaml ../testinput/$conv_yaml
