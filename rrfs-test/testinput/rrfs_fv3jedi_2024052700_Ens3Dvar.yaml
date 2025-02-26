@@ -10,7 +10,7 @@ cost function:
       namelist filename: DataFix/fmsmpp.nml
       field table filename: DataFix/field_table
     namelist filename: DataFix/input_lam_C775_NP16X10.nml
-    field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+    field metadata override: data/fieldmetadata/tlei-gfs-restart.yaml
     akbk: DataFix/fix/akbk66.nc
     # input.nml
     npz: 65
@@ -22,7 +22,7 @@ cost function:
   background:
     datetime: &analysisDate 2024-05-27T00:00:00Z
     filetype: fms restart
-    datapath: Data/bkg
+    datapath: data/bkg
     filename_core: 20240527.000000.fv_core.res.tile1.nc
     filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
     filename_sfcd: 20240527.000000.sfc_data.nc
@@ -36,7 +36,7 @@ cost function:
         datetime: 2024-05-27T00:00:00Z
         filetype: fms restart
         state variables: *3dvars
-        datapath: Data/inputs/mem%mem%/
+        datapath: data/inputs/mem%mem%/
         filename_core: 20240527.000000.fv_core.res.tile1.nc
         filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
         filename_sfcd: 20240527.000000.sfc_data.nc
@@ -68,7 +68,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircar_dc.nc"
+             obsfile: "data/obs/ioda_aircar_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -222,7 +222,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircar_dc.nc"
+             obsfile: "data/obs/ioda_aircar_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -457,7 +457,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircar_dc.nc"
+             obsfile: "data/obs/ioda_aircar_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -623,7 +623,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -777,7 +777,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -931,7 +931,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1085,7 +1085,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1239,7 +1239,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1405,7 +1405,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1640,7 +1640,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -1875,7 +1875,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2110,7 +2110,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_aircft_dc.nc"
+             obsfile: "data/obs/ioda_aircft_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2345,7 +2345,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_msonet_dc.nc"
+             obsfile: "data/obs/ioda_msonet_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2494,7 +2494,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_msonet_dc.nc"
+             obsfile: "data/obs/ioda_msonet_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2644,7 +2644,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_msonet_dc.nc"
+             obsfile: "data/obs/ioda_msonet_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -2791,7 +2791,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/ioda_msonet_dc.nc"
+             obsfile: "data/obs/ioda_msonet_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -3015,7 +3015,7 @@ cost function:
          obsdatain:
            engine:
              type: H5File
-             obsfile: "Data/obs/atms_npp_obs_2024052700_dc.nc"
+             obsfile: "data/obs/atms_npp_obs_2024052700_dc.nc"
          obsdataout:
            engine:
              type: H5File
@@ -3030,7 +3030,7 @@ cost function:
            obs options:
              Sensor_ID: atms_npp
              EndianType: little_endian
-             CoefficientPath: Data/crtm/
+             CoefficientPath: data/crtm/
              IRVISlandCoeff: IGBP
            linear obs operator:
              Absorbers: [H2O, O3]
@@ -3039,14 +3039,14 @@ cost function:
            lengthscale: 300e3 # orig
 
        obs bias:
-         input file:  Data/obs/atms_npp.satbias.nc4
+         input file:  data/obs/atms_npp.satbias.nc4
          output file: ./out_atms_npp.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &atms_npp_tlapse  Data/obs/atms_npp.tlapse.txt
+             tlapse: &atms_npp_tlapse  data/obs/atms_npp.tlapse.txt
            - name: lapseRate
              tlapse: *atms_npp_tlapse
            - name: emissivityJacobian
@@ -3063,7 +3063,7 @@ cost function:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: Data/obs/atms_npp.satbias_cov.nc4
+             input file: data/obs/atms_npp.satbias_cov.nc4
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
@@ -3603,9 +3603,9 @@ variational:
     geometry:
       fms initialization:
         namelist filename: DataFix/fmsmpp.nml
-        field table filename: DataFix/field_table
+        field table filename: dataFix/field_table
       namelist filename: DataFix/input_lam_C775_NP16X10.nml
-      field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+      field metadata override: data/fieldmetadata/tlei-gfs-restart.yaml
       akbk: DataFix/fix/akbk66.nc
       # input.nml
       npz: 65
@@ -3619,9 +3619,9 @@ variational:
     geometry:
       fms initialization:
         namelist filename: DataFix/fmsmpp.nml
-        field table filename: DataFix/field_table
+        field table filename: dataFix/field_table
       namelist filename: DataFix/input_lam_C775_NP16X10.nml
-      field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+      field metadata override: data/fieldmetadata/tlei-gfs-restart.yaml
       akbk: DataFix/fix/akbk66.nc
       # input.nml
       npz: 65

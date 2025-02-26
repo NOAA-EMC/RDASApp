@@ -34,9 +34,9 @@ if variable == "airTemperature":
 
 # JEDI data
 datapath = "./"
-jgrid = f"{datapath}/Data/bkg/grid_spec.nc"
+jgrid = f"{datapath}/data/bkg/grid_spec.nc"
 janalysis = f"{datapath}/ens3dvar-fv3_lam-C775.fv_core.res.nc" #Ens3dvar-fv3_lam-C775.fv_core.res.nc"
-jbackgrnd = f"{datapath}/Data/bkg/20240527.000000.fv_core.res.tile1.nc"
+jbackgrnd = f"{datapath}/data/bkg/20240527.000000.fv_core.res.tile1.nc"
 jdiag = f"{datapath}/jdiag_{singleob_type}_2024052700.nc4"
 
 ###################################################################################

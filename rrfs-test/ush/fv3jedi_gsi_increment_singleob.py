@@ -52,16 +52,16 @@ obtype = args.obtype
 # JEDI data
 datapath = "./"
 janalysis = f"{datapath}/hybens3dvar-fv3_lam-C775.fv_core.res.nc"
-jbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars.nc"
-jgrid = f"{datapath}/Data/bkg/fv3_grid_spec.nc"
+jbackgrnd = f"{datapath}/data/bkg/fv3_dynvars.nc"
+jgrid = f"{datapath}/data/bkg/fv3_grid_spec.nc"
 #jdiag = f"{datapath}/jdiag_{singleob_type}_{variable}_2022052619.nc4"
 jdiag = f"{datapath}/{jdiag}"
 
 #GSI data
 datapath = "../gsi_2022052619/"
 ganalysis = f"{datapath}/fv3_dynvars"
-gbackgrnd = f"{datapath}/Data/bkg/fv3_dynvars"
-ggrid = f"{datapath}/Data/bkg/fv3_grid_spec"
+gbackgrnd = f"{datapath}/data/bkg/fv3_dynvars"
+ggrid = f"{datapath}/data/bkg/fv3_grid_spec"
 #gdiag = f"{datapath}/{singleob_type}.conv_{obtype}_01.nc4"
 #gdiag = f"{datapath}/diags-single/diag_conv_t_ges.2022052619"
 #gdiag = f"{datapath}/diags-full/diag_conv_t_ges.2022052619"

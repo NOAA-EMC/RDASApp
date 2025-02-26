@@ -10,7 +10,7 @@ cost function:
       namelist filename: DataFix/fmsmpp.nml
       field table filename: DataFix/field_table
     namelist filename: DataFix/input_lam_C775.nml
-    field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+    field metadata override: data/fieldmetadata/tlei-gfs-restart.yaml
     akbk: DataFix/fix/akbk61.nc
     # input.nml
     npz: 60
@@ -21,7 +21,7 @@ cost function:
   background:
     datetime: 2022-05-26T19:00:00Z
     filetype: fms restart
-    datapath: Data/bkg
+    datapath: data/bkg
     filename_core: fv3_dynvars.nc
     filename_trcr: fv3_tracer.nc
     filename_sfcd: fv3_sfcdata.nc
@@ -72,7 +72,7 @@ cost function:
             datetime: 2022-05-26T19:00:00Z
             filetype: fms restart
             state variables: *3dvars
-            datapath: Data/inputs/memMEM/
+            datapath: data/inputs/memMEM/
             filename_core: 20220526.190000.fv_core.res.tile1.nc
             filename_trcr: 20220526.190000.fv_tracer.res.tile1.nc
             filename_sfcd: 20220526.190000.sfc_data.nc
@@ -114,7 +114,7 @@ variational:
         namelist filename: DataFix/fmsmpp.nml
         field table filename: DataFix/field_table
       namelist filename: DataFix/input_lam_C775.nml
-      field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+      field metadata override: data/fieldmetadata/tlei-gfs-restart.yaml
       akbk: DataFix/fix/akbk61.nc
       # input.nml
       npz: 60
@@ -130,7 +130,7 @@ variational:
         namelist filename: DataFix/fmsmpp.nml
         field table filename: DataFix/field_table
       namelist filename: DataFix/input_lam_C775.nml
-      field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+      field metadata override: data/fieldmetadata/tlei-gfs-restart.yaml
       akbk: DataFix/fix/akbk61.nc
       # input.nml
       npz: 60

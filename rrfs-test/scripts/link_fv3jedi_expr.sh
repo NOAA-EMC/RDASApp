@@ -24,7 +24,7 @@ sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_
 cp ${RDASApp}/rrfs-test/ush/colormap.py . 
 cp ${RDASApp}/rrfs-test/ush/fv3jedi_increment_singleob.py .
 cp ${RDASApp}/rrfs-test/ush/fv3jedi_increment_fulldom.py . 
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data Data
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/data data
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/DataFix DataFix
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data_static Data_static
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/INPUT INPUT

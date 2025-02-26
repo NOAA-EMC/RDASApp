@@ -163,9 +163,16 @@
            - variable: MetaData/pressure
              maxvalue: 10000.0
 
-         # Bounds Check
+         # Bounds Check (ObsError)
          - filter: Bounds Check
-           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           test variables:
+           - name:  ObsErrorData/airTemperature
+           minvalue: 0.0
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
            filter variables:
            - name: airTemperature
            minvalue: 100
