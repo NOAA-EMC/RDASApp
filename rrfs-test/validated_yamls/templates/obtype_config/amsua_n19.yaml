@@ -5,7 +5,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/amsua_n19_obs.2024052700.nc
+             obsfile: data/obs/ioda_amsua_n19.nc
          obsdataout:
            engine:
              type: H5File

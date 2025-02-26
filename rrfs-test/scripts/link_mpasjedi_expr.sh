@@ -54,7 +54,18 @@ ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/${BUMPLOC}
 ln -snf ${RDASApp}/fix/B_static/L55_20241204 B_static
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/mpasout.2024-05-27_00.00.00.nc .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/invariant.nc invariant.nc
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/
+# link the correct ioda files
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/  # keep this line for now to be backward compatible
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/ioda_msonet.nc obs/ioda_msonet_ctest.nc
+for dcfile in obs/ioda*dc.nc; do # link to DA runtime prescribed file names
+  dcfile=${dcfile##obs/}
+  regfile="${dcfile%%_dc.nc}.nc"
+  ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/${dcfile} obs/${regfile}
+done
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/amsua_n19_obs.2024052700_dc.nc obs/ioda_amsua_n19.nc
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/atms_n20_obs_2024052700_dc.nc obs/ioda_atms_n20.nc
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/atms_npp_obs_2024052700_dc.nc  obs/ioda_atms_npp.nc
+#
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/ens/* ens/
 ln -snf ${RDASApp}/fix/crtm/2.4.0 crtm
 

@@ -6,9 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: "@OBSFILE@"
-             #obsfile: "obsout/windprof_obs_2024052700.nc4"
-             #obsfile: "obsout/windprof_obs_2024052700_dc.nc4"
+             obsfile: data/obs/ioda_proflr.nc
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"

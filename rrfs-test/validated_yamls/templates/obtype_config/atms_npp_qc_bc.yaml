@@ -6,11 +6,11 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: "@OBSFILE@"
+             obsfile: data/obs/ioda_atms_npp.nc
          obsdataout:
            engine:
              type: H5File
-             obsfile: rass_atms_obs_2024052700.nc4
+             obsfile: jdiag_atms_npp.nc4
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: &atms_npp_channels 1-22
