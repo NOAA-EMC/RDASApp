@@ -6,7 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: "@OBSFILE@"
+             obsfile: data/obs/ioda_aircft.nc
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
