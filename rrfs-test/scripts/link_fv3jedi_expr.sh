@@ -24,19 +24,19 @@ sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_
 cp ${RDASApp}/rrfs-test/ush/colormap.py . 
 cp ${RDASApp}/rrfs-test/ush/fv3jedi_increment_singleob.py .
 cp ${RDASApp}/rrfs-test/ush/fv3jedi_increment_fulldom.py . 
-rm -rf Data; mkdir Data
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data/* Data/
+rm -rf data; mkdir data
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/* data/
 # link correct ioda files
-rm -rf Data/obs; mkdir  Data/obs
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data/obs/* Data/obs/  # keep this line for now to be backward compatible
-for dcfile in Data/obs/ioda*dc.nc; do # link to DA runtime prescribed file names
+rm -rf data/obs; mkdir  data/obs
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/obs/* data/obs/  # keep this line for now to be backward compatible
+for dcfile in data/obs/ioda*dc.nc; do # link to DA runtime prescribed file names
   dcfile=${dcfile##*obs/}
   regfile="${dcfile%%_dc.nc}.nc"
-  ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data/obs/${dcfile} Data/obs/${regfile}
+  ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/obs/${dcfile} data/obs/${regfile}
 done
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data/obs/amsua_n19_obs.2024052700_dc.nc Data/obs/ioda_amsua_n19.nc
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data/obs/atms_n20_obs_2024052700_dc.nc Data/obs/ioda_atms_n20.nc
-ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data/obs/atms_npp_obs_2024052700_dc.nc  Data/obs/ioda_atms_npp.nc
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/obs/amsua_n19_obs.2024052700_dc.nc data/obs/ioda_amsua_n19.nc
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/obs/atms_n20_obs_2024052700_dc.nc data/obs/ioda_atms_n20.nc
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/obs/atms_npp_obs_2024052700_dc.nc  data/obs/ioda_atms_npp.nc
 #
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/DataFix DataFix
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data_static Data_static
