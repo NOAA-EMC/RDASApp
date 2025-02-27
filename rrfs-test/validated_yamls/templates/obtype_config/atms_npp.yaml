@@ -5,7 +5,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: "@OBSFILE@"
+             obsfile: data/obs/ioda_atms_npp.nc
          obsdataout:
            engine:
              type: H5File
