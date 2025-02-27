@@ -145,14 +145,14 @@ fi
 # Link in test data for experiments: MPAS-JEDI
 if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
   # Link in case data
-  echo "Linking in test data and creating ctest yamls for MPAS-JEDI case"
+  echo "Linking in test data for MPAS-JEDI case"
   $dir_root/rrfs-test/scripts/link_mpasjedi_expr.sh
 fi
 
 # Link in test data for experiments: FV3-JEDI
 if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
   # Link in case data
-  echo "Linking in test data and creating ctest yamls for FV3-JEDI case"
+  echo "Linking in test data for FV3-JEDI case"
   $dir_root/rrfs-test/scripts/link_fv3jedi_expr.sh
 fi
 
