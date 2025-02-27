@@ -1,5 +1,5 @@
      - obs space:
-         name: uv231=aircft_winds_231
+         name: aircft_uv231
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_uv213.nc4
+             obsfile: jdiag_aircft_uv231.nc4
              allow overwrite: true
          io pool:
            max pool size: 1

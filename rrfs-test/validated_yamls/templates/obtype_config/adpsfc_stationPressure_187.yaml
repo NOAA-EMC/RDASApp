@@ -1,5 +1,5 @@
      - obs space:
-         name: p187=adpsfc_stationPressure_187
+         name: adpsfc_p187
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_p187.nc4
+             obsfile: jdiag_adpsfc_p187.nc4
              allow overwrite: true
          io pool:
            max pool size: 1

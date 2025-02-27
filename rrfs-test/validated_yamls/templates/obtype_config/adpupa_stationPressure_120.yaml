@@ -1,13 +1,12 @@
      - obs space:
-         name: adpupa_stationPressure_120
+         name: adpupa_ps120
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: "@OBSFILE@"
-             #obsfile: "obsout/sondes_ps_obs_2024052700_dc.nc4"
+             obsfile: data/obs/ioda_adpupa.nc
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -15,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_adpupa_stationPressure_120.nc4
+             obsfile: jdiag_adpupa_ps120.nc4
              allow overwrite: true
          io pool:
            max pool size: 1

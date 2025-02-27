@@ -1,5 +1,5 @@
      - obs space:
-         name: t126=rassda_airTemperature_126
+         name: rassda_t126
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 100e3
@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_t126.nc4
+             obsfile: jdiag_rassda_t126.nc4
              allow overwrite: true
          io pool:
            max pool size: 1

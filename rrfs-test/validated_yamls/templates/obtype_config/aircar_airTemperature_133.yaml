@@ -1,5 +1,5 @@
      - obs space:
-         name: t133=aircar_airTemperature_133
+         name: aircar_t133
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_t133.nc4
+             obsfile: jdiag_aircar_t133.nc4
              allow overwrite: true
          io pool:
            max pool size: 1

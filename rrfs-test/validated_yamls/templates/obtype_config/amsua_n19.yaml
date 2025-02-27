@@ -1,5 +1,5 @@
      - obs space:
-         name: amsua_n19=amsua_19
+         name: amsua_n19
          distribution:
            name: "@DISTRIBUTION@"
          obsdatain:

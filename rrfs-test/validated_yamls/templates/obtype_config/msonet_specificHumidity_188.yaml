@@ -1,5 +1,5 @@
      - obs space:
-         name: q188=msonet_specificHumidity_188
+         name: msonet_q188
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_q188.nc4
+             obsfile: jdiag_msonet_q188.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
