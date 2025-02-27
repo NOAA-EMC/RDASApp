@@ -7,7 +7,7 @@ geometry:
     namelist filename: DataFix/fmsmpp.nml
     field table filename: DataFix/field_table
   namelist filename: DataFix/input_lam_C775_NP16X10.nml
-  field metadata override: Data/fieldmetadata/tlei-gfs-restart.yaml
+  field metadata override: data/fieldmetadata/tlei-gfs-restart.yaml
   akbk: DataFix/fix/akbk66.nc
   # input.nml
   npz: 65
@@ -26,7 +26,7 @@ background:
         datetime: 2024-05-27T00:00:00Z
         filetype: fms restart
         state variables: [eastward_wind,northward_wind,u_component_of_native_D_grid_wind,v_component_of_native_D_grid_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,phis,f10m,slmsk,sheleg,ts,vtype,stype,vfrac,soilt,soilm,u_srf,v_srf]
-        datapath: Data/inputs/mem%mem%/
+        datapath: data/inputs/mem%mem%/
         filename_core: 20240527.000000.fv_core.res.tile1.nc
         filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
         filename_sfcd: 20240527.000000.sfc_data.nc
@@ -3008,7 +3008,7 @@ observations:
            obs options:
              Sensor_ID: atms_npp
              EndianType: little_endian
-             CoefficientPath: Data/crtm/
+             CoefficientPath: data/crtm/
              IRVISlandCoeff: IGBP
            linear obs operator:
              Absorbers: [H2O, O3]
@@ -3017,14 +3017,14 @@ observations:
            lengthscale: 300e3 # orig
 
        obs bias:
-         input file:  Data/obs/atms_npp.satbias.nc4
+         input file:  data/obs/atms_npp.satbias.nc4
          output file: ./out_atms_npp.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &atms_npp_tlapse  Data/obs/atms_npp.tlapse.txt
+             tlapse: &atms_npp_tlapse  data/obs/atms_npp.tlapse.txt
            - name: lapseRate
              tlapse: *atms_npp_tlapse
            - name: emissivityJacobian
@@ -3041,7 +3041,7 @@ observations:
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: Data/obs/atms_npp.satbias_cov.nc4
+             input file: data/obs/atms_npp.satbias_cov.nc4
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
