@@ -36,12 +36,12 @@ obtype_configs=(
 # Define the basic configuration and final ctest YAMLs
 declare -A basic_configs
 basic_configs=(
-#    ["fv3jedi_en3dvar.yaml"]="rrfs_fv3jedi_2024052700_Ens3Dvar.yaml"
-#    ["fv3jedi_getkf_observer.yaml"]="rrfs_fv3jedi_2024052700_getkf_observer.yaml"
+    ["fv3jedi_en3dvar.yaml"]="rrfs_fv3jedi_2024052700_Ens3Dvar.yaml"
+    ["fv3jedi_getkf_observer.yaml"]="rrfs_fv3jedi_2024052700_getkf_observer.yaml"
     ["fv3jedi_getkf_solver.yaml"]="rrfs_fv3jedi_2024052700_getkf_solver.yaml"
-#    ["mpasjedi_en3dvar.yaml"]="rrfs_mpasjedi_2024052700_Ens3Dvar.yaml"
-#    ["mpasjedi_getkf_observer.yaml"]="rrfs_mpasjedi_2024052700_getkf_observer.yaml"
-#    ["mpasjedi_getkf_solver.yaml"]="rrfs_mpasjedi_2024052700_getkf_solver.yaml"
+    ["mpasjedi_en3dvar.yaml"]="rrfs_mpasjedi_2024052700_Ens3Dvar.yaml"
+    ["mpasjedi_getkf_observer.yaml"]="rrfs_mpasjedi_2024052700_getkf_observer.yaml"
+    ["mpasjedi_getkf_solver.yaml"]="rrfs_mpasjedi_2024052700_getkf_solver.yaml"
 )
 
 # Loop over basic configs
@@ -63,13 +63,12 @@ for basic_config in "${!basic_configs[@]}"; do
             previous_path=`sed -n '/obsdataout/{n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$config`
             int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest_yaml::-5}\//gI")
             new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
-            obs_filename_new=${new_path}
+            obs_filename_new="obsfile: ${new_path}"
             # Old obs file name to replace
-            obtype_group="${config:0:6}"
-            obs_filename="data/obs/ioda_${obtype_group}.nc"
+            obsline=`grep "obsfile: data\/obs\/ioda" templates/obtype_config/${config}`
+            trimmed=$(echo "$obsline" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+            obs_filename=${trimmed}
             # Replace
-            echo "\n${obs_filename}"
-            echo "${obs_filename_new}"
             sed -i "s#${obs_filename}#${obs_filename_new}#" ./replace.yaml
         fi
 
