@@ -77,9 +77,6 @@ def bufr_to_ioda(config, logger):
     logger.info('Making QuerySet')
     q = bufr.QuerySet(subsets)
 
-    # ObsType
-    #q.add('observationType', '*/TYP')
-
     # MetaData
     q.add('year', '*/YEAR')
     q.add('month', '*/MNTH')
@@ -105,9 +102,6 @@ def bufr_to_ioda(config, logger):
     q.add('windEastward', '*/UMWV')
     q.add('windNorthward', '*/VWMV')
 
-    # QualityMarker
-    #q.add('windAlongRadialLineQM', '*/QCRW')
-
     end_time = time.time()
     running_time = end_time - start_time
     logger.debug(f'Running time for making QuerySet : {running_time} seconds')
@@ -128,7 +122,6 @@ def bufr_to_ioda(config, logger):
 
     # ObsType
     logger.debug(" ... Executing QuerySet for LGYCLD: get ObsType ...")
-    #obstyp = r.get('observationType', type='int32')
     logger.info('Executing QuerySet: get metadata')
 
     # MetaData
@@ -170,10 +163,6 @@ def bufr_to_ioda(config, logger):
     umwv    = r.get('windEastward')
     vwmv    = r.get('windNorthward')
 
-
-    # QualityMarker
-    #qcrw    = r.get('windAlongRadialLineQM')
-
     logger.info('Executing QuerySet Done!')
     end_time = time.time()
     running_time = end_time - start_time
@@ -198,8 +187,6 @@ def bufr_to_ioda(config, logger):
     logger.debug(f'     umwv      	  shape = {umwv.shape}')
     logger.debug(f'     vwmv      	  shape = {vwmv.shape}')
 
-    #logger.debug(f'     qcrw      	  shape = {qcrw.shape}')
-
     logger.debug(f'     clath         type = {clath.dtype}')
     logger.debug(f'     clonh         type = {clonh.dtype}')
     logger.debug(f'     said          type = {said.dtype}')
@@ -216,8 +203,6 @@ def bufr_to_ioda(config, logger):
     logger.debug(f'     howv          type = {howv.dtype}')
     logger.debug(f'     umwv          type = {umwv.dtype}')
     logger.debug(f'     vwmv          type = {vwmv.dtype}')
-
-    #logger.debug(f'     qcrw         type = {qcrw.dtype}')
 
     # Mask Certain Variables
     logger.debug(f"Mask typ for certain variables where data is available...")
@@ -310,13 +295,6 @@ def bufr_to_ioda(config, logger):
         .write_attr('units', 'm s-1') \
         .write_attr('long_name', 'Northward Wind') \
         .write_data(vwmv)
-
-    # QualityMarker: Wind Along Radial Line Quality
-    #obsspace.create_var('QlalityMarker/windAlongRadialLineQM', dtype=qcrw.dtype, fillval=qcrw.fill_value) \
-    #    .write_attr('units', '') \
-    #    .write_attr('long_name', 'windAlongRadialLineQM') \
-    #    .write_data(qcrw)
-
 
     end_time = time.time()
     running_time = end_time - start_time

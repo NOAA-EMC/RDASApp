@@ -6,9 +6,7 @@
 observations:
   - obs space:
       name: bufr
-
-      obsdatain: "/work2/noaa/da/pkumar/ORION/RDASApp/urma.t00z.satmar.tm00.bufr_d"
-        #obsdatain: "./testinput_satmar/urma.t00z.satmar.tm00.bufr_d"
+      obsdatain: "./testinput_satmar/urma.t00z.satmar.tm00.bufr_d"
 
       exports:
         subsets:
@@ -50,15 +48,11 @@ observations:
             query: "*/UMWV"
           windNorthward:
             query: "*/VWMV"    
-          
-          # QualityMarker 
-          #windAlongRadialLineQM: 
-          #query: "*/QCRW"
+
 
     ioda:
       backend: netcdf
-      obsdataout: "/work2/noaa/da/pkumar/ORION/RDASApp/urma.t00z.satmar.tm00.nc"
-      #obsdataout: "./urma.t00z.satmar.tm00.nc"
+      obsdataout: "./urma.t00z.satmar.tm00.nc"
 
       variables:
         # MetaData
@@ -129,9 +123,3 @@ observations:
           source: variables/windNorthward
           longName: "Northward Wind"
           units: "m s-1"
-
-        # QualityMarker
-        #- name: "QualityMarker/unfoldingVelocity"
-        #coordinates: "longitude latitude"
-        #source: variables/windAlongRadialLineQM
-        #longName: "Quality Marker For Wind Along Radial Line"
