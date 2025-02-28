@@ -62,7 +62,7 @@
              is_in: 4-15
            action:
              name: reject
-         #    name: reduce obs space
+             name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
@@ -72,17 +72,12 @@
                  name: MetaData/timeOffset # units: s
                minvalue: -5400
                maxvalue:  5400
-         #  action:
-         #    name: reduce obs space
+           action:
+             name: reduce obs space
 
          # Duplicate Check
          - filter: Temporal Thinning
            apply at iterations: 0,1
-           #where:
-           #  - variable:
-           #      name: MetaData/height
-           #    minvalue: 0
-           #    maxvalue: 10 
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -91,8 +86,8 @@
            seed_time: "2024-05-27T00:00:00Z"
            category_variable:
              name: MetaData/longitude_latitude_pressure
-           #action:
-             #name: reduce obs space
+           action:
+             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
@@ -129,10 +124,6 @@
            where:
            - variable: ObsType/windEastward
              is_in: 280
-           #  - variable:
-           #      name: MetaData/height
-           #    minvalue: 0
-           #    maxvalue: 10
 #           - variable: MetaData/dumpReportType # variable not in GSI-IODA
 #             is_not_in: 522, 523, 531
            action:
@@ -163,8 +154,8 @@
                  variable: windNorthward
                  inflation factor: 4.0
                  SetSfcWndObsHeight: true
-                 AddObsHeightToStationElevation: false
-                 AssumedSfcWndObsHeight: 20
+                 AddObsHeightToStationElevation: true
+                 AssumedSfcWndObsHeight: 10
 
 #         # Error inflation (windEastward) based on pressure check (setupw.f90)
 #         - filter: Perform Action
@@ -274,8 +265,8 @@
            test variables:
            - name:  ObsErrorData/windEastward
            minvalue: 0.0
-           #action:
-           #  name: reduce obs space
+           action:
+             name: reduce obs space
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
@@ -286,8 +277,8 @@
            maxvalue: 130
            action:
              name: reject
-           #action:
-           #  name: reduce obs space
+           action:
+             name: reduce obs space
 
          # Gross Error Check (windEastward)
          - filter: Background Check
