@@ -160,3 +160,6 @@ install*/
 expr
 fix/INIT_DONE
 fix/.agent
+rrfs-test/validated_yamls/templates/jedivar.yaml
+rrfs-test/validated_yamls/templates/getkf_observer.yaml
+rrfs-test/validated_yamls/templates/getkf_solver.yaml
