@@ -14,7 +14,7 @@ output: # for outputting mean posterior
   stream name: analysis
 
 time window:
-  begin: 2024-05-26T21:00:00Z
+  begin: '2024-05-26T21:00:00Z'
   length: PT6H
 
 geometry:
