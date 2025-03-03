@@ -28,10 +28,6 @@ dcObserver={
   "ps187": "adpsfc_stationPressure_187",
   "uv281": "adpsfc_winds_281",
   "uv287": "adpsfc_winds_287",
-  "amsua_n19": "amsua_n19",
-  "amsua_n20": "atms_n20",
-# "atmos_npp": "atms_npp",
-  "atms_npp": "atms_npp_qc_bc",
   "t188": "msonet_airTemperature_188",
   "q188": "msonet_specificHumidity_188",
   "ps188": "msonet_stationPressure_188",
@@ -42,7 +38,12 @@ dcObserver={
   "q180": "sfcshp_specificHumidity_180",
   "ps180": "sfcshp_stationPressure_180",
   "uv280": "sfcshp_winds_280",
-  "uv224": "vadwnd_winds_224"
+  "uv224": "vadwnd_winds_224",
+# satellite obs
+  "amsua_n19": "satellite_amsua_n19",
+  "amsua_n20": "satellite_atms_n20",
+  "atmos_npp": "satellite_atms_npp"
+#  "atms_npp": "satellite_atms_npp_qc_bc",
     }
 
 # list of header files
@@ -121,6 +122,8 @@ for fheader in listHeader:
     # loop through user defined obserers
     for key, value in dcObserverUser.items():
       fobs=obdir+value+".yaml"
+      if "satellite" in value:
+        fobs=obdir+value.split("_",1)[1]+".yaml"
       with open(fobs,'r') as infile2:
         for line in infile2:
           if "seed_time:" in line:
@@ -131,10 +134,8 @@ for fheader in listHeader:
             else:
               line=line.replace("@DISTRIBUTION@","RoundRobin")
           elif value in line:
-            if "obsfile" in line:
-              line=line.replace(value,key)
-            elif "name" in line:
-              line=line.replace(value,f'{key}={value}')
+            tmp=value.split("_",1)[1]
+            line=line.replace(tmp,key)
 
           # ~~~~~~
           outfile.write(line)
