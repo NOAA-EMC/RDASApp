@@ -97,8 +97,8 @@ for basic_config in "${!basic_configs[@]}"; do
     rm -f replace.yaml # Clean up temporary yaml
 
     # Comment out ObsErrorFactorPressureCheck filters for MPAS (TEMPORARY)
-    if [[ $basic_config == *"mpasjedi"* ]]; then
-        python commentQC.py
+    if [[ $basic_config == *"fv3jedi"* ]]; then
+        python uncommentQC.py
     fi
 
     # Move to testinput and remove the old temporary yaml

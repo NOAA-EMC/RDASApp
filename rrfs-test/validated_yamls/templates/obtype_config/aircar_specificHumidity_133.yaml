@@ -110,21 +110,21 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [0.19455, 0.19064, 0.18488, 0.17877, 0.17342, 0.16976, 0.16777, 0.16696, 0.16605, 0.16522, 0.16637, 0.17086, 0.17791, 0.18492, 0.18996, 0.19294, 0.19447, 0.19597, 0.19748, 0.19866, 0.19941, 0.19979, 0.19994, 0.19999, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
 
-         # Error inflation based on pressure check (setupq.f90)
-         - filter: Perform Action
-           filter variables:
-           - name: specificHumidity
-           where:
-           - variable: ObsType/specificHumidity
-             is_in: 133
-           action:
-             name: inflate error
-             inflation variable:
-               name: ObsFunction/ObsErrorFactorPressureCheck
-               options:
-                 variable: specificHumidity
-                 inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: true
+#          # Error inflation based on pressure check (setupq.f90)
+#          - filter: Perform Action
+#            filter variables:
+#            - name: specificHumidity
+#            where:
+#            - variable: ObsType/specificHumidity
+#              is_in: 133
+#            action:
+#              name: inflate error
+#              inflation variable:
+#                name: ObsFunction/ObsErrorFactorPressureCheck
+#                options:
+#                  variable: specificHumidity
+#                  inflation factor: 8.0
+#                  request_saturation_specific_humidity_geovals: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
