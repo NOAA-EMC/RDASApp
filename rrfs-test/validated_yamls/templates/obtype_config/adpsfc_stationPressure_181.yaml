@@ -1,12 +1,12 @@
      - obs space:
-         name: adpupa_stationPressure_120
+         name: adpsfc_stationPressure_181
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpupa.nc
+             obsfile: data/obs/ioda_adpsfc.nc
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_adpupa_stationPressure_120.nc4
+             obsfile: jdiag_adpsfc_stationPressure_181.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -38,7 +38,7 @@
 
        obs filters:
          # ------------------
-         # stationPressure (120)
+         # stationPressure (181)
          # ------------------
          # Reject all obs with QualityMarker > 3
          - filter: Perform Action
@@ -59,8 +59,8 @@
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
-               minvalue: -5400
-               maxvalue:  5400
+               minvalue: -900
+               maxvalue:  900
            action:
              name: reduce obs space
 
@@ -92,7 +92,7 @@
            - name: stationPressure
            where:
            - variable: ObsType/stationPressure
-             is_in: 120
+             is_in: 181
            action:
              name: assign error
              error function:
@@ -101,7 +101,7 @@
                  xvar:
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
-                 errors: [68.115, 68.115, 68.115, 71.307, 74.576, 77.845, 79.791, 81.737, 83.684, 92.441, 101.2, 108.99, 117.75, 128.44, 144.99, 158.58, 182.93, 247.16, 269.54, 315.28, 383.38, 489.46, 577.03, 577.03, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11]
+                 errors: [53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 53.89, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11]
 
          # Error inflation based on pressure check (setupps.f90)
          - filter: Perform Action
@@ -109,14 +109,15 @@
            - name: stationPressure
            where:
            - variable: ObsType/stationPressure
-             is_in: 120
+             is_in: 181
            action:
              name: inflate error
              inflation variable:
                name: ObsFunction/ObsErrorFactorSfcPressure
                options:
                  geovar_geomz: geopotential_height
-                 geovar_sfc_geomz: geopotential_height_at_surface
+                 #geovar_sfc_geomz: geopotential_height_at_surface
+                 station_altitude: height
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -124,7 +125,7 @@
 #           - name: stationPressure
 #           where:
 #           - variable: ObsType/stationPressure
-#             is_in: 120
+#             is_in: 181
 #           action:
 #             name: inflate error
 #             inflation variable:
@@ -226,7 +227,7 @@
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
-           threshold: 4.0
+           threshold: 3.6
            action:
              name: reject
            where:
@@ -240,7 +241,7 @@
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
-           threshold: 2.8
+           threshold: 2.52
            action:
              name: reject
            where:
@@ -264,4 +265,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/adpupa_geovals_rrfs.nc4
+         #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc4

@@ -3,6 +3,20 @@ _member: &memberConfig
   state variables: [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal,theta,rho,u,qv,pressure,landmask,xice,snowc,skintemp,ivgtyp,isltyp,snowh,vegfra,u10,v10,lai,smois,tslb,pressure_p,qc,qi,qg,qr,qs,cldfrac]
   stream name: ensemble
 
+increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
+
+output mean prior:
+  filename: ./bkg.$Y-$M-$D_$h.$m.$s.nc
+  stream name: background
+
+output: # for outputting mean posterior
+  filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
+  stream name: analysis
+
+time window:
+  begin: '2024-05-26T21:00:00Z'
+  length: PT6H
+
 geometry:
   nml_file: ./namelist.atmosphere
   streams_file: ./streams.atmosphere
@@ -10,21 +24,15 @@ geometry:
   interpolation type: unstructured
   iterator dimension: 2
 
-increment variables: [temperature, spechum, uReconstructZonal, uReconstructMeridional, surface_pressure]
-
 background: 
-    members from template:
-      template:
-        <<: *memberConfig
-        filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
-      pattern: "%iMember%"
-      start: 1
-      zero padding: 3
-      nmembers: 30
-
-observations:
-     observers:
-        "@OBSERVATIONS@"
+  members from template:
+    template:
+      <<: *memberConfig
+      filename: ./data/ens/mem%iMember%/mpasout.2024-05-27_00.00.00.nc
+    pattern: "%iMember%"
+    start: 1
+    zero padding: 3
+    nmembers: 30
 
 driver:
   read HX from disk: true
@@ -32,10 +40,6 @@ driver:
   save prior mean: true
   save posterior mean: true
   do posterior observer: false
-
-time window:
-       begin: 2024-05-26T21:00:00Z
-       length: PT6H
 
 local ensemble DA:
   solver: GETKF
@@ -49,13 +53,9 @@ local ensemble DA:
     rtpp: 0.6
     mult: 1.1
 
-output mean prior:
-  filename: ./bkg.$Y-$M-$D_$h.$m.$s.nc
-  stream name: background
-
-output: # for outputting mean posterior
-  filename: ./ana.$Y-$M-$D_$h.$m.$s.nc
-  stream name: analysis 
+observations:
+     observers:
+        "@OBSERVATIONS@"
 
 test:
   reference filename: testoutput/rrfs-mpasjedi-getkf-solver.ref
