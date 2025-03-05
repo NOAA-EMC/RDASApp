@@ -60,6 +60,8 @@
            where:
            - variable: QualityMarker/windEastward
              is_in: 4-15
+             value: is_not_valid
+             where operator: or
            action:
              name: reject
          #    name: reduce obs space
