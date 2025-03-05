@@ -57,8 +57,9 @@
            where:
            - variable: QualityMarker/windEastward
              is_in: 4-15
+           - variable: QualityMarker/windEastward
              value: is_not_valid
-             where operator: or
+           where operator: or
            action:
              name: reject
              name: reduce obs space
@@ -256,7 +257,7 @@
                name: AbsObsValue/windNorthward
              minvalue: 0
              maxvalue: 1
-           where operator: and
+         where operator: and
            action:
              name: reject
 
