@@ -56,8 +56,9 @@
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 4-15
+           - variable: QualityMarker/specificHumidity
              value: is_not_valid
-             where operator: or
+           where operator: or
            action:
              name: reject
              name: reduce obs space
