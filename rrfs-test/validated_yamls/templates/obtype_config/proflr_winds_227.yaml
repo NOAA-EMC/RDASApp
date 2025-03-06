@@ -256,7 +256,7 @@
                name: AbsObsValue/windNorthward
              minvalue: 0
              maxvalue: 1
-         where operator: and
+           where operator: and
            action:
              name: reject
 
