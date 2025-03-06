@@ -6,8 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: "@OBSFILE@"
-             #obsfile: "obsout/sondes_ps_obs_2024052700_dc.nc4"
+             obsfile: data/obs/ioda_adpupa.nc
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"

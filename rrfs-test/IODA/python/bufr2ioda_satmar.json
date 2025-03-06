@@ -1,0 +1,12 @@
+{
+    "data_format": "bufr_d",
+    "data_type": "satmar",
+    "cycle_type": "urma",
+    "cycle_datetime": "{{ current_cycle | to_YMDH }}",
+    "dump_directory": "{{ DMPDIR }}",
+    "ioda_directory": "{{ COM_OBS }}",
+    "subsets": [ "NC031104", "NC0311064", "NC031110", "NC031112", "NC031113", "NC031114", "NC031115", "NC031117", "NC031118", "NC031119", "NC031120", "NC031121", "NC031122", "NC031123", "NC031124", "NC031125", "NC031126", "NC031127", "NC031130" ]
+    "source": "NCEP data tank",
+    "data_provider": "U.S. NOAA",
+    "data_description": "CNES CRYOSAT-2 OGDR ALTM SSHA W/W H-RS GBL",
+}
