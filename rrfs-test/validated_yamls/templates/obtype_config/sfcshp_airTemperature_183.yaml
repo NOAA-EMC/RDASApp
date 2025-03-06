@@ -56,7 +56,6 @@
            where:
            - variable: QualityMarker/airTemperature
              is_in: 4-15
-           - variable: QualityMarker/airTemperature
              value: is_not_valid
            where operator: or
            action:
