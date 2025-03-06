@@ -48,7 +48,6 @@
            where:
            - variable: QualityMarker/stationPressure
              is_in: 4-15
-           - variable: QualityMarker/stationPressure
              value: is_not_valid
            where operator: or
            action:
