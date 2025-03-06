@@ -52,7 +52,6 @@
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 4-15
-           - variable: QualityMarker/specificHumidity
              value: is_not_valid
            where operator: or
            action:
