@@ -2,6 +2,7 @@
          name: amsua_n19
          distribution:
            name: "@DISTRIBUTION@"
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -9,7 +10,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_amsua_n19.2024052700.nc4 
+             obsfile: jdiag_amsua_n19.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: &amsua_n19_channels 1-15
