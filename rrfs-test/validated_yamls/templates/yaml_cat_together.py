@@ -48,7 +48,7 @@ dcObserver={
 
 # list of header files
 listHeader=[
-  "basic_config/mpasjedi_en3dvar.yaml",
+  "basic_config/mpasjedi_hyb3denvar.yaml",
   "basic_config/mpasjedi_getkf_observer.yaml",
   "basic_config/mpasjedi_getkf_solver.yaml"
     ]
@@ -113,6 +113,8 @@ for fheader in listHeader:
           line=line.replace("./ana.$Y-$M-$D_$h.$m.$s.nc","mpasin.nc")
       elif "data/mpasout.2024-05-27_00.00.00.nc" in line:
         line=line.replace("data/mpasout.2024-05-27_00.00.00.nc", "mpasin.nc")
+      elif "save posterior ensemble: false" in line:
+        line=line.replace("save posterior ensemble: false", "save posterior ensemble: true")
       elif "@OBSERVATIONS@" in line:
         skip_zone=True
       #
