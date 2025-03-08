@@ -25,11 +25,11 @@ obtype_configs=(
     "adpupa_airTemperature_120.yaml"
     "adpupa_specificHumidity_120.yaml"
     "adpupa_winds_220.yaml"
-    #"proflr_winds_227.yaml"
-    #"rassda_airTemperature_126.yaml"
-    #"vadwnd_winds_224.yaml"
+    #"proflr_winds_227.yaml" # Not yet ready
+    #"rassda_airTemperature_126.yaml" # Not yet ready
+    #"vadwnd_winds_224.yaml" # Not yet ready
     "atms_npp_qc_bc.yaml"
-    "atms_n20.yaml"
+    #"atms_n20.yaml" # Gives different result on Hera/Jet
     "amsua_n19.yaml"
 )
 
