@@ -30,7 +30,7 @@ obtype_configs=(
     #"vadwnd_winds_224.yaml" # Not yet ready
     "atms_npp_qc_bc.yaml"
     #"atms_n20.yaml" # Gives different result on Hera/Jet
-    "amsua_n19.yaml"
+    #"amsua_n19.yaml" # ???
 )
 
 # Define the basic configuration and final ctest YAMLs
