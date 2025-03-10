@@ -324,6 +324,15 @@ for group in groups:
         else:
             raise NotImplementedError("Handling for more than two dimensions not implemented.")
 
+# Add ObsError and fill with anything (prevents zero increments in LETKF)
+obsval = obs_ds.groups['ObsValue'].variables['brightnessTemperature']
+vartype = obsval.dtype
+dimensions = obsval.dimensions
+fill = obsval.getncattr('_FillValue')
+g = fout.createGroup('ObsError')
+g.createVariable('brightnessTemperature', vartype, dimensions, fill_value=fill)
+g.variables['brightnessTemperature'][:,:] = 999
+
 # Close the datasets
 obs_ds.close()
 fout.close()

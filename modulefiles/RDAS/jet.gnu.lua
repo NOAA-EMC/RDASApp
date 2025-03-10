@@ -60,7 +60,6 @@ load("ncview/2.1.9")
 load("netcdf-cxx4/4.3.1")
 load("json/3.11.2")
 --load("crtm/v2.4_jedi")
-load("rocoto/1.3.6")
 load("prod_util/2.1.1")
 
 load("fms/2024.02")
