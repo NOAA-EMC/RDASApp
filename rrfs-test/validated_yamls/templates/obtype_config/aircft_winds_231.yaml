@@ -49,7 +49,7 @@
          # wind (231)
          # ------------------
          # Reject all obs with QualityMarker > 3
-         - filter: Perform Action
+         - filter: RejectList
            apply at iterations: 0,1
            filter variables:
            - name: windEastward
@@ -60,7 +60,6 @@
              value: is_not_valid
            where operator: or
            action:
-             name: reject
              name: reduce obs space
 
          # Time window filter
