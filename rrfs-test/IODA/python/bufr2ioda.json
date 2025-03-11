@@ -1,0 +1,3 @@
+{
+  "cycle_datetime"  : "{{ current_cycle | to_YMDH }}"
+}
