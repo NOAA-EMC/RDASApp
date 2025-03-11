@@ -18,19 +18,19 @@ obtype_configs=(
     "msonet_specificHumidity_188.yaml"
     "msonet_stationPressure_188.yaml"
     "msonet_winds_288.yaml"
-    "adpsfc_airTemperature_187.yaml"
-    "adpsfc_specificHumidity_187.yaml"
-    "adpsfc_stationPressure_187.yaml"
-    "adpsfc_winds_287.yaml"
-    "adpupa_airTemperature_120.yaml"
-    "adpupa_specificHumidity_120.yaml"
-    "adpupa_winds_220.yaml"
-    #"proflr_winds_227.yaml" # Not yet ready
-    #"rassda_airTemperature_126.yaml" # Not yet ready
-    #"vadwnd_winds_224.yaml" # Not yet ready
-    "atms_npp_qc_bc.yaml"
-    #"atms_n20.yaml" # Gives different result on Hera/Jet
-    #"amsua_n19.yaml" # ???
+    #"adpsfc_airTemperature_187.yaml" # Waiting to add to ctest
+    #"adpsfc_specificHumidity_187.yaml" # Waiting to add to ctest
+    #"adpsfc_stationPressure_187.yaml" # Waiting to add to ctest (different results on Hera/Jet?)
+    #"adpsfc_winds_287.yaml" # Waiting to add to ctest
+    #"adpupa_airTemperature_120.yaml" # Waiting to add to ctest
+    #"adpupa_specificHumidity_120.yaml" # Waiting to add to ctest
+    #"adpupa_winds_220.yaml" # Waiting to add to ctest
+    #"proflr_winds_227.yaml" # DO NOT ADD - Not yet phase 3
+    #"rassda_airTemperature_126.yaml" # DO NOT ADD - Not yet phase 3
+    #"vadwnd_winds_224.yaml" # DO NOT ADD - Not yet phase 3
+    "atms_npp.yaml"
+    #"atms_n20.yaml" # Waiting to add to ctest (different results on Hera/Jet?)
+    #"amsua_n19.yaml" # Waiting to add to ctest
 )
 
 # Define the basic configuration and final ctest YAMLs
@@ -96,9 +96,9 @@ for basic_config in "${!basic_configs[@]}"; do
     rm -f temp.yaml # Clean up temporary yaml
     rm -f replace.yaml # Clean up temporary yaml
 
-    # Modify some of the yamls for FV3-JEDI
-    if [[ $basic_config == *"fv3jedi"* ]]; then
-	python modify_yaml_fv3.py
+    # Comment out the OEFPC for specificHumidity yamls in MPAS-JEDI ctests
+    if [[ $basic_config == *"mpasjedi"* ]]; then
+	python commentQC.py
     fi
 
     # Move to testinput and remove the old temporary yaml
