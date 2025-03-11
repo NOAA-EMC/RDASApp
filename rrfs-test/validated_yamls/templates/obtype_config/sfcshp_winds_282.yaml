@@ -1,5 +1,5 @@
      - obs space:
-         name: sfcshp_winds_280
+         name: sfcshp_winds_282
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_sfcshp_winds_280.nc4
+             obsfile: jdiag_sfcshp_winds_282.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -49,7 +49,7 @@
 
        obs filters:
          # ------------------
-         # wind (280)
+         # wind (282)
          # ------------------
          # Reject all obs with QualityMarker > 3
          - filter: Perform Action
@@ -60,6 +60,8 @@
            where:
            - variable: QualityMarker/windEastward
              is_in: 4-15
+             value: is_not_valid
+           where operator: or
            action:
              name: reject
              name: reduce obs space
@@ -106,7 +108,7 @@
            - name: windNorthward
            where:
            - variable: ObsType/windEastward
-             is_in: 280
+             is_in: 282
            action:
              name: assign error
              error function:
@@ -115,7 +117,7 @@
                  xvar:
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
-                 errors: [2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628, 2.628]
+                 errors: [1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079]
 
          # Error inflation (windEastward) based on pressure check (setupw.f90)
          - filter: Perform Action
@@ -123,9 +125,7 @@
            - name: windEastward
            where:
            - variable: ObsType/windEastward
-             is_in: 280
-#           - variable: MetaData/dumpReportType # variable not in GSI-IODA
-#             is_not_in: 522, 523, 531
+             is_in: 282
            action:
              name: inflate error
              inflation variable:
@@ -143,9 +143,7 @@
            - name: windNorthward
            where:
            - variable: ObsType/windNorthward
-             is_in: 280
-#           - variable: MetaData/dumpReportType # variable not in GSI-IODA
-#             is_not_in: 522, 523, 531
+             is_in: 282
            action:
              name: inflate error
              inflation variable:
@@ -157,53 +155,13 @@
                  AddObsHeightToStationElevation: true
                  AssumedSfcWndObsHeight: 10
 
-#         # Error inflation (windEastward) based on pressure check (setupw.f90)
-#         - filter: Perform Action
-#           filter variables:
-#           - name: windEastward
-#           where:
-#           - variable: ObsType/windEastward
-#             is_in: 280
-#           - variable: MetaData/dumpReportType # variable not in GSI-IODA
-#             is_in: 522, 523, 531
-#           action:
-#             name: inflate error
-#             inflation variable:
-#               name: ObsFunction/ObsErrorFactorPressureCheck
-#               options:
-#                 variable: windEastward
-#                 inflation factor: 4.0
-#                 SetSfcWndObsHeight: true
-#                 AddObsHeightToStationElevation: false
-#                 AssumedSfcWndObsHeight: 20
-
-#         # Error inflation (windNorthward) based on pressure check (setupw.f90)
-#         - filter: Perform Action
-#           filter variables:
-#           - name: windNorthward
-#           where:
-#           - variable: ObsType/windNorthward
-#             is_in: 280
-#           - variable: MetaData/dumpReportType # variable not in GSI-IODA
-#             is_in: 522, 523, 531
-#           action:
-#             name: inflate error
-#             inflation variable:
-#               name: ObsFunction/ObsErrorFactorPressureCheck
-#               options:
-#                 variable: windNorthward
-#                 inflation factor: 4.0
-#                 SetSfcWndObsHeight: true
-#                 AddObsHeightToStationElevation: false
-#                 AssumedSfcWndObsHeight: 20
-
 #         # Error inflation (windEastward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
 #           filter variables:
 #           - name: windEastward
 #           where:
 #           - variable: ObsType/windEastward
-#             is_in: 280
+#             is_in: 282
 #           action:
 #             name: inflate error
 #             inflation variable:
@@ -221,7 +179,7 @@
 #           - name: windNorthward
 #           where:
 #           - variable: ObsType/windNorthward
-#             is_in: 280
+#             is_in: 282
 #           action:
 #             name: inflate error
 #             inflation variable:
@@ -277,7 +235,6 @@
            maxvalue: 130
            action:
              name: reject
-           action:
              name: reduce obs space
 
          # Gross Error Check (windEastward)
@@ -288,7 +245,7 @@
            function absolute threshold:
            - name: ObsFunction/WindsSPDBCheck
              options:
-               wndtype:    [ 280 ]
+               wndtype:    [ 282 ]
                cgross:     [ 6.0 ]
                error_min:  [ 1.0 ]
                error_max:  [ 5.0 ]
@@ -308,7 +265,7 @@
            function absolute threshold:
            - name: ObsFunction/WindsSPDBCheck
              options:
-               wndtype:    [ 280 ]
+               wndtype:    [ 282 ]
                cgross:     [ 6.0 ]
                error_min:  [ 1.0 ]
                error_max:  [ 5.0 ]
@@ -328,7 +285,7 @@
            function absolute threshold:
            - name: ObsFunction/WindsSPDBCheck
              options:
-               wndtype:    [ 280 ]
+               wndtype:    [ 282 ]
                cgross:     [ 4.2 ]
                error_min:  [ 1.0 ]
                error_max:  [ 5.0 ]
@@ -348,7 +305,7 @@
            function absolute threshold:
            - name: ObsFunction/WindsSPDBCheck
              options:
-               wndtype:    [ 280 ]
+               wndtype:    [ 282 ]
                cgross:     [ 4.2 ]
                error_min:  [ 1.0 ]
                error_max:  [ 5.0 ]
