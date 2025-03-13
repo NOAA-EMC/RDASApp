@@ -160,6 +160,14 @@ install*/
 expr
 fix/INIT_DONE
 fix/.agent
+
+# Ignore the rrfs-test ctest yamls since they are build with RDASApp
+rrfs-test/testinput/rrfs_fv3jedi_2024052700_Ens3Dvar.yaml
+rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_observer.yaml
+rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_solver.yaml
+rrfs-test/testinput/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
+rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_observer.yaml
+rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_solver.yaml
 rrfs-test/validated_yamls/templates/jedivar.yaml
 rrfs-test/validated_yamls/templates/getkf_observer.yaml
 rrfs-test/validated_yamls/templates/getkf_solver.yaml
