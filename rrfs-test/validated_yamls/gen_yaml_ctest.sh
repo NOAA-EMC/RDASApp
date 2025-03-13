@@ -16,7 +16,7 @@ obtype_configs=(
     "aircft_winds_235.yaml"
     "msonet_airTemperature_188.yaml"
     "msonet_specificHumidity_188.yaml"
-    "msonet_stationPressure_188.yaml"
+    #"msonet_stationPressure_188.yaml" # Different result on Hera/Hercules
     "msonet_winds_288.yaml"
     #"adpsfc_airTemperature_187.yaml" # Waiting to add to ctest
     #"adpsfc_specificHumidity_187.yaml" # Waiting to add to ctest
