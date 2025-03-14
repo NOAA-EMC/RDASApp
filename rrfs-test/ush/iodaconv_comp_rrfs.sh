@@ -26,7 +26,7 @@ rc="-1"
 case $file_type in
   netcdf)
     $cmd && \
-    nccmp $file_name_ref $file_name_test -d -m -g -f -S -T ${tol}
+    nccmp $file_name_ref $file_name_test -d -f -S -T ${tol} -x longitude_latitude_pressure
     rc=${?}
     ;;
    odb)

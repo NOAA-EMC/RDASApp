@@ -55,8 +55,8 @@
            where:
            - variable: QualityMarker/airTemperature
              is_in: 4-15
-           action:
-             name: reject
+             value: is_not_valid
+           where operator: or
            action:
              name: reduce obs space
 

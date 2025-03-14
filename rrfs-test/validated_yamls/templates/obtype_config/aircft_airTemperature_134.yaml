@@ -48,15 +48,15 @@
          # airTemperature (134)
          # ------------------
          # Reject all obs with QualityMarker > 3
-         - filter: Perform Action
+         - filter: RejectList
            apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            where:
            - variable: QualityMarker/airTemperature
              is_in: 4-15
-           action:
-             name: reject
+             value: is_not_valid
+           where operator: or
            action:
              name: reduce obs space
 
