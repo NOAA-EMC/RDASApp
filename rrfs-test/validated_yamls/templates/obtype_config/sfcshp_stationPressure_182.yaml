@@ -1,5 +1,5 @@
      - obs space:
-         name: sfcshp_stationPressure_180
+         name: sfcshp_stationPressure_182
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_sfcshp_stationPressure_180.nc4
+             obsfile: jdiag_sfcshp_stationPressure_182.nc4
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -38,11 +38,10 @@
 
        obs filters:
          # ------------------
-         # stationPressure (180)
+         # stationPressure (182)
          # ------------------
          # Reject all obs with QualityMarker > 3
-         - filter: Perform Action
-           apply at iterations: 0,1
+         - filter: RejectList
            filter variables:
            - name: stationPressure
            where:
@@ -51,12 +50,10 @@
              value: is_not_valid
            where operator: or
            action:
-             name: reject
              name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -67,7 +64,6 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: stationPressure
            min_spacing: PT90M
@@ -93,7 +89,7 @@
            - name: stationPressure
            where:
            - variable: ObsType/stationPressure
-             is_in: 180
+             is_in: 182
            action:
              name: assign error
              error function:
@@ -110,7 +106,7 @@
            - name: stationPressure
            where:
            - variable: ObsType/stationPressure
-             is_in: 180
+             is_in: 182
            action:
              name: inflate error
              inflation variable:
@@ -126,7 +122,7 @@
 #           - name: stationPressure
 #           where:
 #           - variable: ObsType/stationPressure
-#             is_in: 180
+#             is_in: 182
 #           action:
 #             name: inflate error
 #             inflation variable:

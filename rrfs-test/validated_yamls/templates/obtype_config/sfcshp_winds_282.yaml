@@ -52,8 +52,7 @@
          # wind (282)
          # ------------------
          # Reject all obs with QualityMarker > 3
-         - filter: Perform Action
-           apply at iterations: 0,1
+         - filter: RejectList
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -63,12 +62,10 @@
              value: is_not_valid
            where operator: or
            action:
-             name: reject
              name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -79,11 +76,10 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
-           min_spacing: PT60M
+           min_spacing: PT90M
            tolerance: PT0H
            seed_time: "2024-05-27T00:00:00Z"
            category_variable:

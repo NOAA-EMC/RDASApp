@@ -49,7 +49,6 @@
          # ------------------
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
-           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            where:
@@ -62,7 +61,6 @@
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -73,7 +71,6 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            min_spacing: PT90M

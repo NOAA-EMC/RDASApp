@@ -7,7 +7,6 @@
            engine:
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
-             #obsfile: "obsout/sfcship_tsen_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -49,8 +48,7 @@
          # airTemperature (183)
          # ------------------
          # Reject all obs with QualityMarker > 3
-         - filter: Perform Action
-           apply at iterations: 0,1
+         - filter: RejectList
            filter variables:
            - name: airTemperature
            where:
@@ -59,12 +57,10 @@
              value: is_not_valid
            where operator: or
            action:
-             name: reject
              name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -75,7 +71,6 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            min_spacing: PT90M
@@ -111,6 +106,14 @@
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349]
+
+#         # Reduce observation error and turn off ObsErrorFactorPressureCheck (l_gsd_terrain_match_surfTobs=.true., l_sfcobserror_ramp_t=.true.,)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: airTemperature
+#           action:
+#             name: inflate error
+#             inflation factor: 0.5
 
          # Error inflation based on pressure check (setupt.f90)
          - filter: Perform Action

@@ -7,7 +7,6 @@
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
-             #obsfile: "obsout/sfcship_tsen_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -49,8 +48,7 @@
          # airTemperature (183)
          # ------------------
          # Reject all obs with QualityMarker > 3
-         - filter: Perform Action
-           apply at iterations: 0,1
+         - filter: RejectList
            filter variables:
            - name: airTemperature
            where:
@@ -59,12 +57,10 @@
              value: is_not_valid
            where operator: or
            action:
-             name: reject
              name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -75,7 +71,6 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            min_spacing: PT90M

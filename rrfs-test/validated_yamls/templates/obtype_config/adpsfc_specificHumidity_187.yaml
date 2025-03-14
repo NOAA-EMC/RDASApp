@@ -46,7 +46,6 @@
          # ------------------
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
-           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            where:
@@ -59,7 +58,6 @@
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -70,7 +68,6 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: specificHumidity
            min_spacing: PT90M
@@ -121,7 +118,7 @@
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: true
+                 request_saturation_specific_humidity_geovals: false
                  # The new feature "surface observation error ramp"
                  # needs to be added to UFO to align with the ramp
                  # options for temperature and humidity in GSI.
