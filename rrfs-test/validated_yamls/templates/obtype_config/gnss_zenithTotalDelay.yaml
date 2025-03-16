@@ -1,15 +1,19 @@
      - obs space:
          name: gnss_ztd_zenithTotalDelay
 
-#        distribution:   # for LETKF
-#          name: "@DISTRIBUTION@"
-#          halo size: 300e3
+         distribution:   # for LETKF
+           name: "@DISTRIBUTION@"
+           halo size: 300e3
 
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_ztd.nc"
 
+         obsgrouping:
+           group variables: ["stationIdentification"]
+           sort variable: "pressure"
+           sort order: "descending"
          obsdataout:
            engine:
              type: H5File
@@ -28,9 +32,9 @@
        obs error:
          covariance model: diagonal
 
-#      obs localizations:   # for LETKF
-#        - localization method: Horizontal Gaspari-Cohn
-#          lengthscale: 300e3
+       obs localizations:   # for LETKF
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3
 
        obs filters:
        # Pre-online regional domain check (latitude/longitude)
@@ -70,6 +74,13 @@
          action:
            name: assign error
            error parameter: 0.01
+
+       # Monitoring mode (no assimilation, set QCflag=1)
+#      - filter: Perform Action
+#        filter variables:
+#        - name: zenithTotalDelay
+#        action:
+#          name: passivate
 
        # Terrain Height Discrepancy Check
        - filter: Difference Check
