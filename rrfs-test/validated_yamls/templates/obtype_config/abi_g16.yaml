@@ -72,6 +72,7 @@
   # Observation Filters (QC)
   # ------------------------
        obs prior filters:
+       # Initial obs error assignment
        - filter: Perform Action
          filter variables:
          - name: brightnessTemperature
@@ -80,6 +81,7 @@
            name: assign error
            error parameter vector: [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
 
+       # Surfave flag assignment from geoval
        - filter: Variable Assignment
          assignments:
          - name: DerivedMetaData/surfaceFlag
@@ -110,6 +112,8 @@
                      name: GeoVaLs/surface_snow_area_fraction
                    minvalue: 0.99
                  value: 3
+
+       # Surface Parameter assignment from geovals
        - filter: Variable Assignment
          assignments:
          - name: DerivedMetaData/surfaceParam
@@ -141,6 +145,7 @@
                    minvalue: 0.99
                  value: 15
 
+       # Criteria assignment for Thinning 
        - filter: Variable Assignment
          assignments:
          - name: DerivedMetaData/thinningCriteria
@@ -151,6 +156,7 @@
                variables:
                - name: DerivedMetaData/surfaceParam
                coefs: [1]
+
        #  Thinning
        - filter: Gaussian Thinning
          filter variables:
