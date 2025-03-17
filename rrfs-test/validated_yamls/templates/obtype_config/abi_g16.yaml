@@ -33,6 +33,7 @@
            IRVISlandCoeff: IGBP
          linear obs operator:
            Absorbers: [H2O, O3]
+
   # Observation Bias Correction (VarBC)
   # -----------------------------------
        obs bias:
@@ -69,6 +70,7 @@
                ratio: 1.1
                ratio for small dataset: 2.0
            output file: out_abi_g16.satbias_cov.nc4
+
   # Observation Filters (QC)
   # ------------------------
        obs prior filters:
@@ -157,7 +159,7 @@
                - name: DerivedMetaData/surfaceParam
                coefs: [1]
 
-       #  Thinning
+       # Thinning
        - filter: Gaussian Thinning
          filter variables:
          - name: brightnessTemperature
@@ -206,7 +208,7 @@
              channels: 8
            maxvalue: 30.
 
-      # from read_abi: WV Channels 8-10 scene consistency check SDTB>1.3
+       # from read_abi: WV Channels 8-10 scene consistency check SDTB>1.3
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature
@@ -218,8 +220,7 @@
            maxvalue: 1.3
            max_exclusive: true
 
-
-      # Surface type check
+       # Surface type check
        - filter: RejectList
          filter variables:
          - name: brightnessTemperature
@@ -269,7 +270,7 @@
            maxvalue: 0.99
            max_exclusive: true
 
-     # BT range check
+       # BT range check
        - filter: Bounds Check
          filter variables:
          - name: brightnessTemperature
@@ -279,7 +280,7 @@
          action:
            name: reject
 
-     # Model top transmittance check
+       # Model top transmittance check
        - filter: Perform Action
          filter variables:
          - name: brightnessTemperature
@@ -292,7 +293,7 @@
              options:
                channels: *abi_g16_channels
    
-     # Cloud detection
+       # Cloud detection
        - filter: Bounds Check
          filter variables:
          - name: brightnessTemperature
@@ -310,7 +311,7 @@
          action:
            name: reject
 
-     # Scene Consistency Check based on ch13 (10.8 micron)
+       # Scene Consistency Check based on ch13 (10.8 micron)
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature
@@ -322,7 +323,7 @@
            maxvalue: 0.5
            max_exclusive: true
 
-     # Scene Consistency Channels 8-10 Based on ch 8 SDTB
+       # Scene Consistency Channels 8-10 Based on ch 8 SDTB
        - filter: Perform Action
          filter variables:
          - name: brightnessTemperature
@@ -345,7 +346,7 @@
          - variable:
              name: ClearSkyStdDev/brightnessTemperature_8
            maxvalue: 0.6
-#           max_exclusive: true
+           #max_exclusive: true
            minvalue: 0.5
            min_exclusive: true
          action:
@@ -360,7 +361,7 @@
          - variable:
              name: ClearSkyStdDev/brightnessTemperature_8
            maxvalue: 0.7
-#           max_exclusive: true
+           #max_exclusive: true
            minvalue: 0.6
            min_exclusive: true
          action:
@@ -380,7 +381,7 @@
            name: inflate error
            inflation factor: 1.5199
 
-     # Near SST Check 
+       # Near SST Check 
        - filter: Bounds Check
          filter variables:
          - name: brightnessTemperature
@@ -395,7 +396,7 @@
          action:
            name: reject
 
-     # Surface Jacobian
+       # Surface Jacobian
        - filter: Perform Action
          filter variables:
          - name: brightnessTemperature
@@ -411,7 +412,7 @@
                obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
                obserr_dtempf: [0.5, 2.0, 4.0, 2.0, 4.0]
 
-     # Channels 7, 10-16 Cloud fraction >2
+       # Channels 7, 10-16 Cloud fraction >2
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature
@@ -421,7 +422,7 @@
              name: MetaData/cloudAmount
            maxvalue: 2
 
-     # Variable assignment, OmF non bias corrected 
+       # Variable assignment, OmF non bias corrected 
        - filter: Variable Assignment
          assignments:
          - name: OmFNBC@DerivedMetaData
@@ -444,7 +445,7 @@
                  channels: 14
                coefs: [1, -1, 1, -1, 1, -1]
 
-     # Channels 7, 10-16, OmFNBC < -0.75 
+       # Channels 7, 10-16, OmFNBC < -0.75 
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature
@@ -455,7 +456,7 @@
            minvalue: -0.75
            max_exclusive: true
 
-     # Final gross check
+       # Final gross check
        - filter: Background Check
          filter variables:
          - name: brightnessTemperature
