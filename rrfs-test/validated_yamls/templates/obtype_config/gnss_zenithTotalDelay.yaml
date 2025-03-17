@@ -17,7 +17,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_ztd.nc
+             obsfile: jdiag_gnss_ztd_zenithTotalDelay.nc
 
          simulated variables: [zenithTotalDelay]
          observed variables: [zenithTotalDelay]
