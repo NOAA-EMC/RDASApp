@@ -29,6 +29,8 @@ obtype_configs=(
     #"rassda_airTemperature_126.yaml" # DO NOT ADD - Not yet phase 3
     #"vadwnd_winds_224.yaml" # DO NOT ADD - Not yet phase 3
     "atms_npp.yaml"
+    "abi_g16.yaml"
+    "abi_g18.yaml"
     #"atms_n20.yaml" # Waiting to add to ctest (different results on Hera/Jet?)
     #"amsua_n19.yaml" # Waiting to add to ctest
 )

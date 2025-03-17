@@ -11,7 +11,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: data/hofx/jdiag_abi_g18.nc4
+             obsfile: jdiag_abi_g18.nc4
          #io pool:
          #  max pool size: 1
          simulated variables: [brightnessTemperature]
@@ -37,7 +37,7 @@
   # -----------------------------------
        obs bias:
          input file: data/obs/abi_g18.satbias.nc4
-         output file: data/bc/out_abi_g18.satbias.nc4
+         output file: out_abi_g18.satbias.nc4
          variational bc:
            predictors:
            - name: constant
@@ -68,7 +68,7 @@
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: data/bc/out_abi_g18.satbias_cov.nc4
+           output file: out_abi_g18.satbias_cov.nc4
   # Observation Filters (QC)
   # ------------------------
        obs prior filters:
