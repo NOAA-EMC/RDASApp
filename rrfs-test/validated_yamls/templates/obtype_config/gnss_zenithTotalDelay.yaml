@@ -8,7 +8,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs/ioda_ztd.nc"
+             obsfile: data/obs/ioda_gnss_ztd.nc
 
          obsgrouping:
            group variables: ["stationIdentification"]
@@ -17,8 +17,10 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_gnss_ztd_zenithTotalDelay.nc
-
+             obsfile: jdiag_gnss_ztd.nc
+             allow overwrite: true
+         io pool:
+           max pool size: 1
          simulated variables: [zenithTotalDelay]
          observed variables: [zenithTotalDelay]
 
