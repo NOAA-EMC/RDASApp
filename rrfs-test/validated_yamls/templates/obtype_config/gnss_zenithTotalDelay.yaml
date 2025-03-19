@@ -44,12 +44,12 @@
          where:
            - variable:
                name: MetaData/latitude
-             minvalue:  20.0
-             maxvalue:  60.0
+             minvalue:  19.0
+             maxvalue:  62.0
            - variable:
                name: MetaData/longitude
-             minvalue: -135.0
-             maxvalue: -55.0
+             minvalue: -147.0
+             maxvalue: -48.0
          action: 
             name: reduce obs space
 
