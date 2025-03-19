@@ -252,7 +252,7 @@ def bufr_to_ioda(config, logger):
     # -----------------------
     dims = {'Location': np.arange(0, lat.shape[0])}
 
-    iodafile = "./ioda_ztd.nc"
+    iodafile = "./ioda_gnss_ztd.nc"
     obsspace = ioda_ospace.ObsSpace(iodafile, mode='w', dim_dict=dims)
 
     # Create Global attributes
