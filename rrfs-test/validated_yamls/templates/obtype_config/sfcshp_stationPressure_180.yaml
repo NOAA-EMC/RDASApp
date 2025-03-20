@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_sfcshp_stationPressure_180.nc4
+             obsfile: jdiag_sfcshp_stationPressure_180.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -270,4 +270,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc4
+         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc

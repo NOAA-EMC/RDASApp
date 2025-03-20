@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_rassda_airTemperature_126.nc4
+             obsfile: jdiag_rassda_airTemperature_126.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -28,7 +28,7 @@
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
            #gsi geovals:
-           #  filename: "obsout/rass_tsen_geoval_2024052700.nc4"
+           #  filename: "obsout/rass_tsen_geoval_2024052700.nc"
            #  levels_are_top_down: False
            variables:
            - name: airTemperature
@@ -268,4 +268,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/rassda_geovals_rrfs.nc4
+         #  filename: ./data/geovals/rassda_geovals_rrfs.nc

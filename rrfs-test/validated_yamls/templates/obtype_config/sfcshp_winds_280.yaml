@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_sfcshp_winds_280.nc4
+             obsfile: jdiag_sfcshp_winds_280.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -31,7 +31,7 @@
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
            #gsi geovals:
-           #  filename: "obsout/sfcship_uv_geoval_2024052700.nc4"
+           #  filename: "obsout/sfcship_uv_geoval_2024052700.nc"
            #  levels_are_top_down: False
            variables:
            - name: windEastward
@@ -314,4 +314,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc4
+         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc

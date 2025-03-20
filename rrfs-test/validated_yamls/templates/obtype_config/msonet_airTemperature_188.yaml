@@ -14,7 +14,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_msonet_airTemperature_188.nc4
+             obsfile: jdiag_msonet_airTemperature_188.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -28,7 +28,7 @@
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
            #gsi geovals:
-           #  filename: "obsout/sfc_tsen_geoval_2022052619.nc4"
+           #  filename: "obsout/sfc_tsen_geoval_2022052619.nc"
            #  levels_are_top_down: False
            variables:
            - name: airTemperature
@@ -268,4 +268,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/msonet_geovals_rrfs.nc4
+         #  filename: ./data/geovals/msonet_geovals_rrfs.nc
