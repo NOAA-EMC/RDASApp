@@ -268,11 +268,20 @@ for group in groups:
             g.createVariable(var, vartype, 'Location', fill_value=fill)
         except:  # String variables
             g.createVariable(var, 'str', 'Location')
-        g.variables[var][:] = invar[:][inside_indices]
+        # Make sure lat/lon are not masked
+        if var in ['latitude', 'longitude']: 
+            g.variables[var][:] = invar[:][inside_indices].data
+        else:
+            g.variables[var][:] = invar[:][inside_indices]
         # Copy attributes for this variable
         for attr in invar.ncattrs():
             if '_FillValue' in attr: continue
             g.variables[var].setncattr(attr, invar.getncattr(attr))
+
+# Finally add global attribute with the settings used to run this domain check
+fout.setncattr('Orig_obs_file', obs_filename)
+fout.setncattr('Grid_file', grid_filename)
+fout.setncattr('Shrink_factor',hull_shrink_factor)
 
 # Close the datasets
 obs_ds.close()
