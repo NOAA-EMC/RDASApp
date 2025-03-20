@@ -333,6 +333,11 @@ g = fout.createGroup('ObsError')
 g.createVariable('brightnessTemperature', vartype, dimensions, fill_value=fill)
 g.variables['brightnessTemperature'][:,:] = 999
 
+# Finally add global attribute with the settings used to run this domain check
+fout.setncattr('Orig_obs_file', obs_filename)
+fout.setncattr('Grid_file', grid_filename)
+fout.setncattr('Shrink_factor',hull_shrink_factor
+
 # Close the datasets
 obs_ds.close()
 fout.close()
