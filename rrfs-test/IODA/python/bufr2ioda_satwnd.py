@@ -100,7 +100,7 @@ def bufr_to_ioda(config, logger):
     # MetaData
     lat = r.get('latitude')
     lon = r.get('longitude')
-    lon[lon > 180] -= 360      # Convert to [-180,180]
+    lon[lon < 0] += 360      # Convert to [0,360]
 
     said = r.get('satelliteId')
     zen  = r.get('satelliteZenithAngle', type='float')
