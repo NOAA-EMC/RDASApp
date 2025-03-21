@@ -77,4 +77,4 @@
 	path = sorc/bufr-query
 	url = https://github.com/NOAA-EMC/bufr-query.git
 	branch = develop
-	igore = all
+	ignore = all
