@@ -1959,16 +1959,16 @@ northward_wind_at_surface                    | Min:-1.3049478530883791e+01 Max:+
 Analysis mean :
 ----------------------------------------------------------------------------------------------------
 State print | number of fields = 22 | cube sphere face size: C420
-eastward_wind                                | Min:-2.6129156977452435e+01 Max:+5.3218056746885310e+01 RMS:+1.3039503278826693e+01
-northward_wind                               | Min:-3.2574393754530632e+01 Max:+3.6407290569011856e+01 RMS:+6.0726271772387799e+00
-u_component_of_native_D_grid_wind            | Min:-2.6236292207844265e+01 Max:+5.3254787633183795e+01 RMS:+1.3117536570150598e+01
-v_component_of_native_D_grid_wind            | Min:-2.9171615096497469e+01 Max:+3.7837027643399090e+01 RMS:+5.9389910656576115e+00
-air_temperature                              | Min:+1.9776548503305690e+02 Max:+3.1415495890703409e+02 RMS:+2.5831251161897256e+02
-air_pressure_thickness                       | Min:+1.4029913822109916e+02 Max:+3.3254684879255328e+03 RMS:+1.7742686439797615e+03
-water_vapor_mixing_ratio_wrt_moist_air       | Min:+2.9804483521506551e-08 Max:+2.3611033697980881e-02 RMS:+5.4911683887065525e-03
-cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+1.4110282863838048e-04 RMS:+1.7068021970793267e-06
-cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+9.9069968655447738e-04 RMS:+1.5184603405441123e-05
-ozone_mass_mixing_ratio                      | Min:+7.5460618334572090e-12 Max:+1.5790425759054646e-05 RMS:+4.4489150520242377e-06
+eastward_wind                                | Min:-2.6129156977452435e+01 Max:+5.3214225753584543e+01 RMS:+1.3039910319749813e+01
+northward_wind                               | Min:-3.2568476790070648e+01 Max:+3.6401406954800450e+01 RMS:+6.0726490855007924e+00
+u_component_of_native_D_grid_wind            | Min:-2.6236292207844265e+01 Max:+5.3253536015920993e+01 RMS:+1.3117795558984223e+01
+v_component_of_native_D_grid_wind            | Min:-2.9170965960898556e+01 Max:+3.7849256108987362e+01 RMS:+5.9393392173153954e+00
+air_temperature                              | Min:+1.9776548503305690e+02 Max:+3.1415518032122679e+02 RMS:+2.5831278678811469e+02
+air_pressure_thickness                       | Min:+1.4029914136945266e+02 Max:+3.3254684879255328e+03 RMS:+1.7742692815234761e+03
+water_vapor_mixing_ratio_wrt_moist_air       | Min:+2.9804483521506551e-08 Max:+2.3606995720605130e-02 RMS:+5.4915356824476397e-03
+cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+1.4096995681798933e-04 RMS:+1.7078327648579972e-06
+cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+9.9069968655447738e-04 RMS:+1.5186262254150096e-05
+ozone_mass_mixing_ratio                      | Min:+7.5460618334572090e-12 Max:+1.5790425759054646e-05 RMS:+4.4489152276751345e-06
 geopotential_height_times_gravity_at_surface | Min:+0.0000000000000000e+00 Max:+3.5301851562500007e+04 RMS:+7.8466628379223766e+03
 f10m                                         | Min:+1.0008501529693603e+00 Max:+1.1021688739458719e+00 RMS:+1.0205752314414909e+00
 slmsk                                        | Min:+0.0000000000000000e+00 Max:+9.9999999999999989e-01 RMS:+7.8752796924500357e-01
