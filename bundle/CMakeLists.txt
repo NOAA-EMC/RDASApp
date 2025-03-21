@@ -104,6 +104,7 @@ endif()
   if(BUILD_IODA_CONVERTERS)
     ecbuild_bundle( PROJECT iodaconv SOURCE "../sorc/iodaconv" )
   endif()
+
 # Bufr-query
   ecbuild_bundle( PROJECT bufr-query SOURCE "../sorc/bufr-query" )
 

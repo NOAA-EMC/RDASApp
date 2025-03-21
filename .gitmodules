@@ -76,5 +76,5 @@
 [submodule "sorc/bufr-query"]
 	path = sorc/bufr-query
 	url = https://github.com/NOAA-EMC/bufr-query.git
-        branch = develop
-        ignore = all
+	branch = develop
+	ignore = all
