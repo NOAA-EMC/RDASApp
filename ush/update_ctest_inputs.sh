@@ -28,6 +28,12 @@ CMAKE_CURRENT_BINARY_DIR=${RDASApp}/build/rrfs-test
 rrfs_test_data_local=${CMAKE_SOURCE_DIR}/rrfs-test-data/
 src_yaml=${CMAKE_SOURCE_DIR}/rrfs-test/testinput
 
+# First run the gen_yaml script to regenerate the ctest yamls
+currdir=`pwd`
+cd ${RDASApp}/rrfs-test/validated_yamls
+./gen_yaml_ctest.sh
+cd ${currdir}
+
 if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then 
    for ctest in "${rrfs_fv3jedi_tests[@]}"; do
       case=${ctest}
