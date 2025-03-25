@@ -14,6 +14,8 @@
 # - profile_rms_bias.py     : Produces vertical profile plots of bias and
 #                             RMS statistics using pressure as the
 #                             vertical coordinate.
+# - map_ombg.py             : Creates 2d map scatter of ombg values with bias
+#                             and rms stats displayed.
 #
 # This script automates the process by:
 # - Iterating over a range of dates and processing log and diagnostic files
@@ -33,6 +35,7 @@ HEATMAP_JO="NO"
 HEATMAP_RMS_BIAS="NO"
 PROFILE_RMS_BIAS="NO"
 HEATMAP_SANITY="NO"
+MAP_OMBG="NO"
 UPLOAD_TO_RZDM="NO"
 #### END DEFAULTS ###
 
@@ -46,13 +49,13 @@ EDATE=2024052700
 HEATMAP_JO="YES"
 HEATMAP_RMS_BIAS="YES"
 PROFILE_RMS_BIAS="YES"
-#HEATMAP_SANITY="YES"
+MAP_OMBG="YES"
 #UPLOAD_TO_RZDM="YES"
+#HEATMAP_SANITY="YES"
 
 # Retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
 VERSION="v2.0.9.7"
 TAG="d12km2097"
-#EXP_NAME="baseline0_${TAG}"
 EXP_NAME="hrly_12km"
 OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
 COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
@@ -128,22 +131,28 @@ while [[ ${date} -le ${EDATE} ]]; do
     python heatmap_sanity_check.py $jdiag
   fi
 
+  # Plts 2d map plots of rms and bias (from jdiag files)
+  if [[ ${MAP_OMBG} == "YES" ]]; then
+    echo "? Working on map ombg: ${date}"
+    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*33*)
+    jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*88*)
+    python map_ombg.py ${jdiags[@]}
+    mv ${pdy}*map.png ${EXP_NAME}/${pdy}/.
+  fi
+
   # Increase date by 1 day
   date=$(${ndate} 24 ${date})
 done #date
 
 # START OF CYCLE-AVERAGED DIAGNOSTIC TOOLS
 
-# Plots vertical profiles of rms and bias (from jdiag files)
+# Plots vertical profiles of rms and bias (from jdiag files) over a date range.
 if [[ ${PROFILE_RMS_BIAS} == "YES" ]]; then
   echo "? Working on profiles: ${SDATE} to ${EDATE}"
-  #jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*Temp*133*)
-  jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*133*)
-  #echo "${jdiags[@]:1:2}"; exit
+  jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
   python profile_rms_bias.py ${jdiags[@]}
-  mv vert*.png ${EXP_NAME}/.
+  mv profile*.png ${EXP_NAME}/.
 fi
-
 
 # Upload restults to RZDM
 if [[ ${UPLOAD_TO_RZDM} == "YES" ]]; then
