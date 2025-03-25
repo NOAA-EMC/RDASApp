@@ -39,12 +39,7 @@ MAP_OMBG="NO"
 UPLOAD_TO_RZDM="NO"
 #### END DEFAULTS ###
 
-
 #### USER-DEFINED VARIABLES #################################################
-# Cycle start and end dates to process
-SDATE=2024052700
-EDATE=2024052700
-
 # Specify which functions to run (uncomment/comment to turn on/off)
 HEATMAP_JO="YES"
 HEATMAP_RMS_BIAS="YES"
@@ -52,6 +47,10 @@ PROFILE_RMS_BIAS="YES"
 MAP_OMBG="YES"
 #UPLOAD_TO_RZDM="YES"
 #HEATMAP_SANITY="YES"
+
+# Cycle start and end dates to process
+SDATE=2024052700
+EDATE=2024052700
 
 # Retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
 VERSION="v2.0.9.7"
@@ -110,7 +109,6 @@ while [[ ${date} -le ${EDATE} ]]; do
   if [[ ${HEATMAP_JO} == "YES" ]]; then
     echo "? Working on jo info heatmaps: ${pdy}"
     logs=(${LOGDIR}/rrfs.${pdy}/*/det/rrfs_jedivar_${TAG}_${pdy}*.log)
-    #echo "${logs[1]}"; exit
     python heatmap_jo.py ${logs[@]}
     mv ${pdy}*.png ${EXP_NAME}/${pdy}/.
   fi
@@ -119,30 +117,29 @@ while [[ ${date} -le ${EDATE} ]]; do
   if [[ ${HEATMAP_RMS_BIAS} == "YES" ]]; then
     echo "? Working on rms & bias heatmaps: ${pdy}"
     jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
-    #echo "${jdiags[1]}"; exit
     python heatmap_rms_bias.py ${jdiags[@]}
     mv ${pdy}*.png ${EXP_NAME}/${pdy}/.
   fi
 
-  # Sanity check rms and bias for a single heatmap cell (from log files)
+  # Plots 2d map scatter of ombg values (from jdiag) with bias and rms stats displayed.
+  if [[ ${MAP_OMBG} == "YES" ]]; then
+    echo "? Working on map ombg: ${date}"
+    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+    jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*88*)
+    python map_ombg.py ${jdiags[@]}
+    mv ${pdy}*map.png ${EXP_NAME}/${pdy}/.
+  fi
+
+  # Sanity check rms and bias for a single heatmap cell (from jdiag files)
   if [[ $HEATMAP_SANITY == "YES" ]]; then
     jdiag="${JDIAGDIR}/${pdy}/rrfs_jedivar_${CYC}_${VERSION}/det/jedivar_${CYC}/jdiag_${OBTYPE}*"
     echo "? Working on sanity check: ${pdy}, ${CYC}, ${OBTYPE}"
     python heatmap_sanity_check.py $jdiag
   fi
 
-  # Plts 2d map plots of rms and bias (from jdiag files)
-  if [[ ${MAP_OMBG} == "YES" ]]; then
-    echo "? Working on map ombg: ${date}"
-    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*33*)
-    jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*88*)
-    python map_ombg.py ${jdiags[@]}
-    mv ${pdy}*map.png ${EXP_NAME}/${pdy}/.
-  fi
-
   # Increase date by 1 day
   date=$(${ndate} 24 ${date})
-done #date
+done # date loop
 
 # START OF CYCLE-AVERAGED DIAGNOSTIC TOOLS
 
@@ -166,8 +163,6 @@ if [[ ${UPLOAD_TO_RZDM} == "YES" ]]; then
   done
 
   # Copy the data to rzdm
-  #scp ${pdy_list[@]/%/*.png} ${USER}@${HOST}:${DESTINATION} #YYYYMMDD*png
-  #scp -r ${pdy_list[@]/%//} ${USER}@${HOST}:${DESTINATION}  #YYYYMMDD/
   scp -r ${EXP_NAME} ${USER}@${HOST}:${DESTINATION}
 fi
 
