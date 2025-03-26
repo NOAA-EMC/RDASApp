@@ -7,14 +7,12 @@
 # Supported diagnostic scripts:
 # - heatmap_jo.py           : Generates heatmaps for Nonlinear Jo values,
 #                             observation counts, Jo/n, and Jo/n percent change.
-# - heatmap_rms_bias.py     : Creates heatmaps for bias and RMS statistics
-#                             from diagnostic files.
-# - heatmap_sanity_check.py : Performs a sanity check on a single heatmap
-#                             cell to ensure correctness.
-# - profile_rms_bias.py     : Produces vertical profile plots of bias and
+# - heatmap_rms_bias_fit.py : Creates heatmaps for bias and RMS statistics
+#                             from diagnostic files and fitting ratio.
+# - profile_rms_bias_fit.py : Produces vertical profile plots of bias and
 #                             RMS statistics using pressure as the
 #                             vertical coordinate.
-# - map_ombg.py             : Creates 2d map scatter of ombg values with bias
+# - map_ombg_oman.py        : Creates 2d map scatter of ombg/an values with bias
 #                             and rms stats displayed.
 #
 # This script automates the process by:
@@ -26,27 +24,26 @@
 # - Set the required variables below to define the experiment, date range,
 #   and desired plots.
 # - Enable or disable specific plot generation by setting HEATMAP_JO,
-#   HEATMAP_RMS_BIAS, PROFILE_RMS_BIAS, etc.
+#   HEATMAP_RMS_BIAS_FIT, PROFILE_RMS_BIAS_FIT, etc.
 # - Run the script to generate the required diagnostics and optionally upload
 #   results.
 
 #### DEFAULTS #######
 HEATMAP_JO="NO"
-HEATMAP_RMS_BIAS="NO"
-PROFILE_RMS_BIAS="NO"
-HEATMAP_SANITY="NO"
-MAP_OMBG="NO"
+HEATMAP_RMS_BIAS_FIT="NO"
+PROFILE_RMS_BIAS_FIT="NO"
+MAP_OMBG_OMAN="NO"
 UPLOAD_TO_RZDM="NO"
 #### END DEFAULTS ###
 
 #### USER-DEFINED VARIABLES #################################################
+
 # Specify which functions to run (uncomment/comment to turn on/off)
-HEATMAP_JO="YES"
-HEATMAP_RMS_BIAS="YES"
-PROFILE_RMS_BIAS="YES"
-MAP_OMBG="YES"
-#UPLOAD_TO_RZDM="YES"
-#HEATMAP_SANITY="YES"
+#HEATMAP_JO="YES"
+#HEATMAP_RMS_BIAS_FIT="YES"
+#PROFILE_RMS_BIAS_FIT="YES"
+#MAP_OMBG_OMAN="YES"
+UPLOAD_TO_RZDM="YES"
 
 # Cycle start and end dates to process
 SDATE=2024052700
@@ -66,10 +63,6 @@ RDASApp="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.ph
 # Specify the log and jdiag directories
 LOGDIR="${COMROOT}/rrfs/${VERSION}/logs"
 JDIAGDIR="${DATAROOT}"
-
-# Options only for sanity checks
-CYC=02
-OBTYPE="msonet_airTemperature_188"
 
 # Options only for RZDM
 USER="donald.lippi"
@@ -114,27 +107,20 @@ while [[ ${date} -le ${EDATE} ]]; do
   fi
 
   # Plots rms and bias (from jdiag files)
-  if [[ ${HEATMAP_RMS_BIAS} == "YES" ]]; then
-    echo "? Working on rms & bias heatmaps: ${pdy}"
+  if [[ ${HEATMAP_RMS_BIAS_FIT} == "YES" ]]; then
+    echo "? Working on rms, bias, fitting ratio heatmaps: ${pdy}"
     jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
-    python heatmap_rms_bias.py ${jdiags[@]}
+    python heatmap_rms_bias_fit.py ${jdiags[@]}
     mv ${pdy}*.png ${EXP_NAME}/${pdy}/.
   fi
 
   # Plots 2d map scatter of ombg values (from jdiag) with bias and rms stats displayed.
-  if [[ ${MAP_OMBG} == "YES" ]]; then
-    echo "? Working on map ombg: ${date}"
-    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-    jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*88*)
-    python map_ombg.py ${jdiags[@]}
+  if [[ ${MAP_OMBG_OMAN} == "YES" ]]; then
+    echo "? Working on map ombg & oman: ${date}"
+    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*33*)
+    #jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*88*)
+    python map_ombg_oman.py ${jdiags[@]}
     mv ${pdy}*map.png ${EXP_NAME}/${pdy}/.
-  fi
-
-  # Sanity check rms and bias for a single heatmap cell (from jdiag files)
-  if [[ $HEATMAP_SANITY == "YES" ]]; then
-    jdiag="${JDIAGDIR}/${pdy}/rrfs_jedivar_${CYC}_${VERSION}/det/jedivar_${CYC}/jdiag_${OBTYPE}*"
-    echo "? Working on sanity check: ${pdy}, ${CYC}, ${OBTYPE}"
-    python heatmap_sanity_check.py $jdiag
   fi
 
   # Increase date by 1 day
@@ -144,10 +130,12 @@ done # date loop
 # START OF CYCLE-AVERAGED DIAGNOSTIC TOOLS
 
 # Plots vertical profiles of rms and bias (from jdiag files) over a date range.
-if [[ ${PROFILE_RMS_BIAS} == "YES" ]]; then
-  echo "? Working on profiles: ${SDATE} to ${EDATE}"
+if [[ ${PROFILE_RMS_BIAS_FIT} == "YES" ]]; then
+  spdy=${SDATE:0:8}
+  epdy=${EDATE:0:8}
+  echo "? Working on profiles: ${spdy}00 to ${edpy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-  python profile_rms_bias.py ${jdiags[@]}
+  python profile_rms_bias_fit.py ${jdiags[@]}
   mv profile*.png ${EXP_NAME}/.
 fi
 

@@ -2,14 +2,13 @@
 import sys
 import numpy as np
 import xarray as xr
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 import re
 import warnings
 from datetime import datetime, timedelta
-from matplotlib.colors import Normalize
-import pdb
 
 # Suppress unnecessary warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -37,14 +36,23 @@ def generate_full_cycle_range(jdiag_files):
     return full_cycles, date
 
 def compute_bias_rms(jdiag_files, cycles, obs_types):
-    """Compute bias (mean O-B) and RMS (sqrt of mean squared O-B) for each jdiag file, ensuring missing files show as NaN."""
-    stats = {f"{cycle}_{obs}": {"bias": np.nan, "rms": np.nan, "bias_corrected_rms": np.nan} for cycle in cycles for obs in obs_types}  # Initialize with NaNs
+    """Compute bias and RMS for OMB and OMA, and fitting ratio for each jdiag file."""
+    # Initialize stats dictionary with NaNs for all metrics
+    stats = {
+        f"{cycle}_{obs}": {
+            "ombg_bias": np.nan,
+            "ombg_rms": np.nan,
+            "oman_bias": np.nan,
+            "oman_rms": np.nan,
+            "fitting_ratio": np.nan
+        } for cycle in cycles for obs in obs_types
+    }
 
     for file in jdiag_files:
         try:
-            ds_ombg = xr.open_dataset(file, group="ombg")  # Read the ombg
-            ds_obserr = xr.open_dataset(file, group="EffectiveError0") # Read the ObsError
-            # Use EffectiveQC2 in the future.
+            ds_ombg = xr.open_dataset(file, group="ombg")
+            ds_obserr = xr.open_dataset(file, group="EffectiveError0")
+            ds_oman = xr.open_dataset(file, group="oman")
 
             obs_var = list(ds_ombg.data_vars.keys())[0]  # Extract variable name
             if obs_var not in ds_ombg.variables:
@@ -52,15 +60,18 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
 
             ombg = ds_ombg[obs_var].values   # Get O-B values
             obserr = ds_obserr[obs_var].values  # Get observation error values
+            oman = ds_oman[obs_var].values    # Get O-A values
 
             # Apply valid data filtering (ignore fill values)
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
             valid_mask = (ombg != fill_value) & (~np.isnan(obserr)) & (obserr < 1e+10)
             ombg = ombg[valid_mask]  # Keep only assimilated observations
+            oman = oman[valid_mask]
 
             # Apply unit conversion if needed
             scale_factor = UNIT_CONVERSIONS.get(obs_var, 1.0)
             ombg *= scale_factor
+            oman *= scale_factor
 
             # Extract cycle and obs type
             match = re.search(r"(\d{8})/.*jedivar_(\d{2})", file)
@@ -74,23 +85,42 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
                 if ombg.size == 0 or np.isnan(ombg).all():
                     continue
                 else:
-                    bias = np.nanmean(ombg)
-                    rms = np.sqrt(np.nanmean(ombg ** 2))
-                    bias_corrected_rms = np.sqrt(np.nanmean((ombg - bias) ** 2))
+                    # Compute OMB statistics
+                    ombg_bias = np.nanmean(ombg)
+                    ombg_rms = np.sqrt(np.nanmean(ombg ** 2))
 
+                    # Compute OMA statistics
+                    oman_bias = np.nanmean(oman)
+                    oman_rms = np.sqrt(np.nanmean(oman ** 2))
+
+                    # Compute fitting ratio (RMS_OMA / RMS_OMB)
+                    fitting_ratio = (
+                        (ombg_rms - oman_rms) / ombg_rms
+                        if not np.isnan(ombg_rms) and not np.isnan(oman_rms) and ombg_rms != 0
+                        else np.nan
+                    )
+
+                    # Store all statistics
                     stats[key] = {
-                        "bias": bias,
-                        "rms": rms,
-                        "bias_corrected_rms": bias_corrected_rms
+                        "ombg_bias": ombg_bias,
+                        "ombg_rms": ombg_rms,
+                        "oman_bias": oman_bias,
+                        "oman_rms": oman_rms,
+                        "fitting_ratio": fitting_ratio
                     }
 
             ds_ombg.close()
             ds_obserr.close()
+            ds_oman.close()
 
         except FileNotFoundError:
             print(f"? Warning: Missing file {file}")
         except Exception as e:
             print(f"? Error processing {file}: {e}")
+            if "key" in locals():
+                stats[key]["oman_bias"] = np.nan
+                stats[key]["oman_rms"] = np.nan
+                stats[key]["fitting_ratio"] = np.nan
 
     return stats
 
@@ -109,14 +139,14 @@ def extract_obs_types(jdiag_files):
     return sorted(obs_types)
 
 def get_core_obs_type(obs_type):
-    """Extracts the core observation variable name from the full type (e.g., adpsfc_airTemperature_181 ? airTemperature)."""
+    """Extracts the core observation variable name from the full type."""
     match = re.match(r".*?_(.*?)_\d+$", obs_type)
-    return match.group(1) if match else obs_type  # Extract core variable name
+    return match.group(1) if match else obs_type
 
-def plot_bias_rms_heatmaps(stats, title, output_file, cycles, obs_types, metric="bias"):
-    """Plot grouped heatmaps for Bias or RMS statistics with fixed color scales per observation category."""
+def plot_bias_rms_heatmaps(stats, title, output_file, cycles, obs_types, metric="ombg_bias"):
+    """Plot grouped heatmaps for specified metric with appropriate color scales and highlighting."""
 
-    # Define fixed color ranges for bias and RMS
+    # Define fixed color ranges for each metric type
     bias_ranges = {
         "Temperature": (-1, 1),
         "Humidity": (-1, 1),
@@ -187,20 +217,46 @@ def plot_bias_rms_heatmaps(stats, title, output_file, cycles, obs_types, metric=
                 matrix[i, j] = values[metric]
 
         if np.isnan(matrix).all():
-            #print(f"? Warning: No valid data for {group_name}, skipping plot.")
             continue
 
-        # **Fixed colorbar scaling per group and metric**
-        vmin, vmax = bias_ranges[group_name] if metric == "bias" else rms_ranges[group_name]
-        cbar_label = f"{metric.capitalize()} ({colorbar_labels[group_name]})"
-        cmap = "coolwarm" if metric == "bias" else "Reds"
+        # Set color scale and labels based on metric
+        if metric in ["ombg_bias", "oman_bias"]:
+            vmin, vmax = bias_ranges[group_name]
+            cmap = "coolwarm"
+            center = 0
+            cbar_label = f"{metric.replace('_', ' ').upper()} ({colorbar_labels[group_name]})"
+        elif metric in ["ombg_rms", "oman_rms"]:
+            vmin, vmax = rms_ranges[group_name]
+            cmap = "Reds"
+            center = None
+            cbar_label = f"{metric.replace('_', ' ').upper()} ({colorbar_labels[group_name]})"
+        elif metric == "fitting_ratio":
+            vmin = 0
+            vmax = 1.0
+            center = 0.5
+            cmap = "coolwarm"
+            #cmap = plt.get_cmap("coolwarm")
+            cmap = mpl.cm.get_cmap("coolwarm").copy()
+            cmap.set_under("black")  # Set values below vmin (0) to black
+            cbar_label = "Fitting Ratio (OMB RMS - OMA RMS) / OMB RMS"
 
-        cycle_xticks = [cycle.split()[1] for cycle in cycles]  # Remove YYYYMMDD from cycles
-        sns.heatmap(matrix, annot=True, fmt=".2f", cmap=cmap, norm=Normalize(vmin=vmin, vmax=vmax),
+        cycle_xticks = [cycle.split()[1] for cycle in cycles]  # Remove YYYYMMDD
+        sns.heatmap(matrix, annot=True, fmt=".2f", cmap=cmap, vmin=vmin, vmax=vmax, center=center,
                     xticklabels=cycle_xticks, yticklabels=obs_list, linewidths=0.5, linecolor="gray", ax=ax,
                     cbar=True, cbar_kws={"label": cbar_label})
 
-        ax.set_title(f"{group_name} - {metric.capitalize()}")
+        # Add highlighting for fitting ratio
+        if metric == "fitting_ratio":
+            mask_low = matrix < 0.15  # Highlight weak DA effect
+            mask_high = matrix > 0.6  # Highlight potential overfitting
+            for i in range(matrix.shape[0]):
+                for j in range(matrix.shape[1]):
+                    if mask_low[i, j]:
+                        ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=False, edgecolor='blue', lw=2))
+                    if mask_high[i, j]:
+                        ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=False, edgecolor='red', lw=2))
+
+        ax.set_title(f"{group_name} - {metric.replace('_', ' ').capitalize()}")
         ax.set_xlabel("Analysis Cycle Time (UTC)")
         ax.set_ylabel("Observation Type")
         ax.tick_params(axis='x', rotation=45)
@@ -216,9 +272,11 @@ if __name__ == "__main__":
 
     cycles, date = generate_full_cycle_range(jdiag_files)
     obs_types = extract_obs_types(jdiag_files)
-    bias_rms_stats = compute_bias_rms(jdiag_files, cycles, obs_types)
+    stats = compute_bias_rms(jdiag_files, cycles, obs_types)
 
-    plot_bias_rms_heatmaps(bias_rms_stats, f"Grouped Bias Heatmaps: {date}", f"{date}_bias_heatmap.png", cycles, obs_types, metric="bias")
-    plot_bias_rms_heatmaps(bias_rms_stats, f"Grouped RMS Heatmaps {date}", f"{date}_rms_heatmap.png", cycles, obs_types, metric="rms")
-    plot_bias_rms_heatmaps(bias_rms_stats, f"Grouped BCRMS Heatmaps {date}", f"{date}_bcrms_heatmap.png", cycles, obs_types, metric="bias_corrected_rms")
-
+    # Plot heatmaps for each metric
+    plot_bias_rms_heatmaps(stats, f"OMB Bias Heatmaps: {date}", f"{date}_ombg_bias_heatmap.png", cycles, obs_types, metric="ombg_bias")
+    plot_bias_rms_heatmaps(stats, f"OMB RMS Heatmaps: {date}", f"{date}_ombg_rms_heatmap.png", cycles, obs_types, metric="ombg_rms")
+    plot_bias_rms_heatmaps(stats, f"OMA Bias Heatmaps: {date}", f"{date}_oman_bias_heatmap.png", cycles, obs_types, metric="oman_bias")
+    plot_bias_rms_heatmaps(stats, f"OMA RMS Heatmaps: {date}", f"{date}_oman_rms_heatmap.png", cycles, obs_types, metric="oman_rms")
+    plot_bias_rms_heatmaps(stats, f"Fitting Ratio Heatmaps: {date}", f"{date}_fitting_ratio_heatmap.png", cycles, obs_types, metric="fitting_ratio")

@@ -85,12 +85,14 @@ def process_and_plot_jdiag(file):
     try:
         # Open the ombg and MetaData groups
         ds_ombg = xr.open_dataset(file, group="ombg")
+        ds_oman = xr.open_dataset(file, group="oman")
         ds_meta = xr.open_dataset(file, group="MetaData")
         ds_obserr = xr.open_dataset(file, group="EffectiveError0")
 
         # Extract the observation variable (assuming one variable per ombg group)
         obs_var = list(ds_ombg.data_vars.keys())[0]
         ombg = ds_ombg[obs_var].values
+        oman = ds_oman[obs_var].values
         obserr = ds_obserr[obs_var].values
         lats = ds_meta['latitude'].values
         lons = ds_meta['longitude'].values
@@ -98,9 +100,11 @@ def process_and_plot_jdiag(file):
         # Filter valid data
         fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
         valid_mask = (ombg != fill_value) & (~np.isnan(ombg)) & (obserr < 1e+10)
+        valid_mask = (oman != fill_value) & (~np.isnan(oman)) & (obserr < 1e+10)
         lats = lats[valid_mask]
         lons = lons[valid_mask]
         ombg = ombg[valid_mask]
+        oman = oman[valid_mask]
 
         if ombg.size == 0:
             print(f"\x1b[31m? Warning: No valid data in {file}, skipping plot.\x1b[0m")
@@ -111,10 +115,13 @@ def process_and_plot_jdiag(file):
         # Apply unit conversion if needed
         scale_factor = UNIT_CONVERSIONS.get(obs_var, 1.0)
         ombg *= scale_factor
+        oman *= scale_factor
 
         # Compute bias and rms stats
-        bias = np.nanmean(ombg)
-        rms = np.sqrt(np.nanmean(ombg**2))
+        ombg_bias = np.nanmean(ombg)
+        ombg_rms = np.sqrt(np.nanmean(ombg**2))
+        oman_bias = np.nanmean(oman)
+        oman_rms = np.sqrt(np.nanmean(oman**2))
 
         # Determine category, color range, and units
         core_obs = get_core_obs_type(obtype)
@@ -122,35 +129,42 @@ def process_and_plot_jdiag(file):
         vmin, vmax = COLOR_RANGES.get(category, (-5, 5))
         units = UNITS.get(category, "unknown")
 
-        # Create the plot
-        fig = plt.figure(figsize=(10, 6))
-        ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
+        # Create figure with two subplots
+        fig, axes = plt.subplots(2, 1, figsize=(12, 8), subplot_kw={'projection': ccrs.PlateCarree()})
 
-        # Add map features
-        ax.add_feature(cfeature.COASTLINE)
-        ax.add_feature(cfeature.BORDERS)
-        ax.add_feature(cfeature.STATES)
+        # Store scatter plots for later colorbar
+        scatters = []
 
-        # Set the fixed extent for the contiguous USA
-        ax.set_extent([-132.5, -65, 22, 53], crs=ccrs.PlateCarree())
+        # Loop through the subplots and plot data
+        for ax, data, bias, rms, label in zip(axes, [ombg, oman], [ombg_bias, oman_bias], [ombg_rms, oman_rms], ["OMBG", "OMAN"]):
+            # Add map features
+            ax.add_feature(cfeature.COASTLINE)
+            ax.add_feature(cfeature.BORDERS)
+            ax.add_feature(cfeature.STATES)
 
-        # Scatter plot of OMBG values
-        sc = ax.scatter(lons, lats, c=ombg, cmap='coolwarm', vmin=vmin, vmax=vmax, s=1, transform=ccrs.PlateCarree())
-        cbar = plt.colorbar(sc, ax=ax, orientation='vertical', pad=0.05)
-        cbar.set_label(f'OMBG ({units})')
+            # Set the fixed extent for the contiguous USA
+            ax.set_extent([-132.5, -65, 22, 53], crs=ccrs.PlateCarree())
 
-        # Set title with number of observations
-        nobs = len(ombg)
-        title = f"OMBG for {obtype} on {date} {cycle} (nobs: {nobs})"
-        ax.set_title(title)
+            # Scatter plot of OMBG values
+            sc = ax.scatter(lons, lats, c=data, cmap='coolwarm', vmin=vmin, vmax=vmax, s=1, transform=ccrs.PlateCarree())
+            scatters.append(sc)
 
-        # Annotate RMS and bias in lower left corner
-        ax.text(-130, 23, f"Bias: {bias:.2f} {units}\nRMS: {rms:.2f} {units}",
-                transform=ccrs.PlateCarree(), fontsize=10, color='black',
-                bbox=dict(facecolor='white', alpha=0.7, edgecolor='black'))
+            # Set title with number of observations
+            nobs = len(ombg)
+            title = f"{label} for {obtype} on {date} {cycle} (nobs: {nobs})"
+            ax.set_title(title)
+
+            # Annotate RMS and bias in lower left corner
+            ax.text(0.02, 0.04, f"Bias: {bias:.2f} {units}\nRMS: {rms:.2f} {units}",
+            transform=ax.transAxes,  # relative to subplot
+            fontsize=10, color='black',
+            bbox=dict(facecolor='white', alpha=0.7, edgecolor='black'))
+
+        cbar = plt.colorbar(scatters[0], ax=axes, orientation='vertical', pad=0.05)
+        cbar.set_label(f'{units}')
 
         # Save the plot
-        output_file = f"{date}_{cycle}_{obtype}_ombg_map.png"
+        output_file = f"{date}_{cycle}_{obtype}_ombg_oman_map.png"
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         plt.close(fig)
         print(f"Saved plot: \x1b[35m{output_file}\x1b[0m")
