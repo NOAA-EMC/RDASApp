@@ -4,6 +4,7 @@
          name: abi_g16
          distribution:
            name: "@DISTRIBUTION@"
+           halo size: 300e3
          obsdatain:
            engine:
              type: H5File
@@ -33,7 +34,9 @@
            IRVISlandCoeff: IGBP
          linear obs operator:
            Absorbers: [H2O, O3]
-
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 300e3 # orig
   # Observation Bias Correction (VarBC)
   # -----------------------------------
        obs bias:
