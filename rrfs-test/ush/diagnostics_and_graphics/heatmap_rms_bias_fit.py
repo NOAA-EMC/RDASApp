@@ -75,7 +75,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
 
             # Extract cycle and obs type
             match = re.search(r"(\d{8})/.*jedivar_(\d{2})", file)
-            obtype_match = re.search(r"jdiag_(.+)\.nc4", os.path.basename(file))
+            obtype_match = re.search(r"jdiag_(.+)\.nc4?$", os.path.basename(file))
             if match and obtype_match:
                 date, hour = match.groups()
                 cycle = f"{date} {hour}Z"
@@ -130,7 +130,7 @@ def extract_obs_types(jdiag_files):
 
     for file in jdiag_files:
         filename = os.path.basename(file)
-        obtype_match = re.search(r"jdiag_(.+)\.nc4", filename)
+        obtype_match = re.search(r"jdiag_(.+)\.nc4?$", filename)
         if obtype_match:
             obs_types.add(obtype_match.group(1))
         else:

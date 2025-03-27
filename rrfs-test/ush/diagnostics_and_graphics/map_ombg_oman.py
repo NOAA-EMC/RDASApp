@@ -60,7 +60,7 @@ def extract_info_from_path(file_path):
         cycle = "Unknown"
 
     # Extract observation type from filename
-    obtype_match = re.search(r"jdiag_(.+)\.nc4", os.path.basename(file_path))
+    obtype_match = re.search(r"jdiag_(.+)\.nc4?$", os.path.basename(file_path))
     obtype = obtype_match.group(1) if obtype_match else "Unknown"
     return date, cycle, obtype
 

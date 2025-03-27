@@ -42,7 +42,7 @@ def compute_binned_stats_per_time(file):
     if timestamp is None:
         return None
 
-    obtype_match = re.search(r"jdiag_(.+)\.nc4", os.path.basename(file))
+    obtype_match = re.search(r"jdiag_(.+)\.nc4?$", os.path.basename(file))
     if not obtype_match:
         return None
     obtype = obtype_match.group(1)

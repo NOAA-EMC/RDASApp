@@ -66,7 +66,7 @@ def compute_vertical_profiles(jdiag_files):
                 print(f"? Warning: No 'oman' group in {file}, OMAN stats will be NaN.")
                 ds_oman = None
 
-            obtype_match = re.search(r"jdiag_(.+)\.nc4", os.path.basename(file))
+            obtype_match = re.search(r"jdiag_(.+)\.nc4?$", os.path.basename(file))
             if not obtype_match:
                 continue
             obtype = obtype_match.group(1)
