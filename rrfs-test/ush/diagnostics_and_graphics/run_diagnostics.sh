@@ -15,11 +15,11 @@
 #                             vertical coordinate.
 # - map_ombg_oman.py        : Creates 2d map scatter of ombg/an values with bias
 #                             and rms stats displayed.
-# - hovmoller_rms_bias_fit.py  : Generates a hovmoller (similar to heatmap)
-#                                time series of rms, bias, and fitting ratio.
-#                                Essentially a time series of vertical profiles.
-# - timeseries_rms_bias_fit.py : Generates a time series (of whole column) of rms,
-#                                bias, and fitting ratio.
+# - hovmoller_rms_bias_fit.py    : Generates a hovmoller (pressure vs time) time series
+#                                  (of vertical profiles) of rms, bias, and fitting ratio.
+# - timeseries_rms_bias_fit.py   : Generates a time series (of whole column) of rms,
+#                                  bias, and fitting ratio.
+# - map_domainComparison_mpas_fv3: Overlays mpas and fv3 grids for domain comparison.
 #
 # This script automates the process by:
 # - Iterating over a range of dates and processing log and diagnostic files
@@ -41,6 +41,7 @@ PROFILE_RMS_BIAS_FIT="NO"
 MAP_OMBG_OMAN="NO"
 HOVMOLLER_RMS_BIAS_FIT="NO"
 TIMESERIES_RMS_BIAS_FIT="NO"
+MAP_DOMAINCOMPARISON_MPAS_FV3="NO"
 UPLOAD_TO_RZDM="NO"
 #### END DEFAULTS ###
 
@@ -53,7 +54,8 @@ UPLOAD_TO_RZDM="NO"
 #MAP_OMBG_OMAN="YES"
 #HOVMOLLER_RMS_BIAS_FIT="YES"
 #TIMESERIES_RMS_BIAS_FIT="YES"
-UPLOAD_TO_RZDM="YES"
+MAP_DOMAINCOMPARISON_MPAS_FV3="YES"
+#UPLOAD_TO_RZDM="YES"
 
 # Cycle start and end dates to process
 SDATE=2024052700
@@ -73,6 +75,10 @@ RDASApp="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.ph
 # Specify the log and jdiag directories
 LOGDIR="${COMROOT}/rrfs/${VERSION}/logs"
 JDIAGDIR="${DATAROOT}"
+
+# Options only for MAP_DOMAINCOMPARISON_MPAS_FV3
+MPAS_DOMAIN=${RDASApp}/expr/mpas_2024052700/data/invariant.nc
+FV3_DOMAIN=${RDASApp}/expr/fv3_2024052700/Data/bkg/grid_spec.nc
 
 # Options only for RZDM
 USER="donald.lippi"
@@ -168,6 +174,14 @@ if [[ ${TIMESERIES_RMS_BIAS_FIT} == "YES" ]]; then
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.
 fi
+
+if [[ ${MAP_DOMAINCOMPARISON_MPAS_FV3} == "YES" ]]; then
+  echo "? Working on map domain comparison mpas vs fv3."
+  python map_domainComparison_mpas_fv3.py ${MPAS_DOMAIN} ${FV3_DOMAIN}
+  mkdir -p ${EXP_NAME}/
+  mv *domain*comparison*.png ${EXP_NAME}/.
+fi
+
 
 # Upload restults to RZDM
 if [[ ${UPLOAD_TO_RZDM} == "YES" ]]; then
