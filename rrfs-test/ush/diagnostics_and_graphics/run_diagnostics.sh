@@ -8,12 +8,18 @@
 # - heatmap_jo.py           : Generates heatmaps for Nonlinear Jo values,
 #                             observation counts, Jo/n, and Jo/n percent change.
 # - heatmap_rms_bias_fit.py : Creates heatmaps for bias and RMS statistics
-#                             from diagnostic files and fitting ratio.
+#                             from diagnostic files and fitting ratio. Compares
+#                             stats across multiple observation types.
 # - profile_rms_bias_fit.py : Produces vertical profile plots of bias and
 #                             RMS statistics using pressure as the
 #                             vertical coordinate.
 # - map_ombg_oman.py        : Creates 2d map scatter of ombg/an values with bias
 #                             and rms stats displayed.
+# - hovmoller_rms_bias_fit.py  : Generates a hovmoller (similar to heatmap)
+#                                time series of rms, bias, and fitting ratio.
+#                                Essentially a time series of vertical profiles.
+# - timeseries_rms_bias_fit.py : Generates a time series (of whole column) of rms,
+#                                bias, and fitting ratio.
 #
 # This script automates the process by:
 # - Iterating over a range of dates and processing log and diagnostic files
@@ -33,6 +39,8 @@ HEATMAP_JO="NO"
 HEATMAP_RMS_BIAS_FIT="NO"
 PROFILE_RMS_BIAS_FIT="NO"
 MAP_OMBG_OMAN="NO"
+HOVMOLLER_RMS_BIAS_FIT="NO"
+TIMESERIES_RMS_BIAS_FIT="NO"
 UPLOAD_TO_RZDM="NO"
 #### END DEFAULTS ###
 
@@ -43,6 +51,8 @@ UPLOAD_TO_RZDM="NO"
 #HEATMAP_RMS_BIAS_FIT="YES"
 #PROFILE_RMS_BIAS_FIT="YES"
 #MAP_OMBG_OMAN="YES"
+#HOVMOLLER_RMS_BIAS_FIT="YES"
+#TIMESERIES_RMS_BIAS_FIT="YES"
 UPLOAD_TO_RZDM="YES"
 
 # Cycle start and end dates to process
@@ -103,7 +113,8 @@ while [[ ${date} -le ${EDATE} ]]; do
     echo "? Working on jo info heatmaps: ${pdy}"
     logs=(${LOGDIR}/rrfs.${pdy}/*/det/rrfs_jedivar_${TAG}_${pdy}*.log)
     python heatmap_jo.py ${logs[@]}
-    mv ${pdy}*.png ${EXP_NAME}/${pdy}/.
+    mkdir -p ${EXP_NAME}/${pdy}/heatmap
+    mv ${pdy}*.png ${EXP_NAME}/${pdy}/heatmap/.
   fi
 
   # Plots rms and bias (from jdiag files)
@@ -111,42 +122,70 @@ while [[ ${date} -le ${EDATE} ]]; do
     echo "? Working on rms, bias, fitting ratio heatmaps: ${pdy}"
     jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
     python heatmap_rms_bias_fit.py ${jdiags[@]}
-    mv ${pdy}*.png ${EXP_NAME}/${pdy}/.
+    mkdir -p ${EXP_NAME}/${pdy}/heatmap
+    mv ${pdy}*.png ${EXP_NAME}/${pdy}/heatmap/.
   fi
 
   # Plots 2d map scatter of ombg values (from jdiag) with bias and rms stats displayed.
   if [[ ${MAP_OMBG_OMAN} == "YES" ]]; then
     echo "? Working on map ombg & oman: ${date}"
-    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*33*)
-    #jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_01_${VERSION}/det/jedivar_*/jdiag*88*)
+    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_0[1-3]_${VERSION}/det/jedivar_*/jdiag*Temp*33*)
+    jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_0[1-3]_${VERSION}/det/jedivar_*/jdiag*Temp*88*)
     python map_ombg_oman.py ${jdiags[@]}
-    mv ${pdy}*map.png ${EXP_NAME}/${pdy}/.
+    mkdir -p ${EXP_NAME}/${pdy}/map
+    mv ${pdy}*map.png ${EXP_NAME}/${pdy}/map/.
   fi
 
   # Increase date by 1 day
   date=$(${ndate} 24 ${date})
 done # date loop
 
-# START OF CYCLE-AVERAGED DIAGNOSTIC TOOLS
+# START OF CYCLE-AVERAGED DIAGNOSTIC TOOLS AND TIMESERIES TYPE PLOTS
 
+spdy=${SDATE:0:8}
+epdy=${EDATE:0:8}
 # Plots vertical profiles of rms and bias (from jdiag files) over a date range.
 if [[ ${PROFILE_RMS_BIAS_FIT} == "YES" ]]; then
-  spdy=${SDATE:0:8}
-  epdy=${EDATE:0:8}
-  echo "? Working on profiles: ${spdy}00 to ${edpy}23"
+  echo "? Working on profiles: ${spdy}00 to ${epdy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
   python profile_rms_bias_fit.py ${jdiags[@]}
-  mv profile*.png ${EXP_NAME}/.
+  mkdir -p ${EXP_NAME}/profile
+  mv profile*.png ${EXP_NAME}/profile/.
+fi
+
+if [[ ${HOVMOLLER_RMS_BIAS_FIT} == "YES" ]]; then
+  echo "? Working on hovmoller: ${spdy}00 to ${epdy}23"
+  jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  python hovmoller_rms_bias_fit.py ${jdiags[@]}
+  mkdir -p ${EXP_NAME}/hovmoller
+  mv hovmoller*.png ${EXP_NAME}/hovmoller/.
+fi
+
+if [[ ${TIMESERIES_RMS_BIAS_FIT} == "YES" ]]; then
+  echo "? Working on timeseries: ${spdy}00 to ${epdy}23"
+  jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  python timeseries_rms_bias_fit.py ${jdiags[@]}
+  mkdir -p ${EXP_NAME}/timeseries
+  mv timeseries*.png ${EXP_NAME}/timeseries/.
 fi
 
 # Upload restults to RZDM
 if [[ ${UPLOAD_TO_RZDM} == "YES" ]]; then
-  for pdy in ${pdy_list[@]}; do
+  directories=("${EXP_NAME}"
+               "${EXP_NAME}/${pdy}"
+               "${EXP_NAME}/hovmoller"
+               "${EXP_NAME}/timeseries"
+               "${EXP_NAME}/profile"
+               "${EXP_NAME}/${pdy}/heatmap"
+               "${EXP_NAME}/${pdy}/map")
 
+  for pdy in ${pdy_list[@]}; do
     # Create the files necessary for rzdm to display the images.
-    for dir in "${EXP_NAME}" "${EXP_NAME}/${pdy}"; do
-      echo "<?php require \$_SERVER['DOCUMENT_ROOT'].\"/ncep_common/dirlist.php\"; ?>" > "${dir}/index.php"
-      printf "*.png\n20*\n${EXP_NAME}" > "${dir}/allow.cfg"
+    for dir in ${directories[@]}; do
+      if [[ -d ${dir} ]]; then
+        echo "<?php require \$_SERVER['DOCUMENT_ROOT'].\"/ncep_common/dirlist.php\"; ?>" > "${dir}/index.php"
+        printf "*.png\n20*\n${EXP_NAME}\nheatmap\nmap\nprofile\nhovmoller\ntimeseries" > "${dir}/allow.cfg"
+      fi
     done
   done
 
