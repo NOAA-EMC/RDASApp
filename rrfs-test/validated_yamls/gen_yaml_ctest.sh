@@ -102,10 +102,8 @@ for basic_config in "${!basic_configs[@]}"; do
     rm -f temp.yaml # Clean up temporary yaml
     rm -f replace.yaml # Clean up temporary yaml
 
-    # Comment out the OEFPC for specificHumidity yamls in MPAS-JEDI ctests
-    if [[ $basic_config == *"mpasjedi"* ]]; then
-	python commentQC.py
-    fi
+    # Comment out some filters for the various ctests (different for fv3-jedi and mpas-jedi)
+    python commentQC.py ${ctest_yaml}
 
     # Move to testinput and remove the old temporary yaml
     ctest_yaml=${basic_configs[$basic_config]}
