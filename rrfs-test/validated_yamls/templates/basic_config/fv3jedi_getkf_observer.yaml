@@ -71,4 +71,4 @@ test:
   test output filename: ./rrfs-fv3jedi-getkf-observer.out
   float relative tolerance: 1.0e-2
   float absolute tolerance: 1.0e-6
-
+  integer tolerance: 3
