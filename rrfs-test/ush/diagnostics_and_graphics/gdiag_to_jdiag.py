@@ -4,7 +4,6 @@ import numpy as np
 from datetime import datetime, timedelta
 import sys
 import os
-import pdb
 
 # Platform mapping inferred from jdiag file list
 platform_map = {
