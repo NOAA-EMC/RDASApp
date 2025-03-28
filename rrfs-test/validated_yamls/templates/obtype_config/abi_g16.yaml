@@ -488,9 +488,3 @@
              error parameter vector: [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
          action:
            name: reject
-
-#     test:
-#       reference filename: testoutput/rrfs-mpasjedi-ens3dvar.ref
-#       test output filename: ./rrfs-mpasjedi-ens3dvar.out
-#       float relative tolerance: 1.0e-3
-#       float absolute tolerance: 1.0e-6
