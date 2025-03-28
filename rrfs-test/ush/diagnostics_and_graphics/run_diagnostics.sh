@@ -34,37 +34,28 @@
 # - Run the script to generate the required diagnostics and optionally upload
 #   results.
 
-#### DEFAULTS #######
-HEATMAP_JO="NO"
-HEATMAP_RMS_BIAS_FIT="NO"
-PROFILE_RMS_BIAS_FIT="NO"
-MAP_OMBG_OMAN="NO"
-HOVMOLLER_RMS_BIAS_FIT="NO"
-TIMESERIES_RMS_BIAS_FIT="NO"
-MAP_DOMAINCOMPARISON_MPAS_FV3="NO"
-UPLOAD_TO_RZDM="NO"
-#### END DEFAULTS ###
-
 #### USER-DEFINED VARIABLES #################################################
-
 # Specify which functions to run (uncomment/comment to turn on/off)
 #HEATMAP_JO="YES"
-#HEATMAP_RMS_BIAS_FIT="YES"
+HEATMAP_RMS_BIAS_FIT="YES"
 #PROFILE_RMS_BIAS_FIT="YES"
 #MAP_OMBG_OMAN="YES"
 #HOVMOLLER_RMS_BIAS_FIT="YES"
 #TIMESERIES_RMS_BIAS_FIT="YES"
-MAP_DOMAINCOMPARISON_MPAS_FV3="YES"
+#MAP_DOMAINCOMPARISON_MPAS_FV3="YES"
 #UPLOAD_TO_RZDM="YES"
 
 # Cycle start and end dates to process
 SDATE=2024052700
 EDATE=2024052700
+#SDATE=2024050600
+#EDATE=2024050600
 
 # Retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
 VERSION="v2.0.9.7"
 TAG="d12km2097"
 EXP_NAME="hrly_12km"
+#EXP_NAME="benchmark1"
 OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
 COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
 DATAROOT="${OPSROOT}/exp/${EXP_NAME}/stmp"
@@ -115,8 +106,8 @@ while [[ ${date} -le ${EDATE} ]]; do
   mkdir -p ${EXP_NAME}/${pdy}
 
   # Plots nobs, Jo, Jo/n, and Jo/n percent change (from log files)
-  if [[ ${HEATMAP_JO} == "YES" ]]; then
-    echo "? Working on jo info heatmaps: ${pdy}"
+  if [[ ${HEATMAP_JO:=NO} == "YES" ]]; then
+    echo "? Working on (${EXP_NAME}) jo info heatmaps: ${pdy}"
     logs=(${LOGDIR}/rrfs.${pdy}/*/det/rrfs_jedivar_${TAG}_${pdy}*.log)
     python heatmap_jo.py ${logs[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
@@ -124,8 +115,8 @@ while [[ ${date} -le ${EDATE} ]]; do
   fi
 
   # Plots rms and bias (from jdiag files)
-  if [[ ${HEATMAP_RMS_BIAS_FIT} == "YES" ]]; then
-    echo "? Working on rms, bias, fitting ratio heatmaps: ${pdy}"
+  if [[ ${HEATMAP_RMS_BIAS_FIT:=NO} == "YES" ]]; then
+    echo "? Working on (${EXP_NAME}) rms, bias, fitting ratio heatmaps: ${pdy}"
     jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
     python heatmap_rms_bias_fit.py ${jdiags[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
@@ -133,8 +124,8 @@ while [[ ${date} -le ${EDATE} ]]; do
   fi
 
   # Plots 2d map scatter of ombg values (from jdiag) with bias and rms stats displayed.
-  if [[ ${MAP_OMBG_OMAN} == "YES" ]]; then
-    echo "? Working on map ombg & oman: ${date}"
+  if [[ ${MAP_OMBG_OMAN:=NO} == "YES" ]]; then
+    echo "? Working on (${EXP_NAME}) map ombg & oman: ${date}"
     jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_0[1-3]_${VERSION}/det/jedivar_*/jdiag*Temp*33*)
     jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_0[1-3]_${VERSION}/det/jedivar_*/jdiag*Temp*88*)
     python map_ombg_oman.py ${jdiags[@]}
@@ -151,40 +142,39 @@ done # date loop
 spdy=${SDATE:0:8}
 epdy=${EDATE:0:8}
 # Plots vertical profiles of rms and bias (from jdiag files) over a date range.
-if [[ ${PROFILE_RMS_BIAS_FIT} == "YES" ]]; then
-  echo "? Working on profiles: ${spdy}00 to ${epdy}23"
+if [[ ${PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
+  echo "? Working on (${EXP_NAME}) profiles: ${spdy}00 to ${epdy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
   python profile_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
 fi
 
-if [[ ${HOVMOLLER_RMS_BIAS_FIT} == "YES" ]]; then
-  echo "? Working on hovmoller: ${spdy}00 to ${epdy}23"
+if [[ ${HOVMOLLER_RMS_BIAS_FIT:=NO} == "YES" ]]; then
+  echo "? Working on (${EXP_NAME}) hovmoller: ${spdy}00 to ${epdy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
   python hovmoller_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/hovmoller
   mv hovmoller*.png ${EXP_NAME}/hovmoller/.
 fi
 
-if [[ ${TIMESERIES_RMS_BIAS_FIT} == "YES" ]]; then
-  echo "? Working on timeseries: ${spdy}00 to ${epdy}23"
+if [[ ${TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
+  echo "? Working on (${EXP_NAME}) timeseries: ${spdy}00 to ${epdy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
   python timeseries_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.
 fi
 
-if [[ ${MAP_DOMAINCOMPARISON_MPAS_FV3} == "YES" ]]; then
-  echo "? Working on map domain comparison mpas vs fv3."
+if [[ ${MAP_DOMAINCOMPARISON_MPAS_FV3:=NO} == "YES" ]]; then
+  echo "? Working on (${EXP_NAME}) map domain comparison mpas vs fv3."
   python map_domainComparison_mpas_fv3.py ${MPAS_DOMAIN} ${FV3_DOMAIN}
   mkdir -p ${EXP_NAME}/
   mv *domain*comparison*.png ${EXP_NAME}/.
 fi
 
-
 # Upload restults to RZDM
-if [[ ${UPLOAD_TO_RZDM} == "YES" ]]; then
+if [[ ${UPLOAD_TO_RZDM:=NO} == "YES" ]]; then
   directories=("${EXP_NAME}"
                "${EXP_NAME}/${pdy}"
                "${EXP_NAME}/hovmoller"

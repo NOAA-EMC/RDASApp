@@ -99,8 +99,7 @@ def process_and_plot_jdiag(file):
 
         # Filter valid data
         fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-        valid_mask = (ombg != fill_value) & (~np.isnan(ombg)) & (obserr < 1e+10)
-        valid_mask = (oman != fill_value) & (~np.isnan(oman)) & (obserr < 1e+10)
+        valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(ombg)) & (obserr < 1e+10)
         lats = lats[valid_mask]
         lons = lons[valid_mask]
         ombg = ombg[valid_mask]

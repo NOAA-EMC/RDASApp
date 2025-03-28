@@ -74,7 +74,7 @@ def compute_binned_stats_per_time(file):
             oman = ds_oman[obs_var].values if ds_oman and obs_var in ds_oman.data_vars else np.full_like(ombg, np.nan)
 
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-            valid_mask = (ombg != fill_value) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
+            valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
             pressure_valid = pressure[valid_mask]
             ombg_valid = ombg[valid_mask]
             oman_valid = oman[valid_mask]
@@ -179,10 +179,10 @@ def plot_hovmoller(jdiag_files):
         # Define the statistics to plot with their settings
         statistics = {
             'bias_ombg': (bias_ombg_2d, 'OMB Bias', 'RdBu_r', -1, 1),
-            'rms_ombg': (rms_ombg_2d, 'OMB RMS', 'Reds', 0, 3),
+            'rms_ombg': (rms_ombg_2d, 'OMB RMS', 'viridis', 0, 3),
             'bias_oman': (bias_oman_2d, 'OMA Bias', 'RdBu_r', -1, 1),
-            'rms_oman': (rms_oman_2d, 'OMA RMS', 'Reds', 0, 3),
-            'fitting_ratio': (fitting_ratio_2d, 'Fitting Ratio', 'Reds', 0, 1)
+            'rms_oman': (rms_oman_2d, 'OMA RMS', 'viridis', 0, 3),
+            'fitting_ratio': (fitting_ratio_2d, 'Fitting Ratio', 'viridis', 0, 1)
         }
 
         # Compute time edges for pcolormesh

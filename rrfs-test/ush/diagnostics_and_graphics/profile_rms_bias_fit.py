@@ -89,7 +89,7 @@ def compute_vertical_profiles(jdiag_files):
                     oman = np.full_like(ombg, np.nan)
 
                 fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-                valid_mask = (ombg != fill_value) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
+                valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
                 pressure_valid = pressure[valid_mask]
                 ombg_valid = ombg[valid_mask]
                 oman_valid = oman[valid_mask]

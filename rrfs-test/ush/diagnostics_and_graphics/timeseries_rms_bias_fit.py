@@ -95,7 +95,7 @@ def compute_stats_per_time(file):
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
 
             # Valid data mask: exclude fill values, NaN errors, unrealistic errors, and pressure bounds
-            valid_mask = (ombg != fill_value) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
+            valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
             ombg_valid = ombg[valid_mask]
             oman_valid = oman[valid_mask]
 

@@ -64,7 +64,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
 
             # Apply valid data filtering (ignore fill values)
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-            valid_mask = (ombg != fill_value) & (~np.isnan(obserr)) & (obserr < 1e+10)
+            valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10)
             ombg = ombg[valid_mask]  # Keep only assimilated observations
             oman = oman[valid_mask]
 
@@ -108,7 +108,6 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
                         "oman_rms": oman_rms,
                         "fitting_ratio": fitting_ratio
                     }
-
             ds_ombg.close()
             ds_obserr.close()
             ds_oman.close()
@@ -235,7 +234,6 @@ def plot_bias_rms_heatmaps(stats, title, output_file, cycles, obs_types, metric=
             vmax = 1.0
             center = 0.5
             cmap = "coolwarm"
-            #cmap = plt.get_cmap("coolwarm")
             cmap = mpl.cm.get_cmap("coolwarm").copy()
             cmap.set_under("black")  # Set values below vmin (0) to black
             cbar_label = "Fitting Ratio (OMB RMS - OMA RMS) / OMB RMS"
