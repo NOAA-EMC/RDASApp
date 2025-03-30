@@ -1,5 +1,5 @@
      - obs space:
-         name: sfcshp_stationPressure_180
+         name: sfcshp_stationPressure_182
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
