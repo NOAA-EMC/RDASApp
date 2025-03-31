@@ -143,13 +143,13 @@ def main(log_files):
     jo_data, nobs_data, jo_per_n_data, jo_per_n_diff, cycle_labels, analysis_date = parse_logs(log_files)
 
     if jo_data:
-        plot_heatmaps(jo_data, f"Nonlinear Jo Values: {analysis_date}", f"{analysis_date}_jo_heatmap.png", cycle_labels, "Jo Value", "Reds", vmin=0, vmax=25000)
-    if nobs_data:
-        plot_heatmaps(nobs_data, f"Number of Observations (nobs): {analysis_date}", f"{analysis_date}_nobs_heatmap.png", cycle_labels, "Observation Count", "Reds", fmt=".0f", vmin=0, vmax=25000)
+        plot_heatmaps(jo_data, f"Nonlinear Jo Values: {analysis_date}", f"heatmap_jo.png", cycle_labels, "Jo Value", "Reds", vmin=0, vmax=25000)
+    #if nobs_data:
+    #    plot_heatmaps(nobs_data, f"Number of Observations (nobs): {analysis_date}", f"heatmap_nobs.png", cycle_labels, "Observation Count", "Reds", fmt=".0f", vmin=0, vmax=25000)
     if jo_per_n_data:
-        plot_heatmaps(jo_per_n_data, f"Jo/n (Jo per Observation): {analysis_date}", f"{analysis_date}_jo_per_n_heatmap.png", cycle_labels, "Jo/n Value", "coolwarm", vmin=0, vmax=2, center=1, highlight_high=1.5, highlight_low=0.5)
+        plot_heatmaps(jo_per_n_data, f"Jo/n (Jo per Observation): {analysis_date}", f"heatmap_jo_per_n.png", cycle_labels, "Jo/n Value", "coolwarm", vmin=0, vmax=2, center=1, highlight_high=1.5, highlight_low=0.5)
     if jo_per_n_diff:
-        plot_heatmaps(jo_per_n_diff, f"Percent Change in Jo/n: {analysis_date}", f"{analysis_date}_jo_per_n_diff_heatmap.png", cycle_labels, "Percent Change", "coolwarm", vmin=-1, vmax=1, center=0, highlight_high=0, highlight_low=-0.3)
+        plot_heatmaps(jo_per_n_diff, f"Percent Change in Jo/n: {analysis_date}", f"heatmap_jo_per_n_diff.png", cycle_labels, "Percent Change", "coolwarm", vmin=-1, vmax=1, center=0, highlight_high=0, highlight_low=-0.3)
 
 if __name__ == "__main__":
     import argparse
