@@ -7,7 +7,7 @@
 # Supported functions:
 # - COPY_DATA     : Copies RRFSv1 gdiags and organizes them in RRFSv2 directory
 #                   structures.
-# - CONVERT_DATA  : Converts gdiags to jdiags and saves the output in RRFSv2
+# - CONVERT_GDIAG_TO_JDIAG  : Converts gdiags to jdiags and saves the output in RRFSv2
 #                   directory structure
 #
 # Usage:
@@ -21,15 +21,22 @@
 #### USER-DEFINED VARIABLES #################################################
 # Specify which functions to run (uncomment/comment to turn on/off)
 #COPY_DATA="YES"
-#CONVERT_DATA="YES"
+#CONVERT_GDIAG_TO_JDIAG="YES"
+CONVERT_JDIAG_TO_GDIAG="YES"
 
 # Cycle start and end dates to process
-SDATE=2024050600
-EDATE=2024050623
+SDATE=2024050700
+EDATE=2024050723
+SDATE=2024052806
+EDATE=2024052806
 
-# Retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
-VERSION="v2.0.9.7"  # v2 version
+# V2 retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
+VERSION="v2.0.9.7"
+TAG="d12km2097"
+EXP_NAME="hrly_12km"
 OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
+COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
+DATAROOT="${OPSROOT}/exp/${EXP_NAME}/stmp"
 
 # RRFSv1 EXP_NAME (RRFSv1 = benchmark)
 BENCHMARK="benchmark1"
@@ -41,7 +48,8 @@ INCLUDE_PATTERN="diag_conv_*.nc4.gz"
 # Specify your RDASApp build (mostly for module loads)
 RDASApp="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.phase2_sonde"
 
-# Specify the gdiag directories
+# Specify the diag directories
+JDIAGDIR="${DATAROOT}"
 GDIAGDIR="${OPSROOT}/exp/${BENCHMARK}/stmp"
 #### END OF USER-DEFINED VARIABLES ##########################################
 
@@ -71,18 +79,19 @@ while [[ ${date} -le ${EDATE} ]]; do
 
   # RRFSv2-like data structure to copy gdiags into
   rrfsv2_structure=${GDIAGDIR}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}
+  #echo "${rrfsv2_structure}"
   mkdir -p $rrfsv2_structure
 
   if [[ ${COPY_DATA:=NO} == "YES" ]] ; then
     echo "? Working on copy gdiag: ${pdy} ${cyc}Z"
-    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi_spinup/diag_conv_t* ${rrfsv2_structure}/.
-    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi_spinup/diag_conv_q* ${rrfsv2_structure}/.
-    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi_spinup/diag_conv_ps* ${rrfsv2_structure}/.
-    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi_spinup/diag_conv_uv* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi/diag_conv_t* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi/diag_conv_q* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi/diag_conv_ps* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi/diag_conv_uv* ${rrfsv2_structure}/.
     find ${rrfsv2_structure} -type f -name "${INCLUDE_PATTERN}" -exec gunzip -f {} \;
   fi
 
-  if [[ ${CONVERT_DATA:=NO} == "YES" ]] ; then
+  if [[ ${CONVERT_GDIAG_TO_JDIAG:=NO} == "YES" ]] ; then
     echo "? Working on convert gdiag to jdiag: ${pdy} ${cyc}Z"
     # Array of full file paths (only need to specify _anl files)
     jdiags=(${rrfsv2_structure}/diag_conv_t_anl*)
@@ -91,9 +100,23 @@ while [[ ${date} -le ${EDATE} ]]; do
     jdiags+=(${rrfsv2_structure}/diag_conv_uv_anl*)
 
     # Run the Python script with analysis time and file list
-    python gdias_to_jdiag.py "$date" "${jdiags[@]}"
+    python gdiag_to_jdiag.py "$date" "${jdiags[@]}"
     mv jdiag*.nc ${rrfsv2_structure}/.
   fi
+
+  if [[ ${CONVERT_JDIAG_TO_GDIAG:=NO} == "YES" ]] ; then
+    echo "? Working on convert jdiag to gdiag: ${pdy} ${cyc}Z"
+    # Array of full file paths (only need to specify _anl files)
+    #jdiags=(/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20250324.DA_mon/rrfs-test/ush/diagnostics_and_graphics/jedivar_06/jdiag*)
+    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/jdiag*)
+    #echo ${jdiags[1]}; exit
+
+    # Run the Python script with analysis time and file list
+    python jdiag_to_gdiag.py "$date" "${jdiags[@]}"
+    mv diag_conv*.nc ${JDIAGDIR}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/.
+    exit
+  fi
+
 
   # Increase date by 1 hour
   date=$(${ndate} 1 ${date})
