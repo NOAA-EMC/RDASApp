@@ -36,15 +36,16 @@ def generate_full_cycle_range(jdiag_files):
     return full_cycles, date
 
 def compute_bias_rms(jdiag_files, cycles, obs_types):
-    """Compute bias and RMS for OMB and OMA, and fitting ratio for each jdiag file."""
-    # Initialize stats dictionary with NaNs for all metrics
+    """Compute bias, RMS, fitting ratio, and number of assimilated observations for each jdiag file."""
+    # Initialize stats dictionary with NaNs for all metrics and 0 for nobs
     stats = {
         f"{cycle}_{obs}": {
             "ombg_bias": np.nan,
             "ombg_rms": np.nan,
             "oman_bias": np.nan,
             "oman_rms": np.nan,
-            "fitting_ratio": np.nan
+            "fitting_ratio": np.nan,
+            "nobs": 0  # Initialize number of observations to 0
         } for cycle in cycles for obs in obs_types
     }
 
@@ -82,9 +83,9 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
                 obtype = obtype_match.group(1)
                 key = f"{cycle}_{obtype}"
 
-                if ombg.size == 0 or np.isnan(ombg).all():
-                    continue
-                else:
+                # Store the number of assimilated observations
+                stats[key]["nobs"] = ombg.size
+                if ombg.size > 0:
                     # Compute OMB statistics
                     ombg_bias = np.nanmean(ombg)
                     ombg_rms = np.sqrt(np.nanmean(ombg ** 2))
@@ -93,21 +94,21 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
                     oman_bias = np.nanmean(oman)
                     oman_rms = np.sqrt(np.nanmean(oman ** 2))
 
-                    # Compute fitting ratio (RMS_OMA / RMS_OMB)
+                    # Compute fitting ratio
                     fitting_ratio = (
                         (ombg_rms - oman_rms) / ombg_rms
                         if not np.isnan(ombg_rms) and not np.isnan(oman_rms) and ombg_rms != 0
                         else np.nan
                     )
 
-                    # Store all statistics
-                    stats[key] = {
+                    # Update stats with computed values
+                    stats[key].update({
                         "ombg_bias": ombg_bias,
                         "ombg_rms": ombg_rms,
                         "oman_bias": oman_bias,
                         "oman_rms": oman_rms,
                         "fitting_ratio": fitting_ratio
-                    }
+                    })
             ds_ombg.close()
             ds_obserr.close()
             ds_oman.close()
@@ -116,10 +117,6 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
             print(f"? Warning: Missing file {file}")
         except Exception as e:
             print(f"? Error processing {file}: {e}")
-            if "key" in locals():
-                stats[key]["oman_bias"] = np.nan
-                stats[key]["oman_rms"] = np.nan
-                stats[key]["fitting_ratio"] = np.nan
 
     return stats
 
@@ -144,7 +141,6 @@ def get_core_obs_type(obs_type):
 
 def plot_bias_rms_heatmaps(stats, title, output_file, cycles, obs_types, metric="ombg_bias"):
     """Plot grouped heatmaps for specified metric with appropriate color scales and highlighting."""
-
     # Define fixed color ranges for each metric type
     bias_ranges = {
         "Temperature": (-1, 1),
@@ -199,6 +195,11 @@ def plot_bias_rms_heatmaps(stats, title, output_file, cycles, obs_types, metric=
     if num_groups == 1:
         axes = [axes]
 
+    # Compute global max for nobs if plotting number of observations
+    if metric == "nobs":
+        all_nobs = [stats[f"{cycle}_{obs}"]["nobs"] for cycle in cycles for obs in obs_types if f"{cycle}_{obs}" in stats]
+        max_nobs = max(all_nobs) if all_nobs else 0
+
     for ax, (group_name, obs_list) in zip(axes, grouped_obs.items()):
         obs_list.sort(key=lambda x: int(x.split('_')[-1]))  # Sort by trailing number
         print(f"\x1b[32mProcessing {group_name}:\x1b[0m {obs_list}")
@@ -213,22 +214,31 @@ def plot_bias_rms_heatmaps(stats, title, output_file, cycles, obs_types, metric=
             if cycle in cycle_to_index and obtype in obs_to_index:
                 j = cycle_to_index[cycle]
                 i = obs_to_index[obtype]
-                matrix[i, j] = values[metric]
+                matrix[i, j] = values[metric] if values[metric] > 0 else np.nan
 
         if np.isnan(matrix).all():
             continue
 
-        # Set color scale and labels based on metric
-        if metric in ["ombg_bias", "oman_bias"]:
+        # Set color scale, labels, and format based on metric
+        if metric == "nobs":
+            vmin = 0
+            vmax = max_nobs
+            cmap = "Reds"
+            center = None
+            cbar_label = "Number of Assimilated Observations"
+            fmt = ".0f"  # Integer format for counts
+        elif metric in ["ombg_bias", "oman_bias"]:
             vmin, vmax = bias_ranges[group_name]
             cmap = "coolwarm"
             center = 0
             cbar_label = f"{metric.replace('_', ' ').upper()} ({colorbar_labels[group_name]})"
+            fmt = ".2f"
         elif metric in ["ombg_rms", "oman_rms"]:
             vmin, vmax = rms_ranges[group_name]
             cmap = "Reds"
             center = None
             cbar_label = f"{metric.replace('_', ' ').upper()} ({colorbar_labels[group_name]})"
+            fmt = ".2f"
         elif metric == "fitting_ratio":
             vmin = 0
             vmax = 1.0
@@ -237,13 +247,14 @@ def plot_bias_rms_heatmaps(stats, title, output_file, cycles, obs_types, metric=
             cmap = mpl.cm.get_cmap("coolwarm").copy()
             cmap.set_under("black")  # Set values below vmin (0) to black
             cbar_label = "Fitting Ratio (OMB RMS - OMA RMS) / OMB RMS"
+            fmt = ".2f"
 
         cycle_xticks = [cycle.split()[1] for cycle in cycles]  # Remove YYYYMMDD
-        sns.heatmap(matrix, annot=True, fmt=".2f", cmap=cmap, vmin=vmin, vmax=vmax, center=center,
+        sns.heatmap(matrix, annot=True, fmt=fmt, cmap=cmap, vmin=vmin, vmax=vmax, center=center,
                     xticklabels=cycle_xticks, yticklabels=obs_list, linewidths=0.5, linecolor="gray", ax=ax,
                     cbar=True, cbar_kws={"label": cbar_label})
 
-        # Add highlighting for fitting ratio
+        # Add highlighting for fitting ratio only
         if metric == "fitting_ratio":
             mask_low = matrix < 0.15  # Highlight weak DA effect
             mask_high = matrix > 0.6  # Highlight potential overfitting
@@ -272,9 +283,10 @@ if __name__ == "__main__":
     obs_types = extract_obs_types(jdiag_files)
     stats = compute_bias_rms(jdiag_files, cycles, obs_types)
 
-    # Plot heatmaps for each metric
-    plot_bias_rms_heatmaps(stats, f"OMB Bias Heatmaps: {date}", f"{date}_ombg_bias_heatmap.png", cycles, obs_types, metric="ombg_bias")
-    plot_bias_rms_heatmaps(stats, f"OMB RMS Heatmaps: {date}", f"{date}_ombg_rms_heatmap.png", cycles, obs_types, metric="ombg_rms")
-    plot_bias_rms_heatmaps(stats, f"OMA Bias Heatmaps: {date}", f"{date}_oman_bias_heatmap.png", cycles, obs_types, metric="oman_bias")
-    plot_bias_rms_heatmaps(stats, f"OMA RMS Heatmaps: {date}", f"{date}_oman_rms_heatmap.png", cycles, obs_types, metric="oman_rms")
-    plot_bias_rms_heatmaps(stats, f"Fitting Ratio Heatmaps: {date}", f"{date}_fitting_ratio_heatmap.png", cycles, obs_types, metric="fitting_ratio")
+    # Plot heatmaps for each metric, including the new nobs heatmap
+    plot_bias_rms_heatmaps(stats, f"OMB Bias Heatmaps: {date}", f"heatmap_ombg_bias.png", cycles, obs_types, metric="ombg_bias")
+    plot_bias_rms_heatmaps(stats, f"OMB RMS Heatmaps: {date}", f"heatmap_ombg_rms.png", cycles, obs_types, metric="ombg_rms")
+    plot_bias_rms_heatmaps(stats, f"OMA Bias Heatmaps: {date}", f"heatmap_oman_bias.png", cycles, obs_types, metric="oman_bias")
+    plot_bias_rms_heatmaps(stats, f"OMA RMS Heatmaps: {date}", f"heatmap_oman_rms.png", cycles, obs_types, metric="oman_rms")
+    plot_bias_rms_heatmaps(stats, f"Fitting Ratio Heatmaps: {date}", f"heatmap_fitting_ratio.png", cycles, obs_types, metric="fitting_ratio")
+    plot_bias_rms_heatmaps(stats, f"Number of Assimilated Observations Heatmaps: {date}", f"heatmap_nobs.png", cycles, obs_types, metric="nobs")
