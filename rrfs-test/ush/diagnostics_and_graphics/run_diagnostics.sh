@@ -5,21 +5,24 @@
 # and model performance.
 #
 # Supported diagnostic scripts:
-# - heatmap_jo.py           : Generates heatmaps for Nonlinear Jo values,
-#                             observation counts, Jo/n, and Jo/n percent change.
-# - heatmap_rms_bias_fit.py : Creates heatmaps for bias and RMS statistics
-#                             from diagnostic files and fitting ratio. Compares
-#                             stats across multiple observation types.
-# - profile_rms_bias_fit.py : Produces vertical profile plots of bias and
-#                             RMS statistics using pressure as the
-#                             vertical coordinate.
-# - map_ombg_oman.py        : Creates 2d map scatter of ombg/an values with bias
-#                             and rms stats displayed.
-# - hovmoller_rms_bias_fit.py    : Generates a hovmoller (pressure vs time) time series
-#                                  (of vertical profiles) of rms, bias, and fitting ratio.
-# - timeseries_rms_bias_fit.py   : Generates a time series (of whole column) of rms,
-#                                  bias, and fitting ratio.
-# - map_domainComparison_mpas_fv3: Overlays mpas and fv3 grids for domain comparison.
+# - heatmap_jo.py                  : Generates heatmaps for Nonlinear Jo values,
+#                                    observation counts, Jo/n, and Jo/n percent change.
+# - (diff_)heatmap_rms_bias_fit.py : Creates heatmaps for bias and RMS statistics
+#                                    from diagnostic files and fitting ratio. Compares
+#                                    stats across multiple observation types. (Compares
+#                                    two experiments.)
+# - (diff_)profile_rms_bias_fit.py : Produces vertical profile plots of bias and
+#                                    RMS statistics using pressure as the
+#                                    vertical coordinate. (Compares two experiments.)
+# - map_ombg_oman.py               : Creates 2d map scatter of ombg/an values with bias
+#                                    and rms stats displayed.
+# - hovmoller_rms_bias_fit.py      : Generates a hovmoller (pressure vs time) time series
+#                                    (of vertical profiles) of rms, bias, and fitting ratio.
+# - (diff_)timeseries_rms_bias_fit.py : Generates a time series of whole column of rms,
+#                                       bias, and fitting ratio. (Compares two experiments.)
+# - map_domainComparison_mpas_fv3  : Overlays mpas and fv3 grids for domain comparison.
+# - fv3_vs_mpas_increment.py       : Plots side-by-side comparison of fv3 vs mpas analysis
+#                                    increments.
 #
 # This script automates the process by:
 # - Iterating over a range of dates and processing log and diagnostic files
@@ -39,38 +42,49 @@
 # Specify which functions to run (uncomment/comment to turn on/off)
 #HEATMAP_JO="YES"
 HEATMAP_RMS_BIAS_FIT="YES"
+#DIFF_HEATMAP_RMS_BIAS_FIT="YES"
 #PROFILE_RMS_BIAS_FIT="YES"
+#DIFF_PROFILE_RMS_BIAS_FIT="YES"
 #MAP_OMBG_OMAN="YES"
 #HOVMOLLER_RMS_BIAS_FIT="YES"
 #TIMESERIES_RMS_BIAS_FIT="YES"
+#DIFF_TIMESERIES_RMS_BIAS_FIT="YES"
 #MAP_DOMAINCOMPARISON_MPAS_FV3="YES"
+#FV3_VS_MPAS_INCREMENT="YES"
 #UPLOAD_TO_RZDM="YES"
 
 # Cycle start and end dates to process
 SDATE=2024052700
 EDATE=2024052700
-#SDATE=2024050600
-#EDATE=2024050600
+#SDATE=2024050700 #temp
+#EDATE=2024050700 #temp
 
 # Retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
 VERSION="v2.0.9.7"
 TAG="d12km2097"
 EXP_NAME="hrly_12km"
-#EXP_NAME="benchmark1"
 OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
 COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
 DATAROOT="${OPSROOT}/exp/${EXP_NAME}/stmp"
+COMROOT="${OPSROOT}/com" #temp
+DATAROOT="${OPSROOT}/stmp" #temp
+
+# Control experiment for "diff_" tools.
+CONTROL="benchmark1"
+CONTROL="hrly_12km"
 
 # Specify your RDASApp build (mostly for module loads)
 RDASApp="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.phase2_sonde"
 
-# Specify the log and jdiag directories
+# Specify the log and diag directories
 LOGDIR="${COMROOT}/rrfs/${VERSION}/logs"
 JDIAGDIR="${DATAROOT}"
+GDIAGDIR="${OPSROOT}/exp/${CONTROL}/stmp"
+GDIAGDIR=$JDIAGDIR # temp
 
 # Options only for MAP_DOMAINCOMPARISON_MPAS_FV3
-MPAS_DOMAIN=${RDASApp}/expr/mpas_2024052700/data/invariant.nc
-FV3_DOMAIN=${RDASApp}/expr/fv3_2024052700/Data/bkg/grid_spec.nc
+MPAS_DOMAIN="${RDASApp}/expr/mpas_2024052700/data/invariant.nc"
+FV3_DOMAIN="${RDASApp}/expr/fv3_2024052700/Data/bkg/grid_spec.nc"
 
 # Options only for RZDM
 USER="donald.lippi"
@@ -112,7 +126,7 @@ while [[ ${date} -le ${EDATE} ]]; do
     logs=(${LOGDIR}/rrfs.${pdy}/*/det/rrfs_jedivar_${TAG}_${pdy}*.log)
     python heatmap_jo.py ${logs[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
-    mv ${pdy}*.png ${EXP_NAME}/${pdy}/heatmap/.
+    mv heatmap*.png ${EXP_NAME}/${pdy}/heatmap/.
   fi
 
   # Plots rms and bias (from jdiag files)
@@ -121,8 +135,19 @@ while [[ ${date} -le ${EDATE} ]]; do
     jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
     python heatmap_rms_bias_fit.py ${jdiags[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
-    mv ${pdy}*.png ${EXP_NAME}/${pdy}/heatmap/.
+    mv heatmap*.png ${EXP_NAME}/${pdy}/heatmap/.
   fi
+
+  # Plots rms and bias (from jdiag files)
+  if [[ ${DIFF_HEATMAP_RMS_BIAS_FIT:=NO} == "YES" ]]; then
+    echo "? Working on (${EXP_NAME} vs ${CONTROL}) diff rms, bias, fitting ratio heatmaps: ${pdy}"
+    jdiags_exp=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
+    jdiags_ctl=(${GDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
+    python diff_heatmap_rms_bias_fit.py "${CONTROL}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
+    mkdir -p ${EXP_NAME}/${pdy}/heatmap
+    mv heatmap*.png ${EXP_NAME}/${pdy}/heatmap/.
+  fi
+
 
   # Plots 2d map scatter of ombg values (from jdiag) with bias and rms stats displayed.
   if [[ ${MAP_OMBG_OMAN:=NO} == "YES" ]]; then
@@ -138,6 +163,47 @@ while [[ ${date} -le ${EDATE} ]]; do
   date=$(${ndate} 24 ${date})
 done # date loop
 
+date=${SDATE}
+date=2024052701 #temp
+EDATE=$date #temp
+# Loop over dates from start to and including end date
+while [[ ${date} -le ${EDATE} ]]; do
+  pdy=${date:0:8}
+  cyc=${date:8:10}
+  datem1=$(${ndate} -1 ${date})
+  pdym1=${datem1:0:8}
+  cycm1=${datem1:8:10}
+  mkdir -p ${EXP_NAME}/${pdy}
+
+# Plots gsi vs mpas analysis increments.
+if [[ ${FV3_VS_MPAS_INCREMENT:=NO} == "YES" ]]; then
+  echo "? Working on (${EXP_NAME}) diff increments: ${pdy} ${cyc}Z"
+  mkdir -p ${EXP_NAME}/increments
+  #-v/--variable: Variable to plot (e.g., airTemperature, specificHumidity).
+  #-f/--figname: Figure identifier (e.g., a timestamp or experiment name).
+  #-gb/--gsi_bkg: Path to the GSI background file.
+  #-ga/--gsi_ana: Path to the GSI analysis file.
+  #-mb/--mpas_bkg: Path to the MPAS-JEDI background file.
+  #-ma/--mpas_ana: Path to the MPAS-JEDI analysis file.
+  #-gg/--gsi_grid: Path to the GSI grid file.
+  #-mg/--mpas_grid: Path to the MPAS-JEDI grid file.
+  temp=/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/jedi-assim-phase3/gsi_2024052700
+  gb=${temp}/Data/bkg/fv3_dynvars
+  ga=${temp}/aircar_airTemperature_133/fv3_dynvars
+  gg=${temp}/fv3_grid_spec
+  mb=${COMROOT}/rrfs/${VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
+  ma=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/mpasin.nc
+  mg=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/invariant.nc
+  python fv3_mpas_increment.py -v airTemperature -f ${date} -gb ${gb} -ga ${ga} -gg ${gg} -mb ${mb} -ma ${ma} -mg ${mg}
+  exit #temp
+  mv *increment*.png ${EXP_NAME}/increment/.
+fi
+
+
+  # Increase date by 1 day
+  date=$(${ndate} 1 ${date})
+done # date loop
+
 # START OF CYCLE-AVERAGED DIAGNOSTIC TOOLS AND TIMESERIES TYPE PLOTS
 
 spdy=${SDATE:0:8}
@@ -150,6 +216,17 @@ if [[ ${PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
 fi
+
+# Plots vertical profiles of rms and bias (from jdiag files) over a date range.
+if [[ ${DIFF_PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
+  echo "? Working on (${EXP_NAME} vs ${CONTROL}) diff profiles: ${spdy}00 to ${epdy}23"
+  jdiags_ctl=(${GDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  python diff_profile_rms_bias_fit.py "${CONTROL}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
+  mkdir -p ${EXP_NAME}/profile
+  mv profile*.png ${EXP_NAME}/profile/.
+fi
+
 
 if [[ ${HOVMOLLER_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) hovmoller: ${spdy}00 to ${epdy}23"
@@ -167,6 +244,16 @@ if [[ ${TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   mv timeseries*.png ${EXP_NAME}/timeseries/.
 fi
 
+if [[ ${DIFF_TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
+  echo "? Working on (${EXP_NAME} vs ${CONTROL}) diff timeseries: ${spdy}00 to ${epdy}23"
+  jdiags_ctl=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  jdiags_exp=(${GDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  python diff_timeseries_rms_bias_fit.py "${CONTROL}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
+  mkdir -p ${EXP_NAME}/timeseries
+  mv timeseries*.png ${EXP_NAME}/timeseries/.
+fi
+
+
 if [[ ${MAP_DOMAINCOMPARISON_MPAS_FV3:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) map domain comparison mpas vs fv3."
   python map_domainComparison_mpas_fv3.py ${MPAS_DOMAIN} ${FV3_DOMAIN}
@@ -179,6 +266,7 @@ if [[ ${UPLOAD_TO_RZDM:=NO} == "YES" ]]; then
   directories=("${EXP_NAME}"
                "${EXP_NAME}/${pdy}"
                "${EXP_NAME}/hovmoller"
+               "${EXP_NAME}/increment"
                "${EXP_NAME}/timeseries"
                "${EXP_NAME}/profile"
                "${EXP_NAME}/${pdy}/heatmap"
@@ -189,7 +277,7 @@ if [[ ${UPLOAD_TO_RZDM:=NO} == "YES" ]]; then
     for dir in ${directories[@]}; do
       if [[ -d ${dir} ]]; then
         echo "<?php require \$_SERVER['DOCUMENT_ROOT'].\"/ncep_common/dirlist.php\"; ?>" > "${dir}/index.php"
-        printf "*.png\n20*\n${EXP_NAME}\nheatmap\nmap\nprofile\nhovmoller\ntimeseries" > "${dir}/allow.cfg"
+        printf "*.png\n20*\n${EXP_NAME}\nheatmap\nmap\nprofile\nhovmoller\ntimeseries\nincrement" > "${dir}/allow.cfg"
       fi
     done
   done
