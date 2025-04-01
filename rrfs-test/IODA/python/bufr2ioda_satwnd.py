@@ -31,22 +31,18 @@ warnings.filterwarnings('ignore')
 # =============================================
 def bufr_to_ioda(config, logger):
 
-    subsets = config["subsets"]      # an array of subset
-    logger.info(f"Checking subsets = {subsets}")
+#   Read bufr (not prepbufr) files
+    bufrfile = "./satwndbufr"
 
-    # Get parameters from configuration input (command line/file)
-    data_format = config["data_format"]
-    data_type = config["data_type"]
-    data_description = config["data_description"]
-    data_product = config["data_product"]
-    cycle_type = config["cycle_type"]
-    dump_dir = config["dump_directory"]   
-    ioda_dir = config["ioda_directory"]  
+#   Get GOES AMVs 
+    subsets = [ "NC005030", "NC005031", "NC005034" ]
     cycle = config["cycle_datetime"]
 # ---------------------------------------------
     logger.info(f"cycle= {cycle} ")
-    logger.info(f"dump_directory= {dump_dir} ")
-    logger.info(f"ioda_directory= {ioda_dir} ")
+
+    # Global attributes
+    data_description= "GOES Satellite Winds"
+    data_product= "RAP hourly satwnd bufr data"
 
     # Get derived parameters
     yyyymmdd = cycle[0:8]
@@ -54,15 +50,6 @@ def bufr_to_ioda(config, logger):
     reference_time = datetime.strptime(cycle, "%Y%m%d%H")
     reference_time = reference_time.strftime("%Y-%m-%dT%H:%M:%SZ")
     logger.info(f"reference_time = {reference_time}")
-
-#   Read bufr (not prepbufr) files
-    bufrfile = f"{cycle_type}.t{hh}z.{data_format}.tm00.bufr_d"
-
-    DATA_PATH = os.path.join(dump_dir, bufrfile)
-    if not os.path.isfile(DATA_PATH):
-        logger.info(f"DATA_PATH {DATA_PATH} does not exist")
-        return
-    logger.info(f"DATA_PATH is: {DATA_PATH}")
 
     # ========================
     q = bufr.QuerySet(subsets)
@@ -88,7 +75,7 @@ def bufr_to_ioda(config, logger):
     q.add('correlation', '*/AMVIVR{1}/TCOV')
 
     q.add('variation', '*/AMVIVR{1}/CVWD')
-    q.add('surface', '*/AMVIVR{1}/LSQL')
+#   q.add('surface', '*/AMVIVR{1}/LSQL')
 
     # ObsValue
     q.add('uwnd', '*/AMVIVR{1}/UWND')
@@ -103,7 +90,7 @@ def bufr_to_ioda(config, logger):
     # ================================================
     logger.info('Executing QuerySet to get ResultSet')
 
-    with bufr.File(DATA_PATH) as f:
+    with bufr.File(bufrfile) as f:
         try:
             r = f.execute(q)
         except Exception as err:
@@ -113,7 +100,7 @@ def bufr_to_ioda(config, logger):
     # MetaData
     lat = r.get('latitude')
     lon = r.get('longitude')
-    lon[lon > 180] -= 360      # Convert to [-180,180]
+    lon[lon < 0] += 360      # Convert to [0,360]
 
     said = r.get('satelliteId')
     zen  = r.get('satelliteZenithAngle', type='float')
@@ -124,7 +111,7 @@ def bufr_to_ioda(config, logger):
     pob = r.get('pressure', type='float')
     cor = r.get('correlation', type='float')
     vari= r.get('variation', type='float')
-    surf= r.get('surface', type='float')
+#   surf= r.get('surface', type='float')
 
     # Observation Time
     year = r.get('year')
@@ -152,8 +139,8 @@ def bufr_to_ioda(config, logger):
     ee   = r.get('ee', type='float')    # initial wind error (%)
     oer = 0.01 * ee * wspd              # initial wind error (meter)
 
-    # Prepbufr Report Type
-    otypvalue = 0         # initialize
+    # Define Prepbufr Report Type
+    otypvalue = 0     # initialize
     otypsize  = said.shape
     otyp = np.full(otypsize, otypvalue)
     otyp = ma.masked_values(otyp, said.fill_value)
@@ -175,61 +162,56 @@ def bufr_to_ioda(config, logger):
     qm = ma.masked_values(qm, said.fill_value)
 
 # ---------------------------------------------------
-    logger.debug(' Check variable dimension and type')
-    logger.debug(f' lat  shape = {lat.shape}')
-    logger.debug(f' lon  shape = {lon.shape}')
-    logger.debug(f' said shape = {said.shape}')
-    logger.debug(f' zen  shape= {zen.shape}')
-    logger.debug(f' fre  shape= {fre.shape}')
-    logger.debug(f' cen  shape= {cen.shape}')
-    logger.debug(f' meth  shape= {meth.shape}')
-    logger.debug(f' pob  shape= {pob.shape}')
-    logger.debug(f' cor  shape= {cor.shape}')
-    logger.debug(f' vari  shape= {vari.shape}')
-    logger.debug(f' surf  shape= {surf.shape}')
-    logger.debug(f' uwnd shape= {uwnd.shape}')
-    logger.debug(f' vwnd shape= {vwnd.shape}')
-    logger.debug(f' wdir shape= {wdir.shape}')
-    logger.debug(f' wspd shape= {wspd.shape}')
-    logger.debug(f' qm   shape= {qm.shape}')
-    logger.debug(f' otyp shape= {otyp.shape}')
-    logger.debug(f' qifn shape= {qifn.shape}')
-    logger.debug(f' ee   shape= {ee.shape}')
-    logger.debug(f' oer  shape= {oer.shape}')
+    logger.info(' Check variable dimension and type')
+    logger.info(f' lat  shape = {lat.shape}')
+    logger.info(f' lon  shape = {lon.shape}')
+    logger.info(f' said shape = {said.shape}')
+    logger.info(f' zen  shape= {zen.shape}')
+    logger.info(f' fre  shape= {fre.shape}')
+    logger.info(f' cen  shape= {cen.shape}')
+    logger.info(f' meth  shape= {meth.shape}')
+    logger.info(f' pob  shape= {pob.shape}')
+    logger.info(f' cor  shape= {cor.shape}')
+    logger.info(f' vari  shape= {vari.shape}')
+    logger.info(f' uwnd shape= {uwnd.shape}')
+    logger.info(f' vwnd shape= {vwnd.shape}')
+    logger.info(f' wdir shape= {wdir.shape}')
+    logger.info(f' wspd shape= {wspd.shape}')
+    logger.info(f' qm   shape= {qm.shape}')
+    logger.info(f' otyp shape= {otyp.shape}')
+    logger.info(f' qifn shape= {qifn.shape}')
+    logger.info(f' ee   shape= {ee.shape}')
+    logger.info(f' oer  shape= {oer.shape}')
 
-    logger.debug(f' lat  type= {lat.dtype}')
-    logger.debug(f' lon  type= {lon.dtype}')
-    logger.debug(f' said type= {said.dtype}')
-    logger.debug(f' zen  type= {zen.dtype}')
-    logger.debug(f' fre  type= {fre.dtype}')
-    logger.debug(f' cen  type= {cen.dtype}')
-    logger.debug(f' meth  type= {meth.dtype}')
-    logger.debug(f' pob  type= {pob.dtype}')
-    logger.debug(f' cor  type= {cor.dtype}')
-    logger.debug(f' vari  type= {vari.dtype}')
-    logger.debug(f' surf  type= {surf.dtype}')
-    logger.debug(f' uwnd type= {uwnd.dtype}')
-    logger.debug(f' vwnd type= {vwnd.dtype}')
-    logger.debug(f' wdir type= {wdir.dtype}')
-    logger.debug(f' wspd type= {wspd.dtype}')
-    logger.debug(f' qm   type= {qm.dtype}')
-    logger.debug(f' otyp type= {otyp.dtype}')
-    logger.debug(f' qifn type= {qifn.dtype}')
-    logger.debug(f' ee   type= {ee.dtype}')
-    logger.debug(f' oer  type= {oer.dtype}')
+    logger.info(f' lat  type= {lat.dtype}')
+    logger.info(f' lon  type= {lon.dtype}')
+    logger.info(f' said type= {said.dtype}')
+    logger.info(f' zen  type= {zen.dtype}')
+    logger.info(f' fre  type= {fre.dtype}')
+    logger.info(f' cen  type= {cen.dtype}')
+    logger.info(f' meth  type= {meth.dtype}')
+    logger.info(f' pob  type= {pob.dtype}')
+    logger.info(f' cor  type= {cor.dtype}')
+    logger.info(f' vari  type= {vari.dtype}')
+    logger.info(f' uwnd type= {uwnd.dtype}')
+    logger.info(f' vwnd type= {vwnd.dtype}')
+    logger.info(f' wdir type= {wdir.dtype}')
+    logger.info(f' wspd type= {wspd.dtype}')
+    logger.info(f' qm   type= {qm.dtype}')
+    logger.info(f' otyp type= {otyp.dtype}')
+    logger.info(f' qifn type= {qifn.dtype}')
+    logger.info(f' ee   type= {ee.dtype}')
+    logger.info(f' oer  type= {oer.dtype}')
 
     # -----------
     # output file
     # -----------
     dims = {'Location': np.arange(0, lat.shape[0])}
-    iodafile = f"{cycle_type}.t{hh}z.{data_type}.tm00.{cycle}.nc"
-
-    OUTPUT_PATH = os.path.join(ioda_dir, iodafile)
-    logger.info(f"Create output: {OUTPUT_PATH}")
-    obsspace = ioda_ospace.ObsSpace(OUTPUT_PATH, mode='w', dim_dict=dims)
+    iodafile = "./ioda_satwnd.nc"
+    obsspace = ioda_ospace.ObsSpace(iodafile, mode='w', dim_dict=dims)
 
     # Global attributes
-    obsspace.write_attr('sourceFiles', bufrfile)
+    obsspace.write_attr('sourceFiles', "rap.t??z.satwnd.tm00.bufr_d")
     obsspace.write_attr('description', data_description)
     obsspace.write_attr('product', data_product)
     obsspace.write_attr('subsets', subsets)
@@ -253,7 +235,7 @@ def bufr_to_ioda(config, logger):
         .write_data(lon)
 
     obsspace.create_var('MetaData/satelliteIdentifier', dtype=said.dtype, fillval=said.fill_value) \
-        .write_attr('long_name', 'Satellite ID') \
+        .write_attr('long_name', 'Satellite ID / prepbufr subtype') \
         .write_data(said)
 
     obsspace.create_var('MetaData/satelliteZenithAngle', dtype=zen.dtype, fillval=zen.fill_value) \
@@ -289,10 +271,10 @@ def bufr_to_ioda(config, logger):
         .write_attr('long_name', 'coefficient Of Variation') \
         .write_data(vari)
 
-    obsspace.create_var('MetaData/surfaceQualifier', dtype=surf.dtype, fillval=surf.fill_value) \
-        .write_attr('units', '') \
-        .write_attr('long_name', 'Land/Sea Qualifier') \
-        .write_data(surf)
+#   obsspace.create_var('MetaData/surfaceQualifier', dtype=surf.dtype, fillval=surf.fill_value) \
+#       .write_attr('units', '') \
+#       .write_attr('long_name', 'Land/Sea Qualifier') \
+#       .write_data(surf)
 
     obsspace.create_var('MetaData/qiWithoutForecast', dtype=qifn.dtype, fillval=qifn.fill_value) \
         .write_attr('units', 'percent') \
@@ -308,12 +290,10 @@ def bufr_to_ioda(config, logger):
         .write_attr('long_name', 'prepbufr Report Type') \
         .write_data(otyp)
 
-
     # QualityMarker
     obsspace.create_var('MetaData/windQualityMarker', dtype=qm.dtype, fillval=qm.fill_value) \
         .write_attr('long_name', 'Wind Quality Marker') \
         .write_data(qm)
-
 
     # ObsValue
     obsspace.create_var('ObsValue/windEastward', dtype=uwnd.dtype, fillval=uwnd.fill_value) \

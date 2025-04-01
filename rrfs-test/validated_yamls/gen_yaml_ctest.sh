@@ -1,4 +1,5 @@
 #!/bin/bash
+set echo
 
 # Define all observation type configurations
 obtype_configs=(
@@ -16,6 +17,7 @@ obtype_configs=(
     "aircft_winds_235.yaml"
     "msonet_airTemperature_188.yaml"
     "msonet_specificHumidity_188.yaml"
+    "gnss_zenithTotalDelay.yaml"
     #"msonet_stationPressure_188.yaml" # Different result on Hera/Hercules
     "msonet_winds_288.yaml"
     #"adpsfc_airTemperature_187.yaml" # Waiting to add to ctest
@@ -29,6 +31,9 @@ obtype_configs=(
     #"rassda_airTemperature_126.yaml" # DO NOT ADD - Not yet phase 3
     #"vadwnd_winds_224.yaml" # DO NOT ADD - Not yet phase 3
     "atms_npp.yaml"
+    "abi_g16.yaml"
+    "abi_g18.yaml"
+
     #"atms_n20.yaml" # Waiting to add to ctest (different results on Hera/Jet?)
     #"amsua_n19.yaml" # Waiting to add to ctest
 )
@@ -55,6 +60,7 @@ for basic_config in "${!basic_configs[@]}"; do
     # Process each YAML file
     declare -A processed_groups
     for config in "${obtype_configs[@]}"; do
+# hliu
 
         # If this is a LETKF solver ctest, we need to replace the input obs file with the observer's jdiag file 
         cp  "./templates/obtype_config/$config" ./replace.yaml
@@ -96,10 +102,8 @@ for basic_config in "${!basic_configs[@]}"; do
     rm -f temp.yaml # Clean up temporary yaml
     rm -f replace.yaml # Clean up temporary yaml
 
-    # Comment out the OEFPC for specificHumidity yamls in MPAS-JEDI ctests
-    if [[ $basic_config == *"mpasjedi"* ]]; then
-	python commentQC.py
-    fi
+    # Comment out some filters for the various ctests (different for fv3-jedi and mpas-jedi)
+    python commentQC.py ${ctest_yaml}
 
     # Move to testinput and remove the old temporary yaml
     ctest_yaml=${basic_configs[$basic_config]}

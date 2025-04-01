@@ -77,7 +77,7 @@ while getopts "p:c:m:j:hvfsx" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules | jet | gaea )
+  hera | orion | hercules | jet | gaea | wcoss2 )
     echo "Building RDASApp on $BUILD_TARGET"
     echo "  Build initiated `date`"
     [[ "${BUILD_TARGET}" != *gaea* ]] && source $dir_root/ush/module-setup.sh
@@ -101,6 +101,11 @@ if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nod
 else # hera, hercules, jet, gaea
   BUILD_JOBS=${BUILD_JOBS:-6}
 fi
+#clt from GDASapp 
+# TODO: Remove LD_LIBRARY_PATH line as soon as permanent solution is available
+ if [[ $BUILD_TARGET == 'wcoss2' ]]; then
+     export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/cray/pe/mpich/8.1.19/ofi/intel/19.0/lib"
+ fi
 
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
@@ -142,6 +147,11 @@ else
   exit 1
 fi
 
+# Build the ctest yamls
+cd $dir_root/rrfs-test/validated_yamls
+./gen_yaml_ctest.sh
+cd ${BUILD_DIR}
+
 # Link in test data for experiments: MPAS-JEDI
 if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
   # Link in case data
@@ -155,11 +165,6 @@ if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
   echo "Linking in test data for FV3-JEDI case"
   $dir_root/rrfs-test/scripts/link_fv3jedi_expr.sh
 fi
-
-# Build the ctest yamls 
-cd $dir_root/rrfs-test/validated_yamls
-./gen_yaml_ctest.sh
-cd ${BUILD_DIR}
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE"
 # Configure

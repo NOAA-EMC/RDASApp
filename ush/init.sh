@@ -5,6 +5,9 @@ source ${ushdir}/detect_machine.sh
 basedir="$(dirname "$ushdir")"
 
 case ${MACHINE_ID} in
+  wcoss2)
+    RDAS_DATA=/lfs/h2/emc/da/noscrub/Ting.Lei/dr-rdas-data/RDAS_DATA
+    ;;
   hera)
     RDAS_DATA=/scratch1/NCEPDEV/fv3-cam/RDAS_DATA
     ;;

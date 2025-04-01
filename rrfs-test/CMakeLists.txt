@@ -116,7 +116,9 @@ if(MPAS_DYCORE)
 	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
 	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
-           set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
+           if (NOT "${MACHINE_ID}" STREQUAL "hercules")
+             set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
+           endif()
            ecbuild_add_test( TARGET ${target_test}
                         MPI      160
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
