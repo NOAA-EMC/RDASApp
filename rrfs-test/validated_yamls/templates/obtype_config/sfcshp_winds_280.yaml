@@ -277,8 +277,6 @@
            minvalue: -130
            maxvalue: 130
            action:
-             name: reject
-           action:
              name: reduce obs space
 
          # Gross Error Check (windEastward)
