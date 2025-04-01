@@ -3,7 +3,7 @@ run_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # shellcheck disable=SC1091
 source "${run_dir}/detect_machine.sh"
 
-case ${MACHINE} in
+case ${MACHINE_ID} in
   wcoss2)
     EXEC_DIR=/to/be/added
     ;;
@@ -25,13 +25,13 @@ case ${MACHINE} in
     elif [[ -d /gpfs/f6 ]]; then
       EXEC_DIR=/gpfs/f6/bil-fire10-oar/world-shared/gge/Miniforge3/envs/bokeh/bin
     else
-      echo "unsupported gaea cluster: ${MACHINE}"
+      echo "unsupported gaea cluster: ${MACHINE_ID}"
       exit 1
     fi
     ;;
   *)
     EXEC_DIR=/unknown/location
-    echo "platform not supported: ${MACHINE}"
+    echo "platform not supported: ${MACHINE_ID}"
     exit 1
     ;;
 esac
