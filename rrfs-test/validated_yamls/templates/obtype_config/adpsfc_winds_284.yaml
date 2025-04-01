@@ -61,7 +61,6 @@
              value: is_not_valid
            where operator: or
            action:
-             name: reject
              name: reduce obs space
 
          # Time window filter
@@ -232,7 +231,6 @@
            minvalue: -130
            maxvalue: 130
            action:
-             name: reject
              name: reduce obs space
 
          # Gross Error Check (windEastward)
