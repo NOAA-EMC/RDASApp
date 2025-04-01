@@ -168,6 +168,7 @@
            test variables:
            - name:  ObsErrorData/stationPressure
            minvalue: 0.0
+           maxvalue: 1000
            action:
              name: reduce obs space
 
