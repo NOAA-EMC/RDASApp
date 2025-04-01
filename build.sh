@@ -77,7 +77,7 @@ while getopts "p:c:m:j:hvfsx" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules | jet | gaea )
+  hera | orion | hercules | jet | gaea | wcoss2 )
     echo "Building RDASApp on $BUILD_TARGET"
     echo "  Build initiated `date`"
     [[ "${BUILD_TARGET}" != *gaea* ]] && source $dir_root/ush/module-setup.sh
@@ -101,6 +101,11 @@ if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nod
 else # hera, hercules, jet, gaea
   BUILD_JOBS=${BUILD_JOBS:-6}
 fi
+#clt from GDASapp 
+# TODO: Remove LD_LIBRARY_PATH line as soon as permanent solution is available
+ if [[ $BUILD_TARGET == 'wcoss2' ]]; then
+     export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/cray/pe/mpich/8.1.19/ofi/intel/19.0/lib"
+ fi
 
 BUILD_DIR=${BUILD_DIR:-$dir_root/build}
 if [[ $CLEAN_BUILD == 'YES' ]]; then
