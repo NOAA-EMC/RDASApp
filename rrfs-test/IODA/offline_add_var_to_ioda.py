@@ -75,7 +75,10 @@ for group in groups:
             g.createVariable(var, vartype, 'Location', fill_value=fill)
         except:  # String variables
             g.createVariable(var, 'str', 'Location')
-        g.variables[var][:] = invar[:][:]
+        if var in ['latitude', 'longitude']:
+            g.variables[var][:] = invar[:][:].data
+        else:
+            g.variables[var][:] = invar[:][:]
         # Copy attributes for this variable
         for attr in invar.ncattrs():
             if '_FillValue' in attr: continue

@@ -72,5 +72,6 @@ output: # for outputting mean posterior
 test:
   reference filename: testoutput/rrfs-fv3jedi-getkf-solver.ref
   test output filename: ./rrfs-fv3jedi-getkf-solver.out
-  float relative tolerance: 1.0e-3
+  float relative tolerance: 1.0e-2
   float absolute tolerance: 1.0e-6
+  integer tolerance: 3

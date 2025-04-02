@@ -105,6 +105,9 @@ endif()
     ecbuild_bundle( PROJECT iodaconv SOURCE "../sorc/iodaconv" )
   endif()
 
+# EMC BUFR-query library
+  ecbuild_bundle( PROJECT bufr-query SOURCE "../sorc/bufr-query" )
+
 # rdas tests and super executables
   ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
   if(BUILD_SUPER_EXE)
