@@ -20,6 +20,7 @@ UNIT_CONVERSIONS = {
 def generate_full_cycle_range(jdiag_files):
     """Generate a full hourly range of cycles based on the available files."""
     detected_dates = set()
+
     for file in jdiag_files:
         match = re.search(r"(\d{8})/.*jedivar_(\d{2})", file)
         if match:
@@ -30,10 +31,12 @@ def generate_full_cycle_range(jdiag_files):
     for date in sorted(detected_dates):
         for hour in range(24):
             full_cycles.append(f"{date} {hour:02d}Z")
+
     return full_cycles, date
 
 def compute_bias_rms(jdiag_files, cycles, obs_types):
-    """Compute bias, RMS, fitting ratio, and observation counts for each jdiag file."""
+    """Compute bias, RMS, fitting ratio, and number of assimilated observations for each jdiag file."""
+    # Initialize stats dictionary with NaNs for all metrics and 0 for nobs
     stats = {
         f"{cycle}_{obs}": {
             "ombg_bias": np.nan,
@@ -41,7 +44,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
             "oman_bias": np.nan,
             "oman_rms": np.nan,
             "fitting_ratio": np.nan,
-            "nobs": 0  # Initialize observation counts to 0
+            "nobs": 0  # Initialize number of observations to 0
         } for cycle in cycles for obs in obs_types
     }
 
@@ -49,25 +52,31 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
         try:
             ds_ombg = xr.open_dataset(file, group="ombg")
             ds_obserr = xr.open_dataset(file, group="EffectiveError0")
+            ds_effqc = xr.open_dataset(file, group="EffectiveQC2")
             ds_oman = xr.open_dataset(file, group="oman")
 
-            obs_var = list(ds_ombg.data_vars.keys())[0]
+            obs_var = list(ds_ombg.data_vars.keys())[0]  # Extract variable name
             if obs_var not in ds_ombg.variables:
                 continue
 
             ombg = ds_ombg[obs_var].values
             obserr = ds_obserr[obs_var].values
+            effqc = ds_effqc[obs_var].values
             oman = ds_oman[obs_var].values
 
+            # Apply valid data filtering (ignore fill values)
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-            valid_mask = (ombg != fill_value) & (ombg < 1e5) & (~np.isnan(obserr)) & (obserr < 1e10)
+            valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10)
+            #valid_mask = (effqc == 0)
             ombg = ombg[valid_mask]
             oman = oman[valid_mask]
 
+            # Apply unit conversion if needed
             scale_factor = UNIT_CONVERSIONS.get(obs_var, 1.0)
             ombg *= scale_factor
             oman *= scale_factor
 
+            # Extract cycle and obs type
             match = re.search(r"(\d{8})/.*jedivar_(\d{2})", file)
             obtype_match = re.search(r"jdiag_(.+)\.nc4?$", os.path.basename(file))
             if match and obtype_match:
@@ -79,10 +88,15 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
                 if ombg.size == 0 or np.isnan(ombg).all():
                     continue
                 else:
+                    # Compute OMB statistics
                     ombg_bias = np.nanmean(ombg)
                     ombg_rms = np.sqrt(np.nanmean(ombg ** 2))
+
+                    # Compute OMA statistics
                     oman_bias = np.nanmean(oman)
                     oman_rms = np.sqrt(np.nanmean(oman ** 2))
+
+                    # Compute fitting ratio
                     fitting_ratio = (
                         (ombg_rms - oman_rms) / ombg_rms
                         if not np.isnan(ombg_rms) and not np.isnan(oman_rms) and ombg_rms != 0
@@ -98,6 +112,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
                     }
             ds_ombg.close()
             ds_obserr.close()
+            ds_effqc.close()
             ds_oman.close()
 
         except FileNotFoundError:
@@ -114,6 +129,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
 def extract_obs_types(jdiag_files):
     """Extract unique observation types from filenames."""
     obs_types = set()
+
     for file in jdiag_files:
         filename = os.path.basename(file)
         obtype_match = re.search(r"jdiag_(.+)\.nc4?$", filename)
@@ -121,10 +137,11 @@ def extract_obs_types(jdiag_files):
             obs_types.add(obtype_match.group(1))
         else:
             print(f"? Warning: Could not extract obtype from {file}")
+
     return sorted(obs_types)
 
 def get_core_obs_type(obs_type):
-    """Extract the core observation variable name from the full type."""
+    """Extracts the core observation variable name from the full type."""
     match = re.match(r".*?_(.*?)_\d+$", obs_type)
     return match.group(1) if match else obs_type
 
@@ -137,6 +154,7 @@ def plot_diff_heatmaps(stats, title, output_file, cycles, obs_types, metric):
         "Pressure": []
     }
 
+    # Identify and group valid observation types
     for obs in obs_types:
         core_obs = get_core_obs_type(obs)
         if "airTemperature" in core_obs:
@@ -148,7 +166,9 @@ def plot_diff_heatmaps(stats, title, output_file, cycles, obs_types, metric):
         elif "stationPressure" in core_obs:
             grouped_obs["Pressure"].append(obs)
 
+    # Remove empty groups
     grouped_obs = {key: val for key, val in grouped_obs.items() if val}
+
     num_groups = len(grouped_obs)
     if num_groups == 0:
         print("No valid observation types found in the input data!")
@@ -159,11 +179,12 @@ def plot_diff_heatmaps(stats, title, output_file, cycles, obs_types, metric):
         axes = [axes]
 
     for ax, (group_name, obs_list) in zip(axes, grouped_obs.items()):
-        obs_list.sort(key=lambda x: int(x.split('_')[-1]))
+        obs_list.sort(key=lambda x: int(x.split('_')[-1]))  # Sort by trailing number
         print(f"\x1b[32mProcessing {group_name}:\x1b[0m {obs_list}")
 
         cycle_to_index = {cycle: i for i, cycle in enumerate(cycles)}
         obs_to_index = {obs: i for i, obs in enumerate(obs_list)}
+
         matrix = np.full((len(obs_list), len(cycles)), np.nan)
 
         for key, values in stats.items():

@@ -53,20 +53,23 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
         try:
             ds_ombg = xr.open_dataset(file, group="ombg")
             ds_obserr = xr.open_dataset(file, group="EffectiveError0")
+            ds_effqc = xr.open_dataset(file, group="EffectiveQC2")
             ds_oman = xr.open_dataset(file, group="oman")
 
             obs_var = list(ds_ombg.data_vars.keys())[0]  # Extract variable name
             if obs_var not in ds_ombg.variables:
                 continue
 
-            ombg = ds_ombg[obs_var].values   # Get O-B values
-            obserr = ds_obserr[obs_var].values  # Get observation error values
-            oman = ds_oman[obs_var].values    # Get O-A values
+            ombg = ds_ombg[obs_var].values
+            obserr = ds_obserr[obs_var].values
+            effqc = ds_effqc[obs_var].values
+            oman = ds_oman[obs_var].values
 
             # Apply valid data filtering (ignore fill values)
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
             valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10)
-            ombg = ombg[valid_mask]  # Keep only assimilated observations
+            #valid_mask = (effqc == 0)
+            ombg = ombg[valid_mask]
             oman = oman[valid_mask]
 
             # Apply unit conversion if needed
@@ -111,6 +114,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
                     })
             ds_ombg.close()
             ds_obserr.close()
+            ds_effqc.close()
             ds_oman.close()
 
         except FileNotFoundError:
@@ -121,7 +125,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
     return stats
 
 def extract_obs_types(jdiag_files):
-    """Extracts unique observation types from filenames."""
+    """Extract unique observation types from filenames."""
     obs_types = set()
 
     for file in jdiag_files:

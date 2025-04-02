@@ -71,6 +71,7 @@ def compute_stats_per_time(file):
     try:
         ds_ombg = xr.open_dataset(file, group="ombg")
         ds_obserr = xr.open_dataset(file, group="EffectiveError0")
+        ds_effqc = xr.open_dataset(file, group="EffectiveQC2")
         ds_meta = xr.open_dataset(file, group="MetaData")
         try:
             ds_oman = xr.open_dataset(file, group="oman")
@@ -91,11 +92,13 @@ def compute_stats_per_time(file):
 
             ombg = ds_ombg[obs_var].values
             obserr = ds_obserr[obs_var].values if obs_var in ds_obserr.data_vars else np.full_like(ombg, np.nan)
+            effqc = ds_effqc[obs_var].values if obs_var in ds_effqc.data_vars else np.full_like(ombg, np.nan)
             oman = ds_oman[obs_var].values if ds_oman and obs_var in ds_oman.data_vars else np.full_like(ombg, np.nan)
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
 
-            # Valid data mask: exclude fill values, NaN errors, unrealistic errors, and pressure bounds
+            # Valid data mask
             valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
+            #valid_mask = (effqc == 0)
             ombg_valid = ombg[valid_mask]
             oman_valid = oman[valid_mask]
 
@@ -108,7 +111,7 @@ def compute_stats_per_time(file):
             ombg_valid *= scale_factor
             oman_valid *= scale_factor
 
-            # Compute statistics over the entire column
+            # Compute statistics
             bias_ombg = np.nanmean(ombg_valid)
             rms_ombg = np.sqrt(np.nanmean(ombg_valid ** 2))
             bias_oman = np.nanmean(oman_valid) if ds_oman else np.nan
@@ -126,6 +129,7 @@ def compute_stats_per_time(file):
 
         ds_ombg.close()
         ds_obserr.close()
+        ds_effqc.close()
         ds_meta.close()
         if ds_oman:
             ds_oman.close()

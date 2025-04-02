@@ -88,18 +88,21 @@ def process_and_plot_jdiag(file):
         ds_oman = xr.open_dataset(file, group="oman")
         ds_meta = xr.open_dataset(file, group="MetaData")
         ds_obserr = xr.open_dataset(file, group="EffectiveError0")
+        ds_effqc = xr.open_dataset(file, group="EffectiveQC2")
 
         # Extract the observation variable (assuming one variable per ombg group)
         obs_var = list(ds_ombg.data_vars.keys())[0]
         ombg = ds_ombg[obs_var].values
         oman = ds_oman[obs_var].values
         obserr = ds_obserr[obs_var].values
+        effqc = ds_effqc[obs_var].values
         lats = ds_meta['latitude'].values
         lons = ds_meta['longitude'].values
 
         # Filter valid data
         fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
         valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(ombg)) & (obserr < 1e+10)
+        #valid_mask = (effqc == 0)
         lats = lats[valid_mask]
         lons = lons[valid_mask]
         ombg = ombg[valid_mask]
@@ -172,6 +175,7 @@ def process_and_plot_jdiag(file):
         ds_ombg.close()
         ds_meta.close()
         ds_obserr.close()
+        ds_effqc.close()
 
     except Exception as e:
         print(f"? Error processing {file}: {e}")

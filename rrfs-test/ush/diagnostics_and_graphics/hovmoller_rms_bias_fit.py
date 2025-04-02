@@ -50,6 +50,7 @@ def compute_binned_stats_per_time(file):
     try:
         ds_ombg = xr.open_dataset(file, group="ombg")
         ds_obserr = xr.open_dataset(file, group="EffectiveError0")
+        ds_effqc = xr.open_dataset(file, group="EffectiveQC2")
         ds_meta = xr.open_dataset(file, group="MetaData")
         try:
             ds_oman = xr.open_dataset(file, group="oman")
@@ -71,10 +72,12 @@ def compute_binned_stats_per_time(file):
 
             ombg = ds_ombg[obs_var].values
             obserr = ds_obserr[obs_var].values if obs_var in ds_obserr.data_vars else np.full_like(ombg, np.nan)
+            effqc = ds_effqc[obs_var].values if obs_var in ds_effqc.data_vars else np.full_like(ombg, np.nan)
             oman = ds_oman[obs_var].values if ds_oman and obs_var in ds_oman.data_vars else np.full_like(ombg, np.nan)
 
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
             valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
+            #valid_mask = (effqc == 0)
             pressure_valid = pressure[valid_mask]
             ombg_valid = ombg[valid_mask]
             oman_valid = oman[valid_mask]
@@ -115,6 +118,7 @@ def compute_binned_stats_per_time(file):
 
         ds_ombg.close()
         ds_obserr.close()
+        ds_effqc.close()
         ds_meta.close()
         if ds_oman:
             ds_oman.close()
