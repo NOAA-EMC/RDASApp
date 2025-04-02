@@ -278,7 +278,7 @@ def bufr_to_ioda(config, logger):
 
     obsspace.create_var('MetaData/longitude', dtype=lon.dtype, fillval=lon.fill_value) \
         .write_attr('units', 'degrees_east') \
-        .write_attr('valid_range', np.array([-180, 180])) \
+        .write_attr('valid_range', np.array([0, 360])) \
         .write_attr('long_name', 'Longitude') \
         .write_data(lon)
 
