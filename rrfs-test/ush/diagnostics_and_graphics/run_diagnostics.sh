@@ -41,46 +41,42 @@
 #### USER-DEFINED VARIABLES #################################################
 # Specify which functions to run (uncomment/comment to turn on/off)
 #HEATMAP_JO="YES"
-HEATMAP_RMS_BIAS_FIT="YES"
-#DIFF_HEATMAP_RMS_BIAS_FIT="YES"
+#HEATMAP_RMS_BIAS_FIT="YES"
+DIFF_HEATMAP_RMS_BIAS_FIT="YES"
 #PROFILE_RMS_BIAS_FIT="YES"
-#DIFF_PROFILE_RMS_BIAS_FIT="YES"
+DIFF_PROFILE_RMS_BIAS_FIT="YES"
 #MAP_OMBG_OMAN="YES"
 #HOVMOLLER_RMS_BIAS_FIT="YES"
 #TIMESERIES_RMS_BIAS_FIT="YES"
-#DIFF_TIMESERIES_RMS_BIAS_FIT="YES"
+DIFF_TIMESERIES_RMS_BIAS_FIT="YES"
 #MAP_DOMAINCOMPARISON_MPAS_FV3="YES"
 #FV3_VS_MPAS_INCREMENT="YES"
 #UPLOAD_TO_RZDM="YES"
 
 # Cycle start and end dates to process
-SDATE=2024052700
-EDATE=2024052700
-#SDATE=2024050700 #temp
-#EDATE=2024050700 #temp
+SDATE=2024050600
+EDATE=2024050700
 
 # Retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
-VERSION="v2.0.9.7"
-TAG="d12km2097"
-EXP_NAME="hrly_12km"
+VERSION="v2.0.9"
+EXP_NAME="baseline1_3denvar12km209"
 OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
 COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
 DATAROOT="${OPSROOT}/exp/${EXP_NAME}/stmp"
-COMROOT="${OPSROOT}/com" #temp
-DATAROOT="${OPSROOT}/stmp" #temp
+LOGDIR="${COMROOT}/rrfs/${VERSION}/logs"
+JDIAGDIR="${DATAROOT}"
 
 # Control experiment for "diff_" tools.
-CONTROL="benchmark1"
-CONTROL="hrly_12km"
+CTL_VERSION="v2.0.9"
+CTL_NAME="baseline1_3dvar12km209"
+CTL_OPSROOT="/scratch2/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${CTL_VERSION}"
+CTL_COMROOT="${CTL_OPSROOT}/exp/${CTL_NAME}/com"
+CTL_DATAROOT="${CTL_OPSROOT}/exp/${CTL_NAME}/stmp"
+CTL_LOGDIR="${CTL_COMROOT}/rrfs/${CTL_VERSION}/logs"
+CTL_JDIAGDIR="${CTL_DATAROOT}"
 
 # Specify your RDASApp build (mostly for module loads)
 RDASApp="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.phase2_sonde"
-
-# Specify the log and diag directories
-LOGDIR="${COMROOT}/rrfs/${VERSION}/logs"
-JDIAGDIR="${DATAROOT}"
-GDIAGDIR="${OPSROOT}/exp/${CONTROL}/stmp"
-GDIAGDIR=$JDIAGDIR # temp
 
 # Options only for MAP_DOMAINCOMPARISON_MPAS_FV3
 MPAS_DOMAIN="${RDASApp}/expr/mpas_2024052700/data/invariant.nc"
@@ -123,7 +119,7 @@ while [[ ${date} -le ${EDATE} ]]; do
   # Plots nobs, Jo, Jo/n, and Jo/n percent change (from log files)
   if [[ ${HEATMAP_JO:=NO} == "YES" ]]; then
     echo "? Working on (${EXP_NAME}) jo info heatmaps: ${pdy}"
-    logs=(${LOGDIR}/rrfs.${pdy}/*/det/rrfs_jedivar_${TAG}_${pdy}*.log)
+    logs=(${LOGDIR}/rrfs.${pdy}/*/det/rrfs_jedivar_*_${pdy}*.log)
     python heatmap_jo.py ${logs[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
     mv heatmap*.png ${EXP_NAME}/${pdy}/heatmap/.
@@ -140,10 +136,10 @@ while [[ ${date} -le ${EDATE} ]]; do
 
   # Plots rms and bias (from jdiag files)
   if [[ ${DIFF_HEATMAP_RMS_BIAS_FIT:=NO} == "YES" ]]; then
-    echo "? Working on (${EXP_NAME} vs ${CONTROL}) diff rms, bias, fitting ratio heatmaps: ${pdy}"
+    echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff rms, bias, fitting ratio heatmaps: ${pdy}"
     jdiags_exp=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
-    jdiags_ctl=(${GDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
-    python diff_heatmap_rms_bias_fit.py "${CONTROL}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
+    jdiags_ctl=(${CTL_JDIAGDIR}/${pdy}/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*)
+    python diff_heatmap_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
     mv heatmap*.png ${EXP_NAME}/${pdy}/heatmap/.
   fi
@@ -163,9 +159,9 @@ while [[ ${date} -le ${EDATE} ]]; do
   date=$(${ndate} 24 ${date})
 done # date loop
 
-date=${SDATE}
-date=2024052701 #temp
-EDATE=$date #temp
+#date=${SDATE}
+#date=2024052701 #temp
+#EDATE=$date #temp
 # Loop over dates from start to and including end date
 while [[ ${date} -le ${EDATE} ]]; do
   pdy=${date:0:8}
@@ -178,7 +174,7 @@ while [[ ${date} -le ${EDATE} ]]; do
 # Plots gsi vs mpas analysis increments.
 if [[ ${FV3_VS_MPAS_INCREMENT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) diff increments: ${pdy} ${cyc}Z"
-  mkdir -p ${EXP_NAME}/increments
+  mkdir -p ${EXP_NAME}/increment
   #-v/--variable: Variable to plot (e.g., airTemperature, specificHumidity).
   #-f/--figname: Figure identifier (e.g., a timestamp or experiment name).
   #-gb/--gsi_bkg: Path to the GSI background file.
@@ -212,6 +208,7 @@ epdy=${EDATE:0:8}
 if [[ ${PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) profiles: ${spdy}00 to ${epdy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  #jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*/det/jedivar_05/jdiag*spec*33*)
   python profile_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
@@ -219,10 +216,10 @@ fi
 
 # Plots vertical profiles of rms and bias (from jdiag files) over a date range.
 if [[ ${DIFF_PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
-  echo "? Working on (${EXP_NAME} vs ${CONTROL}) diff profiles: ${spdy}00 to ${epdy}23"
-  jdiags_ctl=(${GDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff profiles: ${spdy}00 to ${epdy}23"
   jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-  python diff_profile_rms_bias_fit.py "${CONTROL}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
+  jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*33*)
+  python diff_profile_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
 fi
@@ -245,10 +242,10 @@ if [[ ${TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
 fi
 
 if [[ ${DIFF_TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
-  echo "? Working on (${EXP_NAME} vs ${CONTROL}) diff timeseries: ${spdy}00 to ${epdy}23"
+  echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff timeseries: ${spdy}00 to ${epdy}23"
   jdiags_ctl=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-  jdiags_exp=(${GDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-  python diff_timeseries_rms_bias_fit.py "${CONTROL}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
+  jdiags_exp=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*33*)
+  python diff_timeseries_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.
 fi

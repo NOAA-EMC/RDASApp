@@ -68,7 +68,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
             # Apply valid data filtering (ignore fill values)
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
             valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10)
-            #valid_mask = (effqc == 0)
+            valid_mask = (effqc <= 1)
             ombg = ombg[valid_mask]
             oman = oman[valid_mask]
 

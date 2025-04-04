@@ -98,7 +98,7 @@ def compute_stats_per_time(file):
 
             # Valid data mask
             valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
-            #valid_mask = (effqc == 0)
+            valid_mask = (effqc <= 1)
             ombg_valid = ombg[valid_mask]
             oman_valid = oman[valid_mask]
 
