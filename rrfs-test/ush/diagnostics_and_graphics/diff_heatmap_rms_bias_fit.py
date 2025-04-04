@@ -200,6 +200,14 @@ def plot_diff_heatmaps(stats, title, output_file, cycles, obs_types, metric):
         cmap = "RdBu_r"  # Blue for positive, red for negative
         center = 0
 
+        # Set colorbar range based on metric
+        if metric != "nobs":
+            vmin = -100
+            vmax = 100
+        else:
+            vmin = None
+            vmax = None
+
         # Adjust labels and format based on the metric
         if metric == "nobs":
             cbar_label = "Difference in Observation Counts"
@@ -214,9 +222,9 @@ def plot_diff_heatmaps(stats, title, output_file, cycles, obs_types, metric):
 
         cycle_xticks = [cycle.split()[1] for cycle in cycles]
 
-        sns.heatmap(matrix, annot=True, fmt=annot_fmt, cmap=cmap, center=center,
-                    xticklabels=cycle_xticks, yticklabels=obs_list, linewidths=0.5, linecolor="gray", ax=ax,
-                    cbar=True, cbar_kws={"label": cbar_label})
+        sns.heatmap(matrix, annot=True, fmt=annot_fmt, cmap=cmap, center=center, vmin=vmin, vmax=vmax,
+            xticklabels=cycle_xticks, yticklabels=obs_list, linewidths=0.5, linecolor="gray", ax=ax,
+            cbar=True, cbar_kws={"label": cbar_label})
 
         ax.set_title(group_title)
         ax.set_xlabel("Analysis Cycle Time (UTC)")

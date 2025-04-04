@@ -48,7 +48,7 @@
 #MAP_OMBG_OMAN="YES"
 #HOVMOLLER_RMS_BIAS_FIT="YES"
 #TIMESERIES_RMS_BIAS_FIT="YES"
-DIFF_TIMESERIES_RMS_BIAS_FIT="YES"
+#DIFF_TIMESERIES_RMS_BIAS_FIT="YES"
 #MAP_DOMAINCOMPARISON_MPAS_FV3="YES"
 #INCREMENT_FV3_VS_MPAS="YES"
 #INCREMENT_MPAS_VS_MPAS="YES"
@@ -155,8 +155,8 @@ while [[ ${date} -le ${EDATE} ]]; do
   # Plots 2d map scatter of ombg values (from jdiag) with bias and rms stats displayed.
   if [[ ${MAP_OMBG_OMAN:=NO} == "YES" ]]; then
     echo "? Working on (${EXP_NAME}) map ombg & oman: ${date}"
-    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_0[1-3]_${VERSION}/det/jedivar_*/jdiag*Temp*33*)
-    jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_0[1-3]_${VERSION}/det/jedivar_*/jdiag*Temp*88*)
+    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*Temp*33*)
+    #jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*Temp*88*)
     python map_ombg_oman.py ${jdiags[@]}
     mkdir -p ${EXP_NAME}/${pdy}/map
     mv ${pdy}*map.png ${EXP_NAME}/${pdy}/map/.
@@ -168,6 +168,10 @@ done # date loop
 
 # Reset date for new loop
 date=${SDATE}
+date=$(${ndate} 1 ${date}) # start +1 hr (otherwise missing background)
+if [[ ${SDATE} -eq ${EDATE} ]]; then
+  EDATE=$(${ndate} 24 ${EDATE})
+fi
 
 # Loop over dates from start to and including end date
 # In this loop, date is incremented by 1h
@@ -197,6 +201,9 @@ if [[ ${INCREMENT_MPAS_VS_MPAS:=NO} == "YES" ]]; then
   m2b=${COMROOT}/rrfs/${VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
   m2a=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/mpasin.nc
   mg=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/invariant.nc
+  if [[ ! -f $m1a || ! -f $m2a ]]; then
+    break
+  fi
   python increment_mpas_mpas.py -v airTemperature -f ${date} -m1b ${m1b} -m1a ${m1a} -m2b ${m2b} -m2a ${m2a} -mg ${mg} -c ${CTL_NAME} -e ${EXP_NAME} -l ${LEVEL}
   mkdir -p ${EXP_NAME}/increment
   mv *increment*.png ${EXP_NAME}/increment/.
@@ -238,6 +245,7 @@ epdy=${EDATE:0:8}
 if [[ ${PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) profiles: ${spdy}00 to ${epdy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  jdiags+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
   python profile_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
@@ -246,8 +254,10 @@ fi
 # Plots vertical profiles of rms and bias (from jdiag files) over a date range.
 if [[ ${DIFF_PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff profiles: ${spdy}00 to ${epdy}23"
-  jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_0[0-2]_${VERSION}/det/jedivar_*/jdiag*33*)
-  jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_0[0-2]_${CTL_VERSION}/det/jedivar_*/jdiag*33*)
+  jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*33*)
+  jdiags_exp+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
+  jdiags_ctl+=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*20*)
   python diff_profile_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
@@ -257,6 +267,7 @@ fi
 if [[ ${HOVMOLLER_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) hovmoller: ${spdy}00 to ${epdy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  #jdiags+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
   python hovmoller_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/hovmoller
   mv hovmoller*.png ${EXP_NAME}/hovmoller/.
@@ -265,6 +276,7 @@ fi
 if [[ ${TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) timeseries: ${spdy}00 to ${epdy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  #jdiags+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
   python timeseries_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.
@@ -274,6 +286,8 @@ if [[ ${DIFF_TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff timeseries: ${spdy}00 to ${epdy}23"
   jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
   jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*33*)
+  #jdiags_exp+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
+  #jdiags_ctl+=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*20*)
   python diff_timeseries_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.
@@ -290,22 +304,20 @@ fi
 # Upload restults to RZDM
 if [[ ${UPLOAD_TO_RZDM:=NO} == "YES" ]]; then
   directories=("${EXP_NAME}"
-               "${EXP_NAME}/${pdy}"
+               "${EXP_NAME}/20*"
                "${EXP_NAME}/hovmoller"
                "${EXP_NAME}/increment"
                "${EXP_NAME}/timeseries"
                "${EXP_NAME}/profile"
-               "${EXP_NAME}/${pdy}/heatmap"
-               "${EXP_NAME}/${pdy}/map")
+               "${EXP_NAME}/20*/heatmap"
+               "${EXP_NAME}/20*/map")
 
-  for pdy in ${pdy_list[@]}; do
-    # Create the files necessary for rzdm to display the images.
-    for dir in ${directories[@]}; do
-      if [[ -d ${dir} ]]; then
-        echo "<?php require \$_SERVER['DOCUMENT_ROOT'].\"/ncep_common/dirlist.php\"; ?>" > "${dir}/index.php"
-        printf "*.png\n20*\n${EXP_NAME}\nheatmap\nmap\nprofile\nhovmoller\ntimeseries\nincrement" > "${dir}/allow.cfg"
-      fi
-    done
+  # Create the files necessary for rzdm to display the images.
+  for dir in ${directories[@]}; do
+    if [[ -d ${dir} ]]; then
+      echo "<?php require \$_SERVER['DOCUMENT_ROOT'].\"/ncep_common/dirlist.php\"; ?>" > "${dir}/index.php"
+      printf "*.png\n20*\n${EXP_NAME}\nheatmap\nmap\nprofile\nhovmoller\ntimeseries\nincrement" > "${dir}/allow.cfg"
+    fi
   done
 
   # Copy the data to rzdm
