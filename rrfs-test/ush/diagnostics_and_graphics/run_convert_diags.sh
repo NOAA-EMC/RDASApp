@@ -56,10 +56,14 @@ GDIAGDIR="${OPSROOT}/exp/${BENCHMARK}/stmp"
 # Start main execution
 START=$(date +%s)
 
+# Detect machine
+source ${RDASApp}/ush/detect_machine.sh
+
 # Load necessary environment
 module purge
 module use ${RDASApp}/modulefiles
-module load EVA/hera
+module load EVA/${MACHINE_ID}
+module load RDAS/${MACHINE_ID}.intel
 
 # Load ndate
 export ndate=$(which ndate)
