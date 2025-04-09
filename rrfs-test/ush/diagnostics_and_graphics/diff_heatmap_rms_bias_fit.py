@@ -63,11 +63,27 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
             "oman_bias": np.nan,
             "oman_rms": np.nan,
             "fitting_ratio": np.nan,
-            "nobs": 0  # Initialize number of observations to 0
+            "nobs": 0
         } for cycle in cycles for obs in obs_types
     }
 
     for file in jdiag_files:
+        # Extract cycle and obtype before trying to open datasets
+        match = re.search(r"(\d{8})/.*jedivar_(\d{2})", file)
+        obtype_match = re.search(r"jdiag_(.+)\.nc4?$", os.path.basename(file))
+        if not (match and obtype_match):
+            print(f"? Warning: Could not extract cycle and obtype from {file}")
+            continue
+        date, hour = match.groups()
+        cycle = f"{date} {hour}Z"
+        obtype = obtype_match.group(1)
+        key = f"{cycle}_{obtype}"
+
+        # Skip if the key isn't in stats (due to mismatch between ctl_files and exp_files)
+        if key not in stats:
+            print(f"? Warning: Key {key} not in stats, skipping file {file}")
+            continue
+
         try:
             ds_ombg = xr.open_dataset(file, group="ombg")
             ds_obserr = xr.open_dataset(file, group="EffectiveError0")
@@ -76,6 +92,10 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
 
             obs_var = list(ds_ombg.data_vars.keys())[0]  # Extract variable name
             if obs_var not in ds_ombg.variables:
+                ds_ombg.close()
+                ds_obserr.close()
+                ds_effqc.close()
+                ds_oman.close()
                 continue
 
             ombg = ds_ombg[obs_var].values
@@ -83,11 +103,8 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
             effqc = ds_effqc[obs_var].values
             oman = ds_oman[obs_var].values
 
-            # Apply valid data filtering (ignore fill values)
-            fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-            #valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10)
-            #valid_mask = (effqc <= 1)
-            valid_mask = get_valid_mask(effqc)  # Use the configurable mask
+            # Apply valid data filtering
+            valid_mask = get_valid_mask(effqc)
             ombg = ombg[valid_mask]
             oman = oman[valid_mask]
 
@@ -96,40 +113,36 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
             ombg *= scale_factor
             oman *= scale_factor
 
-            # Extract cycle and obs type
-            match = re.search(r"(\d{8})/.*jedivar_(\d{2})", file)
-            obtype_match = re.search(r"jdiag_(.+)\.nc4?$", os.path.basename(file))
-            if match and obtype_match:
-                date, hour = match.groups()
-                cycle = f"{date} {hour}Z"
-                obtype = obtype_match.group(1)
-                key = f"{cycle}_{obtype}"
+            if ombg.size == 0 or np.isnan(ombg).all():
+                ds_ombg.close()
+                ds_obserr.close()
+                ds_effqc.close()
+                ds_oman.close()
+                continue
 
-                if ombg.size == 0 or np.isnan(ombg).all():
-                    continue
-                else:
-                    # Compute OMB statistics
-                    ombg_bias = np.nanmean(ombg)
-                    ombg_rms = np.sqrt(np.nanmean(ombg ** 2))
+            # Compute OMB statistics
+            ombg_bias = np.nanmean(ombg)
+            ombg_rms = np.sqrt(np.nanmean(ombg ** 2))
 
-                    # Compute OMA statistics
-                    oman_bias = np.nanmean(oman)
-                    oman_rms = np.sqrt(np.nanmean(oman ** 2))
+            # Compute OMA statistics
+            oman_bias = np.nanmean(oman)
+            oman_rms = np.sqrt(np.nanmean(oman ** 2))
 
-                    # Compute fitting ratio
-                    fitting_ratio = (
-                        (ombg_rms - oman_rms) / ombg_rms
-                        if not np.isnan(ombg_rms) and not np.isnan(oman_rms) and ombg_rms != 0
-                        else np.nan
-                    )
-                    stats[key] = {
-                        "ombg_bias": ombg_bias,
-                        "ombg_rms": ombg_rms,
-                        "oman_bias": oman_bias,
-                        "oman_rms": oman_rms,
-                        "fitting_ratio": fitting_ratio,
-                        "nobs": ombg.size  # Store the number of valid observations
-                    }
+            # Compute fitting ratio
+            fitting_ratio = (
+                (ombg_rms - oman_rms) / ombg_rms
+                if not np.isnan(ombg_rms) and not np.isnan(oman_rms) and ombg_rms != 0
+                else np.nan
+            )
+            stats[key] = {
+                "ombg_bias": ombg_bias,
+                "ombg_rms": ombg_rms,
+                "oman_bias": oman_bias,
+                "oman_rms": oman_rms,
+                "fitting_ratio": fitting_ratio,
+                "nobs": ombg.size
+            }
+
             ds_ombg.close()
             ds_obserr.close()
             ds_effqc.close()
@@ -139,10 +152,9 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
             print(f"? Warning: Missing file {file}")
         except Exception as e:
             print(f"? {red}Error processing {file}: {e}{normal}")
-            if "key" in locals():
-                stats[key]["oman_bias"] = np.nan
-                stats[key]["oman_rms"] = np.nan
-                stats[key]["fitting_ratio"] = np.nan
+            stats[key]["oman_bias"] = np.nan
+            stats[key]["oman_rms"] = np.nan
+            stats[key]["fitting_ratio"] = np.nan
 
     return stats
 
