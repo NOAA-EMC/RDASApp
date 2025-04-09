@@ -12,10 +12,29 @@ from datetime import datetime, timedelta
 # Suppress unnecessary warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
+pink = "\x1b[35m"
+red = "\x1b[31m"
+green = "\x1b[32m"
+normal = "\x1b[0m"
+
 # Unit conversion factors
 UNIT_CONVERSIONS = {
     "specificHumidity": 1000.0,  # Convert kg/kg to g/kg
 }
+
+def get_valid_mask(effqc):
+    # Get the threshold EFFQC from environment variable, default to 0
+    EFFQC = int(os.getenv("EFFQC", default=0))
+    # Get the comparison type from environment variable, default to False (i.e., use ==)
+    use_less_equal = os.getenv("USE_LESS_EQUAL", default="false").lower() == "true"
+
+    # Apply the comparison based on use_less_equal
+    if use_less_equal:
+        valid_mask = (effqc <= EFFQC)  # Element-wise <= on the NumPy array
+    else:
+        valid_mask = (effqc == EFFQC)  # Element-wise ==
+
+    return valid_mask
 
 def generate_full_cycle_range(jdiag_files):
     """Generate a full hourly range of cycles based on the available files."""
@@ -66,8 +85,9 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
 
             # Apply valid data filtering (ignore fill values)
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-            valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10)
-            valid_mask = (effqc <= 1)
+            #valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10)
+            #valid_mask = (effqc <= 1)
+            valid_mask = get_valid_mask(effqc)  # Use the configurable mask
             ombg = ombg[valid_mask]
             oman = oman[valid_mask]
 
@@ -118,7 +138,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
         except FileNotFoundError:
             print(f"? Warning: Missing file {file}")
         except Exception as e:
-            print(f"? Error processing {file}: {e}")
+            print(f"? {red}Error processing {file}: {e}{normal}")
             if "key" in locals():
                 stats[key]["oman_bias"] = np.nan
                 stats[key]["oman_rms"] = np.nan
@@ -180,7 +200,7 @@ def plot_diff_heatmaps(stats, title, output_file, cycles, obs_types, metric):
 
     for ax, (group_name, obs_list) in zip(axes, grouped_obs.items()):
         obs_list.sort(key=lambda x: int(x.split('_')[-1]))  # Sort by trailing number
-        print(f"\x1b[32mProcessing {group_name}:\x1b[0m {obs_list}")
+        print(f"{green}Processing {group_name}:{normal} {obs_list}")
 
         cycle_to_index = {cycle: i for i, cycle in enumerate(cycles)}
         obs_to_index = {obs: i for i, obs in enumerate(obs_list)}
@@ -233,7 +253,7 @@ def plot_diff_heatmaps(stats, title, output_file, cycles, obs_types, metric):
 
     plt.suptitle(title + "\n" + suptitle_note, fontsize=16)
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    print(f"{title} saved as \x1b[35m{output_file}\x1b[0m \n")
+    print(f"{title} saved as {pink}{output_file}{normal} \n")
 
 if __name__ == "__main__":
     if len(sys.argv) < 4 or "--" not in sys.argv:

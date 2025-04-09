@@ -11,6 +11,11 @@ import matplotlib.ticker as mticker
 # Suppress unnecessary warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
+pink = "\x1b[35m"
+red = "\x1b[31m"
+green = "\x1b[32m"
+normal = "\x1b[0m"
+
 # Unit conversion factors
 UNIT_CONVERSIONS = {
     "specificHumidity": 1000.0,  # Convert kg/kg to g/kg
@@ -24,6 +29,20 @@ UNITS = {
     "windNorthward": "m/s",
     "stationPressure": "Pa"
 }
+
+def get_valid_mask(effqc):
+    # Get the threshold EFFQC from environment variable, default to 0
+    EFFQC = int(os.getenv("EFFQC", default=0))
+    # Get the comparison type from environment variable, default to False (i.e., use ==)
+    use_less_equal = os.getenv("USE_LESS_EQUAL", default="false").lower() == "true"
+
+    # Apply the comparison based on use_less_equal
+    if use_less_equal:
+        valid_mask = (effqc <= EFFQC)  # Element-wise <= on the NumPy array
+    else:
+        valid_mask = (effqc == EFFQC)  # Element-wise ==
+
+    return valid_mask
 
 def extract_date_range(jdiag_files):
     """Extracts the earliest and latest timestamps from the provided files."""
@@ -91,14 +110,15 @@ def compute_vertical_profiles(jdiag_files):
                     oman = np.full_like(ombg, np.nan)
 
                 fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-                valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
-                valid_mask = (effqc <= 1)
+                #valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
+                #valid_mask = (effqc <= 1)
+                valid_mask = get_valid_mask(effqc)
                 pressure_valid = pressure[valid_mask]
                 ombg_valid = ombg[valid_mask]
                 oman_valid = oman[valid_mask]
 
                 if pressure_valid.size == 0:
-                    print(f"\x1b[31m? No valid data for {obs_var} in {file}, skipping variable.\x1b[0m")
+                    print(f"{red}? No valid data for {obs_var} in {file}, skipping variable.{normal}")
                     continue
 
                 scale_factor = UNIT_CONVERSIONS.get(obs_var, 1.0)
@@ -122,7 +142,7 @@ def compute_vertical_profiles(jdiag_files):
         except FileNotFoundError:
             print(f"? Warning: Missing file {file}")
         except Exception as e:
-            print(f"? Error processing {file}: {e}")
+            print(f"{red}? Error processing {file}: {e}{normal}")
 
     # Compute binned statistics
     final_stats = {}
@@ -239,7 +259,7 @@ def plot_vertical_profiles(stats, output_prefix, date_range):
         filename = f"{output_prefix}_{obtype}_{obs_var}.png"
         plt.suptitle(title)
         plt.savefig(filename, dpi=300, bbox_inches="tight")
-        print(f"Saved profile: \x1b[35m{filename}\x1b[0m")
+        print(f"Saved profile: {pink}{filename}{normal}")
 
         plt.close()
 

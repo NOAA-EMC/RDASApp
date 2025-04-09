@@ -7,6 +7,11 @@ from collections import defaultdict
 import os
 import pdb
 
+pink = "\x1b[35m"
+red = "\x1b[31m"
+green = "\x1b[32m"
+normal = "\x1b[0m"
+
 def extract_analysis_date(log_file):
     match = re.search(r'rrfs\.(\d{8})/\d{2}', log_file)
     if match:
@@ -82,7 +87,7 @@ def parse_logs(log_files):
                     jo_per_n_diff[obs_type][hour] = (values[2] - values[0]) / values[0] if values[0] != 0 else np.nan
 
             if not valid_data:
-                print(f"\x1b[31mNo valid Jo data found for {log_file}. It will appear as missing in the heatmap.\x1b[0m")
+                print(f"{red}No valid Jo data found for {log_file}. It will appear as missing in the heatmap.{normal}")
 
     return jo_data, nobs_data, jo_per_n_data, jo_per_n_diff, cycle_labels, analysis_date
 
@@ -99,7 +104,7 @@ def plot_heatmaps(stats, title, output_file, cycles, cbar_label, colormap, fmt="
 
     for ax, (group_name, obs_list) in zip(axes, grouped_obs.items()):
         obs_list.sort(key=lambda x: int(x.split('_')[-1]))  # Sort by trailing number
-        print(f"\x1b[32mProcessing {group_name}:\x1b[0m {obs_list}")
+        print(f"{green}Processing {group_name}:{normal} {obs_list}")
 
         matrix = np.full((len(obs_list), 24), np.nan)
 
@@ -137,7 +142,7 @@ def plot_heatmaps(stats, title, output_file, cycles, cbar_label, colormap, fmt="
 
     plt.suptitle(title, fontsize=16)
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    print(f"{title} saved as \x1b[35m{output_file}\x1b[0m \n")
+    print(f"{title} saved as {pink}{output_file}{normal} \n")
 
 def main(log_files):
     jo_data, nobs_data, jo_per_n_data, jo_per_n_diff, cycle_labels, analysis_date = parse_logs(log_files)

@@ -12,6 +12,11 @@ import warnings
 # Suppress unnecessary warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
+pink = "\x1b[35m"
+red = "\x1b[31m"
+green = "\x1b[32m"
+normal = "\x1b[0m"
+
 # Unit conversion factors
 UNIT_CONVERSIONS = {
     "specificHumidity": 1000.0,  # Convert kg/kg to g/kg
@@ -41,6 +46,20 @@ CATEGORY_MAPPING = {
     "windNorthward": "Winds",
     "stationPressure": "Pressure",
 }
+
+def get_valid_mask(effqc):
+    # Get the threshold EFFQC from environment variable, default to 0
+    EFFQC = int(os.getenv("EFFQC", default=0))
+    # Get the comparison type from environment variable, default to False (i.e., use ==)
+    use_less_equal = os.getenv("USE_LESS_EQUAL", default="false").lower() == "true"
+
+    # Apply the comparison based on use_less_equal
+    if use_less_equal:
+        valid_mask = (effqc <= EFFQC)  # Element-wise <= on the NumPy array
+    else:
+        valid_mask = (effqc == EFFQC)  # Element-wise ==
+
+    return valid_mask
 
 def extract_info_from_path(file_path):
     """
@@ -101,15 +120,16 @@ def process_and_plot_jdiag(file):
 
         # Filter valid data
         fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-        valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(ombg)) & (obserr < 1e+10)
-        valid_mask = (effqc <= 1)
+        #valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(ombg)) & (obserr < 1e+10)
+        #valid_mask = (effqc <= 1)
+        valid_mask = get_valid_mask(effqc)
         lats = lats[valid_mask]
         lons = lons[valid_mask]
         ombg = ombg[valid_mask]
         oman = oman[valid_mask]
 
         if ombg.size == 0:
-            print(f"\x1b[31m? Warning: No valid data in {file}, skipping plot.\x1b[0m")
+            print(f"{red}? Warning: No valid data in {file}, skipping plot.{normal}")
             ds_ombg.close()
             ds_meta.close()
             return
@@ -169,7 +189,7 @@ def process_and_plot_jdiag(file):
         output_file = f"{date}_{cycle}_{obtype}_ombg_oman_map.png"
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         plt.close(fig)
-        print(f"Saved plot: \x1b[35m{output_file}\x1b[0m")
+        print(f"Saved plot: {pink}{output_file}{normal}")
 
         # Clean up
         ds_ombg.close()
@@ -178,7 +198,7 @@ def process_and_plot_jdiag(file):
         ds_effqc.close()
 
     except Exception as e:
-        print(f"? Error processing {file}: {e}")
+        print(f"{red}? Error processing {file}: {e}{normal}")
 
 if __name__ == "__main__":
     # Get JDIAG files from command-line arguments

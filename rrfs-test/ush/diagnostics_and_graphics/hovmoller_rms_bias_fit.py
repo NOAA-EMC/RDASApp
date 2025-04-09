@@ -13,6 +13,11 @@ import matplotlib.ticker as mticker
 # Suppress unnecessary warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
+pink = "\x1b[35m"
+red = "\x1b[31m"
+green = "\x1b[32m"
+normal = "\x1b[0m"
+
 # Unit conversion factors
 UNIT_CONVERSIONS = {
     "specificHumidity": 1000.0,  # Convert kg/kg to g/kg
@@ -26,6 +31,20 @@ UNITS = {
     "windNorthward": "m/s",
     "stationPressure": "Pa"
 }
+
+def get_valid_mask(effqc):
+    # Get the threshold EFFQC from environment variable, default to 0
+    EFFQC = int(os.getenv("EFFQC", default=0))
+    # Get the comparison type from environment variable, default to False (i.e., use ==)
+    use_less_equal = os.getenv("USE_LESS_EQUAL", default="false").lower() == "true"
+
+    # Apply the comparison based on use_less_equal
+    if use_less_equal:
+        valid_mask = (effqc <= EFFQC)  # Element-wise <= on the NumPy array
+    else:
+        valid_mask = (effqc == EFFQC)  # Element-wise ==
+
+    return valid_mask
 
 def extract_timestamp(file):
     """Extract the timestamp from a jdiag file path."""
@@ -76,14 +95,15 @@ def compute_binned_stats_per_time(file):
             oman = ds_oman[obs_var].values if ds_oman and obs_var in ds_oman.data_vars else np.full_like(ombg, np.nan)
 
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
-            valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
-            valid_mask = (effqc <= 1)
+            #valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
+            #valid_mask = (effqc <= 1)
+            valid_mask = get_valid_mask(effqc)
             pressure_valid = pressure[valid_mask]
             ombg_valid = ombg[valid_mask]
             oman_valid = oman[valid_mask]
 
             if pressure_valid.size == 0:
-                print(f"\x1b[31m? No valid data for {obs_var} in {file}, skipping variable.\x1b[0m")
+                print(f"{red}? No valid data for {obs_var} in {file}, skipping variable.{normal}")
                 continue
 
             scale_factor = UNIT_CONVERSIONS.get(obs_var, 1.0)
@@ -129,7 +149,7 @@ def compute_binned_stats_per_time(file):
         print(f"? Warning: Missing file {file}")
         return None
     except Exception as e:
-        print(f"? Error processing {file}: {e}")
+        print(f"{red}? Error processing {file}: {e}{normal}")
         return None
 
 def plot_hovmoller(jdiag_files):
@@ -225,7 +245,7 @@ def plot_hovmoller(jdiag_files):
             plt.title(title)
             filename = f"hovmoller_{obtype}_{obs_var}_{stat_name}.png"
             plt.savefig(filename, dpi=300, bbox_inches="tight")
-            print(f"Saved Hovmoller: \x1b[35m{filename}\x1b[0m")
+            print(f"Saved Hovmoller: {pink}{filename}{normal}")
             plt.close()
 
 if __name__ == "__main__":

@@ -39,6 +39,9 @@
 #
 #
 #### USER-DEFINED VARIABLES #################################################
+export EFFQC=1
+export USE_LESS_EQUAL=true
+
 # Specify which functions to run (uncomment/comment to turn on/off)
 #HEATMAP_JO="YES"
 #HEATMAP_RMS_BIAS_FIT="YES"
@@ -70,9 +73,14 @@ LOGDIR="${COMROOT}/rrfs/${VERSION}/logs"
 JDIAGDIR="${DATAROOT}"
 
 # Control experiment for "diff_" tools.
-CTL_VERSION="v2.0.9"
-CTL_NAME="baseline1_3dvar12km209"
-CTL_OPSROOT="/scratch2/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${CTL_VERSION}"
+#CTL_VERSION="v2.0.9"
+#CTL_NAME="baseline1_3dvar12km209"
+#CTL_OPSROOT="/scratch2/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${CTL_VERSION}"
+
+CTL_VERSION="v0.8.6"
+CTL_NAME="CONUS13km_ColdStart00-12Z_133-233TQW"
+CTL_OPSROOT="${OPSROOT}"
+
 CTL_COMROOT="${CTL_OPSROOT}/exp/${CTL_NAME}/com"
 CTL_DATAROOT="${CTL_OPSROOT}/exp/${CTL_NAME}/stmp"
 CTL_LOGDIR="${CTL_COMROOT}/rrfs/${CTL_VERSION}/logs"
@@ -103,8 +111,10 @@ source ${RDASApp}/ush/detect_machine.sh
 # Load necessary environment
 module purge
 module use ${RDASApp}/modulefiles
+#module load RDAS/${MACHINE_ID}.intel
+#export ndate=$(which ndate)
+#module purge
 module load EVA/${MACHINE_ID}
-module load RDAS/${MACHINE_ID}.intel
 
 # Load ndate
 export ndate=$(which ndate)
@@ -258,10 +268,14 @@ fi
 # Plots vertical profiles of rms and bias (from jdiag files) over a date range.
 if [[ ${DIFF_PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff profiles: ${spdy}00 to ${epdy}23"
-  jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-  jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*33*)
-  jdiags_exp+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
-  jdiags_ctl+=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*20*)
+  #jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_06/jdiag*33*)
+  #jdiags_ctl=(${CTL_JDIAGDIR}/*06/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_06/jdiag*33*)
+  jdiags_exp=(${JDIAGDIR}/*06/rrfs_jedivar_*_${VERSION}/det/jedivar_{00..12}/jdiag*33*)
+  jdiags_ctl=(${CTL_JDIAGDIR}/*06/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_{00..12}/jdiag*33*)
+  #jdiags_exp+=(${JDIAGDIR}/*06/rrfs_jedivar_*_${VERSION}/det/jedivar_{00..12}/jdiag*20*)
+  #jdiags_ctl+=(${CTL_JDIAGDIR}/*06/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_{00..12}/jdiag*20*)
+  #echo "exp: ${jdiags_exp[1]}"
+  #echo "ctl: ${jdiags_ctl[1]}"; exit
   python diff_profile_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
@@ -290,8 +304,8 @@ if [[ ${DIFF_TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff timeseries: ${spdy}00 to ${epdy}23"
   jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
   jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*33*)
-  #jdiags_exp+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
-  #jdiags_ctl+=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*20*)
+  #jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
+  #jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*20*)
   python diff_timeseries_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.

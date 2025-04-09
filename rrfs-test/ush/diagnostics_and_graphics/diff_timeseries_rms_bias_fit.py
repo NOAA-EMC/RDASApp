@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import sys
 import numpy as np
 import xarray as xr
@@ -13,11 +12,17 @@ import warnings
 # Suppress unnecessary warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-# Unit conversions and labels
+pink = "\x1b[35m"
+red = "\x1b[31m"
+green = "\x1b[32m"
+normal = "\x1b[0m"
+
+# Unit conversion factors
 UNIT_CONVERSIONS = {
     "specificHumidity": 1000.0,  # Convert kg/kg to g/kg
 }
 
+# Units for plotting
 UNITS = {
     "airTemperature": "K",
     "specificHumidity": "g/kg",
@@ -25,6 +30,20 @@ UNITS = {
     "windNorthward": "m/s",
     "stationPressure": "Pa"
 }
+
+def get_valid_mask(effqc):
+    # Get the threshold EFFQC from environment variable, default to 0
+    EFFQC = int(os.getenv("EFFQC", default=0))
+    # Get the comparison type from environment variable, default to False (i.e., use ==)
+    use_less_equal = os.getenv("USE_LESS_EQUAL", default="false").lower() == "true"
+
+    # Apply the comparison based on use_less_equal
+    if use_less_equal:
+        valid_mask = (effqc <= EFFQC)  # Element-wise <= on the NumPy array
+    else:
+        valid_mask = (effqc == EFFQC)  # Element-wise ==
+
+    return valid_mask
 
 def extract_timestamp(file):
     """
@@ -97,13 +116,14 @@ def compute_stats_per_time(file):
             fill_value = ds_ombg[obs_var].attrs.get('_FillValue', np.nan)
 
             # Valid data mask
-            valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
-            valid_mask = (effqc <= 1)
+            #valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
+            #valid_mask = (effqc <= 1)
+            valid_mask = get_valid_mask(effqc)
             ombg_valid = ombg[valid_mask]
             oman_valid = oman[valid_mask]
 
             if ombg_valid.size == 0:
-                print(f"\x1b[31m? No valid data for {obs_var} in {file}, skipping variable.\x1b[0m")
+                print(f"{red}? No valid data for {obs_var} in {file}, skipping variable.{normal}")
                 continue
 
             # Apply unit conversion
@@ -140,7 +160,7 @@ def compute_stats_per_time(file):
         print(f"? Warning: Missing file {file}")
         return None
     except Exception as e:
-        print(f"? Error processing {file}: {e}")
+        print(f"{red}? Error processing {file}: {e}{normal}")
         return None
 
 def collect_stats(jdiag_files):
@@ -230,7 +250,7 @@ def plot_time_series(stats_ctl, stats_exp, ctl_name, exp_name, date_range):
         fig.tight_layout(rect=[0, 0, 1, 0.95])
         filename = f"timeseries_{obtype}_{obs_var}_{exp_name}_vs_{ctl_name}.png"
         fig.savefig(filename, dpi=300, bbox_inches="tight")
-        print(f"Saved time series: \x1b[35m{filename}\x1b[0m")
+        print(f"Saved time series: {pink}{filename}{normal}")
         plt.close(fig)
 
 ### Main Execution
