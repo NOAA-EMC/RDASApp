@@ -31,10 +31,9 @@ set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
 
 # Add some machine-specific settings here
 set(MPI_ARGS "${MPI_ARGS} --time=00:30:00 --exclusive")
+set(RESTORE_MPI_ARGS ${MPI_ARGS})
 if ("${MACHINE_ID}" STREQUAL "hercules")
-   set(MPI_ARGS "${MPI_ARGS} --nodes=4")
-else()
-   set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
+   set(MPI_ARGS "${MPI_ARGS} --nodes=6")
 endif()
 
 if(FV3_DYCORE)
@@ -43,6 +42,13 @@ if(FV3_DYCORE)
 
       get_all_keys(rrfs_fv3jedi_tests caselist)
       foreach(case ${caselist})
+
+	 # Some case-dependent settings still needed.
+         if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
+            if (NOT "${MACHINE_ID}" STREQUAL "hercules")
+              set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
+            endif()
+         endif()
 
          get_from_dictionary(rrfs_fv3jedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
@@ -71,6 +77,7 @@ if(FV3_DYCORE)
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
 	 endif()
+         set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
 
 endif()
@@ -81,6 +88,13 @@ if(MPAS_DYCORE)
 
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
+
+	 # Some case-dependent settings still needed.
+         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
+            if (NOT "${MACHINE_ID}" STREQUAL "hercules")
+              set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
+            endif()
+         endif()
 
 	 get_from_dictionary(rrfs_mpasjedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
@@ -102,9 +116,6 @@ if(MPAS_DYCORE)
 	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
 	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
-#           if (NOT "${MACHINE_ID}" STREQUAL "hercules")
-#             set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
-#           endif()
            ecbuild_add_test( TARGET ${target_test}
                         MPI      160
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
@@ -118,6 +129,7 @@ if(MPAS_DYCORE)
                         ARGS     ${target_test}.yaml
                         COMMAND  ${exe} )
 	 endif()
+         set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
 
       ########################
