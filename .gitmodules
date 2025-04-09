@@ -73,3 +73,8 @@
 	url = https://github.com/JCSDA/mpas-jedi
 	branch = develop
 	ignore = all
+[submodule "sorc/bufr-query"]
+	path = sorc/bufr-query
+	url = https://github.com/NOAA-EMC/bufr-query.git
+	branch = develop
+	ignore = all
