@@ -39,7 +39,7 @@
 #
 #
 #### USER-DEFINED VARIABLES #################################################
-export EFFQC=1
+export EFFQC=1 #0 (asm), 1 (mon), 12 (rej)
 export USE_LESS_EQUAL=true
 
 # Specify which functions to run (uncomment/comment to turn on/off)
@@ -67,6 +67,8 @@ EXP_NAME="baseline1_3denvar12km209"
 OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
 #EXP_NAME="baseline1_3dvar12km209"
 #OPSROOT="/scratch2/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${VERSION}"
+#VERSION="v0.8.6"
+#EXP_NAME="CONUS13km_ColdStart00-12Z_133-233TQW"
 COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
 DATAROOT="${OPSROOT}/exp/${EXP_NAME}/stmp"
 LOGDIR="${COMROOT}/rrfs/${VERSION}/logs"
@@ -259,7 +261,7 @@ epdy=${EDATE:0:8}
 if [[ ${PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) profiles: ${spdy}00 to ${epdy}23"
   jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-  jdiags+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
+  #jdiags+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
   python profile_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
