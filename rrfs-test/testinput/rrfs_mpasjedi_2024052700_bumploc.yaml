@@ -7,7 +7,7 @@ geometry:
   deallocate non-da fields: true
   bump vunit: "modellevel" # modellevel, height, logp
 background:
-  state variables: &vars [spechum,surface_pressure,temperature,uReconstructMeridional,uReconstructZonal]
+  state variables: &vars [water_vapor_mixing_ratio_wrt_moist_air, air_pressure_at_surface, air_temperature, northward_wind, eastward_wind]
   filename: "./data/mpasout.2024-05-27_00.00.00.nc"
   date: *validDate
 
