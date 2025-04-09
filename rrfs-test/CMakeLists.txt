@@ -89,7 +89,7 @@ if(MPAS_DYCORE)
       foreach(case ${caselist})
 
 	 # Some case-dependent settings still needed
-         if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
+         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
             if ("${MACHINE_ID}" STREQUAL "hercules")
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
             else()
