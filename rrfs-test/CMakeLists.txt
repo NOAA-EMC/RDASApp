@@ -29,7 +29,7 @@ set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
 #  # A bit of guesswork here, I don't know if folks using this option stored it in the same directory structure
 #  set (fv3-jedi_data_testinput_tier_1_local "$ENV{FV3_JEDI_TESTFILES}/fv3-jedi-data/testinput_tier_1")
 
-# Add some machine-specific settings here
+# Add some general job settings here
 set(MPI_ARGS "${MPI_ARGS} --time=00:30:00 --exclusive")
 set(RESTORE_MPI_ARGS ${MPI_ARGS})
 if ("${MACHINE_ID}" STREQUAL "hercules")
@@ -43,7 +43,7 @@ if(FV3_DYCORE)
       get_all_keys(rrfs_fv3jedi_tests caselist)
       foreach(case ${caselist})
 
-	 # Some case-dependent settings still needed.
+	 # Some case-dependent settings still needed
          if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
             if (NOT "${MACHINE_ID}" STREQUAL "hercules")
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
@@ -89,7 +89,7 @@ if(MPAS_DYCORE)
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
 
-	 # Some case-dependent settings still needed.
+	 # Some case-dependent settings still needed
          if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
             if (NOT "${MACHINE_ID}" STREQUAL "hercules")
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
