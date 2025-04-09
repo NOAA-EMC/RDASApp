@@ -64,6 +64,15 @@ def char_array_to_strings(char_array):
             strings.append(s)
     return strings
 
+def map_analysis_use_flag_to_qc(flag):
+    """Map GSI Analysis_Use_Flag to JEDI EffectiveQC values."""
+    if flag == 1.0:
+        return 0  # Assimilated
+    elif flag == -1.0:
+        #return 1  # Monitored
+    #else:
+        return 12  # Rejected
+
 def process_non_wind_file(anl_file_path, ges_file_path, jedi_var, analysis_time_str):
     """
     Process a non-wind GSI diagnostic file and convert it to JEDI jdiag format.
@@ -85,6 +94,7 @@ def process_non_wind_file(anl_file_path, ges_file_path, jedi_var, analysis_time_
         observation = ges_f.variables['Observation'][:]
         ombg = ges_f.variables['Obs_Minus_Forecast_unadjusted'][:]
         oman = anl_f.variables['Obs_Minus_Forecast_unadjusted'][:]
+        analysis_use_flag = anl_f.variables['Analysis_Use_Flag'][:]
 
         # Process each unique observation type
         unique_types = np.unique(obs_type)
@@ -101,6 +111,15 @@ def process_non_wind_file(anl_file_path, ges_file_path, jedi_var, analysis_time_
 
             # Convert selected station IDs to strings
             selected_station_ids = char_array_to_strings(station_id_char[mask])
+            #if typ == 133:
+            #    iuse = analysis_use_flag[mask]
+            #    iuse_valid = iuse.compressed()
+            #    count_neg1 = np.count_nonzero(iuse_valid == -1)
+            #    count_0 = np.count_nonzero(iuse_valid == 0)
+            #    count_1 = np.count_nonzero(iuse_valid == 1)
+            #    pdb.set_trace()
+            #    exit()
+            qc_flags = np.array([map_analysis_use_flag_to_qc(f) for f in analysis_use_flag[mask]], dtype=np.int32)
 
             # Create output jdiag file
             jdiag_file = f"jdiag_{platform}_{jedi_var}_{typ}.nc"
@@ -146,6 +165,10 @@ def process_non_wind_file(anl_file_path, ges_file_path, jedi_var, analysis_time_
                 oman_group = g.createGroup('oman')
                 oman_group.createVariable(jedi_var, 'f4', ('Location',))[:] = oman[mask]
 
+                # EffectiveQC2 group
+                eff_qc2 = g.createGroup('EffectiveQC2')
+                eff_qc2.createVariable(jedi_var, 'i4', ('Location',))[:] = qc_flags
+
 def process_wind_file(anl_file_path, ges_file_path, analysis_time_str):
     """
     Process a wind GSI diagnostic file and convert it to JEDI jdiag format.
@@ -172,6 +195,7 @@ def process_wind_file(anl_file_path, ges_file_path, analysis_time_str):
         v_ombg = ges_f.variables['v_Obs_Minus_Forecast_unadjusted'][:]
         u_oman = anl_f.variables['u_Obs_Minus_Forecast_unadjusted'][:]
         v_oman = anl_f.variables['v_Obs_Minus_Forecast_unadjusted'][:]
+        analysis_use_flag = anl_f.variables['Analysis_Use_Flag'][:]
 
         # Process each unique observation type
         unique_types = np.unique(obs_type)
@@ -188,6 +212,7 @@ def process_wind_file(anl_file_path, ges_file_path, analysis_time_str):
 
             # Select station IDs for u components, limited to nobs
             selected_station_ids = char_array_to_strings(station_id_char[mask])
+            qc_flags = np.array([map_analysis_use_flag_to_qc(f) for f in analysis_use_flag[mask]], dtype=np.int32)
 
             # Create output jdiag file
             jdiag_file = f"jdiag_{platform}_winds_{typ}.nc"
@@ -238,6 +263,10 @@ def process_wind_file(anl_file_path, ges_file_path, analysis_time_str):
                 oman_group = g.createGroup('oman')
                 oman_group.createVariable('windEastward', 'f4', ('Location',))[:] = u_oman[mask]
                 oman_group.createVariable('windNorthward', 'f4', ('Location',))[:] = v_oman[mask]
+                # EffectiveQC2 group
+                eff_qc2 = g.createGroup('EffectiveQC2')
+                eff_qc2.createVariable('windEastward', 'i4', ('Location',))[:] = qc_flags
+                eff_qc2.createVariable('windNorthward', 'i4', ('Location',))[:] = qc_flags
 
 def convert_gsi_to_jdiag(file_list, analysis_time_str):
     """Convert a list of GSI diagnostic files to JEDI jdiag format."""

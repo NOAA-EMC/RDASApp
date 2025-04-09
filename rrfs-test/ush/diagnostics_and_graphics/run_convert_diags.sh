@@ -22,35 +22,35 @@
 # Specify which functions to run (uncomment/comment to turn on/off)
 #COPY_DATA="YES"
 #CONVERT_GDIAG_TO_JDIAG="YES"
-CONVERT_JDIAG_TO_GDIAG="YES"
+#CONVERT_JDIAG_TO_GDIAG="YES"
 
 # Cycle start and end dates to process
-SDATE=2024050700
-EDATE=2024050723
-SDATE=2024052806
-EDATE=2024052806
+SDATE=2024050600
+EDATE=2024050623
 
 # V2 retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
-VERSION="v2.0.9.7"
-TAG="d12km2097"
-EXP_NAME="hrly_12km"
+VERSION="v2.0.9"
+EXP_NAME="baseline1_3denvar12km209"
 OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
 COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
 DATAROOT="${OPSROOT}/exp/${EXP_NAME}/stmp"
+JDIAGDIR="${DATAROOT}"
 
 # RRFSv1 EXP_NAME (RRFSv1 = benchmark)
-BENCHMARK="benchmark1"
+CTL_VERSION="v0.8.6"
+CTL_NAME="CONUS13km_ColdStart00-12Z_133-233TQW"
+DATA_SOURCE="/scratch1/BMC/wrfruc/rli/RRFS_V1/rrfs.${CTL_VERSION}/${CTL_NAME}/stmp"
+CTL_OPSROOT="${OPSROOT}"
+CTL_DATAROOT="${CTL_OPSROOT}/exp/${CTL_NAME}/stmp"
+CTL_JDIAGDIR="${CTL_DATAROOT}"
 
 # Location and pattern of gdiags
-DATA_SOURCE="/scratch1/BMC/wrfruc/rli/RRFS_V1/rrfs.v0.8.6/CONUS13km_det"
 INCLUDE_PATTERN="diag_conv_*.nc4.gz"
 
 # Specify your RDASApp build (mostly for module loads)
 RDASApp="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.phase2_sonde"
 
 # Specify the diag directories
-JDIAGDIR="${DATAROOT}"
-GDIAGDIR="${OPSROOT}/exp/${BENCHMARK}/stmp"
 #### END OF USER-DEFINED VARIABLES ##########################################
 
 # Start main execution
@@ -63,7 +63,7 @@ source ${RDASApp}/ush/detect_machine.sh
 module purge
 module use ${RDASApp}/modulefiles
 module load EVA/${MACHINE_ID}
-module load RDAS/${MACHINE_ID}.intel
+#module load RDAS/${MACHINE_ID}.intel
 
 # Load ndate
 export ndate=$(which ndate)
@@ -82,16 +82,21 @@ while [[ ${date} -le ${EDATE} ]]; do
   cyc=${date:8:10}
 
   # RRFSv2-like data structure to copy gdiags into
-  rrfsv2_structure=${GDIAGDIR}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}
-  #echo "${rrfsv2_structure}"
+  rrfsv2_structure=${CTL_JDIAGDIR}/${pdy}/rrfs_jedivar_${cyc}_${CTL_VERSION}/det/jedivar_${cyc}
   mkdir -p $rrfsv2_structure
 
   if [[ ${COPY_DATA:=NO} == "YES" ]] ; then
     echo "? Working on copy gdiag: ${pdy} ${cyc}Z"
-    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi/diag_conv_t* ${rrfsv2_structure}/.
-    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi/diag_conv_q* ${rrfsv2_structure}/.
-    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi/diag_conv_ps* ${rrfsv2_structure}/.
-    cp -p ${DATA_SOURCE}/stmp/${date}/anal_conv_dbz_gsi/diag_conv_uv* ${rrfsv2_structure}/.
+    #echo "debug: $rrfsv2_structure"; exit
+    #echo "debug: ${DATA_SOURCE}/${date}/anal_conv_gsi" ; exit
+    cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/diag_conv_t* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/diag_conv_q* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/diag_conv_ps* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/diag_conv_uv* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/fit* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/fort* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/gsiparm* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/convinfo* ${rrfsv2_structure}/.
     find ${rrfsv2_structure} -type f -name "${INCLUDE_PATTERN}" -exec gunzip -f {} \;
   fi
 
