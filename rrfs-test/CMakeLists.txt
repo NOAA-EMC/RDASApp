@@ -32,9 +32,6 @@ set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
 # Add some general job settings here
 set(MPI_ARGS "${MPI_ARGS} --time=00:30:00 --exclusive")
 set(RESTORE_MPI_ARGS ${MPI_ARGS})
-if ("${MACHINE_ID}" STREQUAL "hercules")
-   set(MPI_ARGS "${MPI_ARGS} --nodes=6")
-endif()
 
 if(FV3_DYCORE)
 
@@ -45,7 +42,9 @@ if(FV3_DYCORE)
 
 	 # Some case-dependent settings still needed
          if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
-            if (NOT "${MACHINE_ID}" STREQUAL "hercules")
+            if ("${MACHINE_ID}" STREQUAL "hercules")
+              set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
+            else()
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
             endif()
          endif()
@@ -90,8 +89,10 @@ if(MPAS_DYCORE)
       foreach(case ${caselist})
 
 	 # Some case-dependent settings still needed
-         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
-            if (NOT "${MACHINE_ID}" STREQUAL "hercules")
+         if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
+            if ("${MACHINE_ID}" STREQUAL "hercules")
+              set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
+            else()
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
             endif()
          endif()
