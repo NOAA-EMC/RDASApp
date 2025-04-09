@@ -64,13 +64,13 @@ def char_array_to_strings(char_array):
             strings.append(s)
     return strings
 
-def map_analysis_use_flag_to_qc(flag):
-    """Map GSI Analysis_Use_Flag to JEDI EffectiveQC values."""
+def map_prep_use_flag_to_qc(flag):
+    """Map GSI Prep_Use_Flag to JEDI EffectiveQC values."""
     if flag == 1.0:
         return 0  # Assimilated
     elif flag == -1.0:
-        #return 1  # Monitored
-    #else:
+        return 1  # Monitored
+    else:
         return 12  # Rejected
 
 def process_non_wind_file(anl_file_path, ges_file_path, jedi_var, analysis_time_str):
@@ -95,6 +95,7 @@ def process_non_wind_file(anl_file_path, ges_file_path, jedi_var, analysis_time_
         ombg = ges_f.variables['Obs_Minus_Forecast_unadjusted'][:]
         oman = anl_f.variables['Obs_Minus_Forecast_unadjusted'][:]
         analysis_use_flag = anl_f.variables['Analysis_Use_Flag'][:]
+        prep_use_flag = anl_f.variables['Prep_Use_Flag'][:]
 
         # Process each unique observation type
         unique_types = np.unique(obs_type)
@@ -111,15 +112,24 @@ def process_non_wind_file(anl_file_path, ges_file_path, jedi_var, analysis_time_
 
             # Convert selected station IDs to strings
             selected_station_ids = char_array_to_strings(station_id_char[mask])
-            #if typ == 133:
-            #    iuse = analysis_use_flag[mask]
-            #    iuse_valid = iuse.compressed()
-            #    count_neg1 = np.count_nonzero(iuse_valid == -1)
-            #    count_0 = np.count_nonzero(iuse_valid == 0)
-            #    count_1 = np.count_nonzero(iuse_valid == 1)
-            #    pdb.set_trace()
-            #    exit()
-            qc_flags = np.array([map_analysis_use_flag_to_qc(f) for f in analysis_use_flag[mask]], dtype=np.int32)
+
+            # Use combination of Prep_Use and Analysis_Use flags to determine asm, rej, mon
+            iuse = prep_use_flag[mask]
+            ause = analysis_use_flag[mask]
+            iuse_valid = iuse.compressed()
+            ause_valid = ause.compressed()
+
+            # Initialize flag array with zeros (default for rejected)
+            flag = np.zeros_like(ause_valid, dtype=float)
+
+            # Set flag for assimilated observations
+            flag[ause_valid == 1] = 1.0
+
+            # Set flag for monitored observations
+            flag[(ause_valid == -1) & (iuse_valid > 0)] = -1.0
+
+            # Map to JEDI EffectiveQC2 equivalent
+            qc_flags = np.array([map_prep_use_flag_to_qc(f) for f in flag], dtype=np.int32)
 
             # Create output jdiag file
             jdiag_file = f"jdiag_{platform}_{jedi_var}_{typ}.nc"
@@ -196,6 +206,7 @@ def process_wind_file(anl_file_path, ges_file_path, analysis_time_str):
         u_oman = anl_f.variables['u_Obs_Minus_Forecast_unadjusted'][:]
         v_oman = anl_f.variables['v_Obs_Minus_Forecast_unadjusted'][:]
         analysis_use_flag = anl_f.variables['Analysis_Use_Flag'][:]
+        prep_use_flag = anl_f.variables['Prep_Use_Flag'][:]
 
         # Process each unique observation type
         unique_types = np.unique(obs_type)
@@ -212,7 +223,24 @@ def process_wind_file(anl_file_path, ges_file_path, analysis_time_str):
 
             # Select station IDs for u components, limited to nobs
             selected_station_ids = char_array_to_strings(station_id_char[mask])
-            qc_flags = np.array([map_analysis_use_flag_to_qc(f) for f in analysis_use_flag[mask]], dtype=np.int32)
+
+            # Use combination of Prep_Use and Analysis_Use flags to determine asm, rej, mon
+            iuse = prep_use_flag[mask]
+            ause = analysis_use_flag[mask]
+            iuse_valid = iuse.compressed()
+            ause_valid = ause.compressed()
+
+            # Initialize flag array with zeros (default for rejected)
+            flag = np.zeros_like(ause_valid, dtype=float)
+
+            # Set flag for assimilated observations
+            flag[ause_valid == 1] = 1.0
+
+            # Set flag for monitored observations
+            flag[(ause_valid == -1) & (iuse_valid > 0)] = -1.0
+
+            # Map to JEDI EffectiveQC2 equivalent
+            qc_flags = np.array([map_prep_use_flag_to_qc(f) for f in flag], dtype=np.int32)
 
             # Create output jdiag file
             jdiag_file = f"jdiag_{platform}_winds_{typ}.nc"
