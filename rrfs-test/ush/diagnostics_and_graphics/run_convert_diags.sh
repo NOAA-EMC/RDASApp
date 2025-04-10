@@ -62,11 +62,10 @@ source ${RDASApp}/ush/detect_machine.sh
 # Load necessary environment
 module purge
 module use ${RDASApp}/modulefiles
+module load RDAS/${MACHINE_ID}.intel
+export ndate=$(which ndate) # Load ndate
+module purge
 module load EVA/${MACHINE_ID}
-#module load RDAS/${MACHINE_ID}.intel
-
-# Load ndate
-export ndate=$(which ndate)
 
 if [[ -z "$ndate" ]]; then
   echo "Error: ndate command not found. Please ensure it is installed and available in your PATH." >&2

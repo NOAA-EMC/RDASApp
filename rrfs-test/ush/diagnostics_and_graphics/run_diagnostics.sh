@@ -14,14 +14,16 @@
 # - (diff_)profile_rms_bias_fit.py : Produces vertical profile plots of bias and
 #                                    RMS statistics using pressure as the
 #                                    vertical coordinate. (Compares two experiments.)
-# - map_ombg_oman.py               : Creates 2d map scatter of ombg/an values with bias
-#                                    and rms stats displayed.
-# - hovmoller_rms_bias_fit.py      : Generates a hovmoller (pressure vs time) time series
-#                                    (of vertical profiles) of rms, bias, and fitting ratio.
 # - (diff_)timeseries_rms_bias_fit.py : Generates a time series of whole column of rms,
 #                                       bias, and fitting ratio. (Compares two experiments.)
+# - hovmoller_rms_bias_fit.py      : Generates a hovmoller (pressure vs time) time series
+#                                    (of vertical profiles) of rms, bias, and fitting ratio.
+# - map_ombg_oman.py               : Creates 2d map scatter of ombg/an values with bias
+#                                    and rms stats displayed.
 # - map_domainComparison_mpas_fv3  : Overlays mpas and fv3 grids for domain comparison.
-# - fv3_vs_mpas_increment.py       : Plots side-by-side comparison of fv3 vs mpas analysis
+# - increment_fv3_vs_mpas.py       : Plots side-by-side comparison of fv3 vs mpas analysis
+#                                    increments.
+# - increment_mpas_vs_mpas.py      : Plots side-by-side comparison of mpas vs mpas analysis
 #                                    increments.
 #
 # This script automates the process by:
@@ -78,11 +80,9 @@ JDIAGDIR="${DATAROOT}"
 #CTL_VERSION="v2.0.9"
 #CTL_NAME="baseline1_3dvar12km209"
 #CTL_OPSROOT="/scratch2/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${CTL_VERSION}"
-
 CTL_VERSION="v0.8.6"
 CTL_NAME="CONUS13km_ColdStart00-12Z_133-233TQW"
 CTL_OPSROOT="${OPSROOT}"
-
 CTL_COMROOT="${CTL_OPSROOT}/exp/${CTL_NAME}/com"
 CTL_DATAROOT="${CTL_OPSROOT}/exp/${CTL_NAME}/stmp"
 CTL_LOGDIR="${CTL_COMROOT}/rrfs/${CTL_VERSION}/logs"
@@ -116,13 +116,10 @@ source ${RDASApp}/ush/detect_machine.sh
 # Load necessary environment
 module purge
 module use ${RDASApp}/modulefiles
-#module load RDAS/${MACHINE_ID}.intel
-#export ndate=$(which ndate)
-#module purge
+module load RDAS/${MACHINE_ID}.intel
+export ndate=$(which ndate) # Load ndate
+module purge
 module load EVA/${MACHINE_ID}
-
-# Load ndate
-export ndate=$(which ndate)
 
 if [[ -z "$ndate" ]]; then
   echo "Error: ndate command not found. Please ensure it is installed and available in your PATH." >&2
@@ -153,7 +150,7 @@ while [[ ${date} -le ${EDATE} ]]; do
 
   # Plots rms and bias (from jdiag files)
   if [[ ${HEATMAP_RMS_BIAS_FIT:=NO} == "YES" ]]; then
-    echo "? Working on (${EXP_NAME}) rms, bias, fitting ratio heatmaps: ${pdy}"
+    echo "? Working on (${EXP_NAME}) rms, bias, fitting ratio, nobs heatmaps: ${pdy} (24h)"
     jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
     python heatmap_rms_bias_fit.py ${jdiags[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
@@ -162,14 +159,13 @@ while [[ ${date} -le ${EDATE} ]]; do
 
   # Plots rms and bias (from jdiag files)
   if [[ ${DIFF_HEATMAP_RMS_BIAS_FIT:=NO} == "YES" ]]; then
-    echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff rms, bias, fitting ratio heatmaps: ${pdy}"
+    echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff rms, bias, fitting ratio, nobs heatmaps: ${pdy} (24h)"
     jdiags_exp=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
     jdiags_ctl=(${CTL_JDIAGDIR}/${pdy}/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*)
     python diff_heatmap_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
     mv heatmap*.png ${EXP_NAME}/${pdy}/heatmap/.
   fi
-
 
   # Plots 2d map scatter of ombg values (from jdiag) with bias and rms stats displayed.
   if [[ ${MAP_OMBG_OMAN:=NO} == "YES" ]]; then
@@ -187,10 +183,6 @@ done # date loop
 
 # Reset date for new loop
 date=${SDATE}
-date=$(${ndate} 1 ${date}) # start +1 hr (otherwise missing background)
-if [[ ${SDATE} -eq ${EDATE} ]]; then
-  EDATE=$(${ndate} 24 ${EDATE})
-fi
 
 # Loop over dates from start to and including end date
 # In this loop, date is incremented by 1h
@@ -353,11 +345,3 @@ DIFF=$((END - START))
 echo "Time taken to run the code: $DIFF seconds"
 
 exit 0
-
-# Incase you specified your experiment/com and stmp wrong, you can use the following
-# examples to rsync retaining the directory structre copying only that specified by
-# "--include" option. This would be run at the level of the com/ and stmp/ directories.
-# Ensure the exp/${EXP_NAME} relative path is correct.
-
-#rsync -avm --include='*/' --include='rrfs_jedivar*.log' --exclude='*' com exp/hrly_12km/.
-#rsync -avm --include='*/' --include='jdiag*' --exclude='*' stmp exp/hrly_12km/.
