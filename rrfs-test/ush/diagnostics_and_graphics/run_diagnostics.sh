@@ -194,58 +194,58 @@ while [[ ${date} -le ${EDATE} ]]; do
   cycm1=${datem1:8:10}
   mkdir -p ${EXP_NAME}/${pdy}
 
-# Plots mpas vs mpas analysis increments.
-if [[ ${INCREMENT_MPAS_VS_MPAS:=NO} == "YES" ]]; then
-  echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) increments: ${pdy} ${cyc}Z level${LEVEL}"
-  #-v/--variable: Variable to plot (e.g., airTemperature, specificHumidity).
-  #-f/--figname: Figure identifier (e.g., a timestamp or experiment name).
-  #-m1b/--mpas1_bkg: MPAS background file for experiment 1 (control).
-  #-m1a/--mpas1_ana: MPAS analysis file for experiment 1 (control).
-  #-m2b/--mpas2_bkg: MPAS background file for experiment 2 (new experiment).
-  #-m2a/--mpas2_ana: MPAS analysis file for experiment 2 (new experiment).
-  #-mg/--mpas_grid: Path to the MPAS-JEDI grid file.
-  #-c/--ctl_name: Name of the control experiment.
-  #-e/--exp_name: Name of the new experiment.
-  #-l/--level: Model level (not python index).
-  m1b=${CTL_COMROOT}/rrfs/${CTL_VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
-  m1a=${CTL_DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${CTL_VERSION}/det/jedivar_${cyc}/mpasin.nc
-  m2b=${COMROOT}/rrfs/${VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
-  m2a=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/mpasin.nc
-  mg=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/invariant.nc
-  if [[ ! -f $m1a || ! -f $m2a ]]; then
-    break
+  # Plots mpas vs mpas analysis increments.
+  if [[ ${INCREMENT_MPAS_VS_MPAS:=NO} == "YES" ]]; then
+    echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) increments: ${pdy} ${cyc}Z level${LEVEL}"
+    #-v/--variable: Variable to plot (e.g., airTemperature, specificHumidity).
+    #-f/--figname: Figure identifier (e.g., a timestamp or experiment name).
+    #-m1b/--mpas1_bkg: MPAS background file for experiment 1 (control).
+    #-m1a/--mpas1_ana: MPAS analysis file for experiment 1 (control).
+    #-m2b/--mpas2_bkg: MPAS background file for experiment 2 (new experiment).
+    #-m2a/--mpas2_ana: MPAS analysis file for experiment 2 (new experiment).
+    #-mg/--mpas_grid: Path to the MPAS-JEDI grid file.
+    #-c/--ctl_name: Name of the control experiment.
+    #-e/--exp_name: Name of the new experiment.
+    #-l/--level: Model level (not python index).
+    m1b=${CTL_COMROOT}/rrfs/${CTL_VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
+    m1a=${CTL_DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${CTL_VERSION}/det/jedivar_${cyc}/mpasin.nc
+    m2b=${COMROOT}/rrfs/${VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
+    m2a=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/mpasin.nc
+    mg=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/invariant.nc
+    if [[ ! -f $m1a || ! -f $m2a ]]; then
+      break
+    fi
+    python increment_mpas_vs_mpas.py -v airTemperature -f ${date} -m1b ${m1b} -m1a ${m1a} -m2b ${m2b} -m2a ${m2a} -mg ${mg} -c ${CTL_NAME} -e ${EXP_NAME} -l ${LEVEL}
+    mkdir -p ${EXP_NAME}/increment
+    mv *increment*.png ${EXP_NAME}/increment/.
   fi
-  python increment_mpas_vs_mpas.py -v airTemperature -f ${date} -m1b ${m1b} -m1a ${m1a} -m2b ${m2b} -m2a ${m2a} -mg ${mg} -c ${CTL_NAME} -e ${EXP_NAME} -l ${LEVEL}
-  mkdir -p ${EXP_NAME}/increment
-  mv *increment*.png ${EXP_NAME}/increment/.
-fi
 
-# Plots gsi vs mpas analysis increments.
-if [[ ${INCREMENT_FV3_VS_MPAS:=NO} == "YES" ]]; then
-  echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff increments: ${pdy} ${cyc}Z"
-  mkdir -p ${EXP_NAME}/increment
-  #-v/--variable: Variable to plot (e.g., airTemperature, specificHumidity).
-  #-f/--figname: Figure identifier (e.g., a timestamp or experiment name).
-  #-gb/--gsi_bkg: Path to the GSI background file.
-  #-ga/--gsi_ana: Path to the GSI analysis file.
-  #-mb/--mpas_bkg: Path to the MPAS-JEDI background file.
-  #-ma/--mpas_ana: Path to the MPAS-JEDI analysis file.
-  #-gg/--gsi_grid: Path to the GSI grid file.
-  #-mg/--mpas_grid: Path to the MPAS-JEDI grid file.
-  #-c/--ctl_name: Name of the control experiment
-  #-e/--exp_name: Name of the new experiment
-  gb=${FCST_SOURCE}/${pdym1}${cycm1}/fcst_fv3lam/RESTART/${pdy}.${cyc}0000.fv_core.res.tile1.nc
-  ga=${FCST_SOURCE}/${pdy}${cyc}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
-  gg=${FCST_SOURCE}/../stmp/${pdy}${cyc}/anal_conv_gsi/fv3_grid_spec
-  mb=${COMROOT}/rrfs/${VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
-  ma=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/mpasin.nc
-  mg=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/invariant.nc
-  python increment_fv3_vs_mpas.py -v airTemperature -f ${date} -gb ${gb} -ga ${ga} -gg ${gg} -mb ${mb} -ma ${ma} -mg ${mg} -c ${CTL_NAME} -e ${EXP_NAME}
-  mv *increment*.png ${EXP_NAME}/increment/.
-fi
+  # Plots gsi vs mpas analysis increments.
+  if [[ ${INCREMENT_FV3_VS_MPAS:=NO} == "YES" ]]; then
+    echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff increments: ${pdy} ${cyc}Z"
+    mkdir -p ${EXP_NAME}/increment
+    #-v/--variable: Variable to plot (e.g., airTemperature, specificHumidity).
+    #-f/--figname: Figure identifier (e.g., a timestamp or experiment name).
+    #-gb/--gsi_bkg: Path to the GSI background file.
+    #-ga/--gsi_ana: Path to the GSI analysis file.
+    #-mb/--mpas_bkg: Path to the MPAS-JEDI background file.
+    #-ma/--mpas_ana: Path to the MPAS-JEDI analysis file.
+    #-gg/--gsi_grid: Path to the GSI grid file.
+    #-mg/--mpas_grid: Path to the MPAS-JEDI grid file.
+    #-c/--ctl_name: Name of the control experiment
+    #-e/--exp_name: Name of the new experiment
+    gb=${FCST_SOURCE}/${pdym1}${cycm1}/fcst_fv3lam/RESTART/${pdy}.${cyc}0000.fv_core.res.tile1.nc
+    ga=${FCST_SOURCE}/${pdy}${cyc}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
+    gg=${FCST_SOURCE}/../stmp/${pdy}${cyc}/anal_conv_gsi/fv3_grid_spec
+    mb=${COMROOT}/rrfs/${VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
+    ma=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/mpasin.nc
+    mg=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/invariant.nc
+    python increment_fv3_vs_mpas.py -v airTemperature -f ${date} -gb ${gb} -ga ${ga} -gg ${gg} -mb ${mb} -ma ${ma} -mg ${mg} -c ${CTL_NAME} -e ${EXP_NAME}
+    mv *increment*.png ${EXP_NAME}/increment/.
+  fi
 
-  # Increase date by 1 day
-  date=$(${ndate} 1 ${date})
+    # Increase date by 1 day
+    date=$(${ndate} 1 ${date})
 done # date loop
 
 # START OF CYCLE-AVERAGED DIAGNOSTIC TOOLS AND TIMESERIES PLOTS (no date loop).
