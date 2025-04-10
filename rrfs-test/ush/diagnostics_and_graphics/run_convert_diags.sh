@@ -89,6 +89,7 @@ while [[ ${date} -le ${EDATE} ]]; do
     echo "? Working on copy gdiag: ${pdy} ${cyc}Z"
     #echo "debug: $rrfsv2_structure"; exit
     #echo "debug: ${DATA_SOURCE}/${date}/anal_conv_gsi" ; exit
+    #echo "debug: ${DATA_SOURCE}/${date}/fcst_fv3lam" ; exit
     cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/diag_conv_t* ${rrfsv2_structure}/.
     cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/diag_conv_q* ${rrfsv2_structure}/.
     cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/diag_conv_ps* ${rrfsv2_structure}/.
@@ -97,6 +98,7 @@ while [[ ${date} -le ${EDATE} ]]; do
     cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/fort* ${rrfsv2_structure}/.
     cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/gsiparm* ${rrfsv2_structure}/.
     cp -p ${DATA_SOURCE}/${date}/anal_conv_gsi/convinfo* ${rrfsv2_structure}/.
+    cp -p ${DATA_SOURCE}/${date}/fcst_fv3lam/grid_spec.nc ${rrfsv2_structure}/.
     find ${rrfsv2_structure} -type f -name "${INCLUDE_PATTERN}" -exec gunzip -f {} \;
   fi
 
