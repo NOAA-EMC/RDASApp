@@ -102,14 +102,14 @@ def plot_increment(gsi_inc, mpas_inc, lons, lats, mlons, mlats, variable, fignam
 
     # Plot GSI increment
     c1 = m1.contourf(lons, lats, gsi_inc, clevs, cmap=cm, extend='both')
-    m1.set_title("GSI", fontsize=9)
+    m1.set_title(f"{ctl_name} (FV3-GSI)", fontsize=9)
 
     # Plot MPAS-JEDI increment with triangulation
     triang = Triangulation(mlons, mlats)
     mask = TriAnalyzer(triang).get_flat_tri_mask(min_circle_ratio=0.1)
     triang.set_mask(mask)
     c2 = m2.tricontourf(triang, mpas_inc, clevs, cmap=cm, extend='both')
-    m2.set_title("MPAS-JEDI", fontsize=9)
+    m2.set_title(f"{exp_name} (MPAS-JEDI)", fontsize=9)
 
     # Add shared colorbar
     cax = fig.add_axes([0.125, 0.05, 0.775, 0.035])
@@ -125,7 +125,7 @@ def plot_increment(gsi_inc, mpas_inc, lons, lats, mlons, mlats, variable, fignam
     m2.text(left * 0.99, bot * 1.01, subtitle2, fontsize=6, ha='left', va='bottom')
 
     # Save the figure
-    plt.savefig(f"./gsi_vs_mpas_increment_{variable}_{figname}.png", dpi=250, bbox_inches='tight')
+    plt.savefig(f"./increment_{exp_name}_vs_{ctl_name}_{variable}_{figname}_levellowest.png", dpi=250, bbox_inches='tight')
     plt.close()
 
 # Colormap and unit functions
@@ -180,6 +180,8 @@ if __name__ == "__main__":
     parser.add_argument('-ma', '--mpas_ana', type=str, required=True, help='MPAS analysis file path')
     parser.add_argument('-gg', '--gsi_grid', type=str, required=True, help='GSI grid file path')
     parser.add_argument('-mg', '--mpas_grid', type=str, required=True, help='MPAS grid file path')
+    parser.add_argument('-c', '--ctl_name', type=str, required=True, help='Name of the control experiment (${CTL_NAME})')
+    parser.add_argument('-e', '--exp_name', type=str, required=True, help='Name of the new experiment (${EXP_NAME})')
     args = parser.parse_args()
 
     # Assign arguments
@@ -191,6 +193,8 @@ if __name__ == "__main__":
     mpas_ana = args.mpas_ana
     gsi_grid = args.gsi_grid
     mpas_grid = args.mpas_grid
+    ctl_name = args.ctl_name
+    exp_name = args.exp_name
 
     # Load GSI grid
     nc_g = Dataset(gsi_grid, mode='r')
