@@ -244,8 +244,8 @@ while [[ ${date} -le ${EDATE} ]]; do
     mv *increment*.png ${EXP_NAME}/increment/.
   fi
 
-    # Increase date by 1 day
-    date=$(${ndate} 1 ${date})
+  # Increase date by 1 hour
+  date=$(${ndate} 1 ${date})
 done # date loop
 
 # START OF CYCLE-AVERAGED DIAGNOSTIC TOOLS AND TIMESERIES PLOTS (no date loop).
