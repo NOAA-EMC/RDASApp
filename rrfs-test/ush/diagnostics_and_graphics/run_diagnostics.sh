@@ -39,7 +39,7 @@
 #
 #
 #### USER-DEFINED VARIABLES #################################################
-export EFFQC=1 #0 (asm), 1 (mon), 12 (rej)
+export EFFQC=0 #0 (asm), 1 (mon), 12 (rej)
 export USE_LESS_EQUAL=true
 
 # Specify which functions to run (uncomment/comment to turn on/off)
@@ -92,11 +92,14 @@ CTL_JDIAGDIR="${CTL_DATAROOT}"
 RDASApp="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.phase2_sonde"
 
 # Options only for MAP_DOMAINCOMPARISON_MPAS_FV3
-MPAS_DOMAIN="${RDASApp}/expr/mpas_2024052700/data/invariant.nc"
-FV3_DOMAIN="${RDASApp}/expr/fv3_2024052700/Data/bkg/grid_spec.nc"
+#MPAS_DOMAIN="${RDASApp}/expr/mpas_2024052700/data/invariant.nc"
+#FV3_DOMAIN="${RDASApp}/expr/fv3_2024052700/Data/bkg/grid_spec.nc"
+MPAS_DOMAIN="${DATAROOT}/20240506/rrfs_fcst_01_v2.0.9/det/fcst_01/invariant.nc"
+FV3_DOMAIN="${CTL_DATAROOT}/20240506/rrfs_jedivar_01_v0.8.6/det/jedivar_01/grid_spec.nc"
 
 # Options for analysis increment plot
-LEVEL=1 # actual level (not python index)
+LEVEL=1 # actual level (not python index; mpas vs mpas only)
+FCST_SOURCE="/scratch1/BMC/wrfruc/rli/RRFS_V1/rrfs.${CTL_VERSION}/${CTL_NAME}/nwges"
 
 # Options only for RZDM
 USER="donald.lippi"
@@ -220,15 +223,14 @@ if [[ ${INCREMENT_MPAS_VS_MPAS:=NO} == "YES" ]]; then
   if [[ ! -f $m1a || ! -f $m2a ]]; then
     break
   fi
-  python increment_mpas_mpas.py -v airTemperature -f ${date} -m1b ${m1b} -m1a ${m1a} -m2b ${m2b} -m2a ${m2a} -mg ${mg} -c ${CTL_NAME} -e ${EXP_NAME} -l ${LEVEL}
+  python increment_mpas_vs_mpas.py -v airTemperature -f ${date} -m1b ${m1b} -m1a ${m1a} -m2b ${m2b} -m2a ${m2a} -mg ${mg} -c ${CTL_NAME} -e ${EXP_NAME} -l ${LEVEL}
   mkdir -p ${EXP_NAME}/increment
   mv *increment*.png ${EXP_NAME}/increment/.
 fi
+
 # Plots gsi vs mpas analysis increments.
 if [[ ${INCREMENT_FV3_VS_MPAS:=NO} == "YES" ]]; then
-  echo "? Working on (${EXP_NAME}) diff increments: ${pdy} ${cyc}Z"
-  echo "still needs testing... exiting..."
-  exit 1
+  echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff increments: ${pdy} ${cyc}Z"
   mkdir -p ${EXP_NAME}/increment
   #-v/--variable: Variable to plot (e.g., airTemperature, specificHumidity).
   #-f/--figname: Figure identifier (e.g., a timestamp or experiment name).
@@ -238,14 +240,15 @@ if [[ ${INCREMENT_FV3_VS_MPAS:=NO} == "YES" ]]; then
   #-ma/--mpas_ana: Path to the MPAS-JEDI analysis file.
   #-gg/--gsi_grid: Path to the GSI grid file.
   #-mg/--mpas_grid: Path to the MPAS-JEDI grid file.
-  temp=/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/jedi-assim-phase3/gsi_2024052700
-  gb=${temp}/Data/bkg/fv3_dynvars
-  ga=${temp}/aircar_airTemperature_133/fv3_dynvars
-  gg=${temp}/fv3_grid_spec
+  #-c/--ctl_name: Name of the control experiment
+  #-e/--exp_name: Name of the new experiment
+  gb=${FCST_SOURCE}/${pdym1}${cycm1}/fcst_fv3lam/RESTART/${pdy}.${cyc}0000.fv_core.res.tile1.nc
+  ga=${FCST_SOURCE}/${pdy}${cyc}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
+  gg=${FCST_SOURCE}/../stmp/${pdy}${cyc}/anal_conv_gsi/fv3_grid_spec
   mb=${COMROOT}/rrfs/${VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
   ma=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/mpasin.nc
   mg=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/invariant.nc
-  python increment_fv3_mpas.py -v airTemperature -f ${date} -gb ${gb} -ga ${ga} -gg ${gg} -mb ${mb} -ma ${ma} -mg ${mg}
+  python increment_fv3_vs_mpas.py -v airTemperature -f ${date} -gb ${gb} -ga ${ga} -gg ${gg} -mb ${mb} -ma ${ma} -mg ${mg} -c ${CTL_NAME} -e ${EXP_NAME}
   mv *increment*.png ${EXP_NAME}/increment/.
 fi
 
@@ -315,7 +318,7 @@ fi
 
 
 if [[ ${MAP_DOMAINCOMPARISON_MPAS_FV3:=NO} == "YES" ]]; then
-  echo "? Working on (${EXP_NAME}) map domain comparison mpas vs fv3."
+  echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) map domain comparison mpas vs fv3."
   python map_domainComparison_mpas_fv3.py ${MPAS_DOMAIN} ${FV3_DOMAIN}
   mkdir -p ${EXP_NAME}/
   mv *domain*comparison*.png ${EXP_NAME}/.
