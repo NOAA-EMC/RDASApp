@@ -152,7 +152,7 @@ def plot_mpas_increments(mpas_inc1, mpas_inc2, mlons, mlats, variable, figname, 
     m2.text(left * 0.99, bot * 1.01, subtitle2, fontsize=6, ha='left', va='bottom')
 
     # Save figure with experiment names and level+1 in filename
-    plt.savefig(f"./increment_{ctl_name}_vs_{exp_name}_{variable}_{figname}_level{level+1}.png", dpi=250, bbox_inches='tight')
+    plt.savefig(f"./increment_{exp_name}_vs_{ctl_name}_{variable}_{figname}_level{level+1}.png", dpi=250, bbox_inches='tight')
     plt.close()
 
 # Colormap and unit functions (unchanged)
