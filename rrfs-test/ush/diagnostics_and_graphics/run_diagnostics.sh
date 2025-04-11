@@ -1,67 +1,52 @@
 #!/bin/bash
-# This script is the main driver for generating various diagnostic plots
-# related to data assimilation. It processes log files and diagnostic files
-# from an experiment, producing visualizations to analyze observation impact
-# and model performance.
-#
-# Supported diagnostic scripts:
-# - heatmap_jo.py                  : Generates heatmaps for Nonlinear Jo values,
-#                                    observation counts, Jo/n, and Jo/n percent change.
-# - (diff_)heatmap_rms_bias_fit.py : Creates heatmaps for bias and RMS statistics
-#                                    from diagnostic files and fitting ratio. Compares
-#                                    stats across multiple observation types. (Compares
-#                                    two experiments.)
-# - (diff_)profile_rms_bias_fit.py : Produces vertical profile plots of bias and
-#                                    RMS statistics using pressure as the
-#                                    vertical coordinate. (Compares two experiments.)
-# - (diff_)timeseries_rms_bias_fit.py : Generates a time series of whole column of rms,
-#                                       bias, and fitting ratio. (Compares two experiments.)
-# - hovmoller_rms_bias_fit.py      : Generates a hovmoller (pressure vs time) time series
-#                                    (of vertical profiles) of rms, bias, and fitting ratio.
-# - map_ombg_oman.py               : Creates 2d map scatter of ombg/an values with bias
-#                                    and rms stats displayed.
-# - map_domainComparison_mpas_fv3  : Overlays mpas and fv3 grids for domain comparison.
-# - increment_fv3_vs_mpas.py       : Plots side-by-side comparison of fv3 vs mpas analysis
-#                                    increments.
-# - increment_mpas_vs_mpas.py      : Plots side-by-side comparison of mpas vs mpas analysis
-#                                    increments.
-#
-# This script automates the process by:
-# - Iterating over a range of dates and processing log and diagnostic files
-#   for each analysis cycle.
-# - Supporting optional uploads of generated plots to an external web server.
-#
-# Usage:
-# - Set the required variables below to define the experiment, date range,
-#   and desired plots.
-# - Enable or disable specific plot generation by setting HEATMAP_JO,
-#   HEATMAP_RMS_BIAS_FIT, PROFILE_RMS_BIAS_FIT, etc.
-# - Run the script to generate the required diagnostics and optionally upload
-#   results.
-#
-#
-#### USER-DEFINED VARIABLES #################################################
-export EFFQC=0 #0 (asm), 1 (mon), 12 (rej)
-export USE_LESS_EQUAL=true
+# run_diagnostics.sh - driver for generating JEDI diagnostic plots
+# Edit USER-DEFINED VARIABLES below, then execute.
 
-# Specify which functions to run (uncomment/comment to turn on/off)
-#HEATMAP_JO="YES"
-#HEATMAP_RMS_BIAS_FIT="YES"
-#DIFF_HEATMAP_RMS_BIAS_FIT="YES"
-#PROFILE_RMS_BIAS_FIT="YES"
-#DIFF_PROFILE_RMS_BIAS_FIT="YES"
-#MAP_OMBG_OMAN="YES"
-#HOVMOLLER_RMS_BIAS_FIT="YES"
-#TIMESERIES_RMS_BIAS_FIT="YES"
-#DIFF_TIMESERIES_RMS_BIAS_FIT="YES"
-#MAP_DOMAINCOMPARISON_MPAS_FV3="YES"
-#INCREMENT_FV3_VS_MPAS="YES"
-#INCREMENT_MPAS_VS_MPAS="YES"
-#UPLOAD_TO_RZDM="YES"
+#### USER-DEFINED VARIABLES ####################################################
+#===============================================================================
+#                            RUN CONTROL SWITCHES
+#
+# To ENABLE a feature:   remove the leading "#"
+# To DISABLE a feature:  add a leading "#"
+#
+# Format:
+#   VARIABLE_NAME="YES"    # short description
+#
+# Sections:
+#   1) Single-Experiment Plots
+#   2) Two-Experiment Comparison Plots
+#   3) Upload Options
+#===============================================================================
+
+# --- 1) Single-Experiment Plots (e.g. Retro experiment only) ---
+#HEATMAP_JO="YES"                    # Jo heatmaps from log files
+#HEATMAP_RMS_BIAS_FIT="YES"          # RMS/bias/fitting-ratio/nobs heatmaps
+#PROFILE_RMS_BIAS_FIT="YES"          # Vertical profiles of RMS/bias/fitting-ratio
+#MAP_OMBG_OMAN="YES"                 # OMB/OMA scatter maps
+#HOVMOLLER_RMS_BIAS_FIT="YES"        # Hovmoller plots of RMS/bias/fitting-ratio
+#TIMESERIES_RMS_BIAS_FIT="YES"       # Time-series of RMS/bias/fitting-ratio
+INCREMENT_MPAS="YES"                 # Single-experiment MPAS increments
+
+# --- 2) Two-Experiment Comparison Plots (Retro vs Control) ---
+#DIFF_HEATMAP_RMS_BIAS_FIT="YES"     # Diff heatmaps (Retro vs Control)
+#DIFF_PROFILE_RMS_BIAS_FIT="YES"     # Diff vertical profiles
+#DIFF_TIMESERIES_RMS_BIAS_FIT="YES"  # Diff time-series
+#INCREMENT_FV3_VS_MPAS="YES"         # FV3 vs MPAS increments
+#INCREMENT_MPAS_VS_MPAS="YES"        # MPAS vs MPAS increments
+#MAP_DOMAINCOMPARISON_MPAS_FV3="YES" # Domain comparison map
+
+# --- 3) Upload Options ---
+#UPLOAD_TO_RZDM="YES"                # scp results to RZDM web server
+
+#===============================================================================
 
 # Cycle start and end dates to process
-SDATE=2024050600
-EDATE=2024050600
+SDATE=2024050601
+EDATE=2024050606
+
+# EffectiveQC2 value and operator
+export EFFQC=0 # 0 (asm), 1 (mon), 12 (rej)
+export USE_LESS_EQUAL=true #true: <=; false: ==
 
 # Retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
 VERSION="v2.0.9"
@@ -76,7 +61,7 @@ DATAROOT="${OPSROOT}/exp/${EXP_NAME}/stmp"
 LOGDIR="${COMROOT}/rrfs/${VERSION}/logs"
 JDIAGDIR="${DATAROOT}"
 
-# Control experiment for "diff_" tools.
+# Control experiment details - only used in 2) Two-Experiment Comparison Plots (Retro vs Control)
 #CTL_VERSION="v2.0.9"
 #CTL_NAME="baseline1_3dvar12km209"
 #CTL_OPSROOT="/scratch2/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${CTL_VERSION}"
@@ -98,14 +83,14 @@ MPAS_DOMAIN="${DATAROOT}/20240506/rrfs_fcst_01_v2.0.9/det/fcst_01/invariant.nc"
 FV3_DOMAIN="${CTL_DATAROOT}/20240506/rrfs_jedivar_01_v0.8.6/det/jedivar_01/grid_spec.nc"
 
 # Options for analysis increment plot
-LEVEL=1 # actual level (not python index; mpas vs mpas only)
-FCST_SOURCE="/scratch1/BMC/wrfruc/rli/RRFS_V1/rrfs.${CTL_VERSION}/${CTL_NAME}/nwges"
+LEVEL=1 # actual level (not python index; mpas only plots; 1=lowest model level)
+FV3BKG_SOURCE="/scratch1/BMC/wrfruc/rli/RRFS_V1/rrfs.${CTL_VERSION}/${CTL_NAME}/nwges"
 
 # Options only for RZDM
 USER="donald.lippi"
 HOST="emcrzdm.ncep.noaa.gov"
 DESTINATION="/home/www/emc/htdocs/mmb/dlippi/rrfs-workflow_v2/DA_monitoring/."
-#### END OF USER-DEFINED VARIABLES ##########################################
+#### END OF USER-DEFINED VARIABLES #############################################
 
 # Start main execution
 START=$(date +%s)
@@ -194,6 +179,27 @@ while [[ ${date} -le ${EDATE} ]]; do
   cycm1=${datem1:8:10}
   mkdir -p ${EXP_NAME}/${pdy}
 
+  # Plots single mpas analysis increments.
+  if [[ ${INCREMENT_MPAS:=NO} == "YES" ]]; then
+    echo "? Working on (${EXP_NAME}) increments: ${pdy} ${cyc}Z level${LEVEL}"
+    #-v/--variable: Variable to plot (e.g., airTemperature, specificHumidity).
+    #-f/--figname: Figure identifier (e.g., a timestamp or experiment name).
+    #-m1b/--mpas1_bkg: MPAS background file for experiment 1 (control).
+    #-m1a/--mpas1_ana: MPAS analysis file for experiment 1 (control).
+    #-mg/--mpas_grid: Path to the MPAS-JEDI grid file.
+    #-e/--exp_name: Name of the new experiment.
+    #-l/--level: Model level (not python index).
+    m1b=${COMROOT}/rrfs/${VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
+    m1a=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/mpasin.nc
+    mg=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/invariant.nc
+    if [[ ! -f $m1a ]]; then
+      break
+    fi
+    python increment_mpas.py -v airTemperature -f ${date} -m1b ${m1b} -m1a ${m1a} -mg ${mg} -e ${EXP_NAME} -l ${LEVEL}
+    mkdir -p ${EXP_NAME}/increment
+    mv *increment*.png ${EXP_NAME}/increment/.
+  fi
+
   # Plots mpas vs mpas analysis increments.
   if [[ ${INCREMENT_MPAS_VS_MPAS:=NO} == "YES" ]]; then
     echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) increments: ${pdy} ${cyc}Z level${LEVEL}"
@@ -234,9 +240,9 @@ while [[ ${date} -le ${EDATE} ]]; do
     #-mg/--mpas_grid: Path to the MPAS-JEDI grid file.
     #-c/--ctl_name: Name of the control experiment
     #-e/--exp_name: Name of the new experiment
-    gb=${FCST_SOURCE}/${pdym1}${cycm1}/fcst_fv3lam/RESTART/${pdy}.${cyc}0000.fv_core.res.tile1.nc
-    ga=${FCST_SOURCE}/${pdy}${cyc}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
-    gg=${FCST_SOURCE}/../stmp/${pdy}${cyc}/anal_conv_gsi/fv3_grid_spec
+    gb=${FV3BKG_SOURCE}/${pdym1}${cycm1}/fcst_fv3lam/RESTART/${pdy}.${cyc}0000.fv_core.res.tile1.nc
+    ga=${FV3BKG_SOURCE}/${pdy}${cyc}/fcst_fv3lam/INPUT/fv_core.res.tile1.nc
+    gg=${FV3BKG_SOURCE}/../stmp/${pdy}${cyc}/anal_conv_gsi/fv3_grid_spec
     mb=${COMROOT}/rrfs/${VERSION}/rrfs.${pdym1}/${cycm1}/fcst/det/mpasout*nc
     ma=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/mpasin.nc
     mg=${DATAROOT}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/invariant.nc
