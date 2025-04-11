@@ -31,6 +31,9 @@ UNITS = {
     "stationPressure": "Pa"
 }
 
+# Define pressure bins for vertical levels (19 bins, 20 boundaries)
+pressure_bins = np.logspace(np.log10(180), np.log10(1100), num=20)
+
 def get_valid_mask(effqc):
     # Get the threshold EFFQC from environment variable, default to 0
     EFFQC = int(os.getenv("EFFQC", default=0))
@@ -119,6 +122,7 @@ def compute_stats_per_time(file):
             #valid_mask = (ombg != fill_value) & (ombg < 1e+5) & (~np.isnan(obserr)) & (obserr < 1e+10) & (pressure > 0) & (pressure < 1100)
             #valid_mask = (effqc <= 1)
             valid_mask = get_valid_mask(effqc)
+            pressure_valid = pressure[valid_mask]
             ombg_valid = ombg[valid_mask]
             oman_valid = oman[valid_mask]
 
@@ -138,13 +142,41 @@ def compute_stats_per_time(file):
             rms_oman = np.sqrt(np.nanmean(oman_valid ** 2)) if ds_oman else np.nan
             fitting_ratio = (rms_ombg - rms_oman) / rms_ombg if rms_ombg > 0 and ds_oman else np.nan
 
+            # Binned statistics
+            binned_stats = []
+            for i in range(len(pressure_bins) - 1):
+                bin_mask = (pressure_valid >= pressure_bins[i]) & (pressure_valid < pressure_bins[i + 1])
+                ombg_bin = ombg_valid[bin_mask]
+                oman_bin = oman_valid[bin_mask]
+                if ombg_bin.size > 0:
+                    bias_ombg_bin = np.nanmean(ombg_bin * scale_factor)
+                    rms_ombg_bin = np.sqrt(np.nanmean((ombg_bin * scale_factor) ** 2))
+                    bias_oman_bin = np.nanmean(oman_bin * scale_factor) if ds_oman else np.nan
+                    rms_oman_bin = np.sqrt(np.nanmean((oman_bin * scale_factor) ** 2)) if ds_oman else np.nan
+                    fitting_ratio_bin = (rms_ombg_bin - rms_oman_bin) / rms_ombg_bin if rms_ombg_bin > 0 and ds_oman else np.nan
+                    count_bin = len(ombg_bin)
+                else:
+                    bias_ombg_bin = rms_ombg_bin = bias_oman_bin = rms_oman_bin = fitting_ratio_bin = np.nan
+                    count_bin = 0
+                binned_stats.append({
+                    "bias_ombg": bias_ombg_bin,
+                    "rms_ombg": rms_ombg_bin,
+                    "bias_oman": bias_oman_bin,
+                    "rms_oman": rms_oman_bin,
+                    "fitting_ratio": fitting_ratio_bin,
+                    "count": count_bin
+                })
+
             stats[obs_var] = {
-                "bias_ombg": bias_ombg,
-                "rms_ombg": rms_ombg,
-                "bias_oman": bias_oman,
-                "rms_oman": rms_oman,
-                "fitting_ratio": fitting_ratio,
-                "count": len(ombg_valid)
+                "overall": {
+                    "bias_ombg": bias_ombg,
+                    "rms_ombg": rms_ombg,
+                    "bias_oman": bias_oman,
+                    "rms_oman": rms_oman,
+                    "fitting_ratio": fitting_ratio,
+                    "count": len(ombg_valid)
+                },
+                "binned": binned_stats
             }
 
         ds_ombg.close()
@@ -180,32 +212,63 @@ def collect_stats(jdiag_files):
                 all_data[key].append((timestamp, stat_dict))
     return all_data
 
-def plot_time_series(stats_ctl, stats_exp, ctl_name, exp_name, date_range):
+def plot_time_series(stats_ctl, stats_exp, ctl_name, exp_name, date_range, user_bin=None):
     """
     Generate a single time series plot with three subplots for each common observation type and variable,
     comparing Control and Experiment.
     """
+    if user_bin is None or user_bin == -1:
+        bin_index = None
+        bin_label = "Entire Profile"
+    else:
+        # Validate user-provided bin number
+        if user_bin < 1 or user_bin > 19:
+            print(f"Error: Bin must be between 1 and 19, got {user_bin}")
+            sys.exit(1)
+        # Convert to Python zero-based index
+        bin_index = user_bin - 1
+        bin_min = pressure_bins[bin_index]
+        bin_max = pressure_bins[bin_index + 1]
+        bin_label = f"Bin {user_bin}: {bin_min:.1f}-{bin_max:.1f} hPa"
+    print(f"Plotting time series for {bin_label}")
+
     common_keys = set(stats_ctl.keys()) & set(stats_exp.keys())
     for key in common_keys:
         obtype, obs_var = key
         data_ctl = sorted(stats_ctl[key], key=lambda x: x[0])
         data_exp = sorted(stats_exp[key], key=lambda x: x[0])
 
-        # Extract data for Control
-        timestamps_ctl = [x[0] for x in data_ctl]
-        bias_ombg_ctl = [x[1]["bias_ombg"] for x in data_ctl]
-        rms_ombg_ctl = [x[1]["rms_ombg"] for x in data_ctl]
-        bias_oman_ctl = [x[1]["bias_oman"] for x in data_ctl]
-        rms_oman_ctl = [x[1]["rms_oman"] for x in data_ctl]
-        fitting_ratio_ctl = [x[1]["fitting_ratio"] for x in data_ctl]
+        # Extract data based on bin selection
+        if bin_index is None:
+            # Entire profile
+            timestamps_ctl = [x[0] for x in data_ctl]
+            bias_ombg_ctl = [x[1]["overall"]["bias_ombg"] for x in data_ctl]
+            rms_ombg_ctl = [x[1]["overall"]["rms_ombg"] for x in data_ctl]
+            bias_oman_ctl = [x[1]["overall"]["bias_oman"] for x in data_ctl]
+            rms_oman_ctl = [x[1]["overall"]["rms_oman"] for x in data_ctl]
+            fitting_ratio_ctl = [x[1]["overall"]["fitting_ratio"] for x in data_ctl]
 
-        # Extract data for Experiment
-        timestamps_exp = [x[0] for x in data_exp]
-        bias_ombg_exp = [x[1]["bias_ombg"] for x in data_exp]
-        rms_ombg_exp = [x[1]["rms_ombg"] for x in data_exp]
-        bias_oman_exp = [x[1]["bias_oman"] for x in data_exp]
-        rms_oman_exp = [x[1]["rms_oman"] for x in data_exp]
-        fitting_ratio_exp = [x[1]["fitting_ratio"] for x in data_exp]
+            timestamps_exp = [x[0] for x in data_exp]
+            bias_ombg_exp = [x[1]["overall"]["bias_ombg"] for x in data_exp]
+            rms_ombg_exp = [x[1]["overall"]["rms_ombg"] for x in data_exp]
+            bias_oman_exp = [x[1]["overall"]["bias_oman"] for x in data_exp]
+            rms_oman_exp = [x[1]["overall"]["rms_oman"] for x in data_exp]
+            fitting_ratio_exp = [x[1]["overall"]["fitting_ratio"] for x in data_exp]
+        else:
+            # Specific bin
+            timestamps_ctl = [x[0] for x in data_ctl]
+            bias_ombg_ctl = [x[1]["binned"][bin_index]["bias_ombg"] for x in data_ctl]
+            rms_ombg_ctl = [x[1]["binned"][bin_index]["rms_ombg"] for x in data_ctl]
+            bias_oman_ctl = [x[1]["binned"][bin_index]["bias_oman"] for x in data_ctl]
+            rms_oman_ctl = [x[1]["binned"][bin_index]["rms_oman"] for x in data_ctl]
+            fitting_ratio_ctl = [x[1]["binned"][bin_index]["fitting_ratio"] for x in data_ctl]
+
+            timestamps_exp = [x[0] for x in data_exp]
+            bias_ombg_exp = [x[1]["binned"][bin_index]["bias_ombg"] for x in data_exp]
+            rms_ombg_exp = [x[1]["binned"][bin_index]["rms_ombg"] for x in data_exp]
+            bias_oman_exp = [x[1]["binned"][bin_index]["bias_oman"] for x in data_exp]
+            rms_oman_exp = [x[1]["binned"][bin_index]["rms_oman"] for x in data_exp]
+            fitting_ratio_exp = [x[1]["binned"][bin_index]["fitting_ratio"] for x in data_exp]
 
         # Create figure with three subplots
         fig, (ax0, ax1, ax2) = plt.subplots(3, 1, figsize=(10, 12), sharex=True)
@@ -245,10 +308,10 @@ def plot_time_series(stats_ctl, stats_exp, ctl_name, exp_name, date_range):
         ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M'))
         plt.setp(ax2.get_xticklabels(), rotation=45, ha='right')
 
-        # Add title and adjust layout
-        fig.suptitle(f"Time Series for {obtype} - {obs_var} ({date_range})")
+        # Title and save
+        fig.suptitle(f"Time Series for {obtype} - {obs_var} ({bin_label}) ({date_range})")
+        filename = f"timeseries_{obtype}_{obs_var}_{exp_name}_vs_{ctl_name}" + ("" if bin_index is None else f"_bin{user_bin}") + ".png"
         fig.tight_layout(rect=[0, 0, 1, 0.95])
-        filename = f"timeseries_{obtype}_{obs_var}_{exp_name}_vs_{ctl_name}.png"
         fig.savefig(filename, dpi=300, bbox_inches="tight")
         print(f"Saved time series: {pink}{filename}{normal}")
         plt.close(fig)
@@ -256,9 +319,19 @@ def plot_time_series(stats_ctl, stats_exp, ctl_name, exp_name, date_range):
 ### Main Execution
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4 or "--" not in sys.argv:
-        print("Usage: python diff_timeseries_rms_bias_fit.py ctl_name exp_name ctl_files -- exp_files")
+    if len(sys.argv) < 4:
+        print("Usage: python diff_timeseries_rms_bias_fit.py [--bin N] ctl_name exp_name ctl_files -- exp_files")
         sys.exit(1)
+
+    user_bin = None
+    if sys.argv[1] == "--bin":
+        if len(sys.argv) < 6:
+            print("Usage: python diff_timeseries_rms_bias_fit.py [--bin N] ctl_name exp_name ctl_files -- exp_files")
+            sys.exit(1)
+        user_bin = int(sys.argv[2])
+        sys.argv = [sys.argv[0]] + sys.argv[3:]
+    else:
+        user_bin = None
 
     ctl_name = sys.argv[1]
     exp_name = sys.argv[2]
@@ -268,7 +341,7 @@ if __name__ == "__main__":
         ctl_files = sys.argv[3:idx]
         exp_files = sys.argv[idx+1:]
     except ValueError:
-        print("Usage: python diff_timeseries_rms_bias_fit.py ctl_name exp_name ctl_files -- exp_files")
+        print("Usage: python diff_timeseries_rms_bias_fit.py [--bin N] ctl_name exp_name ctl_files -- exp_files")
         sys.exit(1)
 
     if not ctl_files or not exp_files:
@@ -283,4 +356,4 @@ if __name__ == "__main__":
     stats_exp = collect_stats(exp_files)
 
     # Plot the time series
-    plot_time_series(stats_ctl, stats_exp, ctl_name, exp_name, date_range)
+    plot_time_series(stats_ctl, stats_exp, ctl_name, exp_name, date_range, user_bin)

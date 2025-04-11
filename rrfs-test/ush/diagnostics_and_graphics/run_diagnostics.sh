@@ -24,8 +24,8 @@
 #PROFILE_RMS_BIAS_FIT="YES"          # Vertical profiles of RMS/bias/fitting-ratio
 #MAP_OMBG_OMAN="YES"                 # OMB/OMA scatter maps
 #HOVMOLLER_RMS_BIAS_FIT="YES"        # Hovmoller plots of RMS/bias/fitting-ratio
-#TIMESERIES_RMS_BIAS_FIT="YES"       # Time-series of RMS/bias/fitting-ratio
-INCREMENT_MPAS="YES"                 # Single-experiment MPAS increments
+TIMESERIES_RMS_BIAS_FIT="YES"       # Time-series of RMS/bias/fitting-ratio
+#INCREMENT_MPAS="YES"                # Single-experiment MPAS increments
 
 # --- 2) Two-Experiment Comparison Plots (Retro vs Control) ---
 #DIFF_HEATMAP_RMS_BIAS_FIT="YES"     # Diff heatmaps (Retro vs Control)
@@ -85,6 +85,29 @@ FV3_DOMAIN="${CTL_DATAROOT}/20240506/rrfs_jedivar_01_v0.8.6/det/jedivar_01/grid_
 # Options for analysis increment plot
 LEVEL=1 # actual level (not python index; mpas only plots; 1=lowest model level)
 FV3BKG_SOURCE="/scratch1/BMC/wrfruc/rli/RRFS_V1/rrfs.${CTL_VERSION}/${CTL_NAME}/nwges"
+
+# Options for timesereies plot
+BIN=19 # -1: Entire Column, 1: Top Level, 19: Bottom Level (uses same binning as profiles).
+#-1: 180-1100 hPa
+# 1: 180-198 hPa
+# 2: 198-218 hPa
+# 3: 218-240 hPa
+# 4: 240-263 hPa
+# 5: 263-290 hPa
+# 6: 290-319 hPa
+# 7: 319-351 hPa
+# 8: 351-386 hPa
+# 9: 386-424 hPa
+#10: 424-467 hPa
+#11: 467-513 hPa
+#12: 513-565 hPa
+#13: 565-621 hPa
+#14: 621-683 hPa
+#15: 683-751 hPa
+#16: 751-827 hPa
+#17: 827-909 hPa
+#18: 909-1000 hPa
+#19: 1000-1100 hPa
 
 # Options only for RZDM
 USER="donald.lippi"
@@ -296,20 +319,20 @@ fi
 
 if [[ ${TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) timeseries: ${spdy}00 to ${epdy}23"
-  jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
+  jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*Temp*33*)
   #jdiags+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
-  python timeseries_rms_bias_fit.py ${jdiags[@]}
+  python timeseries_rms_bias_fit.py --bin ${BIN} ${jdiags[@]}
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.
 fi
 
 if [[ ${DIFF_TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff timeseries: ${spdy}00 to ${epdy}23"
-  jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-  jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*33*)
+  jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*Temp*33*)
+  jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*Temp*33*)
   #jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
   #jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*20*)
-  python diff_timeseries_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
+  python diff_timeseries_rms_bias_fit.py --bin ${BIN} "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.
 fi
