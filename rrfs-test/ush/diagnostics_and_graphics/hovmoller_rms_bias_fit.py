@@ -203,10 +203,10 @@ def plot_hovmoller(jdiag_files):
         # Define the statistics to plot with their settings
         statistics = {
             'bias_ombg': (bias_ombg_2d, 'OMB Bias', 'RdBu_r', -1, 1),
-            'rms_ombg': (rms_ombg_2d, 'OMB RMS', 'viridis', 0, 3),
+            'rms_ombg': (rms_ombg_2d, 'OMB RMS', 'turbo', 0, 3),
             'bias_oman': (bias_oman_2d, 'OMA Bias', 'RdBu_r', -1, 1),
-            'rms_oman': (rms_oman_2d, 'OMA RMS', 'viridis', 0, 3),
-            'fitting_ratio': (fitting_ratio_2d, 'Fitting Ratio', 'viridis', 0, 1)
+            'rms_oman': (rms_oman_2d, 'OMA RMS', 'turbo', 0, 3),
+            'fitting_ratio': (fitting_ratio_2d, 'Fitting Ratio', 'nipy_spectral', 0, 1)
         }
 
         # Compute time edges for pcolormesh
