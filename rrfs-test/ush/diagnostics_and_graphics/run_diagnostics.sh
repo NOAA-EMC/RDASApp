@@ -184,8 +184,8 @@ while [[ ${date} -le ${EDATE} ]]; do
     echo "? Working on (${EXP_NAME}) increments: ${pdy} ${cyc}Z level${LEVEL}"
     #-v/--variable: Variable to plot (e.g., airTemperature, specificHumidity).
     #-f/--figname: Figure identifier (e.g., a timestamp or experiment name).
-    #-m1b/--mpas1_bkg: MPAS background file for experiment 1 (control).
-    #-m1a/--mpas1_ana: MPAS analysis file for experiment 1 (control).
+    #-m1b/--mpas1_bkg: MPAS background file for experiment 1.
+    #-m1a/--mpas1_ana: MPAS analysis file for experiment 1.
     #-mg/--mpas_grid: Path to the MPAS-JEDI grid file.
     #-e/--exp_name: Name of the new experiment.
     #-l/--level: Model level (not python index).
