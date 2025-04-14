@@ -77,13 +77,6 @@
              name: assign error
              error parameter: 0.01
 
-         # Monitoring mode (no assimilation, set QCflag=1)
-#        - filter: Perform Action
-#          filter variables:
-#          - name: zenithTotalDelay
-#          action:
-#            name: passivate
-
          # Terrain Height Discrepancy Check
          - filter: Difference Check
            reference: MetaData/stationElevation
