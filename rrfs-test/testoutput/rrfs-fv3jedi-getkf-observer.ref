@@ -1,10 +1,8 @@
 Initial state for member 1:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6499134063720703e+01 Max:+4.9989711761474609e+01 RMS:+1.3262253391734740e+01
 northward_wind                               | Min:-3.1644960403442383e+01 Max:+3.3157646179199219e+01 RMS:+6.5269264427806881e+00
-u_component_of_native_D_grid_wind            | Min:-2.6593467712402344e+01 Max:+5.2522518157958984e+01 RMS:+1.3351284055536265e+01
-v_component_of_native_D_grid_wind            | Min:-3.1506446838378906e+01 Max:+3.5361942291259766e+01 RMS:+6.3803981775474581e+00
 air_temperature                              | Min:+1.9785134887695312e+02 Max:+3.1549230957031250e+02 RMS:+2.5814909365142250e+02
 air_pressure_thickness                       | Min:+1.4034443664550781e+02 Max:+3.3281875000000000e+03 RMS:+1.7749727182384038e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+9.3515200205729343e-07 Max:+2.2490598261356354e-02 RMS:+5.3644527681108427e-03
@@ -26,11 +24,9 @@ northward_wind_at_surface                    | Min:-1.2777438163757324e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 2:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.8106489181518555e+01 Max:+5.6901546478271484e+01 RMS:+1.3116083626982322e+01
 northward_wind                               | Min:-3.1490596771240234e+01 Max:+3.9901718139648438e+01 RMS:+6.5588310604157840e+00
-u_component_of_native_D_grid_wind            | Min:-2.8932611465454102e+01 Max:+5.6386608123779297e+01 RMS:+1.3201862756379141e+01
-v_component_of_native_D_grid_wind            | Min:-3.1731750488281250e+01 Max:+4.1356491088867188e+01 RMS:+6.4136417726301280e+00
 air_temperature                              | Min:+1.9690568542480469e+02 Max:+3.1674716186523438e+02 RMS:+2.5830189401229040e+02
 air_pressure_thickness                       | Min:+1.4034533691406250e+02 Max:+3.3270117187500000e+03 RMS:+1.7744052609507178e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+9.4007100415183231e-07 Max:+2.2349845618009567e-02 RMS:+5.4679779389121084e-03
@@ -52,11 +48,9 @@ northward_wind_at_surface                    | Min:-1.2729414939880371e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 3:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6645488739013672e+01 Max:+4.8789447784423828e+01 RMS:+1.3210939712799370e+01
 northward_wind                               | Min:-2.7244195938110352e+01 Max:+3.2044513702392578e+01 RMS:+6.1573691735834428e+00
-u_component_of_native_D_grid_wind            | Min:-2.6697599411010742e+01 Max:+5.1535572052001953e+01 RMS:+1.3287104465494686e+01
-v_component_of_native_D_grid_wind            | Min:-2.7423114776611328e+01 Max:+3.4806430816650391e+01 RMS:+6.0294488476657326e+00
 air_temperature                              | Min:+1.9786824035644531e+02 Max:+3.1720043945312500e+02 RMS:+2.5824192583175966e+02
 air_pressure_thickness                       | Min:+1.4033721923828125e+02 Max:+3.3272148437500000e+03 RMS:+1.7752423395098870e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+7.6246493563303375e-07 Max:+2.2807538509368896e-02 RMS:+5.4086062995937993e-03
@@ -78,11 +72,9 @@ northward_wind_at_surface                    | Min:-1.2953789710998535e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 4:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6819168090820312e+01 Max:+5.3625953674316406e+01 RMS:+1.3383426690730147e+01
 northward_wind                               | Min:-2.9948707580566406e+01 Max:+2.7059003829956055e+01 RMS:+6.1318265632636297e+00
-u_component_of_native_D_grid_wind            | Min:-2.6964063644409180e+01 Max:+5.4680240631103516e+01 RMS:+1.3481525370889623e+01
-v_component_of_native_D_grid_wind            | Min:-3.0596508026123047e+01 Max:+2.2903598785400391e+01 RMS:+5.9583438206380581e+00
 air_temperature                              | Min:+1.9757196044921875e+02 Max:+3.1528298950195312e+02 RMS:+2.5820521138487823e+02
 air_pressure_thickness                       | Min:+1.4022798156738281e+02 Max:+3.3241757812500000e+03 RMS:+1.7737286583178231e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+5.5318423619610257e-07 Max:+2.2498149424791336e-02 RMS:+5.4605775834982717e-03
@@ -104,11 +96,9 @@ northward_wind_at_surface                    | Min:-1.2767584800720215e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 5:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6862178802490234e+01 Max:+4.9266716003417969e+01 RMS:+1.3266688514728612e+01
 northward_wind                               | Min:-3.2490325927734375e+01 Max:+4.0594707489013672e+01 RMS:+6.4533389874139893e+00
-u_component_of_native_D_grid_wind            | Min:-2.6894638061523438e+01 Max:+5.3260448455810547e+01 RMS:+1.3396573176522105e+01
-v_component_of_native_D_grid_wind            | Min:-3.3412742614746094e+01 Max:+4.2971115112304688e+01 RMS:+6.2129870029852192e+00
 air_temperature                              | Min:+1.9749073791503906e+02 Max:+3.1577050781250000e+02 RMS:+2.5817849129742751e+02
 air_pressure_thickness                       | Min:+1.4046246337890625e+02 Max:+3.3259140625000000e+03 RMS:+1.7751639386128631e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+8.6862894477235386e-07 Max:+2.4167863652110100e-02 RMS:+5.4720294104784514e-03
@@ -130,11 +120,9 @@ northward_wind_at_surface                    | Min:-1.2250809669494629e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 6:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7373611450195312e+01 Max:+5.0075763702392578e+01 RMS:+1.3143567364481166e+01
 northward_wind                               | Min:-2.6300935745239258e+01 Max:+3.5502925872802734e+01 RMS:+6.0481649386029286e+00
-u_component_of_native_D_grid_wind            | Min:-2.7176784515380859e+01 Max:+5.2218372344970703e+01 RMS:+1.3244078471295406e+01
-v_component_of_native_D_grid_wind            | Min:-2.7757934570312500e+01 Max:+3.7966564178466797e+01 RMS:+5.8680218675273892e+00
 air_temperature                              | Min:+1.9782315063476562e+02 Max:+3.1600143432617188e+02 RMS:+2.5831177472705548e+02
 air_pressure_thickness                       | Min:+1.4039930725097656e+02 Max:+3.3266367187500000e+03 RMS:+1.7747966267562649e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+7.8775599376967875e-07 Max:+2.5118852034211159e-02 RMS:+5.5842558877425268e-03
@@ -156,11 +144,9 @@ northward_wind_at_surface                    | Min:-1.3539147377014160e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 7:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6941808700561523e+01 Max:+4.8607387542724609e+01 RMS:+1.3002154725017949e+01
 northward_wind                               | Min:-2.6337463378906250e+01 Max:+3.1117197036743164e+01 RMS:+5.8862135505792832e+00
-u_component_of_native_D_grid_wind            | Min:-2.7046108245849609e+01 Max:+4.9648925781250000e+01 RMS:+1.3085123918938820e+01
-v_component_of_native_D_grid_wind            | Min:-2.8808048248291016e+01 Max:+3.4155185699462891e+01 RMS:+5.7409345310469657e+00
 air_temperature                              | Min:+1.9747534179687500e+02 Max:+3.1579403686523438e+02 RMS:+2.5839351379880895e+02
 air_pressure_thickness                       | Min:+1.4042308044433594e+02 Max:+3.3278515625000000e+03 RMS:+1.7747968763696420e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+8.7451064700871939e-07 Max:+2.2607523947954178e-02 RMS:+5.5335149902015898e-03
@@ -182,11 +168,9 @@ northward_wind_at_surface                    | Min:-1.3317169189453125e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 8:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6109445571899414e+01 Max:+4.9386592864990234e+01 RMS:+1.3093839374879357e+01
 northward_wind                               | Min:-2.7203722000122070e+01 Max:+2.5723331451416016e+01 RMS:+5.8111438559023263e+00
-u_component_of_native_D_grid_wind            | Min:-2.6448829650878906e+01 Max:+4.9447402954101562e+01 RMS:+1.3133569368419828e+01
-v_component_of_native_D_grid_wind            | Min:-2.6010122299194336e+01 Max:+2.5405197143554688e+01 RMS:+5.7673842592358930e+00
 air_temperature                              | Min:+1.9761149597167969e+02 Max:+3.1740347290039062e+02 RMS:+2.5830830023356691e+02
 air_pressure_thickness                       | Min:+1.4032115173339844e+02 Max:+3.3286718750000000e+03 RMS:+1.7747488499289088e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+7.7689287536486518e-07 Max:+2.3275764659047127e-02 RMS:+5.5913934677775199e-03
@@ -208,11 +192,9 @@ northward_wind_at_surface                    | Min:-1.3214738845825195e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 9:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6310241699218750e+01 Max:+4.9246311187744141e+01 RMS:+1.3160478015113144e+01
 northward_wind                               | Min:-2.8684217453002930e+01 Max:+3.1660406112670898e+01 RMS:+6.2221365374410373e+00
-u_component_of_native_D_grid_wind            | Min:-2.6429407119750977e+01 Max:+5.3911563873291016e+01 RMS:+1.3236023037698743e+01
-v_component_of_native_D_grid_wind            | Min:-2.7881900787353516e+01 Max:+3.4650890350341797e+01 RMS:+6.1023997678616491e+00
 air_temperature                              | Min:+1.9741758728027344e+02 Max:+3.1513531494140625e+02 RMS:+2.5822722106009360e+02
 air_pressure_thickness                       | Min:+1.4031372070312500e+02 Max:+3.3290468750000000e+03 RMS:+1.7754660404500862e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+8.9598466956886114e-07 Max:+2.4846609681844711e-02 RMS:+5.4534888633199071e-03
@@ -234,11 +216,9 @@ northward_wind_at_surface                    | Min:-1.3634943962097168e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 10:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7050924301147461e+01 Max:+5.1978160858154297e+01 RMS:+1.3250525990200163e+01
 northward_wind                               | Min:-2.8364637374877930e+01 Max:+3.3916038513183594e+01 RMS:+6.0548781194070758e+00
-u_component_of_native_D_grid_wind            | Min:-2.7736743927001953e+01 Max:+5.5224422454833984e+01 RMS:+1.3320617206201387e+01
-v_component_of_native_D_grid_wind            | Min:-3.2947570800781250e+01 Max:+3.6607288360595703e+01 RMS:+5.9381367117404471e+00
 air_temperature                              | Min:+1.9768316650390625e+02 Max:+3.1774792480468750e+02 RMS:+2.5819200831116444e+02
 air_pressure_thickness                       | Min:+1.4022763061523438e+02 Max:+3.3249765625000000e+03 RMS:+1.7734577254333840e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+4.4973046442464693e-07 Max:+2.2597698494791985e-02 RMS:+5.4781664530905395e-03
@@ -260,11 +240,9 @@ northward_wind_at_surface                    | Min:-1.2216028213500977e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 11:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6616983413696289e+01 Max:+5.1781116485595703e+01 RMS:+1.3340566336547429e+01
 northward_wind                               | Min:-2.9337350845336914e+01 Max:+3.0298658370971680e+01 RMS:+6.0080666677559575e+00
-u_component_of_native_D_grid_wind            | Min:-2.6860940933227539e+01 Max:+5.5701053619384766e+01 RMS:+1.3387099764377286e+01
-v_component_of_native_D_grid_wind            | Min:-2.7702903747558594e+01 Max:+2.6930089950561523e+01 RMS:+5.9527655829341750e+00
 air_temperature                              | Min:+1.9742958068847656e+02 Max:+3.1527807617187500e+02 RMS:+2.5825495555392627e+02
 air_pressure_thickness                       | Min:+1.4028230285644531e+02 Max:+3.3252578125000000e+03 RMS:+1.7736533069468749e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+5.0778504601112218e-07 Max:+2.2172430530190468e-02 RMS:+5.5576782320440454e-03
@@ -286,11 +264,9 @@ northward_wind_at_surface                    | Min:-1.3380660057067871e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 12:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6444913864135742e+01 Max:+5.0670928955078125e+01 RMS:+1.3059387416111200e+01
 northward_wind                               | Min:-2.5791559219360352e+01 Max:+3.5664493560791016e+01 RMS:+6.0356068821683024e+00
-u_component_of_native_D_grid_wind            | Min:-2.6619537353515625e+01 Max:+5.4409519195556641e+01 RMS:+1.3189543851619627e+01
-v_component_of_native_D_grid_wind            | Min:-3.0389179229736328e+01 Max:+3.8242187500000000e+01 RMS:+5.7829168518271992e+00
 air_temperature                              | Min:+1.9762724304199219e+02 Max:+3.1485104370117188e+02 RMS:+2.5835058150462601e+02
 air_pressure_thickness                       | Min:+1.4039212036132812e+02 Max:+3.3250976562500000e+03 RMS:+1.7739167531010219e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+6.3532422700518509e-07 Max:+2.3982960730791092e-02 RMS:+5.5898983272991629e-03
@@ -312,11 +288,9 @@ northward_wind_at_surface                    | Min:-1.2949017524719238e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 13:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7489501953125000e+01 Max:+5.1677898406982422e+01 RMS:+1.3404039223126290e+01
 northward_wind                               | Min:-3.4519397735595703e+01 Max:+4.2484031677246094e+01 RMS:+6.6609980771881654e+00
-u_component_of_native_D_grid_wind            | Min:-2.7609081268310547e+01 Max:+5.4283664703369141e+01 RMS:+1.3494043014213561e+01
-v_component_of_native_D_grid_wind            | Min:-2.8881212234497070e+01 Max:+4.5107727050781250e+01 RMS:+6.5137058704712620e+00
 air_temperature                              | Min:+1.9744311523437500e+02 Max:+3.1274356079101562e+02 RMS:+2.5817134043512766e+02
 air_pressure_thickness                       | Min:+1.4037625122070312e+02 Max:+3.3277812500000000e+03 RMS:+1.7746658923295752e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+7.4505231850707787e-07 Max:+2.1956646814942360e-02 RMS:+5.4044346433490221e-03
@@ -338,11 +312,9 @@ northward_wind_at_surface                    | Min:-1.3401623725891113e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 14:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7420936584472656e+01 Max:+5.0758155822753906e+01 RMS:+1.3204250461270959e+01
 northward_wind                               | Min:-2.8945447921752930e+01 Max:+3.1073390960693359e+01 RMS:+6.2801355306844835e+00
-u_component_of_native_D_grid_wind            | Min:-2.7049268722534180e+01 Max:+5.0829467773437500e+01 RMS:+1.3289600712262439e+01
-v_component_of_native_D_grid_wind            | Min:-2.9228549957275391e+01 Max:+3.3824016571044922e+01 RMS:+6.1310030939391051e+00
 air_temperature                              | Min:+1.9733168029785156e+02 Max:+3.1695617675781250e+02 RMS:+2.5818316147176864e+02
 air_pressure_thickness                       | Min:+1.4020429992675781e+02 Max:+3.3269492187500000e+03 RMS:+1.7737905654581712e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+7.4233992108929669e-07 Max:+2.3046731948852539e-02 RMS:+5.4013006089373809e-03
@@ -364,11 +336,9 @@ northward_wind_at_surface                    | Min:-1.2942864418029785e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 15:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7825143814086914e+01 Max:+4.9406520843505859e+01 RMS:+1.3118676905373471e+01
 northward_wind                               | Min:-2.8515384674072266e+01 Max:+3.6520645141601562e+01 RMS:+6.2768326066375959e+00
-u_component_of_native_D_grid_wind            | Min:-2.7969566345214844e+01 Max:+5.4465827941894531e+01 RMS:+1.3199235911443063e+01
-v_component_of_native_D_grid_wind            | Min:-3.1174764633178711e+01 Max:+3.8157222747802734e+01 RMS:+6.1400530684148507e+00
 air_temperature                              | Min:+1.9744734191894531e+02 Max:+3.1465881347656250e+02 RMS:+2.5836200283915286e+02
 air_pressure_thickness                       | Min:+1.4029045104980469e+02 Max:+3.3281796875000000e+03 RMS:+1.7745621917555604e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+6.9403108682308812e-07 Max:+2.1803693845868111e-02 RMS:+5.5033607745355369e-03
@@ -390,11 +360,9 @@ northward_wind_at_surface                    | Min:-1.2884078025817871e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 16:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7000873565673828e+01 Max:+4.8411666870117188e+01 RMS:+1.2812108646217458e+01
 northward_wind                               | Min:-2.7646337509155273e+01 Max:+3.1859035491943359e+01 RMS:+6.1592265312787653e+00
-u_component_of_native_D_grid_wind            | Min:-2.7197065353393555e+01 Max:+4.8426895141601562e+01 RMS:+1.2888600341947718e+01
-v_component_of_native_D_grid_wind            | Min:-2.6978103637695312e+01 Max:+3.3713718414306641e+01 RMS:+6.0344310212992713e+00
 air_temperature                              | Min:+1.9738623046875000e+02 Max:+3.1518194580078125e+02 RMS:+2.5841559459506198e+02
 air_pressure_thickness                       | Min:+1.4011819458007812e+02 Max:+3.3257539062500000e+03 RMS:+1.7731063846427739e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+8.3832031805286533e-07 Max:+2.2416204214096069e-02 RMS:+5.5891795675629746e-03
@@ -416,11 +384,9 @@ northward_wind_at_surface                    | Min:-1.3355172157287598e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 17:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7157186508178711e+01 Max:+4.8312816619873047e+01 RMS:+1.2693449542711418e+01
 northward_wind                               | Min:-3.0899242401123047e+01 Max:+2.6454854965209961e+01 RMS:+6.1894928930491639e+00
-u_component_of_native_D_grid_wind            | Min:-2.7211439132690430e+01 Max:+5.2271926879882812e+01 RMS:+1.2772528126578852e+01
-v_component_of_native_D_grid_wind            | Min:-2.9327785491943359e+01 Max:+2.9509572982788086e+01 RMS:+6.0583451663976486e+00
 air_temperature                              | Min:+1.9791487121582031e+02 Max:+3.1676629638671875e+02 RMS:+2.5815196624742401e+02
 air_pressure_thickness                       | Min:+1.4025885009765625e+02 Max:+3.3275468750000000e+03 RMS:+1.7755085099640512e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+7.9884404158292455e-07 Max:+2.2182950749993324e-02 RMS:+5.4555481329772639e-03
@@ -442,11 +408,9 @@ northward_wind_at_surface                    | Min:-1.2610709190368652e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 18:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.5910966873168945e+01 Max:+5.0213520050048828e+01 RMS:+1.2684898114999005e+01
 northward_wind                               | Min:-2.8452053070068359e+01 Max:+3.1736547470092773e+01 RMS:+6.2438461983275237e+00
-u_component_of_native_D_grid_wind            | Min:-2.5892845153808594e+01 Max:+5.5127529144287109e+01 RMS:+1.2802141076928118e+01
-v_component_of_native_D_grid_wind            | Min:-2.6078325271606445e+01 Max:+3.5429737091064453e+01 RMS:+6.0302855796104540e+00
 air_temperature                              | Min:+1.9727775573730469e+02 Max:+3.1751290893554688e+02 RMS:+2.5852499824577694e+02
 air_pressure_thickness                       | Min:+1.4021235656738281e+02 Max:+3.3264218750000000e+03 RMS:+1.7728637728282188e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+5.6574089057903620e-07 Max:+2.3140851408243179e-02 RMS:+5.6512111380784902e-03
@@ -468,11 +432,9 @@ northward_wind_at_surface                    | Min:-1.3701957702636719e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 19:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7315406799316406e+01 Max:+5.1392955780029297e+01 RMS:+1.3073973334094115e+01
 northward_wind                               | Min:-2.9755792617797852e+01 Max:+3.5338039398193359e+01 RMS:+6.2739654397669051e+00
-u_component_of_native_D_grid_wind            | Min:-2.7415864944458008e+01 Max:+5.1514705657958984e+01 RMS:+1.3168418691052834e+01
-v_component_of_native_D_grid_wind            | Min:-2.8358972549438477e+01 Max:+3.5814647674560547e+01 RMS:+6.1098445588393293e+00
 air_temperature                              | Min:+1.9728047180175781e+02 Max:+3.1603353881835938e+02 RMS:+2.5837421789937997e+02
 air_pressure_thickness                       | Min:+1.4025909423828125e+02 Max:+3.3252265625000000e+03 RMS:+1.7740716913146923e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+5.8590734397512279e-07 Max:+2.2484907880425453e-02 RMS:+5.4637215374247969e-03
@@ -494,11 +456,9 @@ northward_wind_at_surface                    | Min:-1.2614321708679199e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 20:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6014789581298828e+01 Max:+5.0938194274902344e+01 RMS:+1.3135252640240266e+01
 northward_wind                               | Min:-2.7819715499877930e+01 Max:+4.2136608123779297e+01 RMS:+6.0615455303343353e+00
-u_component_of_native_D_grid_wind            | Min:-2.6188598632812500e+01 Max:+5.4404838562011719e+01 RMS:+1.3232068391700327e+01
-v_component_of_native_D_grid_wind            | Min:-2.7715429306030273e+01 Max:+4.2751918792724609e+01 RMS:+5.8851130483496075e+00
 air_temperature                              | Min:+1.9755606079101562e+02 Max:+3.1374545288085938e+02 RMS:+2.5830948065709242e+02
 air_pressure_thickness                       | Min:+1.4033699035644531e+02 Max:+3.3289218750000000e+03 RMS:+1.7746239248505551e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+9.0404836328161764e-07 Max:+2.2084660828113556e-02 RMS:+5.5607987530616760e-03
@@ -520,11 +480,9 @@ northward_wind_at_surface                    | Min:-1.3056243896484375e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 21:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6188514709472656e+01 Max:+4.9040836334228516e+01 RMS:+1.3144082217481774e+01
 northward_wind                               | Min:-2.7916820526123047e+01 Max:+3.2147224426269531e+01 RMS:+6.0427201942716620e+00
-u_component_of_native_D_grid_wind            | Min:-2.6731557846069336e+01 Max:+5.1655052185058594e+01 RMS:+1.3226177472275221e+01
-v_component_of_native_D_grid_wind            | Min:-2.6241167068481445e+01 Max:+3.6236846923828125e+01 RMS:+5.9072114550787438e+00
 air_temperature                              | Min:+1.9798027038574219e+02 Max:+3.1827590942382812e+02 RMS:+2.5832274445326016e+02
 air_pressure_thickness                       | Min:+1.4027418518066406e+02 Max:+3.3239960937500000e+03 RMS:+1.7734136904811207e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+6.6062688119927770e-07 Max:+2.2685162723064423e-02 RMS:+5.4920616933432443e-03
@@ -546,11 +504,9 @@ northward_wind_at_surface                    | Min:-1.2946801185607910e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 22:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6561527252197266e+01 Max:+4.8666740417480469e+01 RMS:+1.3091693318963667e+01
 northward_wind                               | Min:-2.9531391143798828e+01 Max:+4.1920310974121094e+01 RMS:+6.2035271192375916e+00
-u_component_of_native_D_grid_wind            | Min:-2.6851598739624023e+01 Max:+5.1967975616455078e+01 RMS:+1.3146087110860496e+01
-v_component_of_native_D_grid_wind            | Min:-2.7390413284301758e+01 Max:+4.3260917663574219e+01 RMS:+6.1244485277665568e+00
 air_temperature                              | Min:+1.9776399230957031e+02 Max:+3.1377987670898438e+02 RMS:+2.5832041647578075e+02
 air_pressure_thickness                       | Min:+1.4026683044433594e+02 Max:+3.3256835937500000e+03 RMS:+1.7744226189949420e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+6.5342896959919017e-07 Max:+2.2240176796913147e-02 RMS:+5.4906057944671821e-03
@@ -572,11 +528,9 @@ northward_wind_at_surface                    | Min:-1.3145040512084961e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 23:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6444728851318359e+01 Max:+4.8763851165771484e+01 RMS:+1.3099235664536977e+01
 northward_wind                               | Min:-2.8629962921142578e+01 Max:+3.6595153808593750e+01 RMS:+6.1928383554810056e+00
-u_component_of_native_D_grid_wind            | Min:-2.6637292861938477e+01 Max:+5.2853824615478516e+01 RMS:+1.3182187339001864e+01
-v_component_of_native_D_grid_wind            | Min:-2.6437561035156250e+01 Max:+3.8280006408691406e+01 RMS:+6.0510570270140631e+00
 air_temperature                              | Min:+1.9762374877929688e+02 Max:+3.1161056518554688e+02 RMS:+2.5811576547819158e+02
 air_pressure_thickness                       | Min:+1.4030632019042969e+02 Max:+3.3249218750000000e+03 RMS:+1.7755746827313828e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+9.3916344212630065e-07 Max:+2.1892184391617775e-02 RMS:+5.4534707057545453e-03
@@ -598,11 +552,9 @@ northward_wind_at_surface                    | Min:-1.3030513763427734e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 24:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.5959833145141602e+01 Max:+5.0840129852294922e+01 RMS:+1.2791609173604185e+01
 northward_wind                               | Min:-2.5882120132446289e+01 Max:+3.3780193328857422e+01 RMS:+6.2699357601347225e+00
-u_component_of_native_D_grid_wind            | Min:-2.6450384140014648e+01 Max:+5.1701984405517578e+01 RMS:+1.2874281668555490e+01
-v_component_of_native_D_grid_wind            | Min:-2.8420804977416992e+01 Max:+3.5548088073730469e+01 RMS:+6.1345467622792498e+00
 air_temperature                              | Min:+1.9693624877929688e+02 Max:+3.1788452148437500e+02 RMS:+2.5821402232625758e+02
 air_pressure_thickness                       | Min:+1.4026690673828125e+02 Max:+3.3258515625000000e+03 RMS:+1.7740938917143440e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+6.6272446019866038e-07 Max:+2.2774947807192802e-02 RMS:+5.4878054046998016e-03
@@ -624,11 +576,9 @@ northward_wind_at_surface                    | Min:-1.3152282714843750e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 25:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.5737062454223633e+01 Max:+4.8331359863281250e+01 RMS:+1.2742030102551887e+01
 northward_wind                               | Min:-2.6674322128295898e+01 Max:+3.5979244232177734e+01 RMS:+6.1021957276195957e+00
-u_component_of_native_D_grid_wind            | Min:-2.5984073638916016e+01 Max:+5.2771244049072266e+01 RMS:+1.2804350952086921e+01
-v_component_of_native_D_grid_wind            | Min:-3.1018407821655273e+01 Max:+3.8373470306396484e+01 RMS:+6.0050818441026470e+00
 air_temperature                              | Min:+1.9779255676269531e+02 Max:+3.1500466918945312e+02 RMS:+2.5834410377066223e+02
 air_pressure_thickness                       | Min:+1.4028247070312500e+02 Max:+3.3250625000000000e+03 RMS:+1.7736475442905582e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+8.4439329839369748e-07 Max:+2.3060757666826248e-02 RMS:+5.5907908803006891e-03
@@ -650,11 +600,9 @@ northward_wind_at_surface                    | Min:-1.2669143676757812e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 26:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7192140579223633e+01 Max:+4.8479965209960938e+01 RMS:+1.3023038228859477e+01
 northward_wind                               | Min:-3.0041959762573242e+01 Max:+3.2485038757324219e+01 RMS:+6.3402114089915784e+00
-u_component_of_native_D_grid_wind            | Min:-2.7463148117065430e+01 Max:+5.2392704010009766e+01 RMS:+1.3158906729287333e+01
-v_component_of_native_D_grid_wind            | Min:-2.7702529907226562e+01 Max:+3.4882312774658203e+01 RMS:+6.0900351240496589e+00
 air_temperature                              | Min:+1.9756379699707031e+02 Max:+3.1647195434570312e+02 RMS:+2.5825730174456390e+02
 air_pressure_thickness                       | Min:+1.4025869750976562e+02 Max:+3.3237929687500000e+03 RMS:+1.7741127053767575e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+7.6909122981305700e-07 Max:+2.2631935775279999e-02 RMS:+5.4953878590861200e-03
@@ -676,11 +624,9 @@ northward_wind_at_surface                    | Min:-1.2633304595947266e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 27:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6835887908935547e+01 Max:+5.1580230712890625e+01 RMS:+1.3433123126087798e+01
 northward_wind                               | Min:-3.0115221023559570e+01 Max:+3.7450244903564453e+01 RMS:+6.4044244439862377e+00
-u_component_of_native_D_grid_wind            | Min:-2.6829807281494141e+01 Max:+5.4843563079833984e+01 RMS:+1.3496428699077034e+01
-v_component_of_native_D_grid_wind            | Min:-3.0172578811645508e+01 Max:+3.8744235992431641e+01 RMS:+6.3103449307033701e+00
 air_temperature                              | Min:+1.9748735046386719e+02 Max:+3.1594540405273438e+02 RMS:+2.5809387761781346e+02
 air_pressure_thickness                       | Min:+1.4019659423828125e+02 Max:+3.3256796875000000e+03 RMS:+1.7742088240662868e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+9.3188566552271368e-07 Max:+2.4249102920293808e-02 RMS:+5.4059658493586966e-03
@@ -702,11 +648,9 @@ northward_wind_at_surface                    | Min:-1.3290473937988281e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 28:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6543588638305664e+01 Max:+5.3827819824218750e+01 RMS:+1.2944445366453357e+01
 northward_wind                               | Min:-2.9944709777832031e+01 Max:+4.2218105316162109e+01 RMS:+6.6230214626247257e+00
-u_component_of_native_D_grid_wind            | Min:-2.7028697967529297e+01 Max:+5.4083480834960938e+01 RMS:+1.3065103249101794e+01
-v_component_of_native_D_grid_wind            | Min:-3.2757835388183594e+01 Max:+4.2515113830566406e+01 RMS:+6.4164236291500236e+00
 air_temperature                              | Min:+1.9664276123046875e+02 Max:+3.1659667968750000e+02 RMS:+2.5824445487907747e+02
 air_pressure_thickness                       | Min:+1.4028283691406250e+02 Max:+3.3267187500000000e+03 RMS:+1.7747617726036078e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+8.9524110080674291e-07 Max:+2.2282432764768600e-02 RMS:+5.5175431225439192e-03
@@ -728,11 +672,9 @@ northward_wind_at_surface                    | Min:-1.3679360389709473e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 29:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.8364118576049805e+01 Max:+5.2326923370361328e+01 RMS:+1.3025650924803463e+01
 northward_wind                               | Min:-2.4769571304321289e+01 Max:+3.4585147857666016e+01 RMS:+5.9663506723325979e+00
-u_component_of_native_D_grid_wind            | Min:-2.8523199081420898e+01 Max:+5.6133094787597656e+01 RMS:+1.3097004143779635e+01
-v_component_of_native_D_grid_wind            | Min:-3.0558311462402344e+01 Max:+3.6903362274169922e+01 RMS:+5.8499322581638120e+00
 air_temperature                              | Min:+1.9760345458984375e+02 Max:+3.1414794921875000e+02 RMS:+2.5820728545901579e+02
 air_pressure_thickness                       | Min:+1.4029017639160156e+02 Max:+3.3259492187500000e+03 RMS:+1.7743516721157114e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+5.8141932868238655e-07 Max:+2.2114409133791924e-02 RMS:+5.4492439990970355e-03
@@ -754,11 +696,9 @@ northward_wind_at_surface                    | Min:-1.3648909568786621e+01 Max:+
 ----------------------------------------------------------------------------------------------------
 Initial state for member 30:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 22 | cube sphere face size: C420
+State print | number of fields = 20 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6312522888183594e+01 Max:+5.3131935119628906e+01 RMS:+1.3197811453053422e+01
 northward_wind                               | Min:-2.8507663726806641e+01 Max:+3.5720829010009766e+01 RMS:+6.3053290523285064e+00
-u_component_of_native_D_grid_wind            | Min:-2.6255245208740234e+01 Max:+5.3533115386962891e+01 RMS:+1.3264467025501585e+01
-v_component_of_native_D_grid_wind            | Min:-2.9687477111816406e+01 Max:+3.7200004577636719e+01 RMS:+6.2102359295472800e+00
 air_temperature                              | Min:+1.9741838073730469e+02 Max:+3.1695635986328125e+02 RMS:+2.5831926554311929e+02
 air_pressure_thickness                       | Min:+1.4026660156250000e+02 Max:+3.3271718750000000e+03 RMS:+1.7732222057203576e+03
 water_vapor_mixing_ratio_wrt_moist_air       | Min:+5.2283229479144211e-07 Max:+2.2468129172921181e-02 RMS:+5.5081147595977265e-03
@@ -779,6 +719,7 @@ eastward_wind_at_surface                     | Min:-1.0924118995666504e+01 Max:+
 northward_wind_at_surface                    | Min:-1.2990812301635742e+01 Max:+1.0442095756530762e+01 RMS:+3.7639049738976675e+00
 ----------------------------------------------------------------------------------------------------
 H(x) for member 1:
+
 aircar_airTemperature_133 nobs= 32095 Min=212.3812874683791, Max=307.5989776101679, RMS=259.6436306917143
 
 aircar_specificHumidity_133 nobs= 3291 Min=3.988998053043203e-05, Max=0.01826092299494285, RMS=0.006294366551833596
@@ -807,18 +748,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.1971644525436, Max=311.92581320323
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002458403992373451, Max=0.02195118286981996, RMS=0.01132694755861066
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.72424825723105, Max=2.577176099022918, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.72424825723105, Max=2.577176099022918, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-14.62196077139172, Max=21.56029807701941, RMS=3.328979886004166
 
-atms_npp nobs= 137522 Min=148.6999658327437, Max=304.4044491837463, RMS=241.2515393613043
+atms_npp nobs= 137522 Min=148.6999658327437, Max=304.4044491837463, RMS=241.2515393647816
 
 abi_g16 nobs= 1153420 Min=223.3827757557654, Max=314.0646543190844, RMS=275.2956734575628
 
 abi_g18 nobs= 715750 Min=223.0421271519747, Max=317.8384051295134, RMS=274.6015902933725
 
-
 H(x) for member 2:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.7399361628748, Max=309.7700128191276, RMS=259.8744608523153
 
 aircar_specificHumidity_133 nobs= 3291 Min=5.00693557509448e-05, Max=0.01858403275812766, RMS=0.006184061932454331
@@ -847,18 +788,18 @@ msonet_airTemperature_188 nobs= 26417 Min=273.247478371699, Max=312.838724436330
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0001650354320592478, Max=0.02172698374340581, RMS=0.01170912705392487
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.726661499348194, Max=2.60717981448585, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.726661499348194, Max=2.60717981448585, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-19.42153631586735, Max=18.63962678018973, RMS=3.222911303113761
 
-atms_npp nobs= 137522 Min=149.2318918652783, Max=304.3345754164343, RMS=241.2784266164672
+atms_npp nobs= 137522 Min=149.2318918652783, Max=304.3345754164343, RMS=241.2784266196354
 
 abi_g16 nobs= 1153420 Min=217.0927669300284, Max=314.2766545451927, RMS=275.1801373330559
 
 abi_g18 nobs= 715750 Min=213.2828466751873, Max=317.9906535950786, RMS=274.7180195323658
 
-
 H(x) for member 3:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.5874424764058, Max=310.8315582004179, RMS=259.6745641659382
 
 aircar_specificHumidity_133 nobs= 3291 Min=5.067044472263945e-05, Max=0.01871115423693172, RMS=0.006352618308216668
@@ -887,18 +828,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.6133730444554, Max=312.62285520137
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002818036168362651, Max=0.0222300572555835, RMS=0.011656031143482
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724697074220795, Max=2.623369612299034, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724697074220795, Max=2.623369612299034, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-16.0698834634243, Max=14.67410081513854, RMS=3.097016007873991
 
-atms_npp nobs= 137522 Min=148.5977687930039, Max=304.2096081567726, RMS=241.1823803857009
+atms_npp nobs= 137522 Min=148.5977687930039, Max=304.2096081567726, RMS=241.1823803897901
 
 abi_g16 nobs= 1153420 Min=225.8162757352278, Max=314.1761548327748, RMS=275.1574940707007
 
 abi_g18 nobs= 715750 Min=225.2870063455877, Max=317.9295061545158, RMS=274.5696159188093
 
-
 H(x) for member 4:
+
 aircar_airTemperature_133 nobs= 32095 Min=212.2795493531034, Max=310.4366761755652, RMS=259.7320854531669
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.88153455129355e-05, Max=0.01966640757837695, RMS=0.006254863183340817
@@ -927,18 +868,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.8729685528851, Max=313.33574605611
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002648761785414025, Max=0.02094515507471831, RMS=0.01132245046536865
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724518133959231, Max=2.572415301426213, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724518133959231, Max=2.572415301426213, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-13.29652923345578, Max=14.43339637683155, RMS=2.985736492588871
 
-atms_npp nobs= 137522 Min=148.4571517749304, Max=304.557159257801, RMS=241.1456911270884
+atms_npp nobs= 137522 Min=148.4571517749304, Max=304.557159257801, RMS=241.1456911308036
 
 abi_g16 nobs= 1153420 Min=226.219606733322, Max=314.2645139626308, RMS=275.3268975066389
 
 abi_g18 nobs= 715750 Min=225.298443722601, Max=318.0447082694972, RMS=274.814299962604
 
-
 H(x) for member 5:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.8094534284708, Max=308.084822274509, RMS=259.8493968577122
 
 aircar_specificHumidity_133 nobs= 3291 Min=5.265448175379787e-05, Max=0.01970173796634711, RMS=0.006904367444916432
@@ -967,18 +908,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.4321518035829, Max=311.93172327737
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002005905764067642, Max=0.02208970491985292, RMS=0.01170478502055515
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.72038490636559, Max=2.609341255623349, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.72038490636559, Max=2.609341255623349, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-17.22380038865411, Max=20.93557898778063, RMS=3.040688213642047
 
-atms_npp nobs= 137522 Min=148.4658272552977, Max=304.401253910772, RMS=241.2080115675357
+atms_npp nobs= 137522 Min=148.4658272552977, Max=304.401253910772, RMS=241.2080115715762
 
 abi_g16 nobs= 1153420 Min=225.9369828707158, Max=314.0766041287748, RMS=275.1747719924265
 
 abi_g18 nobs= 715750 Min=224.1022605087184, Max=317.8898325073405, RMS=274.6216641150828
 
-
 H(x) for member 6:
+
 aircar_airTemperature_133 nobs= 32095 Min=210.1757366268915, Max=309.8000340825191, RMS=259.8895934169684
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.710813454333409e-05, Max=0.01927694168345166, RMS=0.006747770691749893
@@ -1007,18 +948,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.6280102601556, Max=312.01255907259
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002254670214246896, Max=0.02248400877950407, RMS=0.01200931503984774
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.72721181505233, Max=2.579201923156053, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.72721181505233, Max=2.579201923156053, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-12.53103188987544, Max=13.02877200871895, RMS=2.987024024256044
 
-atms_npp nobs= 137522 Min=148.2263915699708, Max=304.4106145595012, RMS=241.2349450816741
+atms_npp nobs= 137522 Min=148.2263915699708, Max=304.4106145595012, RMS=241.2349450857359
 
 abi_g16 nobs= 1153420 Min=225.8663090112186, Max=314.0095014106422, RMS=275.1513988070425
 
 abi_g18 nobs= 715750 Min=224.3083472343627, Max=317.8457195282912, RMS=274.7131207400574
 
-
 H(x) for member 7:
+
 aircar_airTemperature_133 nobs= 32095 Min=212.1264177653642, Max=309.6422842980923, RMS=259.9595724025758
 
 aircar_specificHumidity_133 nobs= 3291 Min=3.886837253278874e-05, Max=0.0193945693545007, RMS=0.006730944188030399
@@ -1047,18 +988,18 @@ msonet_airTemperature_188 nobs= 26417 Min=272.7887335920123, Max=312.50080217243
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002796346713043246, Max=0.02209129176888709, RMS=0.0119163571691251
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724516726417047, Max=2.591600029605124, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724516726417047, Max=2.591600029605124, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-11.17622642683452, Max=12.75559631733575, RMS=2.724069922421977
 
-atms_npp nobs= 137522 Min=148.3955139498244, Max=304.5150370643785, RMS=241.2849620059672
+atms_npp nobs= 137522 Min=148.3955139498244, Max=304.5150370643785, RMS=241.2849620095734
 
 abi_g16 nobs= 1153420 Min=226.3312076160649, Max=314.1851794524582, RMS=275.3065348162925
 
 abi_g18 nobs= 715750 Min=225.0006768981556, Max=317.9125307062116, RMS=274.7620579365101
 
-
 H(x) for member 8:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.6896434518531, Max=308.7448591351928, RMS=259.7387662267533
 
 aircar_specificHumidity_133 nobs= 3291 Min=2.676725126969212e-05, Max=0.01996569998508002, RMS=0.006501053088133458
@@ -1087,18 +1028,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.821996193666, Max=314.055911932173
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002523324279079896, Max=0.02252884304921958, RMS=0.01191907577766328
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.729428068982987, Max=2.627205467038602, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.729428068982987, Max=2.627205467038602, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-10.61270399292441, Max=13.72831983078812, RMS=2.912339466808527
 
-atms_npp nobs= 137522 Min=149.1457280349004, Max=304.4247706576532, RMS=241.2739226762932
+atms_npp nobs= 137522 Min=149.1457280349004, Max=304.4247706576532, RMS=241.2739226784737
 
 abi_g16 nobs= 1153420 Min=225.6062300081632, Max=314.2935443637504, RMS=275.0883649489027
 
 abi_g18 nobs= 715750 Min=223.5764336008912, Max=317.876516479198, RMS=274.5990616962461
 
-
 H(x) for member 9:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.5624636856012, Max=307.4679331670414, RMS=259.8114800335458
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.89392299988737e-05, Max=0.02018035689132685, RMS=0.006772502274223179
@@ -1127,18 +1068,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.5970572341321, Max=310.52629433758
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002675144320141014, Max=0.02306358006099409, RMS=0.011703097738617
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727932650263183, Max=2.58979634083117, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727932650263183, Max=2.58979634083117, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-14.88255861556123, Max=15.41494644755702, RMS=2.962608442517438
 
-atms_npp nobs= 137522 Min=148.5107960955941, Max=304.3288052987857, RMS=241.2630300897013
+atms_npp nobs= 137522 Min=148.5107960955941, Max=304.3288052987857, RMS=241.2630300935537
 
 abi_g16 nobs= 1153420 Min=224.7305527649727, Max=314.0410930653317, RMS=275.1380648153762
 
 abi_g18 nobs= 715750 Min=224.6599101450253, Max=317.8897407568844, RMS=274.6795032431649
 
-
 H(x) for member 10:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.8961745680503, Max=312.0471088640774, RMS=259.6432668767592
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.508141414494296e-05, Max=0.01977046178073164, RMS=0.006334529861175024
@@ -1167,18 +1108,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.9608996517148, Max=313.88913633236
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002691165718028865, Max=0.02223292621160958, RMS=0.01175784642718198
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.728012477957118, Max=2.596492446438555, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.728012477957118, Max=2.596492446438555, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-11.65307886554328, Max=14.38127350231311, RMS=2.912398756721552
 
-atms_npp nobs= 137522 Min=149.023629443004, Max=304.3192099025073, RMS=241.3251954246527
+atms_npp nobs= 137522 Min=149.023629443004, Max=304.3192099025073, RMS=241.3251954274345
 
 abi_g16 nobs= 1153420 Min=226.0806441259738, Max=314.1992663557689, RMS=275.1454129529249
 
 abi_g18 nobs= 715750 Min=226.4767823431358, Max=317.8237897917821, RMS=274.6781281489281
 
-
 H(x) for member 11:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.670344881228, Max=309.4921564978384, RMS=259.8085009457478
 
 aircar_specificHumidity_133 nobs= 3291 Min=5.192146838046714e-05, Max=0.01997777842994649, RMS=0.006648730930098472
@@ -1207,18 +1148,18 @@ msonet_airTemperature_188 nobs= 26417 Min=272.1996830246758, Max=311.83421167147
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002248647391179209, Max=0.02118606010772714, RMS=0.01199286004764867
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.722979323899482, Max=2.581135027142963, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.722979323899482, Max=2.581135027142963, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-9.976085217402304, Max=13.73655231308824, RMS=2.827807738435103
 
-atms_npp nobs= 137522 Min=148.7237889192196, Max=304.5751829030258, RMS=241.3081733703632
+atms_npp nobs= 137522 Min=148.7237889192196, Max=304.5751829030258, RMS=241.3081733737095
 
 abi_g16 nobs= 1153420 Min=226.4838398065478, Max=314.105535067381, RMS=275.1677477928635
 
 abi_g18 nobs= 715750 Min=224.1209135507868, Max=317.9520822283921, RMS=274.8214609443505
 
-
 H(x) for member 12:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.8814425932637, Max=309.306590374013, RMS=259.8437825169643
 
 aircar_specificHumidity_133 nobs= 3291 Min=3.668553088391005e-05, Max=0.01951944985311491, RMS=0.006482887696567167
@@ -1247,18 +1188,18 @@ msonet_airTemperature_188 nobs= 26417 Min=273.70242953985, Max=312.767979900692,
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002197970131819386, Max=0.02151773594104428, RMS=0.01195977108613581
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.721007334112029, Max=2.598465800208081, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.721007334112029, Max=2.598465800208081, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-10.1124211567046, Max=13.11534077112815, RMS=2.795130700693163
 
-atms_npp nobs= 137522 Min=149.0003850561475, Max=304.4920514083891, RMS=241.3207465338063
+atms_npp nobs= 137522 Min=149.0003850561475, Max=304.4920514083891, RMS=241.3207465360784
 
 abi_g16 nobs= 1153420 Min=225.4362173727419, Max=314.0381383593714, RMS=275.1143432818846
 
 abi_g18 nobs= 715750 Min=222.4721687691626, Max=317.930776898482, RMS=274.6777533990986
 
-
 H(x) for member 13:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.6125518357254, Max=305.4075393452094, RMS=259.9451629501558
 
 aircar_specificHumidity_133 nobs= 3291 Min=3.664976381289604e-05, Max=0.02008314688405559, RMS=0.006255873281355882
@@ -1287,18 +1228,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.3203092781702, Max=311.72378763991
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002925741559324838, Max=0.02058141102273336, RMS=0.01161648422218325
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724139677735798, Max=2.582892401027833, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724139677735798, Max=2.582892401027833, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-15.34448133111809, Max=14.1591250108087, RMS=3.051273965924355
 
-atms_npp nobs= 137522 Min=148.7779834097495, Max=304.5527893962854, RMS=241.2159739527224
+atms_npp nobs= 137522 Min=148.7779834097495, Max=304.5527893962854, RMS=241.215973956027
 
 abi_g16 nobs= 1153420 Min=224.7331594060164, Max=314.1972968947397, RMS=275.4202652379101
 
 abi_g18 nobs= 715750 Min=221.1155917333985, Max=318.0203854572281, RMS=274.9558227058754
 
-
 H(x) for member 14:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.9693568922308, Max=310.0545625724631, RMS=259.5539357539608
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.884994452952636e-05, Max=0.0191571630591573, RMS=0.0065502571845672
@@ -1327,18 +1268,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.5224685177805, Max=312.00332911381
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002187194076700352, Max=0.02208555390623781, RMS=0.01153752807765817
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.726499389024941, Max=2.635207851215636, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.726499389024941, Max=2.635207851215636, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-11.09435943494108, Max=15.74101783568523, RMS=2.998654520080298
 
-atms_npp nobs= 137522 Min=148.6989440167599, Max=304.4301009340273, RMS=241.1871829045355
+atms_npp nobs= 137522 Min=148.6989440167599, Max=304.4301009340273, RMS=241.1871829078898
 
 abi_g16 nobs= 1153420 Min=226.174369195053, Max=314.2042769612204, RMS=275.3513151104254
 
 abi_g18 nobs= 715750 Min=225.7616443475263, Max=317.939863251219, RMS=274.7457535913549
 
-
 H(x) for member 15:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.9523572722211, Max=308.0121183576463, RMS=259.9477984880701
 
 aircar_specificHumidity_133 nobs= 3291 Min=3.631426748482398e-05, Max=0.01841607215228702, RMS=0.006535198740087856
@@ -1367,18 +1308,18 @@ msonet_airTemperature_188 nobs= 26417 Min=272.5899114804704, Max=311.19983086470
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002888061361102321, Max=0.02124750070977807, RMS=0.01196061882901782
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727432935184352, Max=2.584622248425207, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727432935184352, Max=2.584622248425207, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-14.03912473867555, Max=16.60091129687556, RMS=3.068459095437839
 
-atms_npp nobs= 137522 Min=148.9838581101329, Max=304.5215680971685, RMS=241.2234454511041
+atms_npp nobs= 137522 Min=148.9838581101329, Max=304.5215680971685, RMS=241.2234454540815
 
 abi_g16 nobs= 1153420 Min=225.6873071815514, Max=314.0679970156545, RMS=275.2139791130248
 
 abi_g18 nobs= 715750 Min=225.3144681237269, Max=317.8974501297184, RMS=274.6867844941516
 
-
 H(x) for member 16:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.8637830808007, Max=308.7968508077331, RMS=260.0198357424379
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.19036837185266e-05, Max=0.01994978509520677, RMS=0.006601986506785961
@@ -1407,18 +1348,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.8356760676531, Max=312.61116981642
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002959229907743191, Max=0.02207860145236734, RMS=0.01198273527526516
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727331952085238, Max=2.587168158483603, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727331952085238, Max=2.587168158483603, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-11.23067733612107, Max=15.84485566861941, RMS=2.990283278332748
 
-atms_npp nobs= 137522 Min=148.2243375506235, Max=304.5849102011618, RMS=241.3738237827456
+atms_npp nobs= 137522 Min=148.2243375506235, Max=304.5849102011618, RMS=241.3738237856315
 
 abi_g16 nobs= 1153420 Min=226.0618607941678, Max=314.1847503566279, RMS=275.239219443084
 
 abi_g18 nobs= 715750 Min=225.835559247534, Max=317.8685154044619, RMS=274.6742080164518
 
-
 H(x) for member 17:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.6531040799451, Max=310.317789051275, RMS=259.691851006991
 
 aircar_specificHumidity_133 nobs= 3291 Min=3.406568951970252e-05, Max=0.01897289658149097, RMS=0.006214771184124682
@@ -1447,18 +1388,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.0785115398289, Max=312.38415525813
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002701458098364886, Max=0.02185459532877792, RMS=0.01151863645717047
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.721535653130102, Max=2.60347963367529, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.721535653130102, Max=2.60347963367529, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-16.73130084329517, Max=15.24740093438125, RMS=3.074323313822692
 
-atms_npp nobs= 137522 Min=148.323252166348, Max=304.5665786790419, RMS=241.2391347697314
+atms_npp nobs= 137522 Min=148.323252166348, Max=304.5665786790419, RMS=241.2391347732909
 
 abi_g16 nobs= 1153420 Min=226.1852114541524, Max=314.1785514512106, RMS=275.1686574698356
 
 abi_g18 nobs= 715750 Min=225.1424294002757, Max=317.8947819857222, RMS=274.6424245738575
 
-
 H(x) for member 18:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.3612396057044, Max=310.483414897183, RMS=260.0085237912775
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.278787326953849e-05, Max=0.02020278042889391, RMS=0.006864414898659483
@@ -1487,18 +1428,18 @@ msonet_airTemperature_188 nobs= 26417 Min=273.6201608419071, Max=313.18625853224
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002173022346430816, Max=0.0229190169196395, RMS=0.01214571727386204
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727938631265148, Max=2.625985349867846, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727938631265148, Max=2.625985349867846, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-9.264609692733071, Max=14.61358236721124, RMS=2.929454730652736
 
-atms_npp nobs= 137522 Min=148.7955980067738, Max=304.3851137556184, RMS=241.4392524203033
+atms_npp nobs= 137522 Min=148.7955980067738, Max=304.3851137556184, RMS=241.4392524219835
 
 abi_g16 nobs= 1153420 Min=219.0156972923826, Max=314.2101187395976, RMS=275.021779886351
 
 abi_g18 nobs= 715750 Min=217.6670286864311, Max=317.9412503963743, RMS=274.5585096605103
 
-
 H(x) for member 19:
+
 aircar_airTemperature_133 nobs= 32095 Min=212.0348074182267, Max=311.02255816433, RMS=259.8844554521448
 
 aircar_specificHumidity_133 nobs= 3291 Min=5.244144187478651e-05, Max=0.01965074320563163, RMS=0.006493143690100078
@@ -1527,18 +1468,18 @@ msonet_airTemperature_188 nobs= 26417 Min=272.9267379204422, Max=312.31666888314
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0003020389357153738, Max=0.02215184533310044, RMS=0.01180839002337784
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.726431762572864, Max=2.605314131449719, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.726431762572864, Max=2.605314131449719, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-11.53806844346821, Max=14.47149023610767, RMS=2.939443958448391
 
-atms_npp nobs= 137522 Min=148.6914391716537, Max=304.4926968964994, RMS=241.2660155099855
+atms_npp nobs= 137522 Min=148.6914391716537, Max=304.4926968964994, RMS=241.2660155142604
 
 abi_g16 nobs= 1153420 Min=225.851641450738, Max=314.202281432094, RMS=275.2585470224761
 
 abi_g18 nobs= 715750 Min=225.811877785014, Max=317.954876785259, RMS=274.6575409908342
 
-
 H(x) for member 20:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.6777244399039, Max=307.6847769275826, RMS=259.9696962121757
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.579773915398775e-05, Max=0.02038312406088462, RMS=0.006950002265824638
@@ -1567,18 +1508,18 @@ msonet_airTemperature_188 nobs= 26417 Min=272.9031680056453, Max=311.93690616123
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0001732264228102189, Max=0.02196081948718336, RMS=0.01186013403951615
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727837202567842, Max=2.582275374550072, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727837202567842, Max=2.582275374550072, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-16.26225288906801, Max=15.15199163781994, RMS=3.007155509286316
 
-atms_npp nobs= 137522 Min=148.3718651627484, Max=304.6197208413385, RMS=241.370256670098
+atms_npp nobs= 137522 Min=148.3718651627484, Max=304.6197208413385, RMS=241.3702566732366
 
 abi_g16 nobs= 1153420 Min=225.8484999399167, Max=314.0917766816116, RMS=275.0852862673826
 
 abi_g18 nobs= 715750 Min=222.76993310937, Max=317.9143545809096, RMS=274.6506183963131
 
-
 H(x) for member 21:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.996029129333, Max=313.3422586942514, RMS=259.7983013767482
 
 aircar_specificHumidity_133 nobs= 3291 Min=5.024509039659589e-05, Max=0.02031387282803126, RMS=0.006605223329875442
@@ -1607,18 +1548,18 @@ msonet_airTemperature_188 nobs= 26417 Min=272.3971123292835, Max=314.27186534954
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002453803982783804, Max=0.02237194488253114, RMS=0.0116538443003759
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727339362326774, Max=2.618300243282358, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727339362326774, Max=2.618300243282358, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-14.529288672486, Max=19.95001614164408, RMS=2.982167634887994
 
-atms_npp nobs= 137522 Min=148.6845351201547, Max=304.4282185727346, RMS=241.2153428712089
+atms_npp nobs= 137522 Min=148.6845351201547, Max=304.4282185727346, RMS=241.2153428750735
 
 abi_g16 nobs= 1153420 Min=226.0439603857587, Max=314.548600304489, RMS=275.1049027413715
 
 abi_g18 nobs= 715750 Min=225.2848874360342, Max=317.9205742785177, RMS=274.6353185369336
 
-
 H(x) for member 22:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.9800010677892, Max=307.6970268283844, RMS=259.8007584923342
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.843013134058958e-05, Max=0.01925760271013763, RMS=0.006332193590175427
@@ -1647,18 +1588,18 @@ msonet_airTemperature_188 nobs= 26417 Min=272.6918016873469, Max=311.57512778111
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002225308725876387, Max=0.02162698334471032, RMS=0.01180621912192781
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727482645789279, Max=2.581836659793693, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.727482645789279, Max=2.581836659793693, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-10.79168214841811, Max=16.33235076938501, RMS=2.879686636801593
 
-atms_npp nobs= 137522 Min=149.1258653769821, Max=304.1983442559628, RMS=241.2323896374091
+atms_npp nobs= 137522 Min=149.1258653769821, Max=304.1983442559628, RMS=241.2323896405809
 
 abi_g16 nobs= 1153420 Min=225.8516404850906, Max=314.1724678018491, RMS=275.1604843339668
 
 abi_g18 nobs= 715750 Min=224.0940994419325, Max=317.9087395477975, RMS=274.6414252566146
 
-
 H(x) for member 23:
+
 aircar_airTemperature_133 nobs= 32095 Min=212.175654232615, Max=306.0340223797426, RMS=259.818427891088
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.883086160679942e-05, Max=0.01865254914456569, RMS=0.006420231700534215
@@ -1687,18 +1628,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.5559115098197, Max=308.52621356285
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002666740633645171, Max=0.02097535174423311, RMS=0.01159991301125435
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724140384868882, Max=2.596971612969785, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724140384868882, Max=2.596971612969785, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-17.00131425770322, Max=12.53752223945791, RMS=2.946607932160281
 
-atms_npp nobs= 137522 Min=149.0017446164987, Max=304.4620488996533, RMS=241.2050388685485
+atms_npp nobs= 137522 Min=149.0017446164987, Max=304.4620488996533, RMS=241.2050388725636
 
 abi_g16 nobs= 1153420 Min=226.6499470079031, Max=313.9531667465146, RMS=275.234391182641
 
 abi_g18 nobs= 715750 Min=226.4431062950891, Max=317.8701869655233, RMS=274.6723910477918
 
-
 H(x) for member 24:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.6409148567384, Max=312.1949496646732, RMS=259.74083674015
 
 aircar_specificHumidity_133 nobs= 3291 Min=5.308585406217485e-05, Max=0.01998195173850276, RMS=0.006257968798960497
@@ -1727,18 +1668,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.8475902874198, Max=314.04845722249
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0003052970474067283, Max=0.0226545216793534, RMS=0.01154928058092631
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.72640689946442, Max=2.608408352535426, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.72640689946442, Max=2.608408352535426, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-11.68443535036578, Max=14.93246661005512, RMS=2.932344514178883
 
-atms_npp nobs= 137522 Min=148.6564257773593, Max=304.542941383098, RMS=241.2088684349967
+atms_npp nobs= 137522 Min=148.6564257773593, Max=304.542941383098, RMS=241.2088684381208
 
 abi_g16 nobs= 1153420 Min=225.8834940775347, Max=314.1409825844246, RMS=275.1843528748191
 
 abi_g18 nobs= 715750 Min=222.1447222413248, Max=317.9140643312526, RMS=274.7189509034781
 
-
 H(x) for member 25:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.5364080629057, Max=310.0635792357191, RMS=259.7790078089942
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.719244205236661e-05, Max=0.02024978746066683, RMS=0.006792323421234465
@@ -1767,18 +1708,18 @@ msonet_airTemperature_188 nobs= 26417 Min=272.3835365015278, Max=312.51635456659
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0003569763162742726, Max=0.02286636066728431, RMS=0.01192026094278347
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.734006179538558, Max=2.608029096179251, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.734006179538558, Max=2.608029096179251, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-14.949929252326, Max=12.88032473445462, RMS=2.912815648003886
 
-atms_npp nobs= 137522 Min=149.207746151144, Max=304.465303239046, RMS=241.3150391365364
+atms_npp nobs= 137522 Min=149.207746151144, Max=304.465303239046, RMS=241.3150391382388
 
 abi_g16 nobs= 1153420 Min=225.7852239956297, Max=314.0857173673912, RMS=275.0561170129328
 
 abi_g18 nobs= 715750 Min=223.8995940429268, Max=317.8719035054056, RMS=274.5253783878356
 
-
 H(x) for member 26:
+
 aircar_airTemperature_133 nobs= 32095 Min=212.1293385868674, Max=309.8493375235464, RMS=259.8400140139701
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.200311784994794e-05, Max=0.0193453943463754, RMS=0.006682340346693858
@@ -1807,18 +1748,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.6409383776839, Max=311.63397865377
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002752544941457287, Max=0.02189489116727545, RMS=0.01156361611779914
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724345392185461, Max=2.625085222236508, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724345392185461, Max=2.625085222236508, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-15.07095458355171, Max=14.52553630051314, RMS=2.993425608128047
 
-atms_npp nobs= 137522 Min=149.1317690060239, Max=304.3350846602996, RMS=241.3104383008314
+atms_npp nobs= 137522 Min=149.1317690060239, Max=304.3350846602996, RMS=241.3104383040783
 
 abi_g16 nobs= 1153420 Min=225.6975361547421, Max=314.0959921966706, RMS=275.2668405988315
 
 abi_g18 nobs= 715750 Min=224.0486555855132, Max=317.9626097595084, RMS=274.6777096025365
 
-
 H(x) for member 27:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.964824533622, Max=309.7487034089719, RMS=259.7475706746885
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.707521071127704e-05, Max=0.01884633175730204, RMS=0.006397260053402834
@@ -1847,18 +1788,18 @@ msonet_airTemperature_188 nobs= 26417 Min=270.8144747920036, Max=311.88235535714
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.000303749527425255, Max=0.02212181840691725, RMS=0.01140797275165938
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.720717468207213, Max=2.611304893257869, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.720717468207213, Max=2.611304893257869, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-16.41941094567877, Max=13.91471790138002, RMS=2.982972008905907
 
-atms_npp nobs= 137522 Min=148.368644568927, Max=304.2881836960787, RMS=241.3015627751904
+atms_npp nobs= 137522 Min=148.368644568927, Max=304.2881836960787, RMS=241.3015627787449
 
 abi_g16 nobs= 1153420 Min=225.9075913157099, Max=314.1722483186373, RMS=275.2188667955998
 
 abi_g18 nobs= 715750 Min=225.2163316925203, Max=318.025602753769, RMS=274.7248025951692
 
-
 H(x) for member 28:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.6305042563598, Max=308.3576990143798, RMS=259.9296187434724
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.371205594301657e-05, Max=0.01943687864445278, RMS=0.006707527040080738
@@ -1887,18 +1828,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.7255012130246, Max=312.25013771340
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0001846404755490182, Max=0.02180790110369272, RMS=0.01182717500876854
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.73401458238199, Max=2.590353495576512, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.73401458238199, Max=2.590353495576512, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-11.03977782891432, Max=17.59832663300145, RMS=3.09442225574324
 
-atms_npp nobs= 137522 Min=148.6540355928657, Max=304.5475281678599, RMS=241.3679249932426
+atms_npp nobs= 137522 Min=148.6540355928657, Max=304.5475281678599, RMS=241.3679249948246
 
 abi_g16 nobs= 1153420 Min=221.5954750727199, Max=314.2604590363559, RMS=275.2722669705031
 
 abi_g18 nobs= 715750 Min=219.8976892829994, Max=317.8967262500654, RMS=274.8113963081535
 
-
 H(x) for member 29:
+
 aircar_airTemperature_133 nobs= 32095 Min=212.3803485453577, Max=308.3014732450189, RMS=259.6939267235059
 
 aircar_specificHumidity_133 nobs= 3291 Min=4.377864483865264e-05, Max=0.01917810062468646, RMS=0.006622536315637992
@@ -1927,18 +1868,18 @@ msonet_airTemperature_188 nobs= 26417 Min=273.4398946855208, Max=310.82496655678
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002237847600276238, Max=0.02159023540124102, RMS=0.01172225773237593
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724786766974443, Max=2.578947932126909, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.724786766974443, Max=2.578947932126909, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-13.09238224587852, Max=13.15882374397023, RMS=2.871798518759094
 
-atms_npp nobs= 137522 Min=149.0528141323844, Max=304.554488087918, RMS=241.2138809880731
+atms_npp nobs= 137522 Min=149.0528141323844, Max=304.554488087918, RMS=241.2138809925753
 
 abi_g16 nobs= 1153420 Min=226.1132323379202, Max=314.0036593255779, RMS=275.1895236151722
 
 abi_g18 nobs= 715750 Min=222.0856740413679, Max=317.9285873441252, RMS=274.6216561031906
 
-
 H(x) for member 30:
+
 aircar_airTemperature_133 nobs= 32095 Min=211.8550305252942, Max=308.5569040178084, RMS=259.8356535497614
 
 aircar_specificHumidity_133 nobs= 3291 Min=5.467587161548721e-05, Max=0.01979568727329084, RMS=0.006690694152535142
@@ -1967,18 +1908,18 @@ msonet_airTemperature_188 nobs= 26417 Min=271.7139359975585, Max=312.90583420937
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0002390114475356542, Max=0.02187460124756847, RMS=0.01171333781581417
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.731504360339804, Max=2.619556142114941, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.731504360339804, Max=2.619556142114941, RMS=nan
 
 msonet_winds_288 nobs= 9896 Min=-14.75888708261398, Max=14.8298923812328, RMS=3.051959753571415
 
-atms_npp nobs= 137522 Min=148.8556235581132, Max=304.4968632519582, RMS=241.2833177875896
+atms_npp nobs= 137522 Min=148.8556235581132, Max=304.4968632519582, RMS=241.283317789868
 
 abi_g16 nobs= 1153420 Min=221.6957570086983, Max=314.1246819792273, RMS=275.0057356861335
 
 abi_g18 nobs= 715750 Min=219.3470547972333, Max=317.8847414351155, RMS=274.4586862328183
 
-
 H(x) ensemble background mean: 
+
 aircar_airTemperature_133 nobs= 32115 Min=211.9913694493799, Max=309.0792182847188, RMS=259.8370432442156
 
 aircar_specificHumidity_133 nobs= 3291 Min=5.070078735207377e-05, Max=0.01932930897498079, RMS=0.006488752714549346
@@ -2007,18 +1948,18 @@ msonet_airTemperature_188 nobs= 37498 Min=255.359382294924, Max=312.037676914415
 
 msonet_specificHumidity_188 nobs= 35170 Min=0.0003403134244458558, Max=0.02142746212625537, RMS=0.01170946616316081
 
-gnss_ztd_zenithTotalDelay nobs= 648 Min=1.726308935431141, Max=2.591253702376658, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 648 Min=1.726308935431141, Max=2.591253702376658, RMS=nan
 
 msonet_winds_288 nobs= 127500 Min=-13.2644475909464, Max=25.72389076221049, RMS=2.826615894730276
 
-atms_npp nobs= 137522 Min=148.8709747183981, Max=304.4481733578506, RMS=241.267109284291
+atms_npp nobs= 137522 Min=148.8709747183981, Max=304.4481733578506, RMS=241.2671092875296
 
 abi_g16 nobs= 1153420 Min=226.3093848388055, Max=314.1036959219896, RMS=275.1883394674701
 
 abi_g18 nobs= 715750 Min=226.167503298019, Max=317.9179825402387, RMS=274.6759440155902
 
-
 background y - H(x): 
+
 aircar_airTemperature_133 nobs= 32115 Min=-15.40330987649634, Max=11.10485138955255, RMS=1.342492936265046
 
 aircar_specificHumidity_133 nobs= 3291 Min=-0.0127107011251513, Max=0.007110782702701585, RMS=0.001806665802874719
@@ -2047,14 +1988,13 @@ msonet_airTemperature_188 nobs= 37498 Min=-68.148019693685, Max=48.0593504164778
 
 msonet_specificHumidity_188 nobs= 35170 Min=-0.01873604425583332, Max=0.03001268696310355, RMS=0.002661987429613035
 
-gnss_ztd_zenithTotalDelay nobs= 579 Min=-0.1124945376976969, Max=0.1054135888804373, RMS=-nan
+gnss_ztd_zenithTotalDelay nobs= 579 Min=-0.1124945376976969, Max=0.1054135888804373, RMS=nan
 
 msonet_winds_288 nobs= 127500 Min=-25.52389075923026, Max=24.26048056410503, RMS=2.471208919087788
 
-atms_npp nobs= 137522 Min=-74.72332889905312, Max=127.6942182955676, RMS=4.407086961533704
+atms_npp nobs= 137522 Min=-74.72332889905312, Max=127.6942182955676, RMS=4.407086903856501
 
 abi_g16 nobs= 1153393 Min=-16.43553376927525, Max=22.46928715706838, RMS=3.489084383384115
 
-abi_g18 nobs= 715726 Min=-17.11244265635537, Max=24.89885419837549, RMS=4.970194965360959
-
+abi_g18 nobs= 715726 Min=-17.11244265635537, Max=24.89885419837549, RMS=4.97019496536096
 

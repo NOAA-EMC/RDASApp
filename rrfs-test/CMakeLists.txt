@@ -14,10 +14,10 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf_solver"     
 
 # MPAS-JEDI tests
 set(rrfs_mpasjedi_tests)
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        "mpasjedi_error_covariance_toolbox.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_Ens3Dvar"       "mpasjedi_variational.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_observer" "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_solver"   "mpasjedi_enkf.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        "mpasjedi_error_covariance_toolbox.x")
 
 message(STATUS "Use test data from rrfs-test-data repository")
 set (rrfs-test_data_local "${CMAKE_SOURCE_DIR}/rrfs-test-data/")
@@ -28,6 +28,11 @@ set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
 #  message(STATUS "Use test data from local directory $ENV{FV3_JEDI_TESTFILES}")
 #  # A bit of guesswork here, I don't know if folks using this option stored it in the same directory structure
 #  set (fv3-jedi_data_testinput_tier_1_local "$ENV{FV3_JEDI_TESTFILES}/fv3-jedi-data/testinput_tier_1")
+
+# Add some general job settings here
+set(MPI_ARGS "${MPI_ARGS} --time=00:30:00 --exclusive")
+set(RESTORE_MPI_ARGS ${MPI_ARGS})
+
 if(FV3_DYCORE)
 
       message(STATUS "MACHINE_ID is " ${MACHINE_ID})
@@ -35,16 +40,14 @@ if(FV3_DYCORE)
       get_all_keys(rrfs_fv3jedi_tests caselist)
       foreach(case ${caselist})
 
-         set(RESTORE_MPI_ARGS ${MPI_ARGS})
-         if("${MACHINE_ID}" STREQUAL "orion" OR "${MACHINE_ID}" STREQUAL "hercules")
-            message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
-            set(MPI_ARGS "${MPI_ARGS} --exclusive")
-	 endif()
-	 if("${MACHINE_ID}" STREQUAL "hercules")
-            message(STATUS "Because MACHINE_ID is hercules, also need extra nodes" )
-            set(MPI_ARGS "${MPI_ARGS} --nodes=4")
+	 # Some case-dependent settings still needed
+         if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
+            if ("${MACHINE_ID}" STREQUAL "hercules")
+              set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
+            else()
+              set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
+            endif()
          endif()
-         set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
 
          get_from_dictionary(rrfs_fv3jedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
@@ -85,16 +88,14 @@ if(MPAS_DYCORE)
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
 
-         set(RESTORE_MPI_ARGS ${MPI_ARGS})
-         if("${MACHINE_ID}" STREQUAL "orion" OR "${MACHINE_ID}" STREQUAL "hercules")
-            message(STATUS "Because MACHINE_ID is orion, adding exclusive MPI option" )
-            set(MPI_ARGS "${MPI_ARGS} --exclusive")
+	 # Some case-dependent settings still needed
+         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
+            if ("${MACHINE_ID}" STREQUAL "hercules")
+              set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
+            else()
+              set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
+            endif()
          endif()
-	 if("${MACHINE_ID}" STREQUAL "hercules")
-            message(STATUS "Because MACHINE_ID is hercules, also need extra nodes" )
-            set(MPI_ARGS "${MPI_ARGS} --nodes=4")
-         endif()
-         set(MPI_ARGS "${MPI_ARGS} --time=00:30:00")
 
 	 get_from_dictionary(rrfs_mpasjedi_tests case exe)
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
@@ -116,9 +117,6 @@ if(MPAS_DYCORE)
 	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
 	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
-           if (NOT "${MACHINE_ID}" STREQUAL "hercules")
-             set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
-           endif()
            ecbuild_add_test( TARGET ${target_test}
                         MPI      160
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
