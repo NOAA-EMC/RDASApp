@@ -6,7 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_vadwnd.nc
+             obsfile: "data/obs/ioda_vadwnd.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]

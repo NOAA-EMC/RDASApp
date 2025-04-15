@@ -123,7 +123,6 @@
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action

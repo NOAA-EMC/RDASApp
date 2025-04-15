@@ -6,7 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_adpsfc.nc
+             obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -119,7 +119,6 @@
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
                  # The new feature "surface observation error ramp"
                  # needs to be added to UFO to align with the ramp
                  # options for temperature and humidity in GSI.

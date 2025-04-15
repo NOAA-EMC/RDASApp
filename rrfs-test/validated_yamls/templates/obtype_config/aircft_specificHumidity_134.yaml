@@ -6,7 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -122,7 +122,6 @@
                options:
                  variable: specificHumidity
                  inflation factor: 8.0
-                 request_saturation_specific_humidity_geovals: false
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
