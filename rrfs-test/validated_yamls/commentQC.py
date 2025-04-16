@@ -41,10 +41,6 @@ def comment_line(yaml_in, cline):
 
     return
 
-if 'mpas' in ctest:
-    start = "# Error inflation based on pressure check (setupq.f90)"
-    end = "request_saturation_specific_humidity_geovals: true"
-    comment_block(yaml_file, start, end)
 if 'fv3' in ctest:
     comment_line(yaml_file, "SurfaceWindGeoVars: uv")
     comment_line(yaml_file, "IRVISlandCoeff: IGBP")

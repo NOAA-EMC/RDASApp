@@ -6,7 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_aircft.nc
+             obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -15,7 +15,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_aircft_winds_234.nc4
+             obsfile: jdiag_aircft_winds_234.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -29,7 +29,7 @@
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
            #gsi geovals:
-           #  filename: "obsout/aircraft_uv_geoval_2022052619.nc4"
+           #  filename: "obsout/aircraft_uv_geoval_2022052619.nc"
            #  levels_are_top_down: False
            variables:
            - name: windEastward
@@ -51,7 +51,6 @@
          # ------------------
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
-           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -65,7 +64,6 @@
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -76,7 +74,6 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -214,6 +211,7 @@
            test variables:
            - name:  ObsErrorData/windEastward
            minvalue: 0.0
+           maxvalue: 1000
            action:
              name: reduce obs space
 
@@ -309,4 +307,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/aircft_geovals_rrfs.nc4
+         #  filename: ./data/geovals/aircft_geovals_rrfs.nc

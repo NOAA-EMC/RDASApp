@@ -15,7 +15,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_sfcshp_winds_282.nc4
+             obsfile: jdiag_sfcshp_winds_282.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -32,7 +32,7 @@
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
            #gsi geovals:
-           #  filename: "obsout/sfcship_uv_geoval_2024052700.nc4"
+           #  filename: "obsout/sfcship_uv_geoval_2024052700.nc"
            #  levels_are_top_down: False
            variables:
            - name: windEastward
@@ -53,8 +53,7 @@
          # wind (282)
          # ------------------
          # Reject all obs with QualityMarker > 3
-         - filter: Perform Action
-           apply at iterations: 0,1
+         - filter: RejectList
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -64,12 +63,10 @@
              value: is_not_valid
            where operator: or
            action:
-             name: reject
              name: reduce obs space
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -80,11 +77,10 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
-           min_spacing: PT60M
+           min_spacing: PT90M
            tolerance: PT0H
            seed_time: "2024-05-27T00:00:00Z"
            category_variable:
@@ -224,6 +220,7 @@
            test variables:
            - name:  ObsErrorData/windEastward
            minvalue: 0.0
+           maxvalue: 1000
            action:
              name: reduce obs space
 
@@ -319,4 +316,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc4
+         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc

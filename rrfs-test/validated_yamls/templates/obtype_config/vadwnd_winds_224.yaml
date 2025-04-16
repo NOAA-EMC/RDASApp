@@ -6,7 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_vadwnd.nc
+             obsfile: "data/obs/ioda_vadwnd.nc"
              missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -15,7 +15,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_vadwnd_winds_224.nc4
+             obsfile: jdiag_vadwnd_winds_224.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -29,7 +29,7 @@
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
            #gsi geovals:
-           #  filename: "obsout/vadwind_geoval_2024052700.nc4"
+           #  filename: "obsout/vadwind_geoval_2024052700.nc"
            #  levels_are_top_down: False
            variables:
            - name: windEastward
@@ -214,6 +214,7 @@
            test variables:
            - name:  ObsErrorData/windEastward
            minvalue: 0.0
+           maxvalue: 1000
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
@@ -360,4 +361,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/vadwnd_geovals_rrfs.nc4
+         #  filename: ./data/geovals/vadwnd_geovals_rrfs.nc
