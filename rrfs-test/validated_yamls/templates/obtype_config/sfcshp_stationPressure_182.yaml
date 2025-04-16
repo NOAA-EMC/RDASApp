@@ -41,6 +41,13 @@
          # ------------------
          # stationPressure (182)
          # ------------------
+         # Accept, reject, or passivate (monitor)
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           action:
+             name: accept # accept, reject, passivate
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
