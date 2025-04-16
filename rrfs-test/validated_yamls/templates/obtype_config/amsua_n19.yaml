@@ -9,7 +9,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_amsua_n19.nc
+             obsfile: "data/obs/ioda_amsua_n19.nc"
              missing file action: "warn"
          obsdataout:
            engine:
