@@ -19,7 +19,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_atms_npp.nc
+             obsfile: "data/obs/ioda_atms_npp.nc"
              missing file action: "warn"
          obsdataout:
            engine:
