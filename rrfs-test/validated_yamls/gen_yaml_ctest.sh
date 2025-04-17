@@ -71,7 +71,7 @@ for basic_config in "${!basic_configs[@]}"; do
             new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
             obs_filename_new="obsfile: ${new_path}"
             # Old obs file name to replace
-            obsline=`grep "obsfile: data\/obs\/ioda" templates/obtype_config/${config}`
+            obsline=`grep "obsfile: \"data\/obs\/ioda" templates/obtype_config/${config}`
             trimmed=$(echo "$obsline" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
             obs_filename=${trimmed}
             # Replace
