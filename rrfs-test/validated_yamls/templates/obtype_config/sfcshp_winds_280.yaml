@@ -7,6 +7,7 @@
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -14,7 +15,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_sfcshp_winds_280.nc4
+             obsfile: jdiag_sfcshp_winds_280.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -31,7 +32,7 @@
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
            #gsi geovals:
-           #  filename: "obsout/sfcship_uv_geoval_2024052700.nc4"
+           #  filename: "obsout/sfcship_uv_geoval_2024052700.nc"
            #  levels_are_top_down: False
            variables:
            - name: windEastward
@@ -51,9 +52,16 @@
          # ------------------
          # wind (280)
          # ------------------
+         # Accept, reject, or passivate (monitor)
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           action:
+             name: accept # accept, reject, passivate
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
-           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -67,7 +75,6 @@
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -78,11 +85,10 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
-           min_spacing: PT60M
+           min_spacing: PT90M
            tolerance: PT0H
            seed_time: "2024-05-27T00:00:00Z"
            category_variable:
@@ -125,8 +131,6 @@
            where:
            - variable: ObsType/windEastward
              is_in: 280
-#           - variable: MetaData/dumpReportType # variable not in GSI-IODA
-#             is_not_in: 522, 523, 531
            action:
              name: inflate error
              inflation variable:
@@ -145,8 +149,6 @@
            where:
            - variable: ObsType/windNorthward
              is_in: 280
-#           - variable: MetaData/dumpReportType # variable not in GSI-IODA
-#             is_not_in: 522, 523, 531
            action:
              name: inflate error
              inflation variable:
@@ -157,46 +159,6 @@
                  SetSfcWndObsHeight: true
                  AddObsHeightToStationElevation: true
                  AssumedSfcWndObsHeight: 10
-
-#         # Error inflation (windEastward) based on pressure check (setupw.f90)
-#         - filter: Perform Action
-#           filter variables:
-#           - name: windEastward
-#           where:
-#           - variable: ObsType/windEastward
-#             is_in: 280
-#           - variable: MetaData/dumpReportType # variable not in GSI-IODA
-#             is_in: 522, 523, 531
-#           action:
-#             name: inflate error
-#             inflation variable:
-#               name: ObsFunction/ObsErrorFactorPressureCheck
-#               options:
-#                 variable: windEastward
-#                 inflation factor: 4.0
-#                 SetSfcWndObsHeight: true
-#                 AddObsHeightToStationElevation: false
-#                 AssumedSfcWndObsHeight: 20
-
-#         # Error inflation (windNorthward) based on pressure check (setupw.f90)
-#         - filter: Perform Action
-#           filter variables:
-#           - name: windNorthward
-#           where:
-#           - variable: ObsType/windNorthward
-#             is_in: 280
-#           - variable: MetaData/dumpReportType # variable not in GSI-IODA
-#             is_in: 522, 523, 531
-#           action:
-#             name: inflate error
-#             inflation variable:
-#               name: ObsFunction/ObsErrorFactorPressureCheck
-#               options:
-#                 variable: windNorthward
-#                 inflation factor: 4.0
-#                 SetSfcWndObsHeight: true
-#                 AddObsHeightToStationElevation: false
-#                 AssumedSfcWndObsHeight: 20
 
 #         # Error inflation (windEastward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -266,6 +228,7 @@
            test variables:
            - name:  ObsErrorData/windEastward
            minvalue: 0.0
+           maxvalue: 1000
            action:
              name: reduce obs space
 
@@ -360,4 +323,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc4
+         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc

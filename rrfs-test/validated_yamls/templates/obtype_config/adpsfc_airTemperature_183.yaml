@@ -7,6 +7,7 @@
            engine:
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
+             missing file action: "warn"
              #obsfile: "obsout/sfcship_tsen_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
@@ -15,7 +16,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_adpsfc_airTemperature_183.nc4
+             obsfile: jdiag_adpsfc_airTemperature_183.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -29,7 +30,7 @@
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
            #gsi geovals:
-           #  filename: "obsout/sfcship_tsen_geoval_2024052700.nc4"
+           #  filename: "obsout/sfcship_tsen_geoval_2024052700.nc"
            #  levels_are_top_down: False
            variables:
            - name: airTemperature
@@ -48,9 +49,15 @@
          # ------------------
          # airTemperature (183)
          # ------------------
-         # Reject all obs with QualityMarker > 3
+         # Accept, reject, or passivate (monitor)
          - filter: Perform Action
-           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperature
+           action:
+             name: accept # accept, reject, passivate
+
+         # Reject all obs with QualityMarker > 3
+         - filter: RejectList
            filter variables:
            - name: airTemperature
            where:
@@ -63,7 +70,6 @@
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -74,7 +80,6 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: airTemperature
            min_spacing: PT90M
@@ -110,6 +115,14 @@
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349, 2.6349]
+
+#         # Reduce observation error and turn off ObsErrorFactorPressureCheck (l_gsd_terrain_match_surfTobs=.true., l_sfcobserror_ramp_t=.true.,)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: airTemperature
+#           action:
+#             name: inflate error
+#             inflation factor: 0.5
 
          # Error inflation based on pressure check (setupt.f90)
          - filter: Perform Action
@@ -170,6 +183,7 @@
            test variables:
            - name:  ObsErrorData/airTemperature
            minvalue: 0.0
+           maxvalue: 1000
            action:
              name: reduce obs space
 
@@ -272,4 +286,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc4
+         #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc

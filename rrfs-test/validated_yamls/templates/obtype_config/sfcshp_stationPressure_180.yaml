@@ -7,6 +7,7 @@
            engine:
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
+             missing file action: "warn"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -14,7 +15,7 @@
          obsdataout:
            engine:
              type: H5File
-             obsfile: jdiag_sfcshp_stationPressure_180.nc4
+             obsfile: jdiag_sfcshp_stationPressure_180.nc
              allow overwrite: true
          io pool:
            max pool size: 1
@@ -40,9 +41,15 @@
          # ------------------
          # stationPressure (180)
          # ------------------
+         # Accept, reject, or passivate (monitor)
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           action:
+             name: accept # accept, reject, passivate
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
-           apply at iterations: 0,1
            filter variables:
            - name: stationPressure
            where:
@@ -55,7 +62,6 @@
 
          # Time window filter
          - filter: Domain Check
-           apply at iterations: 0,1
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -66,7 +72,6 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           apply at iterations: 0,1
            filter variables:
            - name: stationPressure
            min_spacing: PT90M
@@ -171,6 +176,7 @@
            test variables:
            - name:  ObsErrorData/stationPressure
            minvalue: 0.0
+           maxvalue: 1000
            action:
              name: reduce obs space
 
@@ -273,4 +279,4 @@
            defer to post: true
 
          #- filter: GOMsaver
-         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc4
+         #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
