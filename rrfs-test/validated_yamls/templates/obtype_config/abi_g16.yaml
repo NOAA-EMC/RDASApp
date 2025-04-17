@@ -13,7 +13,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_abi_g16.nc
+             obsfile: "data/obs/ioda_abi_g16.nc"
              missing file action: "warn"
          obsdataout:
            engine:
