@@ -24,7 +24,7 @@
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *abi_g18_channels
- 
+
   # Observation Operator
   # --------------------
        obs operator:
@@ -319,7 +319,7 @@
              channels: *abi_g18_channels
              use_flag: *abi_g18_use_flag
              use_flag_clddet: *abi_g18_use_flag_clddet
-             obserr_dtempf: [0.5, 2.0, 4.0, 2.0, 4.0]        
+             obserr_dtempf: [0.5, 2.0, 4.0, 2.0, 4.0]
              error parameter vector: *abi_g18_error
          maxvalue: 1.0e-12
          action:
