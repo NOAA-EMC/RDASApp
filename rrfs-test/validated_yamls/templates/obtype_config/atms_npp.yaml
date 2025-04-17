@@ -495,7 +495,7 @@
            inflation variable:
              name: ObsErrorFactorSituDepend@DerivedMetaData
              channels: *atms_npp_channels
- 
+
        # Step 10: Gross check
        # Remove data if abs(Obs-HofX) > absolute threhold
        - filter: Variable Assignment

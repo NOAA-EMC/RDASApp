@@ -50,7 +50,7 @@
                  name: MetaData/longitude
                minvalue: 213.0
                maxvalue: 312.0
-           action: 
+           action:
               name: reduce obs space
 
          # Online regional domain check (domain mask)
@@ -82,11 +82,11 @@
            reference: MetaData/stationElevation
            value: GeoVaLs/height_above_mean_sea_level_at_surface
            threshold: 300    # (m)
-   
+
          # Gross Error Check
          - filter: Background Check
            threshold: 6
-  
+
 #        - filter: RejectList
 #          where:
 #          - variable: MetaData/productName

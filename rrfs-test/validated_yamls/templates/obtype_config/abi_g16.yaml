@@ -24,7 +24,7 @@
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *abi_g16_channels
- 
+
   # Observation Operator
   # --------------------
        obs operator:
@@ -34,7 +34,7 @@
          #Cloud_Fraction: 1.0
          SurfaceWindGeoVars: uv
          obs options:
-           Sensor_ID:  abi_g16 
+           Sensor_ID:  abi_g16
            EndianType: little_endian
            CoefficientPath: data/crtm/
            IRVISlandCoeff: IGBP
@@ -156,7 +156,7 @@
                    minvalue: 0.99
                  value: 15
 
-       # Criteria assignment for Thinning 
+       # Criteria assignment for Thinning
        - filter: Variable Assignment
          assignments:
          - name: DerivedMetaData/thinningCriteria
@@ -305,7 +305,7 @@
              channels: *abi_g16_channels
              options:
                channels: *abi_g16_channels
-   
+
        # Cloud detection
        - filter: Bounds Check
          filter variables:
@@ -318,7 +318,7 @@
              channels: *abi_g16_channels
              use_flag: *abi_g16_use_flag
              use_flag_clddet: *abi_g16_use_flag_clddet
-             obserr_dtempf: [0.5, 2.0, 4.0, 2.0, 4.0]        
+             obserr_dtempf: [0.5, 2.0, 4.0, 2.0, 4.0]
              error parameter vector: *abi_g16_error
          maxvalue: 1.0e-12
          action:
@@ -394,7 +394,7 @@
            name: inflate error
            inflation factor: 1.5199
 
-       # Near SST Check 
+       # Near SST Check
        - filter: Bounds Check
          filter variables:
          - name: brightnessTemperature
@@ -435,7 +435,7 @@
              name: MetaData/cloudAmount
            maxvalue: 2
 
-       # Variable assignment, OmF non bias corrected 
+       # Variable assignment, OmF non bias corrected
        - filter: Variable Assignment
          assignments:
          - name: OmFNBC@DerivedMetaData
@@ -459,7 +459,7 @@
                coefs: [1, -1, 1, -1, 1, -1]
 
        # Use split window chns to remove opaque clouds
-       # Toss Channels 7, 10-16, when OmFNBC < -0.75 
+       # Toss Channels 7, 10-16, when OmFNBC < -0.75
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature

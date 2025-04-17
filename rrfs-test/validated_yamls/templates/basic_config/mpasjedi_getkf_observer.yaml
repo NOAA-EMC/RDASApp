@@ -54,7 +54,7 @@ geometry:
   interpolation type: unstructured
   iterator dimension: 2
 
-background: 
+background:
   members from template:
     template:
       <<: *memberConfig
