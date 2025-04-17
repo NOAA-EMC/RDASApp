@@ -238,7 +238,7 @@ def plot_bias_rms_heatmaps(stats, title, output_file, cycles, obs_types, metric=
             if cycle in cycle_to_index and obtype in obs_to_index:
                 j = cycle_to_index[cycle]
                 i = obs_to_index[obtype]
-                matrix[i, j] = values[metric] if values[metric] > 0 else np.nan
+                matrix[i, j] = values[metric] #if values[metric] > 0 else np.nan
 
         if np.isnan(matrix).all():
             continue
