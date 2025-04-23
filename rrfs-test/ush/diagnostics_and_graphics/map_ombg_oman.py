@@ -67,7 +67,7 @@ def extract_info_from_path(file_path):
     Tries to parse from path, falls back to filename or defaults if not found.
     """
     # Attempt to extract date and cycle from path
-    match = re.search(r"/(\d{8})/.*jedivar_(\d{2})", file_path)
+    match = re.search(r"/rrfs\.(\d{8})/(\d{2})/", file_path)
     if match:
         date, cycle = match.groups()
         cycle = f"{cycle}Z"

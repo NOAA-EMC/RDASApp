@@ -24,7 +24,7 @@
 #PROFILE_RMS_BIAS_FIT="YES"          # Vertical profiles of RMS/bias/fitting-ratio
 #MAP_OMBG_OMAN="YES"                 # OMB/OMA scatter maps
 #HOVMOLLER_RMS_BIAS_FIT="YES"        # Hovmoller plots of RMS/bias/fitting-ratio
-TIMESERIES_RMS_BIAS_FIT="YES"       # Time-series of RMS/bias/fitting-ratio
+#TIMESERIES_RMS_BIAS_FIT="YES"       # Time-series of RMS/bias/fitting-ratio
 #INCREMENT_MPAS="YES"                # Single-experiment MPAS increments
 
 # --- 2) Two-Experiment Comparison Plots (Retro vs Control) ---
@@ -41,8 +41,8 @@ TIMESERIES_RMS_BIAS_FIT="YES"       # Time-series of RMS/bias/fitting-ratio
 #===============================================================================
 
 # Cycle start and end dates to process
-SDATE=2024050601
-EDATE=2024050606
+SDATE=2024050600
+EDATE=2024050623
 
 # EffectiveQC2 value and operator
 export EFFQC=0 # 0 (asm), 1 (mon), 12 (rej)
@@ -59,7 +59,7 @@ OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
 COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
 DATAROOT="${OPSROOT}/exp/${EXP_NAME}/stmp"
 LOGDIR="${COMROOT}/rrfs/${VERSION}/logs"
-JDIAGDIR="${DATAROOT}"
+JDIAGDIR="${COMROOT}"
 
 # Control experiment details - only used in 2) Two-Experiment Comparison Plots (Retro vs Control)
 #CTL_VERSION="v2.0.9"
@@ -159,7 +159,7 @@ while [[ ${date} -le ${EDATE} ]]; do
   # Plots rms and bias (from jdiag files)
   if [[ ${HEATMAP_RMS_BIAS_FIT:=NO} == "YES" ]]; then
     echo "? Working on (${EXP_NAME}) rms, bias, fitting ratio, nobs heatmaps: ${pdy} (24h)"
-    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
+    jdiags=(${JDIAGDIR}/rrfs/${VERSION}/rrfs.${pdy}/*/jedivar/det/jdiag*)
     python heatmap_rms_bias_fit.py ${jdiags[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
     mv heatmap*.png ${EXP_NAME}/${pdy}/heatmap/.
@@ -168,8 +168,10 @@ while [[ ${date} -le ${EDATE} ]]; do
   # Plots rms and bias (from jdiag files)
   if [[ ${DIFF_HEATMAP_RMS_BIAS_FIT:=NO} == "YES" ]]; then
     echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff rms, bias, fitting ratio, nobs heatmaps: ${pdy} (24h)"
-    jdiags_exp=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
-    jdiags_ctl=(${CTL_JDIAGDIR}/${pdy}/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*)
+    #jdiags_exp=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*)
+    #jdiags_ctl=(${CTL_JDIAGDIR}/${pdy}/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*)
+    jdiags_exp=(${JDIAGDIR}/rrfs/${VERSION}/rrfs.${pdy}/*/jedivar/det/jdiag*)
+    jdiags_ctl=(${CTL_JDIAGDIR}/rrfs/${CTL_VERSION}/rrfs.${pdy}/*/jedivar/det/jdiag*)
     python diff_heatmap_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
     mkdir -p ${EXP_NAME}/${pdy}/heatmap
     mv heatmap*.png ${EXP_NAME}/${pdy}/heatmap/.
@@ -178,8 +180,7 @@ while [[ ${date} -le ${EDATE} ]]; do
   # Plots 2d map scatter of ombg values (from jdiag) with bias and rms stats displayed.
   if [[ ${MAP_OMBG_OMAN:=NO} == "YES" ]]; then
     echo "? Working on (${EXP_NAME}) map ombg & oman: ${date}"
-    jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*Temp*33*)
-    #jdiags+=(${JDIAGDIR}/${pdy}/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*Temp*88*)
+    jdiags=(${JDIAGDIR}/rrfs/${VERSION}/rrfs.${pdy}/*/jedivar/det/jdiag*Temp*33*)
     python map_ombg_oman.py ${jdiags[@]}
     mkdir -p ${EXP_NAME}/${pdy}/map
     mv ${pdy}*map.png ${EXP_NAME}/${pdy}/map/.
@@ -284,8 +285,8 @@ epdy=${EDATE:0:8}
 # Plots vertical profiles of rms and bias (from jdiag files) over a date range.
 if [[ ${PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) profiles: ${spdy}00 to ${epdy}23"
-  jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-  #jdiags+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
+  jdiags=(${JDIAGDIR}/rrfs/${VERSION}/rrfs*/*/jedivar/det/jdiag*33*)
+  jdiags+=(${JDIAGDIR}/rrfs/${VERSION}/rrfs*/*/jedivar/det/jdiag*20*)
   python profile_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
@@ -294,14 +295,8 @@ fi
 # Plots vertical profiles of rms and bias (from jdiag files) over a date range.
 if [[ ${DIFF_PROFILE_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff profiles: ${spdy}00 to ${epdy}23"
-  #jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_06/jdiag*33*)
-  #jdiags_ctl=(${CTL_JDIAGDIR}/*06/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_06/jdiag*33*)
-  jdiags_exp=(${JDIAGDIR}/*06/rrfs_jedivar_*_${VERSION}/det/jedivar_{00..12}/jdiag*33*)
-  jdiags_ctl=(${CTL_JDIAGDIR}/*06/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_{00..12}/jdiag*33*)
-  #jdiags_exp+=(${JDIAGDIR}/*06/rrfs_jedivar_*_${VERSION}/det/jedivar_{00..12}/jdiag*20*)
-  #jdiags_ctl+=(${CTL_JDIAGDIR}/*06/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_{00..12}/jdiag*20*)
-  #echo "exp: ${jdiags_exp[1]}"
-  #echo "ctl: ${jdiags_ctl[1]}"; exit
+  jdiags_exp=(${JDIAGDIR}/rrfs/${VERSION}/rrfs*06/{01..11}/jedivar/det/jdiag*33*)
+  jdiags_ctl=(${CTL_JDIAGDIR}/rrfs/${CTL_VERSION}/rrfs*06/{01..11}/jedivar/det/jdiag*33*)
   python diff_profile_rms_bias_fit.py "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
   mkdir -p ${EXP_NAME}/profile
   mv profile*.png ${EXP_NAME}/profile/.
@@ -310,8 +305,8 @@ fi
 
 if [[ ${HOVMOLLER_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) hovmoller: ${spdy}00 to ${epdy}23"
-  jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*33*)
-  #jdiags+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
+  jdiags=(${JDIAGDIR}/rrfs/${VERSION}/rrfs*/*/jedivar/det/jdiag*33*)
+  #jdiags+=(${JDIAGDIR}/rrfs/${VERSION}/rrfs*/*/jedivar/det/jdiag*20*)
   python hovmoller_rms_bias_fit.py ${jdiags[@]}
   mkdir -p ${EXP_NAME}/hovmoller
   mv hovmoller*.png ${EXP_NAME}/hovmoller/.
@@ -319,20 +314,20 @@ fi
 
 if [[ ${TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME}) timeseries: ${spdy}00 to ${epdy}23"
-  jdiags=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*Temp*33*)
-  #jdiags+=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
+  jdiags=(${JDIAGDIR}/rrfs/${VERSION}/rrfs*/*/jedivar/det/jdiag*33*)
+  #jdiags+=(${JDIAGDIR}/rrfs/${VERSION}/rrfs*/*/jedivar/det/jdiag*20*)
   python timeseries_rms_bias_fit.py --bin ${BIN} ${jdiags[@]}
+  python timeseries_rms_bias_fit.py --bin -1 ${jdiags[@]}
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.
 fi
 
 if [[ ${DIFF_TIMESERIES_RMS_BIAS_FIT:=NO} == "YES" ]]; then
   echo "? Working on (${EXP_NAME} vs ${CTL_NAME}) diff timeseries: ${spdy}00 to ${epdy}23"
-  jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*Temp*33*)
-  jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*Temp*33*)
-  #jdiags_exp=(${JDIAGDIR}/*/rrfs_jedivar_*_${VERSION}/det/jedivar_*/jdiag*20*)
-  #jdiags_ctl=(${CTL_JDIAGDIR}/*/rrfs_jedivar_*_${CTL_VERSION}/det/jedivar_*/jdiag*20*)
+  jdiags_exp=(${JDIAGDIR}/rrfs/${VERSION}/rrfs*/*/jedivar/det/jdiag*33*)
+  jdiags_ctl=(${CTL_JDIAGDIR}/rrfs/${CTL_VERSION}/rrfs*/*/jedivar/det/jdiag*33*)
   python diff_timeseries_rms_bias_fit.py --bin ${BIN} "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
+  python diff_timeseries_rms_bias_fit.py --bin -1 "${CTL_NAME}" "${EXP_NAME}" ${jdiags_ctl[@]} -- ${jdiags_exp[@]}
   mkdir -p ${EXP_NAME}/timeseries
   mv timeseries*.png ${EXP_NAME}/timeseries/.
 fi

@@ -51,10 +51,10 @@ def get_valid_mask(effqc):
 def extract_timestamp(file):
     """
     Extract timestamp from the file path.
-    Expected format: .../YYYYMMDD/rrfs_jedivar_HH_...
+    Expected format: .../rrfs.YYYYMMDD/HH...
     Returns datetime object or None if extraction fails.
     """
-    match = re.search(r"/(\d{8})/rrfs_jedivar_(\d{2})_", file)
+    match = re.search(r"/rrfs\.(\d{8})/(\d{2})/", file)
     if match:
         date, hour = match.groups()
         return datetime.datetime.strptime(date + hour, "%Y%m%d%H")
@@ -65,7 +65,7 @@ def extract_date_range(jdiag_files):
     """Extracts the earliest and latest timestamps from the provided files."""
     unique_timestamps = set()
     for file in jdiag_files:
-        match = re.search(r"/(\d{8})/rrfs_jedivar_(\d{2})_", file)
+        match = re.search(r"/rrfs\.(\d{8})/(\d{2})/", file)
         if match:
             date, hour = match.groups()
             unique_timestamps.add((date, int(hour)))

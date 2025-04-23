@@ -42,7 +42,7 @@ def generate_full_cycle_range(jdiag_files):
     detected_dates = set()
 
     for file in jdiag_files:
-        match = re.search(r"(\d{8})/.*jedivar_(\d{2})", file)
+        match = re.search(r"/rrfs\.(\d{8})/(\d{2})/", file)
         if match:
             date, _ = match.groups()
             detected_dates.add(date)
@@ -98,7 +98,7 @@ def compute_bias_rms(jdiag_files, cycles, obs_types):
             oman *= scale_factor
 
             # Extract cycle and obs type
-            match = re.search(r"(\d{8})/.*jedivar_(\d{2})", file)
+            match = re.search(r"/rrfs\.(\d{8})/(\d{2})/", file)
             obtype_match = re.search(r"jdiag_(.+)\.nc4?$", os.path.basename(file))
             if match and obtype_match:
                 date, hour = match.groups()
