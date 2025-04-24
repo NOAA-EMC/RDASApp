@@ -28,13 +28,19 @@ CMAKE_CURRENT_BINARY_DIR=${RDASApp}/build/rrfs-test
 rrfs_test_data_local=${CMAKE_SOURCE_DIR}/rrfs-test-data/
 src_yaml=${CMAKE_SOURCE_DIR}/rrfs-test/testinput
 
+# Source RDAS modules so that we don't have any python version issues in gen_yaml_ctest.sh
+source load_rdas.sh
+
 # First run the gen_yaml script to regenerate the ctest yamls
 currdir=`pwd`
 cd ${RDASApp}/rrfs-test/validated_yamls
 ./gen_yaml_ctest.sh
 cd ${currdir}
 
-if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then 
+if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then
+   # Relink fix into expr in case new obs are added
+   echo "Linking in test data for FV3-JEDI case"
+   ${RDASApp}/rrfs-test/scripts/link_fv3jedi_expr.sh
    for ctest in "${rrfs_fv3jedi_tests[@]}"; do
       case=${ctest}
       echo "Updating ${case}..."
@@ -47,9 +53,12 @@ if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then
       ln -snf ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput
       cp ${src_yaml}/${case}.yaml ${casedir}
    done
-fi 
+fi
 
-if [[ $DYCORE == "MPASJEDI" || $DYCORE == "BOTH" ]]; then 
+if [[ $DYCORE == "MPASJEDI" || $DYCORE == "BOTH" ]]; then
+   # Relink fix into expr in case new obs are added
+   echo "Linking in test data for MPAS-JEDI case"
+   ${RDASApp}/rrfs-test/scripts/link_mpasjedi_expr.sh
    for ctest in "${rrfs_mpasjedi_tests[@]}"; do
       case=${ctest}
       echo "Updating ${case}..."
