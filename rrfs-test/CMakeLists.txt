@@ -120,7 +120,6 @@ if(MPAS_DYCORE)
 	   set(MPI_TASKS 160)
 	 endif()
 
-
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_mpasjedi_2024052700")
          if (NOT EXISTS "${casedir}")
