@@ -17,7 +17,7 @@ PBS_SCRIPT="${WORKDIR}/pbs_job.sh"
 cat <<EOF > "$PBS_SCRIPT"
 #!/bin/bash
 #PBS -N ${TEST_NAME}
-#PBS -l select=${NODES}:ncpus=${PPN}
+#PBS -l place=excl,select=${NODES}:ncpus=${PPN}
 #PBS -l walltime=00:30:00
 #PBS -o ${OUTFILE}
 #PBS -e ${ERRFILE}
@@ -32,7 +32,7 @@ ulimit -a
 export OOPS_TRACE=0
 export OMP_NUM_THREADS=1
 export LD_LIBRARY_PATH="\${LD_LIBRARY_PATH}:${RDASApp}/build/lib"
-/opt/cray/pals/1.3.2/bin/mpirun --exclusive -n ${NTASKS} -ppn ${PPN} -cpu-bind core "${RDASApp}/build/bin/${EXECUTABLE}" "${CONFIG_FILE}"
+/opt/cray/pals/1.3.2/bin/mpirun -n ${NTASKS} -ppn ${PPN} -cpu-bind core "${RDASApp}/build/bin/${EXECUTABLE}" "${CONFIG_FILE}"
 MPIRUN_EXIT_CODE=\$?
 echo "TEST_FINISHED_WITH_EXIT_CODE \$MPIRUN_EXIT_CODE" >> "${OUTFILE}"
 exit \$MPIRUN_EXIT_CODE

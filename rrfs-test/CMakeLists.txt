@@ -159,6 +159,13 @@ if(MPAS_DYCORE)
       ### Bufr2ioda ctests ###
       ########################
 
+
+      if ("${MACHINE_ID}" STREQUAL "wcoss2")
+	 set(MPI_TASKS 0)
+      else()
+	 set(MPI_TASKS 1)
+      endif()
+
       # YAML-based bufr2ioda
       set(case "rrfs_bufr2ioda_msonet")
       set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
@@ -175,7 +182,7 @@ if(MPAS_DYCORE)
       set(MPI_ARGS "--time=00:05:00 --mem=64G")
       set(IODA_CONV_COMP_TOL "5.0e-4")
       ecbuild_add_test( TARGET  ${case}
-	                MPI     1
+	                MPI     ${MPI_TASKS}
                         TYPE    SCRIPT
                         COMMAND bash
           		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
