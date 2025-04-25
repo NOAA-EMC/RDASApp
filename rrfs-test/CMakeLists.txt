@@ -40,6 +40,8 @@ if(FV3_DYCORE)
       get_all_keys(rrfs_fv3jedi_tests caselist)
       foreach(case ${caselist})
 
+         get_from_dictionary(rrfs_fv3jedi_tests case exe)
+
 	 # Some case-dependent settings still needed
          if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
             if ("${MACHINE_ID}" STREQUAL "hercules")
@@ -48,8 +50,6 @@ if(FV3_DYCORE)
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
             endif()
          endif()
-
-         get_from_dictionary(rrfs_fv3jedi_tests case exe)
 	 if ("${MACHINE_ID}" STREQUAL "wcoss2")
            configure_file(${CMAKE_SOURCE_DIR}/rrfs-test/ush/wrapper_ctest_pbs.sh ${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh COPYONLY)
 	   set(COMMAND_NAME "${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh")
@@ -99,6 +99,8 @@ if(MPAS_DYCORE)
       get_all_keys(rrfs_mpasjedi_tests caselist)
       foreach(case ${caselist})
 
+         get_from_dictionary(rrfs_mpasjedi_tests case exe)
+
 	 # Some case-dependent settings still needed
          if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
             if ("${MACHINE_ID}" STREQUAL "hercules")
@@ -107,8 +109,6 @@ if(MPAS_DYCORE)
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=8")
             endif()
          endif()
-
-         get_from_dictionary(rrfs_mpasjedi_tests case exe)
 	 if ("${MACHINE_ID}" STREQUAL "wcoss2")
            configure_file(${CMAKE_SOURCE_DIR}/rrfs-test/ush/wrapper_ctest_pbs.sh ${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh COPYONLY)
 	   set(COMMAND_NAME "${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh")
