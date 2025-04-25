@@ -50,6 +50,17 @@ if(FV3_DYCORE)
          endif()
 
          get_from_dictionary(rrfs_fv3jedi_tests case exe)
+	 if ("${MACHINE_ID}" STREQUAL "wcoss2")
+           configure_file(${CMAKE_SOURCE_DIR}/rrfs-test/ush/wrapper_ctest_pbs.sh ${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh COPYONLY)
+	   set(COMMAND_NAME "${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh")
+           set(ARGS_NAME "${case} ${exe} ${case}.yaml 40 4")
+	   set(MPI_TASKS 0)
+	 else()
+	   set(COMMAND_NAME "${exe}")
+           set(ARGS_NAME  "${case}.yaml")
+	   set(MPI_TASKS 160)
+	 endif()
+
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_fv3jedi_2024052700")
          if (NOT EXISTS "${casedir}")
@@ -64,17 +75,17 @@ if(FV3_DYCORE)
          set(target_test ${case})
 	 if ("${target_test}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
            ecbuild_add_test( TARGET ${target_test}
-                        MPI      160
+                        MPI      ${MPI_TASKS}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${target_test}.yaml
+                        ARGS     ${ARGS_NAME}
 			TEST_DEPENDS "rrfs_fv3jedi_2024052700_getkf_observer"
-                        COMMAND  ${exe} )
+                        COMMAND  ${COMMAND_NAME} )
 	 else()
            ecbuild_add_test( TARGET ${target_test}
-                        MPI      160
+                        MPI      ${MPI_TASKS}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${target_test}.yaml
-                        COMMAND  ${exe} )
+                        ARGS     ${ARGS_NAME}
+                        COMMAND  ${COMMAND_NAME} )
 	 endif()
          set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
@@ -97,7 +108,19 @@ if(MPAS_DYCORE)
             endif()
          endif()
 
-	 get_from_dictionary(rrfs_mpasjedi_tests case exe)
+         get_from_dictionary(rrfs_mpasjedi_tests case exe)
+	 if ("${MACHINE_ID}" STREQUAL "wcoss2")
+           configure_file(${CMAKE_SOURCE_DIR}/rrfs-test/ush/wrapper_ctest_pbs.sh ${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh COPYONLY)
+	   set(COMMAND_NAME "${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh")
+           set(ARGS_NAME "${case} ${exe} ${case}.yaml 40 4")
+	   set(MPI_TASKS 0)
+	 else()
+	   set(COMMAND_NAME "${exe}")
+           set(ARGS_NAME  "${case}.yaml")
+	   set(MPI_TASKS 160)
+	 endif()
+
+
          set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
          set(src_casedir "${rrfs-test_data_local}/rrfs-data_mpasjedi_2024052700")
          if (NOT EXISTS "${casedir}")
@@ -118,17 +141,17 @@ if(MPAS_DYCORE)
          set(target_test ${case})
 	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
            ecbuild_add_test( TARGET ${target_test}
-                        MPI      160
+                        MPI      ${MPI_TASKS}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${target_test}.yaml
+                        ARGS     ${ARGS_NAME}
 			TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
-                        COMMAND  ${exe} )
+                        COMMAND  ${COMMAND_NAME} )
 	 else()
            ecbuild_add_test( TARGET ${target_test}
-                        MPI      160
+                        MPI      ${MPI_TASKS}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${target_test}.yaml
-                        COMMAND  ${exe} )
+                        ARGS     ${ARGS_NAME}
+                        COMMAND  ${COMMAND_NAME} )
 	 endif()
          set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
