@@ -27,7 +27,7 @@
              obsfile: jdiag_atms_n21.nc4
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
-         channels: &atms_n21_channels 1-22
+         channels: *atms_n21_channels
        obs operator:
            name: CRTM
            Absorbers: [H2O,O3,CO2]
@@ -531,11 +531,7 @@
                  name: InitialObsError@DerivedMetaData
                  channels: *atms_n21_channels
                  threhold: 3
-               obserr_bound_max: [4.5, 4.5, 3.0, 3.0, 1.0,
-                                  1.0, 1.0, 1.0, 1.0, 1.0,
-                                  1.0, 1.0, 1.0, 2.0, 4.5,
-                                  4.5, 2.0, 2.0, 2.0, 2.0,
-                                  2.0, 2.0]
+               obserr_bound_max: *atms_n21_obserr_bound_max
 
        - filter: Background Check
          filter variables:
