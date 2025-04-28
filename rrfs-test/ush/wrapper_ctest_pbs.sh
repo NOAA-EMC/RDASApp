@@ -21,7 +21,7 @@ cat <<EOF > "$PBS_SCRIPT"
 #PBS -l walltime=00:30:00
 #PBS -o ${OUTFILE}
 #PBS -e ${ERRFILE}
-#PBS -A RRFS-DEV
+#PBS -A ${PBS_ACCOUNT}
 #PBS -q dev
 cd ${WORKDIR}
 module use ${RDASApp}/modulefiles
