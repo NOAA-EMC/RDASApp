@@ -13,6 +13,12 @@
               1.0, 1.0, 1.0, 2.0, 4.5,
               4.5, 2.0, 2.0, 2.0, 2.0,
               2.0, 2.0]
+         _anchor_error: &atms_n21_error
+             [ 4.500,  4.500,  4.500,  2.500,  0.550,
+               0.300,  0.300,  0.400,  0.400,  0.400,
+               0.450,  0.450,  0.550,  0.800,  4.000,
+               4.000,  4.000,  3.500,  3.000,  3.000,
+               3.000,  3.000]
          distribution:
            name: "@DISTRIBUTION@"
            halo size: 300e3
@@ -360,11 +366,7 @@
              channels: *atms_n21_channels
              options:
                channels: *atms_n21_channels
-               obserr_clearsky:  [ 4.500,  4.500,  4.500,  2.500,  0.550,
-                                   0.300,  0.300,  0.400,  0.400,  0.400,
-                                   0.450,  0.450,  0.550,  0.800,  4.000,
-                                   4.000,  4.000,  3.500,  3.000,  3.000,
-                                   3.000,  3.000]
+               obserr_clearsky: *&atms_n21_error
                clwret_function:
                  name: CLWRetFromObs@DerivedMetaData
                obserr_function:
@@ -479,11 +481,7 @@
                obserr_function:
                  name: InitialObsError@DerivedMetaData
                  channels: *atms_n21_channels
-               obserr_clearsky:  [ 4.500,  4.500,  4.500,  2.500,  0.550,
-                                   0.300,  0.300,  0.400,  0.400,  0.400,
-                                   0.450,  0.450,  0.550,  0.800,  4.000,
-                                   4.000,  4.000,  3.500,  3.000,  3.000,
-                                   3.000,  3.000]
+               obserr_clearsky: *&atms_n21_error
 
        - filter: Perform Action
          filter variables:
