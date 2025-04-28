@@ -17,7 +17,7 @@ PBS_SCRIPT="${WORKDIR}/pbs_job.sh"
 cat <<EOF > "$PBS_SCRIPT"
 #!/bin/bash
 #PBS -N ${TEST_NAME}
-#PBS -l place=excl,select=${NODES}:ncpus=${PPN}
+#PBS -l place=excl,select=${NODES}:ncpus=${PPN}:mem=500GB
 #PBS -l walltime=00:30:00
 #PBS -o ${OUTFILE}
 #PBS -e ${ERRFILE}
