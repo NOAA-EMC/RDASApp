@@ -366,7 +366,7 @@
              channels: *atms_n21_channels
              options:
                channels: *atms_n21_channels
-               obserr_clearsky: *&atms_n21_error
+               obserr_clearsky: *atms_n21_error
                clwret_function:
                  name: CLWRetFromObs@DerivedMetaData
                obserr_function:
@@ -481,7 +481,7 @@
                obserr_function:
                  name: InitialObsError@DerivedMetaData
                  channels: *atms_n21_channels
-               obserr_clearsky: *&atms_n21_error
+               obserr_clearsky: *atms_n21_error
 
        - filter: Perform Action
          filter variables:
