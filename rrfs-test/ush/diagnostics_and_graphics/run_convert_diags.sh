@@ -81,7 +81,7 @@ while [[ ${date} -le ${EDATE} ]]; do
   cyc=${date:8:10}
 
   # RRFSv2-like data structure to copy gdiags into
-  rrfsv2_structure=${CTL_JDIAGDIR}/${pdy}/rrfs_jedivar_${cyc}_${CTL_VERSION}/det/jedivar_${cyc}
+  rrfsv2_structure=${CTL_JDIAGDIR}/rrfs/${CTL_VERSION}/rrfs.${pdy}/${cyc}/jedivar/det/
   mkdir -p $rrfsv2_structure
 
   if [[ ${COPY_DATA:=NO} == "YES" ]] ; then

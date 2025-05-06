@@ -45,7 +45,7 @@ def categorize_obs_types(obs_types):
 def parse_logs(log_files):
     pattern = (r"CostJo\s+:\s+Nonlinear Jo\((?P<obs_type>\w+_\w+_\d+)\)\s+=\s+"
                r"(?P<jo_value>[\d\.e+-]+)(?:,\s+nobs\s+=\s+(?P<nobs>\d+),"
-               r"\s+Jo/n\s+=\s+(?P<jo_per_n>[\d\.e+-]+),\s+err\s+=\s+(?P<err>[\d\.e+-]+))?")
+               r"\s+Jo/n\s+=\s+(?P<jo_per_n>[\d\.e+-]+),\s+err\s+=\s+(?P<err>[?:inf|nan|\d\.e+-]+))?")
 
     jo_data = defaultdict(lambda: defaultdict(lambda: np.nan))
     nobs_data = defaultdict(lambda: defaultdict(lambda: np.nan))

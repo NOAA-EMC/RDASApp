@@ -48,7 +48,7 @@ def get_valid_mask(effqc):
 
 def extract_timestamp(file):
     """Extract the timestamp from a jdiag file path."""
-    match = re.search(r"/(\d{8})/rrfs_jedivar_(\d{2})_", file)
+    match = re.search(r"/rrfs\.(\d{8})/(\d{2})/", file)
     if match:
         date, hour = match.groups()
         return datetime.datetime.strptime(date + hour, "%Y%m%d%H")
