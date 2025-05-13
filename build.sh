@@ -18,14 +18,15 @@ usage() {
   echo
   echo "Usage: $0 -p <prefix> | -t <target> -h"
   echo
-  echo "  -p  installation prefix <prefix>    DEFAULT: <none>"
-  echo "  -c  additional CMake options        DEFAULT: <none>"
-  echo "  -v  build with verbose output       DEFAULT: NO"
-  echo "  -j  number of build jobs            DEFAULT: 4 on Orion, 6 on other machines"
-  echo "  -f  force a clean build             DEFAULT: NO"
+  echo "  -p  installation prefix <prefix>       DEFAULT: <none>"
+  echo "  -c  additional CMake options           DEFAULT: <none>"
+  echo "  -v  build with verbose output          DEFAULT: NO"
+  echo "  -j  number of build jobs               DEFAULT: 4 on Orion, 6 on other machines"
+  echo "  -f  force a clean build                DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
-  echo "  -x  build super executables         DEFAULT: NO"
+  echo "  -x  build super executables            DEFAULT: NO"
+  echo "  -t  include/generate RRFS ctest data   DEFAULT: YES"
   echo "  -h  display this message and quit"
   echo
   exit 1
