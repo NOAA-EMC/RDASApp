@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 export SLURM_ACCOUNT=${1}
+export PBS_ACCOUNT=${1}
 
 if [[ "${1}" == "" ]]; then
   echo "Usage: ${0}  account_name"
