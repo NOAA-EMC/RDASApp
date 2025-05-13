@@ -41,10 +41,11 @@ BUILD_VERBOSE="NO"
 CLEAN_BUILD="NO"
 BUILD_JCSDA="YES"
 BUILD_SUPER_EXE="NO"
+BUILD_RRFS_TEST="YES"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 
-while getopts "p:c:m:j:hvfsx" opt; do
+while getopts "p:c:m:j:t:hvfsx" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -57,6 +58,9 @@ while getopts "p:c:m:j:hvfsx" opt; do
       ;;
     j)
       BUILD_JOBS=$OPTARG
+      ;;
+    t)
+      BUILD_RRFS_TEST=$OPTARG
       ;;
     v)
       BUILD_VERBOSE=YES
@@ -147,26 +151,30 @@ else
   exit 1
 fi
 
-# Build the ctest yamls
-cd $dir_root/rrfs-test/validated_yamls
-./gen_yaml_ctest.sh
-cd ${BUILD_DIR}
+# Create super yamls and link in test data 
+if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
 
-# Link in test data for experiments: MPAS-JEDI
-if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
-  # Link in case data
-  echo "Linking in test data for MPAS-JEDI case"
-  $dir_root/rrfs-test/scripts/link_mpasjedi_expr.sh
-fi
+  # Build the ctest yamls
+  cd $dir_root/rrfs-test/validated_yamls
+  ./gen_yaml_ctest.sh
+  cd ${BUILD_DIR}
 
-# Link in test data for experiments: FV3-JEDI
-if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
-  # Link in case data
-  echo "Linking in test data for FV3-JEDI case"
-  $dir_root/rrfs-test/scripts/link_fv3jedi_expr.sh
-fi
+  # Link in test data for experiments: MPAS-JEDI
+  if [[ $DYCORE == 'MPAS' || $DYCORE == 'FV3andMPAS' ]]; then
+    # Link in case data
+    echo "Linking in test data for MPAS-JEDI case"
+    $dir_root/rrfs-test/scripts/link_mpasjedi_expr.sh
+  fi
 
-CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE"
+  # Link in test data for experiments: FV3-JEDI
+  if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
+    # Link in case data
+    echo "Linking in test data for FV3-JEDI case"
+    $dir_root/rrfs-test/scripts/link_fv3jedi_expr.sh
+  fi
+fi 
+
+CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"
 # Configure
 echo "Configuring ..."
 set -x
