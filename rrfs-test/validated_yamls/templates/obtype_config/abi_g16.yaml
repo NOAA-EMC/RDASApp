@@ -88,7 +88,7 @@
        - filter: Bounds Check
          filter variables:
          - name: brightnessTemperature
-           channels: *abi_g18_channels
+           channels: *abi_g16_channels
          test variables:
          - name: MetaData/sensorZenithAngle
          maxvalue: 65.
@@ -99,7 +99,7 @@
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature
-           channels: *abi_g18_channels
+           channels: *abi_g16_channels
          where:
          - variable:
              name: MetaData/cloudAmount
@@ -112,7 +112,7 @@
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature
-           channels: *abi_g18_channels
+           channels: *abi_g16_channels
          where:
          - variable:
              name: ClearSkyStdDev/brightnessTemperature
