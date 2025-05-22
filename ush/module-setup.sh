@@ -16,7 +16,7 @@ elif [[ $MACHINE_ID = hera* ]] ; then
     module purge
 
 elif [[ $MACHINE_ID = ursa* ]] ; then
-    # We are on NOAA Hera
+    # We are on NOAA Ursa
     if ( ! eval module help > /dev/null 2>&1 ) ; then
         source /apps/lmod/lmod/init/bash
     fi

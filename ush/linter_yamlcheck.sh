@@ -10,7 +10,7 @@ case ${MACHINE_ID} in
   hera)
     EXEC_DIR=/scratch1/BMC/wrfruc/gge/Miniforge3/envs/bokeh/bin
     ;;
-  hera)
+  ursa)
     EXEC_DIR=/scratch3/BMC/wrfruc/gge/Miniforge3/envs/bokeh/bin
     ;;
   jet)
