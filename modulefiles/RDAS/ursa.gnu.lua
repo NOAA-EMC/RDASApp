@@ -6,18 +6,17 @@ local pkgName    = myModuleName()
 local pkgVersion = myModuleVersion()
 local pkgNameVer = myModuleFullName()
 
-prepend_path("MODULEPATH", '/contrib/spack-stack/spack-stack-1.9.1/envs/ue-oneapi-2024.2.1/install/modulefiles/Core')
+prepend_path("MODULEPATH", '/contrib/spack-stack/spack-stack-1.9.1/envs/ue-gcc-11.4.1/install/modulefiles/Core')
 
-load("stack-oneapi/2024.2.1")
+load("stack-gcc/11.4.1")
 load("stack-python/3.11.7")
-load("stack-intel-oneapi-mpi/2021.13")
+load("stack-openmpi/4.1.6")
 load("jedi-mpas-env/1.0.0")
 load("jedi-fv3-env/1.0.0")
 
-
-setenv("CC","mpiicc")
-setenv("FC","mpiifort")
-setenv("CXX","mpiicpc")
+setenv("CC","mpicc")
+setenv("FC","mpif90")
+setenv("CXX","mpicxx")
 
 local mpiexec = '/apps/slurm_hera/default/bin/srun'
 local mpinproc = '-n'
