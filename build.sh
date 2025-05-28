@@ -82,7 +82,7 @@ while getopts "p:c:m:j:t:hvfsx" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules | jet | gaea | wcoss2 )
+  hera | orion | hercules | jet | gaea | wcoss2 | ursa )
     echo "Building RDASApp on $BUILD_TARGET"
     echo "  Build initiated `date`"
     [[ "${BUILD_TARGET}" != *gaea* ]] && source $dir_root/ush/module-setup.sh

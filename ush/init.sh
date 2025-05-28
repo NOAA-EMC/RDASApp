@@ -11,6 +11,9 @@ case ${MACHINE_ID} in
   hera)
     RDAS_DATA=/scratch1/NCEPDEV/fv3-cam/RDAS_DATA
     ;;
+  ursa)
+    RDAS_DATA=/scratch4/BMC/rtrr/RDAS_DATA
+    ;;
   jet)
     RDAS_DATA=/lfs5/BMC/nrtrr/RDAS_DATA
     ;;
