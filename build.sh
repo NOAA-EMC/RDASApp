@@ -11,12 +11,13 @@ START=$(date +%s)
 dir_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 source $dir_root/ush/detect_machine.sh
+source $dir_root/ush/init.sh
 
 # ==============================================================================
 usage() {
   set +x
   echo
-  echo "Usage: $0 -p <prefix> | -t <target> -h"
+  echo "Usage example: $0 -j <num> -m MPAS -t NO | -h"
   echo
   echo "  -p  installation prefix <prefix>       DEFAULT: <none>"
   echo "  -c  additional CMake options           DEFAULT: <none>"
@@ -27,6 +28,7 @@ usage() {
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
   echo "  -x  build super executables            DEFAULT: NO"
   echo "  -t  include/generate RRFS ctest data   DEFAULT: YES"
+  echo "  -d  compile in the debug mode          DEFAULT: NO"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -45,6 +47,7 @@ BUILD_SUPER_EXE="NO"
 BUILD_RRFS_TEST="YES"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
+DEBUG_STR=""
 
 while getopts "p:c:m:j:t:hvfsx" opt; do
   case $opt in
@@ -65,6 +68,9 @@ while getopts "p:c:m:j:t:hvfsx" opt; do
       ;;
     v)
       BUILD_VERBOSE=YES
+      ;;
+    d)
+      DEBUG_STR="-DCMAKE_BUILD_TYPE=Debug"
       ;;
     f)
       CLEAN_BUILD=YES
@@ -88,7 +94,7 @@ case ${BUILD_TARGET} in
     [[ "${BUILD_TARGET}" != *gaea* ]] && source $dir_root/ush/module-setup.sh
     module use $dir_root/modulefiles
     module load RDAS/$BUILD_TARGET.$COMPILER
-    CMAKE_OPTS+=" -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON -DMACHINE_ID=$MACHINE_ID"
+    CMAKE_OPTS+=" ${DEBUG_STR} -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON -DMACHINE_ID=$MACHINE_ID"
     module list
     ;;
   *)
