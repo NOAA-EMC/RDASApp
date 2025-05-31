@@ -49,7 +49,7 @@ DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 DEBUG_STR=""
 
-while getopts "p:c:m:j:t:hvfsx" opt; do
+while getopts "p:c:m:j:t:hvfsxd" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
