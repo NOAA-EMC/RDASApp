@@ -94,6 +94,22 @@
          maxvalue: 65.
          action:
            name: reduce obs space
+       # Data Thinning
+       - filter: Gaussian Thinning
+         filter variables:
+         - name: brightnessTemperature
+           channels: *abi_g16_channels
+         #horizontal_mesh: 145
+         horizontal_mesh: 60
+         use_reduced_horizontal_grid: true
+         distance_norm: maximum
+         time_mesh: 'PT03H'
+         time_min: '2024-05-26T22:30:00Z'
+         time_max: '2024-05-27T01:30:00Z'
+         #  round_horizontal_bin_count_to_nearest: true
+         #  partition_longitude_bins_using_mesh: true
+         actions:
+           - name: reduce obs space
 
        # from read_abi: Reject when cloud fraction is more than 30
        - filter: Domain Check
@@ -122,22 +138,6 @@
          action:
            name: reduce obs space
 
-       # Data Thinning
-       - filter: Gaussian Thinning
-         filter variables:
-         - name: brightnessTemperature
-           channels: *abi_g16_channels
-         #horizontal_mesh: 145
-         horizontal_mesh: 60
-         use_reduced_horizontal_grid: true
-         distance_norm: maximum
-         time_mesh: 'PT06H'
-         time_min: '2024-05-26T22:30:00Z'
-         time_max: '2024-05-27T01:30:00Z'
-         #  round_horizontal_bin_count_to_nearest: true
-         #  partition_longitude_bins_using_mesh: true
-         actions:
-           - name: reduce obs space
 
        obs prior filters:
        # Initial obs error assignment
