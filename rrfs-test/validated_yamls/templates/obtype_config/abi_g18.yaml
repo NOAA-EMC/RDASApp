@@ -83,6 +83,62 @@
 
   # Observation Filters (QC)
   # ------------------------
+       obs pre filters:
+       # Satellite Zenith Angle Check
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *abi_g18_channels
+         test variables:
+         - name: MetaData/sensorZenithAngle
+         maxvalue: 65.
+         action:
+           name: reduce obs space
+
+       # Data Thinning
+       - filter: Gaussian Thinning
+         filter variables:
+         - name: brightnessTemperature
+           channels: *abi_g18_channels
+         #horizontal_mesh: 145
+         horizontal_mesh: 60
+         use_reduced_horizontal_grid: true
+         distance_norm: maximum
+         time_mesh: 'PT03H'
+         time_min: '2024-05-26T22:30:00Z'
+         time_max: '2024-05-27T01:30:00Z'
+         #  round_horizontal_bin_count_to_nearest: true
+         #  partition_longitude_bins_using_mesh: true
+         actions:
+           - name: reduce obs space
+
+       # from read_abi: Reject when cloud fraction is more than 30
+       - filter: Domain Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *abi_g18_channels
+         where:
+         - variable:
+             name: MetaData/cloudAmount
+             channels: 8
+           maxvalue: 30.
+         action:
+           name: reduce obs space
+
+       # from read_abi: WV Channels 8-10 scene consistency check SDTB>1.3
+       - filter: Domain Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *abi_g18_channels
+         where:
+         - variable:
+             name: ClearSkyStdDev/brightnessTemperature
+             channels: 8-10
+           maxvalue: 1.3
+           max_exclusive: true
+         action:
+           name: reduce obs space
+
        obs prior filters:
        # Initial obs error assignment
        - filter: Perform Action
@@ -157,33 +213,6 @@
                    minvalue: 0.99
                  value: 15
 
-       # Criteria assignment for Thinning
-       - filter: Variable Assignment
-         assignments:
-         - name: DerivedMetaData/thinningCriteria
-           type: int
-           function:
-             name: IntObsFunction/Arithmetic
-             options:
-               variables:
-               - name: DerivedMetaData/surfaceParam
-               coefs: [1]
-
-       # Thinning
-       - filter: Gaussian Thinning
-         filter variables:
-         - name: brightnessTemperature
-           channels: *abi_g18_channels
-         horizontal_mesh: 60
-         use_reduced_horizontal_grid: true
-         distance_norm: maximum
-         time_mesh: 'PT06H'
-         time_min: '2024-05-26T22:30:00Z'
-         time_max: '2024-05-27T01:30:00Z'
-         priority_variable: DerivedMetaData/thinningCriteria
-         action:
-           name: reject
-
        obs post filters:
        # Regional domain check to remove data outside of model domain
        - filter: Bounds Check
@@ -195,40 +224,6 @@
            flag all filter variables if any test variable is out of bounds: true
            minvalue: 0.0
            maxvalue: 0.5
-
-       # Satellite Zenith Angle Check
-       - filter: Bounds Check
-         filter variables:
-         - name: brightnessTemperature
-           channels: *abi_g18_channels
-         test variables:
-         - name: MetaData/sensorZenithAngle
-         maxvalue: 65.
-         action:
-           name: reject
-
-       # from read_abi: Reject when cloud fraction is more than 30
-       - filter: Domain Check
-         filter variables:
-         - name: brightnessTemperature
-           channels: *abi_g18_channels
-         where:
-         - variable:
-             name: MetaData/cloudAmount
-             channels: 8
-           maxvalue: 30.
-
-       # from read_abi: WV Channels 8-10 scene consistency check SDTB>1.3
-       - filter: Domain Check
-         filter variables:
-         - name: brightnessTemperature
-           channels: *abi_g18_channels
-         where:
-         - variable:
-             name: ClearSkyStdDev/brightnessTemperature
-             channels: 8-10
-           maxvalue: 1.3
-           max_exclusive: true
 
        # Surface type check
        # Toss channels 7,11-16 over land
@@ -459,6 +454,7 @@
                  channels: 14
                coefs: [1, -1, 1, -1, 1, -1]
 
+       # Use split window chns to remove opaque clouds
        # Toss Channels 7, 10-16, when OmFNBC < -0.75
        - filter: Domain Check
          filter variables:
