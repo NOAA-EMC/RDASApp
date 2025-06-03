@@ -76,19 +76,6 @@ def group_by_station_time(stn_ids, datetimes, timeoffsets):
     return groups
 
 
-def group_by_station_time2(stn_ids, times):
-    """Group observations by station ID and time."""
-    groups = {}
-    for idx, (st, t) in enumerate(zip(stn_ids, times)):
-        try:
-            sid = st.tostring().decode('utf-8').strip() if hasattr(st, 'tostring') else str(st).strip()
-        except (AttributeError, UnicodeDecodeError):
-            sid = str(st).strip()
-        if not sid:
-            continue  # Skip empty station IDs
-        groups.setdefault((sid, t), []).append(idx)
-    return groups
-
 def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
     """Thin VAD observations by averaging groups of observations vertically."""
     # Collect all variables from all groups
@@ -165,21 +152,10 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
             valid_mask &= ~hgt.mask
         sorted_idxs = [idxs[i] for i in np.argsort(hgt) if valid_mask[i]]
 
-        ## Filter out obs with large timeOffset
-        #time_offsets = all_vars[('MetaData', 'timeOffset')]
-        #before = len(sorted_idxs)
-        #sorted_idxs = [i for i in sorted_idxs if abs(time_offsets[i]) <= 3600]
-
-        ## Filter out obs with QM > 3
-        #qmarks = all_vars[('QualityMarker', 'windEastward')]
-        #before = len(sorted_idxs)
-        #sorted_idxs = [i for i in sorted_idxs if qmarks[i] < 3]
-
         # Filter out low and high level obs
         heights = all_vars[('MetaData', 'height')]
         stationElevations = all_vars[('MetaData', 'stationElevation')]
         before = len(sorted_idxs)
-        #sorted_idxs = [i for i in sorted_idxs if stationElevations[i]+BOX_SIZE <= heights[i] <= MAX_HEIGHT]
         sorted_idxs = [i for i in sorted_idxs if stationElevations[i]+BOX_SIZE <= heights[i]]
 
         if not sorted_idxs:
@@ -229,7 +205,6 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
             bgU  = all_vars[('ObsValue', 'bestwindEastward')][k0]
             bgV  = all_vars[('ObsValue', 'bestwindNorthward')][k0]
             h_k0 = all_vars[('MetaData',    'height')][k0]
-
 
             # If any of (uu, vv, bgU, bgV) is NaN, treat dev as 0
             if np.isnan(uu) or np.isnan(vv) or np.isnan(bgU) or np.isnan(bgV):
