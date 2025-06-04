@@ -152,12 +152,13 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
             valid_mask &= ~hgt.mask
         sorted_idxs = [idxs[i] for i in np.argsort(hgt) if valid_mask[i]]
 
-        # Filter out low and high level obs
+        # Skip the lowest 5 observations to mimic GSI's vertical thinning, which starts processing at k=6 (mod(k,6)==0)
         heights = all_vars[('MetaData', 'height')]
         stationElevations = all_vars[('MetaData', 'stationElevation')]
         before = len(sorted_idxs)
         sorted_idxs = [i for i in sorted_idxs if stationElevations[i]+BOX_SIZE <= heights[i]]
 
+        # Skip this station-time group if no valid height observations remain after filtering
         if not sorted_idxs:
             timestamp = reable_time(t)
             print(f"Skipping {sid} at {timestamp}: No valid height observations")
@@ -168,10 +169,14 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
             end = min(start + AVG_GROUP_SIZE, len(sorted_idxs))
             block_idxs = sorted_idxs[start:end]   # up to six levels
 
+            # Skip if the block has no valid indices (safety check, usually shouldn't happen)
             if not block_idxs:
                 continue
 
-            # Skip any block with fewer than 6 elements:
+            # Skip any block with fewer than 6 elements.
+            # While GSI nominally uses a minimum of 3 levels, its if(klev>levs) cycle loop_readsb
+            # logic effectively enforces grouping in sets of 6, so we require full blocks of 6
+            # to match that behavior.
             if len(block_idxs) < AVG_GROUP_SIZE:
                 continue
 
@@ -184,11 +189,12 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
             #          f"  {all_vars[('ObsValue', 'bestwindEastward')][i]:.2f} m/s"\
             #          f"  {all_vars[('ObsValue', 'bestwindNorthward')][i]:.2f} m/s")
 
-            # ======= INSERTED HEIGHT-GATING (=301 m) =========
+            # Apply vertical height-gating to mimic GSI's 301m threshold.
+            # GSI uses 301m (~6 levels at 50m spacing), but 251m would likely suffice since
+            # the actual spacing from k=6 to k=11 is closer to 250m, not 300m.
             base_h = heights[ block_idxs[0] ]
             gated_idxs = [i for i in block_idxs if (heights[i] - base_h) < 301.0]
             block_idxs = gated_idxs
-            # ======= END HEIGHT-GATING =========
 
             # If any level in block is more than 5 m/s away from the block-mean, drop the whole block:
             u_mean = np.mean([all_vars[('ObsValue','windEastward')][i] for i in block_idxs])
@@ -214,24 +220,24 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
                 dev_uv_k0 = np.hypot(uu - bgU, vv - bgV)
                 dev_v_k0  = abs(vv - bgV)
 
-            # GSIs first test at level k0: if dev_uv_k0 > 10.0 ? drop entire 6-level block
+            # GSI's first test at level k0: if dev_uv_k0 > 10.0 ? drop entire 6-level block
             if dev_uv_k0 > 10.0 + TOL:
                 continue
 
-            # GSIs second test at level k0: if dev_v_k0 > 8.0 ? drop block
+            # GSI's second test at level k0: if dev_v_k0 > 8.0 ? drop block
             if dev_v_k0 > 8.0 + TOL:
                 continue
 
-            # GSIs third test at level k0: if (dev_v_k0 > 5.0 AND h_k0 < 5000) ? drop block
+            # GSI's third test at level k0: if (dev_v_k0 > 5.0 AND h_k0 < 5000) ? drop block
             if (dev_v_k0 > 5.0 + TOL) and (h_k0 < 5000.0 + TOL):
                 continue
 
-            # GSIs third test at level k0: if (h_k0 > 7000.0) ? drop block
+            # GSI's fourth test at level k0: if (h_k0 > 7000.0) ? drop block
             if h_k0 > MAX_HEIGHT + TOL:
                 continue
             # === END GSI-exact deviation logic ===
 
-            # If we reach here, none of the three tests triggered ? we build a super-obs
+            # If we reach here, none of the four tests triggered ? we build a super-obs
             superob = {}
             for (grp_name, var_name), var in all_vars.items():
                 data  = var[block_idxs]
@@ -264,7 +270,7 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
                 else:
                     superob[(grp_name, var_name)] = data[0] if len(data) > 0 else fill
 
-            # Finally check wind-speed sanity (v(uob**2+vob**2) > 60.0) and min 3 obs as you had, etc.
+            # Finally check wind-speed sanity (v(uob**2+vob**2) > 60.0)
             uob = superob.get(('ObsValue', 'windEastward'),   np.nan)
             vob = superob.get(('ObsValue', 'windNorthward'),  np.nan)
             if not np.isnan(uob) and not np.isnan(vob):
