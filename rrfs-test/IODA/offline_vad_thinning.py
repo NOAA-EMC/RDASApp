@@ -14,7 +14,6 @@ import argparse
 import numpy as np
 from netCDF4 import Dataset
 from scipy.stats import mode
-import pdb
 import datetime
 
 # GSI thinning parameters
@@ -155,12 +154,10 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
         # Skip the lowest 5 observations to mimic GSI's vertical thinning, which starts processing at k=6 (mod(k,6)==0)
         heights = all_vars[('MetaData', 'height')]
         stationElevations = all_vars[('MetaData', 'stationElevation')]
-        before = len(sorted_idxs)
         sorted_idxs = [i for i in sorted_idxs if stationElevations[i]+BOX_SIZE <= heights[i]]
 
         # Skip this station-time group if no valid height observations remain after filtering
         if not sorted_idxs:
-            timestamp = reable_time(t)
             print(f"Skipping {sid} at {timestamp}: No valid height observations")
             continue
 
