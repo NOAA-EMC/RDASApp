@@ -28,7 +28,36 @@ import warnings
 # suppress warnings
 warnings.filterwarnings('ignore')
 
-# =============================================
+# ====================================================================
+# Satellite Winds (AMV) BUFR dump file for GOES
+# ====================================================================
+# Subset    |  Spectral Band              |  Code (002023) |  ObsType
+# --------------------------------------------------------------------
+# NC005030  |    IRLW  (Freq < 5E+13)     |    Method 1    |   245
+# NC005031  |    WV Clear Sky/ Deep Layer |    Method 5    |   247
+# NC005032  |    VIS                      |    Method 2    |   251
+# NC005034  |    WV Cloud Top             |    Method 3    |   246
+# NC005039  |    IRSW  (Freq > 5E+13 )    |    Method 1    |   240
+# ====================================================================
+
+def Get_ObsType(swcm, freq):
+
+    obstype = swcm.copy()
+
+    # Use numpy vectorized operations
+    obstype = np.where(swcm == 5, 247, obstype)  # WVCA/DL
+    obstype = np.where(swcm == 3, 246, obstype)  # WVCT
+    obstype = np.where(swcm == 2, 251, obstype)  # VIS
+    obstype = np.where(swcm == 1, 245, obstype)  # IRLW
+
+    condition = np.logical_and(swcm == 1, freq >= 50000000000000.0)  # IRSW
+    obstype = np.where(condition, 240, obstype)
+
+    if not np.any(np.isin(obstype, [247, 246, 251, 245, 240])):
+        raise ValueError("Error: Unassigned ObsType found ... ")
+
+    return obstype
+
 def bufr_to_ioda(config, logger):
 
 #   Read bufr (not prepbufr) files
@@ -100,19 +129,25 @@ def bufr_to_ioda(config, logger):
     # MetaData
     lat = r.get('latitude')
     lon = r.get('longitude')
-    lon[lon < 0] += 360      # Convert to [0,360]
+    lon[lon > 180] -= 360      # Convert to [-180,180]
 
     said = r.get('satelliteId')
     zen  = r.get('satelliteZenithAngle', type='float')
-    fre  = r.get('frequency', type='float')
+    freq = r.get('frequency', type='float')
     cen  = r.get('processingCenter', type='float')
-    meth = r.get('windCalculationMethod', type='float')
+    swcm = r.get('windCalculationMethod')
+#   swcm = r.get('windCalculationMethod', type='float')
 
     pob = r.get('pressure', type='float')
     cor = r.get('correlation', type='float')
     vari= r.get('variation', type='float')
 #   surf= r.get('surface', type='float')
 
+#   Fake variables required by ObsFunction/ObsErrorFactorPressureCheck.cc etc (hard-coded for height coordinate OBS) 
+    height = np.full_like(pob, fill_value=pob.fill_value, dtype=np.float32)
+    stnelev = np.full_like(pob, fill_value=pob.fill_value, dtype=np.float32)
+
+ 
     # Observation Time
     year = r.get('year')
     month = r.get('month')
@@ -137,25 +172,12 @@ def bufr_to_ioda(config, logger):
     # ObsError
     qifn = r.get('qifn', type='float')  # percent Confidence
     ee   = r.get('ee', type='float')    # initial wind error (%)
-    oer = 0.01 * ee * wspd              # initial wind error (meter)
+    oer  = 0.01 * ee * wspd              # initial wind error (meter)
 
-    # Define Prepbufr Report Type
-    otypvalue = 0     # initialize
-    otypsize  = said.shape
-    otyp = np.full(otypsize, otypvalue)
-    otyp = ma.masked_values(otyp, said.fill_value)
+    # Define Prepbufr Type from SWCM and frequency
+    obstype = Get_ObsType(swcm, freq)
 
-    for i in range(len(otyp)):
-        if meth[i] == 1.0:      # IR
-            otyp[i] = 245
-        if meth[i] == 2.0:      # Visible
-            otyp[i] = 251
-        if meth[i] == 3.0:      # WV Cloud TOP
-            otyp[i] = 246
-        if meth[i] == 5.0:      # WV Deep Layer
-            otyp[i] = 247
-
-    # QualityMark
+    # QualityMark (initial)
     qmsize  = said.shape
     qmvalue = 2         # initial QM
     qm = np.full(qmsize, qmvalue)
@@ -167,9 +189,9 @@ def bufr_to_ioda(config, logger):
     logger.info(f' lon  shape = {lon.shape}')
     logger.info(f' said shape = {said.shape}')
     logger.info(f' zen  shape= {zen.shape}')
-    logger.info(f' fre  shape= {fre.shape}')
+    logger.info(f' freq shape= {freq.shape}')
     logger.info(f' cen  shape= {cen.shape}')
-    logger.info(f' meth  shape= {meth.shape}')
+    logger.info(f' swcm  shape= {swcm.shape}')
     logger.info(f' pob  shape= {pob.shape}')
     logger.info(f' cor  shape= {cor.shape}')
     logger.info(f' vari  shape= {vari.shape}')
@@ -178,7 +200,6 @@ def bufr_to_ioda(config, logger):
     logger.info(f' wdir shape= {wdir.shape}')
     logger.info(f' wspd shape= {wspd.shape}')
     logger.info(f' qm   shape= {qm.shape}')
-    logger.info(f' otyp shape= {otyp.shape}')
     logger.info(f' qifn shape= {qifn.shape}')
     logger.info(f' ee   shape= {ee.shape}')
     logger.info(f' oer  shape= {oer.shape}')
@@ -187,9 +208,9 @@ def bufr_to_ioda(config, logger):
     logger.info(f' lon  type= {lon.dtype}')
     logger.info(f' said type= {said.dtype}')
     logger.info(f' zen  type= {zen.dtype}')
-    logger.info(f' fre  type= {fre.dtype}')
+    logger.info(f' freq type= {freq.dtype}')
     logger.info(f' cen  type= {cen.dtype}')
-    logger.info(f' meth  type= {meth.dtype}')
+    logger.info(f' swcm  type= {swcm.dtype}')
     logger.info(f' pob  type= {pob.dtype}')
     logger.info(f' cor  type= {cor.dtype}')
     logger.info(f' vari  type= {vari.dtype}')
@@ -198,7 +219,6 @@ def bufr_to_ioda(config, logger):
     logger.info(f' wdir type= {wdir.dtype}')
     logger.info(f' wspd type= {wspd.dtype}')
     logger.info(f' qm   type= {qm.dtype}')
-    logger.info(f' otyp type= {otyp.dtype}')
     logger.info(f' qifn type= {qifn.dtype}')
     logger.info(f' ee   type= {ee.dtype}')
     logger.info(f' oer  type= {oer.dtype}')
@@ -243,18 +263,18 @@ def bufr_to_ioda(config, logger):
         .write_attr('long_name', 'Satellite Zenith Angle') \
         .write_data(zen)
 
-    obsspace.create_var('MetaData/channelCentralFrequency', dtype=fre.dtype, fillval=fre.fill_value) \
+    obsspace.create_var('MetaData/channelCentralFrequency', dtype=freq.dtype, fillval=freq.fill_value) \
         .write_attr('units', 'Hz') \
         .write_attr('long_name', 'Channel Center Frequency') \
-        .write_data(fre)
+        .write_data(freq)
 
     obsspace.create_var('MetaData/dataProvider', dtype=cen.dtype, fillval=cen.fill_value) \
         .write_attr('long_name', 'Processing Center') \
         .write_data(cen)
 
-    obsspace.create_var('MetaData/windCalculationMethod', dtype=meth.dtype, fillval=meth.fill_value) \
+    obsspace.create_var('MetaData/windCalculationMethod', dtype=swcm.dtype, fillval=swcm.fill_value) \
         .write_attr('long_name', 'Wind Calculation Method') \
-        .write_data(meth)
+        .write_data(swcm)
 
     obsspace.create_var('MetaData/pressure', dtype=pob.dtype, fillval=pob.fill_value) \
         .write_attr('units', 'Pa') \
@@ -286,14 +306,37 @@ def bufr_to_ioda(config, logger):
         .write_attr('long_name', 'Estimated Error in percent ee') \
         .write_data(ee)
 
-    obsspace.create_var('MetaData/prepbufrReportType', dtype=otyp.dtype, fillval=otyp.fill_value) \
+    obsspace.create_var('MetaData/prepbufrReportType', dtype=obstype.dtype, fillval=swcm.fill_value) \
         .write_attr('long_name', 'prepbufr Report Type') \
-        .write_data(otyp)
+        .write_data(obstype)
+
+
+    # Height (fake for SATWND OBS)
+    obsspace.create_var('MetaData/height', dtype=height.dtype, fillval=height.fill_value) \
+        .write_attr('units', 'Pa') \
+        .write_attr('long_name', 'Height of Observation') \
+        .write_data(height)
+
+    # Station Elevation (fake for SATWND OBS)
+    obsspace.create_var('MetaData/stationElevation', dtype=stnelev.dtype, fillval=stnelev.fill_value) \
+        .write_attr('units', 'Pa') \
+        .write_attr('long_name', 'Station Elevation') \
+        .write_data(stnelev)
 
     # QualityMarker
     obsspace.create_var('MetaData/windQualityMarker', dtype=qm.dtype, fillval=qm.fill_value) \
         .write_attr('long_name', 'Wind Quality Marker') \
         .write_data(qm)
+
+
+    # ObsType: prepbufrObsType
+    obsspace.create_var('ObsType/windEastward', dtype=obstype.dtype, fillval=swcm.fill_value) \
+        .write_attr('long_name', 'Prepbufr Type') \
+        .write_data(obstype)
+
+    obsspace.create_var('ObsType/windNorthward', dtype=obstype.dtype, fillval=swcm.fill_value) \
+        .write_attr('long_name', 'prepbufr Type') \
+        .write_data(obstype)
 
     # ObsValue
     obsspace.create_var('ObsValue/windEastward', dtype=uwnd.dtype, fillval=uwnd.fill_value) \
@@ -315,7 +358,6 @@ def bufr_to_ioda(config, logger):
         .write_attr('units', 'm s-1') \
         .write_attr('long_name', 'Wind Speed') \
         .write_data(wspd)
-
 
     # ObsError
     obsspace.create_var('ObsError/windEastward', dtype=oer.dtype, fillval=oer.fill_value) \
