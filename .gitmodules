@@ -65,7 +65,7 @@
 	ignore = all
 [submodule "sorc/mpas"]
 	path = sorc/mpas
-	url = https://github.com/NOAA-GSL/MPAS-Model
+	url = https://github.com/RRFSx/MPAS-Model
 	branch = gsl/develop
 	ignore = all
 [submodule "sorc/mpas-jedi"]
