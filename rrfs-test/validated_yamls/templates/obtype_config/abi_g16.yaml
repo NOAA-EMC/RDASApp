@@ -225,6 +225,21 @@
            minvalue: 0.0
            maxvalue: 0.5
 
+       # Toss data if the hofx has missing value
+       - filter: Domain Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *abi_g16_channels
+         where:
+         - variable:
+             name: brightnessTemperature@HofX
+             channels: *abi_g16_channels
+           value: is_valid
+           minvalue: 50
+           maxvalue: 500
+         action:
+           name: reject
+
        # Surface type check
        # Toss channels 7,11-16 over land
        - filter: RejectList

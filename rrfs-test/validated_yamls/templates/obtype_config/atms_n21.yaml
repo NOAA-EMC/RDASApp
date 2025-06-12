@@ -275,6 +275,21 @@
            minvalue: 0.0
            maxvalue: 0.5
 
+       # Toss the data if the hofx has missing value
+       - filter: Domain Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_npp_channels
+         where:
+         - variable:
+             name: brightnessTemperature@HofX
+             channels: *atms_npp_channels
+           value: is_valid
+           minvalue: 50
+           maxvalue: 500
+         action:
+           name: reject
+
        # Step 0-C: Assign Initial All-Sky Observation Error
        - filter: Perform Action
          filter variables:
