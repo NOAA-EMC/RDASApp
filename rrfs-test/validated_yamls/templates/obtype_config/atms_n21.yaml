@@ -279,11 +279,11 @@
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature
-           channels: *atms_npp_channels
+           channels: *atms_n21_channels
          where:
          - variable:
              name: brightnessTemperature@HofX
-             channels: *atms_npp_channels
+             channels: *atms_n21_channels
            value: is_valid
            minvalue: 50
            maxvalue: 500
