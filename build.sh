@@ -27,7 +27,7 @@ usage() {
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
   echo "  -x  build super executables            DEFAULT: NO"
-  echo "  -t  include/generate RRFS ctest data   DEFAULT: YES"
+  echo "  -t  include RRFS,BUFR_QUERY test data  DEFAULT: YES"
   echo "  -d  compile in the debug mode          DEFAULT: NO"
   echo "  -h  display this message and quit"
   echo
@@ -47,7 +47,8 @@ BUILD_SUPER_EXE="NO"
 BUILD_RRFS_TEST="YES"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
-DEBUG_STR=""
+DEBUG_OPT=""
+BUFRQUERY_OPT=""
 
 while getopts "p:c:m:j:t:hvfsxd" opt; do
   case $opt in
@@ -65,12 +66,15 @@ while getopts "p:c:m:j:t:hvfsxd" opt; do
       ;;
     t)
       BUILD_RRFS_TEST=$OPTARG
+      if [[ "$OPTARG" == "NO" ]]; then
+        BUFRQUERY_OPT="-DSKIP_DOWNLOAD_TEST_DATA=ON"
+      fi
       ;;
     v)
       BUILD_VERBOSE=YES
       ;;
     d)
-      DEBUG_STR="-DCMAKE_BUILD_TYPE=Debug"
+      DEBUG_OPT="-DCMAKE_BUILD_TYPE=Debug"
       ;;
     f)
       CLEAN_BUILD=YES
@@ -94,7 +98,7 @@ case ${BUILD_TARGET} in
     [[ "${BUILD_TARGET}" != *gaea* ]] && source $dir_root/ush/module-setup.sh
     module use $dir_root/modulefiles
     module load RDAS/$BUILD_TARGET.$COMPILER
-    CMAKE_OPTS+=" ${DEBUG_STR} -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON -DMACHINE_ID=$MACHINE_ID"
+    CMAKE_OPTS+=" ${DEBUG_OPT} ${BUFRQUERY_OPT} -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON -DMACHINE_ID=$MACHINE_ID"
     module list
     ;;
   *)
@@ -102,9 +106,6 @@ case ${BUILD_TARGET} in
     exit
     ;;
 esac
-
-# tweak sorc/mpas/src/core_init_atmosphere/mpas_init_atm_cases.F to make building work
-sed -i -e "5549 s/.*/call mpas_log_write('Interpolating SOILM000')/" sorc/mpas/src/core_init_atmosphere/mpas_init_atm_cases.F
 
 # Set default number of build jobs based on machine
 if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nodes
