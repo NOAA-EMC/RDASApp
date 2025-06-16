@@ -248,13 +248,18 @@
                  channels: *atms_n20_channels
                coefs: [1, -1]
 
-       - filter: Bounds Check
+        # Toss the data if the hofx is missing or outside of range
+       - filter: Domain Check
          filter variables:
-         #- name: brightnessTemperature
-         - name: HofX/brightnessTemperature
+         - name: brightnessTemperature
            channels: *atms_n20_channels
-         minvalue: 50.00001
-         maxvalue: 449.99999
+         where:
+         - variable:
+             name: HofX/brightnessTemperature
+             channels: *atms_n20_channels
+           value: is_valid
+           minvalue: 50.00001
+           maxvalue: 449.99999
          action:
            name: reject
 
