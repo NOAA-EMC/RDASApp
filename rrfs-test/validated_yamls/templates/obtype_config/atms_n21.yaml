@@ -254,13 +254,18 @@
                  channels: *atms_n21_channels
                coefs: [1, -1]
 
-       - filter: Bounds Check
+       # Toss the data if the hofx is missing or outside of range
+       - filter: Domain Check
          filter variables:
-         #- name: brightnessTemperature
-         - name: HofX/brightnessTemperature
+         - name: brightnessTemperature
            channels: *atms_n21_channels
-         minvalue: 50.00001
-         maxvalue: 449.99999
+         where:
+         - variable:
+             name: HofX/brightnessTemperature
+             channels: *atms_n21_channels
+           value: is_valid
+           minvalue: 50.00001
+           maxvalue: 449.99999
          action:
            name: reject
 
@@ -274,21 +279,6 @@
            flag all filter variables if any test variable is out of bounds: true
            minvalue: 0.0
            maxvalue: 0.5
-
-       # Toss the data if the hofx has missing value
-       - filter: Domain Check
-         filter variables:
-         - name: brightnessTemperature
-           channels: *atms_n21_channels
-         where:
-         - variable:
-             name: brightnessTemperature@HofX
-             channels: *atms_n21_channels
-           value: is_valid
-           minvalue: 50
-           maxvalue: 500
-         action:
-           name: reject
 
        # Step 0-C: Assign Initial All-Sky Observation Error
        - filter: Perform Action

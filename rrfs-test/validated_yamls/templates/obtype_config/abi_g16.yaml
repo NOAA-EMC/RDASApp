@@ -225,18 +225,18 @@
            minvalue: 0.0
            maxvalue: 0.5
 
-       # Toss data if the hofx has missing value
+       #Toss data if the hofx is missing or outside of range
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g16_channels
          where:
          - variable:
-             name: brightnessTemperature@HofX
+             name: HofX/brightnessTemperature
              channels: *abi_g16_channels
            value: is_valid
-           minvalue: 50
-           maxvalue: 500
+           minvalue: 50.00001
+           maxvalue: 449.99999
          action:
            name: reject
 
