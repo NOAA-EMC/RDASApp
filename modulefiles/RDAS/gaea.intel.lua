@@ -67,6 +67,7 @@ load("py-pyyaml/6.0")
 load("py-scipy/1.11.3")
 load("py-xarray/2023.7.0")
 
+unload("cray-libsci")
 setenv("CC","cc")
 setenv("FC","ftn")
 setenv("CXX","CC")
