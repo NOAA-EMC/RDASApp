@@ -176,7 +176,7 @@ def bufr_to_ioda(config, logger):
 
     # Time variable
     hrdr = r.get('timeOffset', 'prepbufrDataLevelCategory', type='float')
-    toff = hrdr
+    toff = np.round(hrdr*3600.)
     ulan = r.get('releaseTime')
     ulan = np.int64(ulan*3600)
 
