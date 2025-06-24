@@ -17,6 +17,7 @@ inputfile=./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml # FOR ENVAR
 #inputfile=./rrfs_mpasjedi_2024052700_Hybrid.yaml # FOR 3DHybrid
 #inputfile=./rrfs_mpasjedi_2024052700_letkf.yaml # FOR LETKF
 #inputfile=./rrfs_mpasjedi_2024052700_getkf.yaml # FOR GETKF
+#inputfile=./sglobs_t120_mpasjedi.yaml           # FOR single obs test
 
 if [[ -s /apps/lmod/lmod/init/sh ]]; then
   . /apps/lmod/lmod/init/sh
