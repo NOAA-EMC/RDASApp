@@ -29,7 +29,7 @@ cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/keptvars.yaml .
 cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/geovars.yaml .
 cp ${RDASApp}/rrfs-test/testinput/namelist.atmosphere .
 cp ${RDASApp}/rrfs-test/testinput/streams.atmosphere .
-cp ${RDASApp}/rrfs-test/testinput/sglobs_t120_mpasjedi.yaml .
+cp ${RDASApp}/rrfs-test/example_yamls/sglobs_t120_mpasjedi.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_observer.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_solver.yaml .
