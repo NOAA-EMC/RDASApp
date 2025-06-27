@@ -70,6 +70,9 @@ if(BUILD_RDASBUNDLE)
 #     ecbuild_bundle( PROJECT gsibec SOURCE "../sorc/gsibec" )
 #   endif()
 
+# EMC BUFR-query library
+  ecbuild_bundle( PROJECT bufr-query SOURCE "../sorc/bufr-query" )
+
 # Core JEDI repositories
   ecbuild_bundle( PROJECT oops SOURCE "../sorc/oops" )
   ecbuild_bundle( PROJECT vader SOURCE "../sorc/vader" )
@@ -104,9 +107,6 @@ if(BUILD_RDASBUNDLE)
   if(BUILD_IODA_CONVERTERS)
     ecbuild_bundle( PROJECT iodaconv SOURCE "../sorc/iodaconv" )
   endif()
-
-# EMC BUFR-query library
-  ecbuild_bundle( PROJECT bufr-query SOURCE "../sorc/bufr-query" )
 
 # rdas tests and super executables
   if(BUILD_RRFS_TEST)
