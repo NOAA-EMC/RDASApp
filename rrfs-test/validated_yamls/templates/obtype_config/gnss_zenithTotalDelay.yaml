@@ -3,7 +3,7 @@
 
          distribution:   # for LETKF
            name: "@DISTRIBUTION@"
-           halo size: 300e3
+           halo size: 500e3
 
          obsdatain:
            engine:
@@ -36,7 +36,7 @@
 
        obs localizations:   # for LETKF
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3
+           lengthscale: 200e3
 
        obs filters:
          # Pre-online regional domain check (latitude/longitude)
