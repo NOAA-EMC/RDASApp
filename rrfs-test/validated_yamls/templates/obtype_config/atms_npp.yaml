@@ -15,7 +15,7 @@
               2.0, 2.0]
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -44,7 +44,7 @@
              Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs bias:
          input file:  data/obs/atms_npp.satbias.nc4
