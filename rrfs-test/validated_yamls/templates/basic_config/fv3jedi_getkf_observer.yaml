@@ -7,7 +7,6 @@ geometry:
     namelist filename: DataFix/fmsmpp.nml
     field table filename: DataFix/field_table
   namelist filename: DataFix/input_lam_C775_NP16X10.nml
-  field metadata override: data/fieldmetadata/tlei-gfs-restart.yaml
   akbk: DataFix/fix/akbk66.nc
   # input.nml
   npz: 65
