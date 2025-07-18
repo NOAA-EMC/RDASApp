@@ -27,7 +27,42 @@ cost function:
     filename_sfcd: fv3_sfcdata.nc
     filename_sfcw: fv3_srf_wnd.nc
     filename_cplr: coupler.res
-    state variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,phis,f10m,slmsk,sheleg,ts,vtype,stype,vfrac,soilt,soilm,u_srf,v_srf]
+    state variables:
+      - eastward_wind
+      - northward_wind
+      - air_temperature
+      - air_pressure_thickness
+      - water_vapor_mixing_ratio_wrt_moist_air
+      - cloud_liquid_ice
+      - cloud_liquid_water
+      - ozone_mass_mixing_ratio
+      - geopotential_height_times_gravity_at_surface
+      - f10m
+      - slmsk
+      - sheleg
+      - skin_temperature_at_surface
+      - vtype
+      - stype
+      - vfrac
+      - soilt
+      - soilm
+      - eastward_wind_at_surface
+      - northward_wind_at_surface
+    field io names: &io_names
+      eastward_wind: ua
+      northward_wind: va
+      air_temperature: T
+      air_pressure_thickness: DELP
+      water_vapor_mixing_ratio_wrt_moist_air: sphum
+      cloud_liquid_ice: ice_wat
+      cloud_liquid_water: liq_wat
+      ozone_mass_mixing_ratio: o3mr
+      geopotential_height_times_gravity_at_surface: phis
+      skin_temperature_at_surface: tsfc
+      soilt: tslb
+      soilm: smois
+      eastward_wind_at_surface: u_srf
+      northward_wind_at_surface: v_srf
   background error:
     covariance model: hybrid
     components:
@@ -72,6 +107,7 @@ cost function:
             datetime: 2022-05-26T19:00:00Z
             filetype: fms restart
             state variables: *3dvars
+            field io names: *io_names
             datapath: data/inputs/memMEM/
             filename_core: 20220526.190000.fv_core.res.tile1.nc
             filename_trcr: 20220526.190000.fv_tracer.res.tile1.nc
