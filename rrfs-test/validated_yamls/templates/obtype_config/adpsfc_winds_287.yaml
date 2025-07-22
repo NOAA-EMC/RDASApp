@@ -2,7 +2,7 @@
          name: adpsfc_winds_287
          distribution:
            name: "@DISTRIBUTION@"
-           halo size: 300e3
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
@@ -43,7 +43,7 @@
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
