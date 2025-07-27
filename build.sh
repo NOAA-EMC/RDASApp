@@ -92,10 +92,12 @@ while getopts "p:c:m:j:t:hvfsxd" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules | jet | gaea | wcoss2 | ursa )
+  hera | orion | hercules | jet | gaea | wcoss2 | ursa | derecho)
     echo "Building RDASApp on $BUILD_TARGET"
     echo "  Build initiated `date`"
-    [[ "${BUILD_TARGET}" != *gaea* ]] && source $dir_root/ush/module-setup.sh
+    if [[ "${BUILD_TARGET}" != *gaea* ]] &&  [[ "${BUILD_TARGET}" != *derecho* ]]; then
+      source $dir_root/ush/module-setup.sh
+    fi
     module use $dir_root/modulefiles
     module load RDAS/$BUILD_TARGET.$COMPILER
     CMAKE_OPTS+=" ${DEBUG_OPT} ${BUFRQUERY_OPT} -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON -DMACHINE_ID=$MACHINE_ID"

@@ -33,6 +33,8 @@ case $(hostname -f) in
   ufe*) MACHINE_ID=ursa ;;
   uecflow01) MACHINE_ID=ursa ;;
 
+  derecho*) MACHINE_ID=derecho ;;
+
   s4-submit.ssec.wisc.edu) MACHINE_ID=s4 ;; ### s4
 
   fe[1-8]) MACHINE_ID=jet ;; ### jet01-8
