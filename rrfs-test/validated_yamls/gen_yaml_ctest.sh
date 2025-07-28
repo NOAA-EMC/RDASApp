@@ -35,7 +35,9 @@ obtype_configs=(
     "abi_g18.yaml"
     "atms_n21.yaml"
     #"atms_n20.yaml" # Waiting to add to ctest (different results on Hera/Jet?)
-    #"amsua_n19.yaml" # Waiting to add to ctest
+    "amsua_n19.yaml" # Waiting to add to ctest
+    "amsua_metop-b.yaml" 
+    "amsua_metop-c.yaml" 
 )
 
 # Define the basic configuration and final ctest YAMLs

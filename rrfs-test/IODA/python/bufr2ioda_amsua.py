@@ -187,7 +187,7 @@ def create_obs_group(input_path1, input_path2, yaml_1b, yaml_es, category, env):
     container = container_1
 
     if not cache_2:
-        logging(comm, f'No chahe, remap and append it')
+        logging(comm, f'No cache, remap and append it')
         _re_map_variable(comm, container_2)
         container.append(container_2)
         logging(comm, 'Container append done')

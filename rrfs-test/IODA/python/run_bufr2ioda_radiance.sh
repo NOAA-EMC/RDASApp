@@ -55,7 +55,6 @@ output_file=$cdate.rap.t${h2}z.amsua_{splits/satId}.tm00.nc
 yaml_1b=../yaml/bufr_1bamua_mapping.yaml
 yaml_es=../yaml/bufr_esamua_mapping.yaml
 
-mkdir -p -m770 $out_dir
 
 python bufr2ioda_amsua.py $input_es $input_1b  $yaml_1b $yaml_es $output_file
 
