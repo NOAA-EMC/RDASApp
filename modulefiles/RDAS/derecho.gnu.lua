@@ -9,17 +9,18 @@ local pkgNameVer = myModuleFullName()
 prepend_path("MODULEPATH", '/glade/work/epicufsrt/contrib/spack-stack/derecho/modulefiles')
 prepend_path("MODULEPATH", '/glade/work/epicufsrt/contrib/spack-stack/derecho/spack-stack-1.8.0/envs/ue-gcc-12.2.0/install/modulefiles/Core')
 
+load("ncarenv/23.09")
 load("stack-gcc/12.2.0")
 load("stack-python/3.11.7")
 load("stack-cray-mpich/8.1.25")
 load("jedi-mpas-env/1.0.0")
 load("jedi-fv3-env/1.0.0")
 
-setenv("CC","mpicc")
-setenv("FC","mpif90")
-setenv("CXX","mpicxx")
+--setenv("CC","mpicc")
+--setenv("FC","mpif90")
+--setenv("CXX","mpicxx")
 
-local mpiexec = '/apps/slurm/default/bin/srun'
+local mpiexec = '/opt/cray/pe/pals/1.2.11/bin/aprun'
 local mpinproc = '-n'
 setenv('MPIEXEC_EXEC', mpiexec)
 setenv('MPIEXEC_NPROC', mpinproc)
