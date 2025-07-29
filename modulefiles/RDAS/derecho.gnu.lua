@@ -1,5 +1,5 @@
 help([[
-Load environment for running the RDAS application with Intel compilers and MPI.
+Load environment for running the RDAS application with GNU compilers and MPI.
 ]])
 
 local pkgName    = myModuleName()
