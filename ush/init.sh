@@ -20,6 +20,9 @@ case ${MACHINE_ID} in
   orion|hercules)
     RDAS_DATA=/work/noaa/zrtrr/RDAS_DATA
     ;;
+  derecho)
+    RDAS_DATA=/to/be/done
+    ;;
   gaea)
     if [[ -d /gpfs/f5 ]]; then
       RDAS_DATA=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/RDAS_DATA
