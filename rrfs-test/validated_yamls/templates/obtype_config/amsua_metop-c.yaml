@@ -1,7 +1,7 @@
      - obs space:
          name: amsua_metop-c
          _anchor_channels: &amsua_metop-c_channels 1-15
-         _anchor_use_flag: &amsua_metop-c_use_flag [ 1,  1,  1,  1,  1, 1, -1, -1,  1,  1, 1,  1,  1, -1,  1 ]
+         _anchor_use_flag: &amsua_metop-c_use_flag [ 1,  1,  1,  1,  1, 1, 1,  1,  1,  1, -1,  -1,  -1, 1,  1 ]
          _anchor_obserr_bound_max: &amsua_metop-c_obserr_bound_max [4.5, 4.5, 4.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.5, 3.5, 4.5, 4.5, 4.5]
          distribution:
            name: "@DISTRIBUTION@"
