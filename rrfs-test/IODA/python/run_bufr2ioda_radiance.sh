@@ -12,7 +12,7 @@ ulimit -a
 #   4  RDASApp/rrfs-test/IODA/yaml/bufr_1bamua_mapping.yaml
 #                                                                       #
 #########################################################################
-RDASApp_dir=/scratch1/NCEPDEV/stmp2/Xiaoyan.Zhang/RDASApp_obsforge
+readonly RDASApp_dir=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )/../../.." && pwd -P)
 
 # ===============================
 # Load obsForge required modules
