@@ -49,7 +49,7 @@ fi
 
 case ${MACHINE_ID} in
   hera)
-    RDAS_DATA=/scratch1/NCEPDEV/fv3-cam/RDAS_DATA
+    RDAS_DATA=/scratch4/BMC/rtrr/RDAS_DATA
     ;;
   jet)
     RDAS_DATA=/lfs4/BMC/nrtrr/RDAS_DATA
