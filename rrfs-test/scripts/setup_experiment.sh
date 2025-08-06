@@ -145,7 +145,7 @@ if [[ $GSI_TEST_DATA == "YES" ]]; then
   echo "  --> gsi data on $MACHINE_ID"
   cd $YOUR_EXPERIMENT_DIR
   if [[ $MACHINE_ID == "hera" ]]; then
-    rsync -a /scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/staged-data/gsi_2022052619 .
+    rsync -a /scratch4/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/staged-data/gsi_2022052619 .
   elif [[ $MACHINE_ID == "orion" ]]; then
     rsync -a /work/noaa/fv3-cam/dlippi/RRFSv2/staged-data/gsi_2022052619 .
   elif [[ $MACHINE_ID == "jet" ]]; then
