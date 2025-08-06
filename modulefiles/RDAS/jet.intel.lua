@@ -72,9 +72,6 @@ load("py-pyyaml/6.0")
 load("py-scipy/1.11.3")
 load("py-xarray/2023.7.0")
 
--- hack for wxflow
-prepend_path("PYTHONPATH", "/lfs5/BMC/nrtrr/RDAS_DATA/python/20240307")
-
 setenv("CC","mpiicc")
 setenv("FC","mpiifort")
 setenv("CXX","mpiicpc")
