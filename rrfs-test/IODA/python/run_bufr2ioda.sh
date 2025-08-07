@@ -44,6 +44,9 @@ fi
 PYIODALIB=`echo $DIR_ROOT/build/lib/python3.*`
 export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
 
+# add wxflow libraries
+export PYTHONPATH="${PYTHONPATH}:${DIR_ROOT}/sorc/wxflow/src"
+
 #----- python and json -----
 # first specify what observation types will be processed by a script
 BUFR_py="msonet_prepbufr"

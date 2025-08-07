@@ -51,9 +51,9 @@ export USE_LESS_EQUAL=true #true: <=; false: ==
 # Retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
 VERSION="v2.0.9"
 EXP_NAME="baseline1_3denvar12km209"
-OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
+OPSROOT="/scratch4/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
 #EXP_NAME="baseline1_3dvar12km209"
-#OPSROOT="/scratch2/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${VERSION}"
+#OPSROOT="/scratch4/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${VERSION}"
 #VERSION="v0.8.6"
 #EXP_NAME="CONUS13km_ColdStart00-12Z_133-233TQW"
 COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
@@ -64,7 +64,7 @@ JDIAGDIR="${COMROOT}"
 # Control experiment details - only used in 2) Two-Experiment Comparison Plots (Retro vs Control)
 #CTL_VERSION="v2.0.9"
 #CTL_NAME="baseline1_3dvar12km209"
-#CTL_OPSROOT="/scratch2/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${CTL_VERSION}"
+#CTL_OPSROOT="/scratch4/NCEPDEV/fv3-cam/Xiaoyan.Zhang/noscrub/JEDI/RRFSV2/workflow/${CTL_VERSION}"
 CTL_VERSION="v0.8.6"
 CTL_NAME="CONUS13km_ColdStart00-12Z_133-233TQW"
 CTL_OPSROOT="${OPSROOT}"
@@ -74,7 +74,7 @@ CTL_LOGDIR="${CTL_COMROOT}/rrfs/${CTL_VERSION}/logs"
 CTL_JDIAGDIR="${CTL_DATAROOT}"
 
 # Specify your RDASApp build (mostly for module loads)
-RDASApp="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.phase2_sonde"
+RDASApp="/scratch4/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.phase2_sonde"
 
 # Options only for MAP_DOMAINCOMPARISON_MPAS_FV3
 #MPAS_DOMAIN="${RDASApp}/expr/mpas_2024052700/data/invariant.nc"
@@ -84,7 +84,7 @@ FV3_DOMAIN="${CTL_DATAROOT}/20240506/rrfs_jedivar_01_v0.8.6/det/jedivar_01/grid_
 
 # Options for analysis increment plot
 LEVEL=1 # actual level (not python index; mpas only plots; 1=lowest model level)
-FV3BKG_SOURCE="/scratch1/BMC/wrfruc/rli/RRFS_V1/rrfs.${CTL_VERSION}/${CTL_NAME}/nwges"
+FV3BKG_SOURCE="/scratch3/BMC/wrfruc/Ruifang.Li/RRFS_V1/rrfs.${CTL_VERSION}/${CTL_NAME}/nwges"
 
 # Options for timesereies plot
 BIN=19 # -1: Entire Column, 1: Top Level, 19: Bottom Level (uses same binning as profiles).

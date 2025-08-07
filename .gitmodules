@@ -78,3 +78,8 @@
 	url = https://github.com/NOAA-EMC/bufr-query.git
 	branch = develop
 	ignore = all
+[submodule "sorc/wxflow"]
+	path = sorc/wxflow
+	url = https://github.com/NOAA-EMC/wxflow.git
+        branch = develop
+        ignore = all
