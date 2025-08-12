@@ -82,7 +82,12 @@ def alpha_shape(points, alpha, only_outer=True):
     edges = set()
     # Loop over triangles:
     # ia, ib, ic = indices of corner points of the triangle
-    for ia, ib, ic in tri.vertices:
+    # Depending on SciPy version, might need tri.simplices or tri.vertices
+    if hasattr(tri, "simplices"):
+        triangles = tri.simplices
+    else:
+        triangles = tri.vertices
+    for ia, ib, ic in triangles:
         pa = points[ia]
         pb = points[ib]
         pc = points[ic]
