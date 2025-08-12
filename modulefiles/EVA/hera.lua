@@ -23,6 +23,9 @@ load("py-xarray/2023.7.0")
 load("py-matplotlib/3.7.3")
 load("py-cartopy/0.21.1")
 
+-- Add Spack-installed ncepbufr to PYTHONPATH
+prepend_path("PYTHONPATH", "/contrib/spack-stack/spack-stack-1.6.0/envs/unified-env-rocky8/install/intel/2021.5.0/bufr-12.0.1-nz7jhfd/lib64/python3.10/site-packages")
+
 -- And load additional modules (e.g., seaborn) from our new RDASAppPy env
 local venv_path = "/scratch3/NCEPDEV/fv3-cam/RDASAppPy"
 setenv("VIRTUAL_ENV", venv_path)
