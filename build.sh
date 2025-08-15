@@ -5,6 +5,18 @@
 # 2 - configure; build; install
 # 4 - optional, run unit tests
 
+# Deactivate virtual env or conda env to prevent build issues
+if [[ -n "$VIRTUAL_ENV" || -n "$CONDA_PREFIX" ]]; then
+  unset VIRTUAL_ENV
+  unset CONDA_PREFIX
+  unset CONDA_DEFAULT_ENV
+  unset CONDA_SHLVL
+  export PATH=$(echo "$PATH" | tr ':' '\n' | grep -vi 'conda' | grep -vi 'miniforge' | paste -sd ':' -)
+  if [[ -n "$LD_LIBRARY_PATH" ]]; then
+    export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -vi 'conda' | grep -vi 'miniforge' | paste -sd ':' -)
+  fi
+fi
+
 module purge
 set -eu
 START=$(date +%s)
