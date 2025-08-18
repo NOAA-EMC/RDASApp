@@ -319,7 +319,6 @@
            where:
            - variable: QCflagsData/windEastward
              is_in: 0
-           where:
            - variable: ObsType/windEastward
              is_in: 288
            action:
