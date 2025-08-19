@@ -73,22 +73,21 @@ def bufr_to_ioda(config, logger):
     data_type = config["data_type"]
     data_description = config["data_description"]
     data_provider = config["data_provider"]
-    #cycle_type = config["cycle_type"]
+    cycle_type = config["cycle_type"]
     dump_dir = config["dump_directory"]
     ioda_dir = config["ioda_directory"]
     cycle = config["cycle_datetime"]
-    #yyyymmdd = cycle[0:8]
-    #hh = cycle[8:10]
+    yyyymmdd = cycle[0:8]
+    hh = cycle[8:10]
 
     satellite_info_array = config["satellite_info"]
     sensor_name = config["sensor_info"]["sensor_name"]
     sensor_full_name = config["sensor_info"]["sensor_full_name"]
     sensor_id = config["sensor_info"]["sensor_id"]
-    #obstype = config["obstype"]
 
     # Get derived parameters
-    #yyyymmdd = cycle[0:8]
-    #hh = cycle[8:10]
+    yyyymmdd = cycle[0:8]
+    hh = cycle[8:10]
     reference_time = datetime.strptime(cycle, "%Y%m%d%H")
     reference_time = reference_time.strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -105,7 +104,6 @@ def bufr_to_ioda(config, logger):
     logger.info(f'reference_time = {reference_time}')
 
     bufrfile = "satwndbufr"
-    #bufrfile = "NC005030"
     DATA_PATH = os.path.join(dump_dir, bufrfile)
     if not os.path.isfile(DATA_PATH):
         logger.info(f"DATA_PATH {DATA_PATH} does not exist")
@@ -176,9 +174,9 @@ def bufr_to_ioda(config, logger):
     # MetaData
     satid = r.get('satelliteId')
     #satid[satid == 272] = 270
-    unique_satids, counts = np.unique(satid, return_counts=True)
-    for satid_val, count in zip(unique_satids, counts):
-        logger.info(f"Satellite ID {satid_val} total observations in input: {count}")
+    #unique_satids, counts = np.unique(satid, return_counts=True)
+    #for satid_val, count in zip(unique_satids, counts):
+    #    logger.info(f"Satellite ID {satid_val} total observations in input: {count}")
 
     year = r.get('year')
     month = r.get('month')
@@ -220,13 +218,13 @@ def bufr_to_ioda(config, logger):
     toff = ma.MaskedArray((timestamp.data - ref_sec).astype(np.float32), mask=timestamp.mask)
 
     # Debug
-    logger.info(f"Number of total observations: {len(lat)}")
-    logger.debug(f"Latitude sample: {lat[:5]}")
-    logger.debug(f"Longitude sample: {lon[:5]}")
-    logger.debug(f"Satellite IDs sample: {satid[:5]}")
-    logger.debug(f"Wind direction sample: {wdir[:5]}")
-    logger.debug(f"Wind speed sample: {wspd[:5]}")
-    logger.debug(f"Timestamps sample: {timestamp[:5]}")
+    #logger.info(f"Number of total observations: {len(lat)}")
+    #logger.debug(f"Latitude sample: {lat[:5]}")
+    #logger.debug(f"Longitude sample: {lon[:5]}")
+    #logger.debug(f"Satellite IDs sample: {satid[:5]}")
+    #logger.debug(f"Wind direction sample: {wdir[:5]}")
+    #logger.debug(f"Wind speed sample: {wspd[:5]}")
+    #logger.debug(f"Timestamps sample: {timestamp[:5]}")
 
     # Check BUFR variable generic dimension and type
 
@@ -273,9 +271,9 @@ def bufr_to_ioda(config, logger):
     unique_satids = np.unique(satid)
     logger.info(f'Number of Unique satellite identifiers: {len(unique_satids)}')
     logger.info(f'Unique satellite identifiers: {unique_satids}')
-    for satid_val in unique_satids:
-      if not any(sat["satellite_id"] == satid_val for sat in satellite_info_array):
-        logger.warning(f"Satellite ID {satid_val} found in data but missing in config - these obs will be skipped.")
+    #for satid_val in unique_satids:
+    #  if not any(sat["satellite_id"] == satid_val for sat in satellite_info_array):
+    #    logger.warning(f"Satellite ID {satid_val} found in data but missing in config - these obs will be skipped.")
 
 
     logger.debug(f'Loop through unique satellite identifier {unique_satids}')
