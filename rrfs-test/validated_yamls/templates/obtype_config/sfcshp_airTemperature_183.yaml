@@ -53,8 +53,21 @@
          - filter: Perform Action
            filter variables:
            - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 183
            action:
              name: accept # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 183
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList

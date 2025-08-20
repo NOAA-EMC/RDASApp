@@ -54,8 +54,22 @@
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 220
            action:
              name: accept # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 220
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
