@@ -83,3 +83,12 @@
 	url = https://github.com/NOAA-EMC/wxflow.git
         branch = develop
         ignore = all
+[submodule "parm/jcb-algorithms"]
+	path = parm/jcb-algorithms
+	url = https://github.com/NOAA-EMC/jcb-algorithms.git
+[submodule "parm/jcb-rdas"]
+	path = parm/jcb-rdas
+	url = https://github.com/NOAA-EMC/jcb-rdas.git
+[submodule "sorc/jcb"]
+	path = sorc/jcb
+	url = https://github.com/NOAA-EMC/jcb.git
