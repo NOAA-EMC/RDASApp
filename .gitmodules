@@ -81,20 +81,20 @@
 [submodule "sorc/wxflow"]
 	path = sorc/wxflow
 	url = https://github.com/NOAA-EMC/wxflow.git
-        branch = develop
-        ignore = all
+	branch = develop
+	ignore = all
 [submodule "parm/jcb-algorithms"]
 	path = parm/jcb-algorithms
 	url = https://github.com/NOAA-EMC/jcb-algorithms.git
-        branch = develop
-        ignore = all
+	branch = develop
+	ignore = all
 [submodule "parm/jcb-rdas"]
 	path = parm/jcb-rdas
 	url = https://github.com/NOAA-EMC/jcb-rdas.git
-        branch = develop
-        ignore = all
+	branch = develop
+	ignore = all
 [submodule "sorc/jcb"]
 	path = sorc/jcb
 	url = https://github.com/NOAA-EMC/jcb.git
-        branch = develop
-        ignore = all
+	branch = develop
+	ignore = all
