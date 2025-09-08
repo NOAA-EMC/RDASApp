@@ -182,6 +182,10 @@ fi
 if [[ $BUILD_JCB == 'YES' ]]; then
   cd $dir_root/sorc/jcb
   python jcb_client_init.py
+  # Build an example jedi.yaml
+  PYTHONPATH="${PYTHONPATH}:$dir_root/sorc/jcb/src/:$dir_root/build/lib/python3.*:${dir_root}/sorc/wxflow/src"
+  cd $dir_root/sorc/jcb/src/jcb/configuration/apps/rdas/test/client_integration
+  python run.py
 fi
 
 # Create super yamls and link in test data
