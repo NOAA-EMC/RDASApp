@@ -35,6 +35,7 @@ usage() {
   echo "  -c  additional CMake options           DEFAULT: <none>"
   echo "  -v  build with verbose output          DEFAULT: NO"
   echo "  -j  number of build jobs               DEFAULT: 4 on Orion, 6 on other machines"
+  echo "  -b  build JCB                          DEFAULT: YES"
   echo "  -f  force a clean build                DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
@@ -61,8 +62,9 @@ DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 DEBUG_OPT=""
 BUFRQUERY_OPT=""
+BUILD_JCB="YES"
 
-while getopts "p:c:m:j:t:hvfsxd" opt; do
+while getopts "p:c:m:j:t:b:hvfsxd" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -75,6 +77,9 @@ while getopts "p:c:m:j:t:hvfsxd" opt; do
       ;;
     j)
       BUILD_JOBS=$OPTARG
+      ;;
+    b)
+      BUILD_JCB=$OPTARG
       ;;
     t)
       BUILD_RRFS_TEST=$OPTARG
@@ -96,7 +101,7 @@ while getopts "p:c:m:j:t:hvfsxd" opt; do
       ;;
     x)
       BUILD_SUPER_EXE=YES
-      ;; 
+      ;;
     h|\?|:)
       usage
       ;;
@@ -127,7 +132,7 @@ if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nod
 else # hera, hercules, jet, gaea
   BUILD_JOBS=${BUILD_JOBS:-6}
 fi
-#clt from GDASapp 
+#clt from GDASapp
 # TODO: Remove LD_LIBRARY_PATH line as soon as permanent solution is available
  if [[ $BUILD_TARGET == 'wcoss2' ]]; then
      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/cray/pe/mpich/8.1.19/ofi/intel/19.0/lib"
@@ -173,7 +178,17 @@ else
   exit 1
 fi
 
-# Create super yamls and link in test data 
+# Install the jcb clients
+if [[ $BUILD_JCB == 'YES' ]]; then
+  cd $dir_root/sorc/jcb
+  python jcb_client_init.py
+  # Build an example jedi.yaml
+  PYTHONPATH="${PYTHONPATH}:$dir_root/sorc/jcb/src/:$dir_root/build/lib/python3.*:${dir_root}/sorc/wxflow/src"
+  cd $dir_root/sorc/jcb/src/jcb/configuration/apps/rdas/test/client_integration
+  python run.py
+fi
+
+# Create super yamls and link in test data
 if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
 
   # Build the ctest yamls
@@ -194,7 +209,7 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     echo "Linking in test data for FV3-JEDI case"
     $dir_root/rrfs-test/scripts/link_fv3jedi_expr.sh
   fi
-fi 
+fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"
 # Configure
