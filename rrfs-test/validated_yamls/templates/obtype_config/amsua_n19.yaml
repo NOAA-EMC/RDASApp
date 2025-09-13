@@ -12,6 +12,7 @@
              obsfile: "data/obs/ioda_amsua_n19.nc"
              missing file action: "warn"
          obsdataout:
+           empty obs space action: "skip output"
            engine:
              type: H5File
              obsfile: jdiag_amsua_n19.nc

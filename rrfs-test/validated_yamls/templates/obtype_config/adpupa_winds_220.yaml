@@ -13,6 +13,7 @@
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
+           empty obs space action: "skip output"
            engine:
              type: H5File
              obsfile: jdiag_adpupa_winds_220.nc
