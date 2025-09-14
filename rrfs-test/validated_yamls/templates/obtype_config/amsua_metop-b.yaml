@@ -36,8 +36,8 @@
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 200e3 # orig
        obs bias:
-         input file: data/satbaias_in/amsua_metop-b.satbias.nc
-         output file: data/satbaias_out/amsua_metop-b.satbias.nc
+         input file: data/satbias_in/amsua_metop-b.satbias.nc
+         output file: data/satbias_out/amsua_metop-b.satbias.nc
          variational bc:
            predictors:
            - name: constant
