@@ -36,14 +36,14 @@
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 200e3 # orig
        obs bias:
-         input file: data/obs/amsua_metop-c.satbias.nc4
-         output file: out_amsua_metop-c.satbias.nc4
+         input file: data/satbias_in/amsua_metop-c.satbias.nc
+         output file: data/satbias_out/amsua_metop-c.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &amsua_metop-c_tlapse data/obs/amsua_metop-c.tlapse.txt
+             tlapse: &amsua_metop-c_tlapse data/satbias_in/amsua_metop-c.tlapse.txt
            - name: lapseRate
              tlapse: *amsua_metop-c_tlapse
            - name: emissivityJacobian
@@ -60,11 +60,11 @@
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/amsua_metop-c.satbias_cov.nc4
+             input file: data/satbias_in/amsua_metop-c.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_amsua_metop-c.satbias_cov.nc4
+           output file: data/satbias_out/amsua_metop-c.satbias_cov.nc
        obs pre filters:
        # Step 0-A: Create Diagnostic Flags
        - filter: Create Diagnostic Flags
