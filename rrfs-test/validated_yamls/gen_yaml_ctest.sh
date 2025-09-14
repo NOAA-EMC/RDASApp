@@ -68,7 +68,7 @@ for basic_config in "${!basic_configs[@]}"; do
         cp  "./templates/obtype_config/$config" ./replace.yaml
         if [[ $basic_config == *"solver"* ]]; then
             # New obs filename
-            previous_path=`sed -n '/obsdataout/{n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$config`
+            previous_path=`sed -n '/obsdataout/{n; n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$config`
             int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest_yaml::-5}\//gI")
             new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
             obs_filename_new="obsfile: ${new_path}"
