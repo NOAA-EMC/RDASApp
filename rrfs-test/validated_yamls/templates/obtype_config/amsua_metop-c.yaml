@@ -2,6 +2,10 @@
          name: amsua_metop-c
          _anchor_channels: &amsua_metop-c_channels 1-15
          _anchor_use_flag: &amsua_metop-c_use_flag [ 1,  1,  1,  1,  1, 1, 1,  1,  1,  1, -1,  -1,  -1, 1,  1 ]
+         _anchor_error: &amsua_metop-c_error [
+             2.500, 2.200, 2.000, 0.550, 0.300,
+             0.230, 0.230, 0.250, 0.250, 0.350,
+             0.400, 0.550, 0.800, 3.000, 3.500]
          _anchor_obserr_bound_max: &amsua_metop-c_obserr_bound_max [4.5, 4.5, 4.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.5, 3.5, 4.5, 4.5, 4.5]
          distribution:
            name: "@DISTRIBUTION@"
@@ -179,9 +183,7 @@
            channels: *amsua_metop-c_channels
            options:
              channels: *amsua_metop-c_channels
-             obserr_clearsky: [ 2.500, 2.200, 2.000, 0.550, 0.300,
-                                0.230, 0.230, 0.250, 0.250, 0.350,
-                                0.400, 0.550, 0.800, 3.000, 3.500]
+             obserr_clearsky: *amsua_metop-c_error
              clwret_function:
                name: ObsFunction/CLWRetMW
                options:
@@ -333,9 +335,8 @@
                    err1:  [20.000, 18.000, 12.000,  3.000,  0.500,
                             0.300,  0.230,  0.250,  0.250,  0.350,
                             0.400,  0.550,  0.800,  3.000, 18.000]
-               obserr_clearsky: [2.500, 2.200, 2.000, 0.550, 0.300,
-                                  0.230, 0.230, 0.250, 0.250, 0.350,
-                                  0.400, 0.550, 0.800, 3.000, 3.500]
+               obserr_clearsky: *amsua_metop-c_error
+
        #  Gross check
        - filter: Background Check
          filter variables:
