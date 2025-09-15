@@ -13,7 +13,7 @@
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
-           empty obs space action: "skip output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_adpupa_airTemperature_120.nc
