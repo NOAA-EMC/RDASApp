@@ -16,6 +16,7 @@
              obsfile: "data/obs/ioda_amsua_metop-c.nc"
              missing file action: "warn"
          obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_amsua_metop-c.nc

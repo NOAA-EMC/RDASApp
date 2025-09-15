@@ -13,6 +13,7 @@
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_msonet_airTemperature_188.nc
