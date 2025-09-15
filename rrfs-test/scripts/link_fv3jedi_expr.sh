@@ -27,7 +27,9 @@ cp ${RDASApp}/rrfs-test/ush/fv3jedi_increment_fulldom.py .
 rm -rf data; mkdir data
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/* data/
 # link correct ioda files
-rm -rf data/obs; mkdir  data/obs
+rm -rf data/{obs,satbias_in}
+mkdir -p data/{obs,satbias_in,satbias_out}
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/satbias_in/* data/satbias_in/
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/obs/* data/obs/  # keep this line for now to be backward compatible
 for dcfile in data/obs/ioda*dc.nc; do # link to DA runtime prescribed file names
   dcfile=${dcfile##*obs/}

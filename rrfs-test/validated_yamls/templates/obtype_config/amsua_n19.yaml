@@ -2,6 +2,10 @@
          name: amsua_n19
          _anchor_channels: &amsua_n19_channels 1-15
          _anchor_use_flag: &amsua_n19_use_flag [ 1,  1,  1,  1,  1, 1, -1, -1,  1,  1, -1,  -1,  -1,  1,  1 ]
+         _anchor_error: &amsua_n19_error [
+             2.500, 2.200, 2.000, 0.550, 0.300,
+             0.230, 0.230, 0.250, 0.250, 0.350,
+             0.400, 0.550, 0.800, 3.000, 3.500]
          _anchor_obserr_bound_max: &amsua_n19_obserr_bound_max [4.5, 4.5, 4.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.5, 3.5, 4.5, 4.5, 4.5]
          distribution:
            name: "@DISTRIBUTION@"
@@ -36,14 +40,14 @@
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 200e3 # orig
        obs bias:
-         input file: data/obs/amsua_n19.satbias.nc4
-         output file: out_amsua_n19.satbias.nc4
+         input file: data/satbias_in/amsua_n19.satbias.nc
+         output file: data/satbias_out/amsua_n19.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &amsua_n19_tlapse data/obs/amsua_n19.tlapse.txt
+             tlapse: &amsua_n19_tlapse data/satbias_in/amsua_n19.tlapse.txt
            - name: lapseRate
              tlapse: *amsua_n19_tlapse
            - name: emissivityJacobian
@@ -60,11 +64,11 @@
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/amsua_n19.satbias_cov.nc4
+             input file: data/satbias_in/amsua_n19.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_amsua_n19.satbias_cov.nc4
+           output file: data/satbias_out/amsua_n19.satbias_cov.nc
        obs pre filters:
        # Step 0-A: Create Diagnostic Flags
        - filter: Create Diagnostic Flags
@@ -179,9 +183,7 @@
            channels: *amsua_n19_channels
            options:
              channels: *amsua_n19_channels
-             obserr_clearsky: [ 2.500, 2.200, 2.000, 0.550, 0.300,
-                                0.230, 0.230, 0.250, 0.250, 0.350,
-                                0.400, 0.550, 0.800, 3.000, 3.500]
+             obserr_clearsky: *amsua_n19_error
              clwret_function:
                name: ObsFunction/CLWRetMW
                options:
@@ -333,9 +335,7 @@
                    err1:  [20.000, 18.000, 12.000,  3.000,  0.500,
                             0.300,  0.230,  0.250,  0.250,  0.350,
                             0.400,  0.550,  0.800,  3.000, 18.000]
-               obserr_clearsky: [2.500, 2.200, 2.000, 0.550, 0.300,
-                                  0.230, 0.230, 0.250, 0.250, 0.350,
-                                  0.400, 0.550, 0.800, 3.000, 3.500]
+               obserr_clearsky: *amsua_n19_error
        #  Gross check
        - filter: Background Check
          filter variables:
