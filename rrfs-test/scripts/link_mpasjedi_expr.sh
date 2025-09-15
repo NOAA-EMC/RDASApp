@@ -47,11 +47,12 @@ cp ${RDASApp}/rrfs-test/ush/mpasjedi_spread.py .
 
 mkdir -p data
 cd data
-mkdir -p bumploc obs ens
+mkdir -p bumploc obs ens satbias_in satbias_out
 ln -snf ${RDASApp}/fix/bumploc/${BUMPLOC} bumploc/${BUMPLOC}
 ln -snf ${RDASApp}/fix/B_static/L55_20241204 B_static
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/bkg/mpasout.2024-05-27_00.00.00.nc .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/invariant.nc invariant.nc
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/satbias_in/* satbias_in/
 # link the correct ioda files
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/* obs/  # keep this line for now to be backward compatible
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/obs/ioda_msonet.nc obs/ioda_msonet_ctest.nc
