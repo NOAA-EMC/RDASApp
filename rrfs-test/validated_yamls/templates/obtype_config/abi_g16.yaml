@@ -16,6 +16,7 @@
              obsfile: "data/obs/ioda_abi_g16.nc"
              missing file action: "warn"
          obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_abi_g16.nc4
