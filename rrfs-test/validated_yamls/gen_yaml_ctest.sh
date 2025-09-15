@@ -108,6 +108,7 @@ for basic_config in "${!basic_configs[@]}"; do
     python commentQC.py ${ctest_yaml}
 
     # Move to testinput and remove the old temporary yaml
+    sed -i -e "s/@emptyObsSpaceAction@/create output/"  ./jedi.yaml
     ctest_yaml=${basic_configs[$basic_config]}
     echo "Super YAML created in ../testinput/${ctest_yaml}"
     mv ./jedi.yaml ../testinput/$ctest_yaml
