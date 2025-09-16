@@ -28,6 +28,7 @@
              obsfile: "data/obs/ioda_atms_npp.nc"
              missing file action: "warn"
          obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_atms_npp.nc4
