@@ -1,17 +1,18 @@
      - obs space:
          name: satwnd_winds_245_272
          distribution:
-           name: "RoundRobin"
-           halo size: 300e3
+           name: "@DISTRIBUTION@"
+           halo size: 500e3
          obsdatain:
            engine:
              type: H5File
-             #obsfile: data/obs/ioda_satwnd.nc
-             obsfile: "/scratch4/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/ioda_processing/python/ioda_satwnd_245.abi_goes-18_dc_llp.nc"
+             obsfile: "data/obs/ioda_satwnd.nc"
+             missing file action: "warn"
          obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
-             obsfile: jdiag_satwnd_winds_245_272.nc
+             obsfile: jdiag_satwnd_winds_245_g18.nc
              allow overwrite: true
          io pool:
            max pool size: 1
