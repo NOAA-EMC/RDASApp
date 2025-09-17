@@ -37,7 +37,7 @@
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 300e3 # orig
+           lengthscale: 200e3 # orig
 
        obs filters:
          # ------------------
@@ -214,7 +214,7 @@
            - name: MetaData/qiWithoutForecast
            minvalue: 80.0
 
-         # Reject obs with pressure < 12500 pa --- obs tosed without passing to setup routine
+         # Reject obs with pressure < 12500 pa --- obs tossed without passing to setup routine
          - filter: Bounds Check
            filter variables:
            - name: windEastward
