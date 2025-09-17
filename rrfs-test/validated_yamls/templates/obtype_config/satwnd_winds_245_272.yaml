@@ -12,7 +12,7 @@
            empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
-             obsfile: jdiag_satwnd_winds_245_g18.nc
+             obsfile: jdiag_satwnd_winds_245_272.nc
              allow overwrite: true
          io pool:
            max pool size: 1
