@@ -6,7 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs/ioda_satwnd.nc"
+             obsfile: "data/obs/ioda_satwnd.abi_goes-16.nc"
              missing file action: "warn"
          obsdataout:
            empty obs space action: "@emptyObsSpaceAction@"
