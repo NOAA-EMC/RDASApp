@@ -68,7 +68,7 @@ for basic_config in "${!basic_configs[@]}"; do
         cp  "./templates/obtype_config/$config" ./replace.yaml
         if [[ $basic_config == *"solver"* ]]; then
             # New obs filename
-            previous_path=`sed -n '/obsdataout/{n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$config`
+            previous_path=`sed -n '/obsdataout/{n; n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$config`
             int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest_yaml::-5}\//gI")
             new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
             obs_filename_new="obsfile: ${new_path}"
@@ -108,6 +108,7 @@ for basic_config in "${!basic_configs[@]}"; do
     python commentQC.py ${ctest_yaml}
 
     # Move to testinput and remove the old temporary yaml
+    sed -i -e "s/@emptyObsSpaceAction@/create output/"  ./jedi.yaml
     ctest_yaml=${basic_configs[$basic_config]}
     echo "Super YAML created in ../testinput/${ctest_yaml}"
     mv ./jedi.yaml ../testinput/$ctest_yaml
