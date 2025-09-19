@@ -51,7 +51,7 @@
          # ------------------
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
-           udescription: "iuse_check"
+           udescriptor: "iuse_check"
            filter variables:
            - name: airTemperature
            where:
@@ -62,7 +62,7 @@
 
          # Reject all obs not in type
          - filter: Perform Action
-           udescription: "obs_type_check"
+           udescriptor: "obs_type_check"
            filter variables:
            - name: airTemperature
            where:
@@ -73,7 +73,7 @@
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
-           udescription: "quality_marker_check"
+           udescriptor: "quality_marker_check"
            filter variables:
            - name: airTemperature
            where:
@@ -86,7 +86,7 @@
 
          # Time window filter
          - filter: Domain Check
-           udescription: "time_window_check"
+           udescriptor: "time_window_check"
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -97,7 +97,7 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
-           udescription: "duplicate_check"
+           udescriptor: "duplicate_check"
            filter variables:
            - name: airTemperature
            min_spacing: PT90M
@@ -110,7 +110,7 @@
 
          # Online regional domain check
          - filter: Bounds Check
-           udescription: "online_domain_check"
+           udescriptor: "online_domain_check"
            filter variables:
            - name: airTemperature
            test variables:
@@ -120,7 +120,7 @@
 
          # Initial error assignment
          - filter: Perform Action
-           udescription: "initial_error_assignment"
+           udescriptor: "initial_error_assignment"
            filter variables:
            - name: airTemperature
            where:
@@ -146,7 +146,7 @@
 
          # Error inflation based on pressure check (setupt.f90)
          - filter: Perform Action
-           udescription: "error_inflation_pressure_check"
+           udescriptor: "error_inflation_pressure_check"
            filter variables:
            - name: airTemperature
            where:
@@ -177,7 +177,7 @@
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
-           udescription: "error_inflation_QualityMarker"
+           udescriptor: "error_inflation_QualityMarker"
            filter variables:
            - name: airTemperature
            action:
@@ -189,7 +189,7 @@
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
-           udescription: "error_inflation_observation_pressure"
+           udescriptor: "error_inflation_observation_pressure"
            filter variables:
            - name: airTemperature
            action:
@@ -201,7 +201,7 @@
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
-           udescription: "bounds_check_ObsError"
+           udescriptor: "bounds_check_ObsError"
            filter variables:
            - name: airTemperature
            test variables:
@@ -213,7 +213,7 @@
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
-           udescription: "bounds_check_ObsValue"
+           udescriptor: "bounds_check_ObsValue"
            filter variables:
            - name: airTemperature
            minvalue: 100
@@ -223,7 +223,7 @@
 
          # Create temporary ObsErrorData
          - filter: Variable Assignment
-           udescription: "create_temporary_ObsErrorData"
+           udescriptor: "create_temporary_ObsErrorData"
            apply at iterations: 0,1
            assignments:
            - name: TempObsErrorData/airTemperature
@@ -237,7 +237,7 @@
 
          # Set ObsError set "error parameter" if < "max value"
          - filter: Perform Action
-           udescription: "ermin_set"
+           udescriptor: "ermin_set"
            apply at iterations: 0,1
            filter variables:
            - name: airTemperature
@@ -255,7 +255,7 @@
 
          # Set ObsError set "error parameter" if > "min value"
          - filter: Perform Action
-           udescription: "ermax_set"
+           udescriptor: "ermax_set"
            apply at iterations: 0,1
            filter variables:
            - name: airTemperature
@@ -273,7 +273,7 @@
 
          # Gross Error Check
          - filter: Background Check
-           udescription: "gross_error_check"
+           udescriptor: "gross_error_check"
            apply at iterations: 0,1
            filter variables:
            - name: airTemperature
@@ -288,7 +288,7 @@
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
-           udescription: "gross_error_check_0.7"
+           udescriptor: "gross_error_check_0.7"
            apply at iterations: 0,1
            filter variables:
            - name: airTemperature
@@ -303,7 +303,7 @@
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
          - filter: Perform Action
-           udescription: "reassign_error_TempObsErrorData"
+           udescriptor: "reassign_error_TempObsErrorData"
            apply at iterations: 0,1
            filter variables:
            - name: airTemperature
