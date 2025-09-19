@@ -345,7 +345,7 @@
                wndtype:    [ 245 ]
                cgross:     [ 2.5 ]
                error_min:  [ 1.4 ]
-               error_max:  [ 20.0 ]
+               error_max:  [ 5.0 ]
                variable: windEastward
            action:
              name: reject
@@ -362,7 +362,7 @@
                wndtype:    [ 245 ]
                cgross:     [ 2.5 ]
                error_min:  [ 1.4 ]
-               error_max:  [ 20.0 ]
+               error_max:  [ 5.0 ]
                variable: windNorthward
            action:
              name: reject
