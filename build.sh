@@ -211,6 +211,17 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
   fi
 fi
 
+# Copy workaround codes (remove these as soon as PRs are merged)
+# Workaround for regional GSIBEC
+# Saber PR #1088: https://github.com/JCSDA-internal/saber/pull/1088
+cp ../sorc/_workaround_/saber/GSIParameters.h        ../sorc/saber/src/saber/gsi/utils/GSIParameters.h
+cp ../sorc/_workaround_/saber/GridCheckHelper.cc     ../sorc/saber/src/saber/gsi/utils/GridCheckHelper.cc
+cp ../sorc/_workaround_/saber/gsi_covariance_mod.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
+cp ../sorc/_workaround_/saber/gsi_grid_mod.f90       ../sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90
+cp ../sorc/_workaround_/saber/Geometry.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
+# No PR for gsibec yet
+cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
+
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"
 # Configure
 echo "Configuring ..."
