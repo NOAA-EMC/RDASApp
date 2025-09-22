@@ -89,7 +89,6 @@ while getopts "p:c:m:j:t:b:w:hvfsxd" opt; do
         BUFRQUERY_OPT="-DSKIP_DOWNLOAD_TEST_DATA=ON"
       fi
       ;;
-
     w)
       BUILD_WORKAROUND=$OPTARG
       ;;
