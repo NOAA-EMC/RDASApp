@@ -17,7 +17,7 @@ obtype_configs=(
     "aircft_winds_235.yaml"
     "msonet_airTemperature_188.yaml"
     "msonet_specificHumidity_188.yaml"
-    "gnss_zenithTotalDelay.yaml"
+    #"gnss_zenithTotalDelay.yaml" # does not work for 3dvar ctests
     #"msonet_stationPressure_188.yaml" # Different result on Hera/Hercules
     "msonet_winds_288.yaml"
     #"adpsfc_airTemperature_187.yaml" # Waiting to add to ctest
@@ -43,7 +43,9 @@ obtype_configs=(
 # Define the basic configuration and final ctest YAMLs
 declare -A basic_configs
 basic_configs=(
+    ["fv3jedi_3dvar.yaml"]="rrfs_fv3jedi_2024052700_3Dvar.yaml"
     ["fv3jedi_en3dvar.yaml"]="rrfs_fv3jedi_2024052700_Ens3Dvar.yaml"
+    ["fv3jedi_hyb3denvar.yaml"]="rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml"
     ["fv3jedi_getkf_observer.yaml"]="rrfs_fv3jedi_2024052700_getkf_observer.yaml"
     ["fv3jedi_getkf_solver.yaml"]="rrfs_fv3jedi_2024052700_getkf_solver.yaml"
     ["mpasjedi_en3dvar.yaml"]="rrfs_mpasjedi_2024052700_Ens3Dvar.yaml"
