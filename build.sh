@@ -42,6 +42,7 @@ usage() {
   echo "  -x  build super executables            DEFAULT: NO"
   echo "  -t  include RRFS,BUFR_QUERY test data  DEFAULT: YES"
   echo "  -d  compile in the debug mode          DEFAULT: NO"
+  echo "  -w  compile with workaround codes      DEFAULT: YES"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -63,8 +64,9 @@ COMPILER="${COMPILER:-intel}"
 DEBUG_OPT=""
 BUFRQUERY_OPT=""
 BUILD_JCB="YES"
+BUILD_WORKAROUND="YES"
 
-while getopts "p:c:m:j:t:b:hvfsxd" opt; do
+while getopts "p:c:m:j:t:b:w:hvfsxd" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -86,6 +88,9 @@ while getopts "p:c:m:j:t:b:hvfsxd" opt; do
       if [[ "$OPTARG" == "NO" ]]; then
         BUFRQUERY_OPT="-DSKIP_DOWNLOAD_TEST_DATA=ON"
       fi
+      ;;
+    w)
+      BUILD_WORKAROUND=$OPTARG
       ;;
     v)
       BUILD_VERBOSE=YES
@@ -209,6 +214,19 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     echo "Linking in test data for FV3-JEDI case"
     $dir_root/rrfs-test/scripts/link_fv3jedi_expr.sh
   fi
+fi
+
+# Copy workaround codes (remove these as soon as PRs are merged)
+if [[ $BUILD_WORKAROUND == 'YES' ]]; then
+  # Workaround for regional GSIBEC
+  # Saber PR #1088: https://github.com/JCSDA-internal/saber/pull/1088
+  cp ../sorc/_workaround_/saber/GSIParameters.h        ../sorc/saber/src/saber/gsi/utils/GSIParameters.h
+  cp ../sorc/_workaround_/saber/GridCheckHelper.cc     ../sorc/saber/src/saber/gsi/utils/GridCheckHelper.cc
+  cp ../sorc/_workaround_/saber/gsi_covariance_mod.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
+  cp ../sorc/_workaround_/saber/gsi_grid_mod.f90       ../sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90
+  cp ../sorc/_workaround_/saber/Geometry.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
+  # No PR for gsibec yet
+  cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
 fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"

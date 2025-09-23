@@ -88,11 +88,6 @@
 	url = https://github.com/NOAA-EMC/jcb-algorithms.git
 	branch = develop
 	ignore = all
-[submodule "parm/jcb-rdas"]
-	path = parm/jcb-rdas
-	url = https://github.com/NOAA-EMC/jcb-rdas.git
-	branch = develop
-	ignore = all
 [submodule "sorc/jcb"]
 	path = sorc/jcb
 	url = https://github.com/NOAA-EMC/jcb.git
