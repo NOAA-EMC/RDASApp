@@ -191,6 +191,7 @@ if [[ $BUILD_JCB == 'YES' ]]; then
   PYTHONPATH="${PYTHONPATH}:$dir_root/sorc/jcb/src/:$dir_root/build/lib/python3.*:${dir_root}/sorc/wxflow/src"
   cd $dir_root/sorc/jcb/src/jcb/configuration/apps/rdas/test/client_integration
   python run.py
+  cd ${BUILD_DIR}
 fi
 
 # Create super yamls and link in test data
