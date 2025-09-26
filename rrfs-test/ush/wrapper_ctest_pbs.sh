@@ -31,7 +31,7 @@ ulimit -v unlimited
 ulimit -a
 export OOPS_TRACE=0
 export OMP_NUM_THREADS=1
-export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${RDASApp}/build/lib"
+export LD_LIBRARY_PATH="${RDASApp}/build/lib64:${LD_LIBRARY_PATH}"
 mpirun -n ${NTASKS} -ppn ${PPN} -cpu-bind core "${RDASApp}/build/bin/${EXECUTABLE}" "${CONFIG_FILE}"
 MPIRUN_EXIT_CODE=\$?
 echo "TEST_FINISHED_WITH_EXIT_CODE \$MPIRUN_EXIT_CODE" >> "${OUTFILE}"
