@@ -12,6 +12,7 @@ CostJo   : Nonlinear Jo(aircft_winds_234) = 7.1558475392451903e+00, nobs = 62, J
 CostJo   : Nonlinear Jo(aircft_winds_235) = 0.0000000000000000e+00 --- No Observations
 CostJo   : Nonlinear Jo(msonet_airTemperature_188) = 1.0085485416730577e+03, nobs = 30660, Jo/n = 3.2894603446609841e-02, err = 3.9252639824838862e+09
 CostJo   : Nonlinear Jo(msonet_specificHumidity_188) = 1.1915615537700733e+04, nobs = 35383, Jo/n = 3.3676103037336386e-01, err = 4.2942538620557805e+01
+CostJo   : Nonlinear Jo(gnss_ztd_zenithTotalDelay) = 7.1364817388736617e+02, nobs = 463, Jo/n = 1.5413567470569465e+00, err = 9.9999997764825821e-03
 CostJo   : Nonlinear Jo(msonet_winds_288) = 2.6905498426698396e+03, nobs = 9946, Jo/n = 2.7051576942186201e-01, err = 3.3461109562843676e+00
 CostJo   : Nonlinear Jo(atms_npp) = 9.7972473985498482e+02, nobs = 11566, Jo/n = 8.4707309342467993e-02, err = 4.2456198974349633e+00
 CostJo   : Nonlinear Jo(abi_g16) = 5.3439907978598319e+02, nobs = 6220, Jo/n = 8.5916250769450669e-02, err = 1.9781496622783417e+00
@@ -21,19 +22,19 @@ CostJo   : Nonlinear Jo(amsua_n19) = 1.6177508797009988e+01, nobs = 5, Jo/n = 3.
 CostJo   : Nonlinear Jo(amsua_metop-b) = 4.2363376011464409e+00, nobs = 2, Jo/n = 2.1181688005732204e+00, err = 3.0527575205889040e-01
 CostJo   : Nonlinear Jo(amsua_metop-c) = 0.0000000000000000e+00 --- No Observations
 CostJb   : Nonlinear Jb = 0.0000000000000000e+00
-CostFunction: Nonlinear J = 9.4338443850481664e+04
-DRPCGMinimizer: reduction in residual norm = 1.3215840815490271e-03
+CostFunction: Nonlinear J = 9.5052092024369034e+04
+DRPCGMinimizer: reduction in residual norm = 1.3251987862491353e-03
 CostFunction::addIncrement: Analysis: 
 ----------------------------------------------------------------------------------------------------
 State print | number of fields = 21 | cube sphere face size: C420
-eastward_wind                                | Min:-2.7236131786962638e+01 Max:+5.6287394076545539e+01 RMS:+1.3301168802961168e+01
-northward_wind                               | Min:-4.3554884097920450e+01 Max:+4.4000300042921282e+01 RMS:+6.4509455625178038e+00
-air_temperature                              | Min:+1.9402563026197743e+02 Max:+3.1448919954231195e+02 RMS:+2.5828113336553395e+02
-air_pressure_thickness                       | Min:+1.4040900277266977e+02 Max:+3.3267809005948261e+03 RMS:+1.7747194586034907e+03
-water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.6736516536758209e-02 RMS:+5.5756042248367808e-03
-cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+3.3448709075939637e-04 RMS:+2.7079069119848792e-06
-cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+1.3893610739163218e-03 RMS:+1.9362259991473356e-05
-ozone_mass_mixing_ratio                      | Min:+0.0000000000000000e+00 Max:+1.6036827741053316e-05 RMS:+4.4486512117199734e-06
+eastward_wind                                | Min:-2.7729731759264311e+01 Max:+5.6287789306824685e+01 RMS:+1.3301193457187575e+01
+northward_wind                               | Min:-4.3554900580839579e+01 Max:+4.4000669664650253e+01 RMS:+6.4505060510271681e+00
+air_temperature                              | Min:+1.9402563117882440e+02 Max:+3.1448920096804784e+02 RMS:+2.5828008287085800e+02
+air_pressure_thickness                       | Min:+1.4040895849422114e+02 Max:+3.3267816269359460e+03 RMS:+1.7747176757114098e+03
+water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.6749326891461846e-02 RMS:+5.5760073518497169e-03
+cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+3.3446962056099923e-04 RMS:+2.7040401860613364e-06
+cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+1.3893185847063591e-03 RMS:+1.9366942570189194e-05
+ozone_mass_mixing_ratio                      | Min:+0.0000000000000000e+00 Max:+1.6036828066703738e-05 RMS:+4.4486512378409465e-06
 geopotential_height_times_gravity_at_surface | Min:+0.0000000000000000e+00 Max:+3.5301851562500000e+04 RMS:+7.8466628379223766e+03
 f10m                                         | Min:+1.0004938840866089e+00 Max:+1.0948654413223267e+00 RMS:+1.0188698647586809e+00
 slmsk                                        | Min:+0.0000000000000000e+00 Max:+2.0000000000000000e+00 RMS:+7.8767192390790086e-01
@@ -46,73 +47,73 @@ soilt                                        | Min:+2.7023922729492188e+02 Max:+
 soilm                                        | Min:+1.4970073476433754e-02 Max:+1.0000000000000000e+00 RMS:+6.3592927195821791e-01
 eastward_wind_at_surface                     | Min:-1.2974018096923828e+01 Max:+1.2164360046386719e+01 RMS:+3.6171520010516645e+00
 northward_wind_at_surface                    | Min:-1.3966897010803223e+01 Max:+1.2346966743469238e+01 RMS:+3.7014659136589292e+00
-air_pressure_at_surface                      | Min:+6.6032194082367714e+04 Max:+1.0240428484092448e+05 RMS:+9.6254233705645864e+04
+air_pressure_at_surface                      | Min:+6.6032171740667822e+04 Max:+1.0240429357124146e+05 RMS:+9.6254064901046659e+04
 ----------------------------------------------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -3.1779756007931326,  Max= 5.9326539039611816,  Norm= 8.1723804544449887
-   lapseRate_order_2:  Min= -6.2686690022071456,  Max= 0.3558299035778899,  Norm= 7.9356371798526553
-           lapseRate:  Min= -1.2948018410558126,  Max= 1.6091044836682054,  Norm= 2.3911977820678696
-  emissivityJacobian:  Min= -11.9624032974243164,  Max= 28.4276466369628906,  Norm= 32.8380364032467611
-sensorScanAngle_order_4:  Min= -11.4137296676635742,  Max= 2.9763452901670862,  Norm= 14.1183405825278268
-sensorScanAngle_order_3:  Min= -2.9201308787865607,  Max= 5.1574392318725586,  Norm= 7.0433793811101904
-sensorScanAngle_order_2:  Min= -1.8812609428574845,  Max= 12.5310123497684422,  Norm= 20.0477836780277414
-     sensorScanAngle:  Min= -0.6364780068397522,  Max= 0.5087188439035516,  Norm= 1.0499659148521432
+            constant:  Min= -3.1780642733435145,  Max= 5.9326539039611816,  Norm= 8.1724435436380176
+   lapseRate_order_2:  Min= -6.2684873353154549,  Max= 0.3559163265535766,  Norm= 7.9354010391214613
+           lapseRate:  Min= -1.2947773248094416,  Max= 1.6089578919390735,  Norm= 2.3913335666880191
+  emissivityJacobian:  Min= -11.9624032974243164,  Max= 28.4276466369628906,  Norm= 32.8380363947907128
+sensorScanAngle_order_4:  Min= -11.4137296676635742,  Max= 2.9730744944052159,  Norm= 14.1176300870091804
+sensorScanAngle_order_3:  Min= -2.9208368600657613,  Max= 5.1574392318725586,  Norm= 7.0451876845724666
+sensorScanAngle_order_2:  Min= -1.8812654118687280,  Max= 12.5306641221413955,  Norm= 20.0469202565265299
+     sensorScanAngle:  Min= -0.6364780068397522,  Max= 0.5083786140905544,  Norm= 1.0500135002933539
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -0.6027024576109232,  Max= 0.4331713517810407,  Norm= 0.9833432211353370
-   lapseRate_order_2:  Min= -0.4309216470741540,  Max= 0.6040420330245255,  Norm= 1.0143705808296151
-           lapseRate:  Min= 0.0849711993565065,  Max= 0.8125258748654610,  Norm= 0.9370031006034077
-  emissivityJacobian:  Min= -0.0179856092959878,  Max= 1.5574769973754883,  Norm= 1.5587445396748763
-sensorScanAngle_order_4:  Min= -3.1475051317058953,  Max= 0.0266505356235802,  Norm= 4.7486593196649265
-sensorScanAngle_order_3:  Min= -0.3463409496467242,  Max= 8.7396579328012187,  Norm= 12.6552931362365850
-sensorScanAngle_order_2:  Min= -9.1792323711207739,  Max= 2.0843072396498128,  Norm= 12.8825090914865807
-     sensorScanAngle:  Min= -1.6818223692175893,  Max= 4.2624759648438744,  Norm= 6.6528438590203347
+            constant:  Min= -0.6026945605252091,  Max= 0.4333029371799498,  Norm= 0.9833468158834525
+   lapseRate_order_2:  Min= -0.4309155012412018,  Max= 0.6040951614161827,  Norm= 1.0144654838710825
+           lapseRate:  Min= 0.0849201202172792,  Max= 0.8125591225157974,  Norm= 0.9371121280446383
+  emissivityJacobian:  Min= -0.0164224518678502,  Max= 1.5574769973754883,  Norm= 1.5587590193675254
+sensorScanAngle_order_4:  Min= -3.1474910543220549,  Max= 0.0268395562109584,  Norm= 4.7485882742568721
+sensorScanAngle_order_3:  Min= -0.3463257019817426,  Max= 8.7396748943032492,  Norm= 12.6553414321311362
+sensorScanAngle_order_2:  Min= -9.1792147827558193,  Max= 2.0843225932789533,  Norm= 12.8824998062340121
+     sensorScanAngle:  Min= -1.6818103517928418,  Max= 4.2624902727802585,  Norm= 6.6528526928588363
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -0.1627448338919671,  Max= 0.3773146780255172,  Norm= 0.5768762287064363
-   lapseRate_order_2:  Min= -0.9772542458558631,  Max= 0.3217571351315072,  Norm= 1.1082436225832966
-           lapseRate:  Min= -0.2312224907190475,  Max= 0.2244160565077215,  Norm= 0.4991789357961491
-  emissivityJacobian:  Min= -0.0629776990652213,  Max= 2.0302479267120361,  Norm= 2.0320014712896750
-sensorScanAngle_order_4:  Min= -0.4331463346087633,  Max= 0.6869485876245246,  Norm= 1.2337451408469533
-sensorScanAngle_order_3:  Min= -0.6289866764410815,  Max= 0.3500403516118012,  Norm= 1.2350779405728629
-sensorScanAngle_order_2:  Min= -1.0728613163111151,  Max= 0.6744350206394804,  Norm= 1.9039003047483829
-     sensorScanAngle:  Min= -0.1412723920389422,  Max= 1.1460485268696197,  Norm= 2.0319021917954307
+            constant:  Min= -0.1625472086315846,  Max= 0.3773182992590153,  Norm= 0.5769207584190783
+   lapseRate_order_2:  Min= -0.9771783941822975,  Max= 0.3218577249820144,  Norm= 1.1082602369843693
+           lapseRate:  Min= -0.2312021479079019,  Max= 0.2244415158335063,  Norm= 0.4992510470517419
+  emissivityJacobian:  Min= -0.0621772954384403,  Max= 2.0302479267120361,  Norm= 2.0318215221511799
+sensorScanAngle_order_4:  Min= -0.4331381523984750,  Max= 0.6869595985234360,  Norm= 1.2341193378153847
+sensorScanAngle_order_3:  Min= -0.6289454116030609,  Max= 0.3500496639877123,  Norm= 1.2347301095839276
+sensorScanAngle_order_2:  Min= -1.0728233524902773,  Max= 0.6744441142485278,  Norm= 1.9036520014178582
+     sensorScanAngle:  Min= -0.1413647880953309,  Max= 1.1460817671660897,  Norm= 2.0320497125747741
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -0.8961293964240364,  Max= 4.7917661666870117,  Norm= 5.4363173636454665
-   lapseRate_order_2:  Min= -0.3491759151174969,  Max= 8.7758948841890358,  Norm= 13.4648565406270375
-           lapseRate:  Min= -1.1437489986419678,  Max= 1.6888174020268878,  Norm= 2.7160151084308746
-  emissivityJacobian:  Min= -20.5210227157189422,  Max= 23.6723300039340856,  Norm= 34.3843572349505493
-sensorScanAngle_order_4:  Min= -40.2264169380392644,  Max= 26.4195354350520795,  Norm= 64.4485187214388446
-sensorScanAngle_order_3:  Min= -4.3194479942321777,  Max= 1.0202248685957855,  Norm= 6.9157580143840178
-sensorScanAngle_order_2:  Min= -21.2183711955191079,  Max= 5.0535451678117695,  Norm= 31.0936400847008905
-     sensorScanAngle:  Min= -0.2861459620647484,  Max= 1.0406140458630138,  Norm= 1.8337546719521594
+            constant:  Min= -0.8961238068494481,  Max= 4.7917661666870117,  Norm= 5.4359176795736817
+   lapseRate_order_2:  Min= -0.3490116166539108,  Max= 8.7757708320313377,  Norm= 13.4618863542770271
+           lapseRate:  Min= -1.1437489986419678,  Max= 1.6946603969750544,  Norm= 2.7176572607603950
+  emissivityJacobian:  Min= -20.5210393911700244,  Max= 23.6722843012489221,  Norm= 34.3844109882838396
+sensorScanAngle_order_4:  Min= -40.2269497699890266,  Max= 26.4193629523877789,  Norm= 64.4486822740195748
+sensorScanAngle_order_3:  Min= -4.3194479942321777,  Max= 1.0184575443080592,  Norm= 6.9160197029553760
+sensorScanAngle_order_2:  Min= -21.2185266176078713,  Max= 5.0533177752358647,  Norm= 31.0938701501906642
+     sensorScanAngle:  Min= -0.2853460363439732,  Max= 1.0399383829275262,  Norm= 1.8319865720386928
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -1.2869069576263428,  Max= 5.0442228317260742,  Norm= 5.7467259094275542
-   lapseRate_order_2:  Min= -4.3341188430786133,  Max= 5.5988078117370605,  Norm= 7.7420520010296059
-           lapseRate:  Min= -2.2925119400024414,  Max= 1.4939149618148804,  Norm= 3.7178458011367539
+            constant:  Min= -1.2869069576263428,  Max= 5.0442228317260742,  Norm= 5.7467259096377612
+   lapseRate_order_2:  Min= -4.3341188430786133,  Max= 5.5988078117370605,  Norm= 7.7420520010300482
+           lapseRate:  Min= -2.2925119400024414,  Max= 1.4939149618148804,  Norm= 3.7178458011174440
   emissivityJacobian:  Min= -5.6364941596984863,  Max= 53.2439270019531250,  Norm= 60.1876723426919042
-sensorScanAngle_order_4:  Min= -7.8507480621337891,  Max= 4.0678691864013672,  Norm= 15.7210972063119137
-sensorScanAngle_order_3:  Min= -1.3815360069274902,  Max= 2.9289789199829102,  Norm= 3.8889424518508986
-sensorScanAngle_order_2:  Min= -2.3326070308685303,  Max= 12.3417730331420898,  Norm= 14.9321885191736037
-     sensorScanAngle:  Min= -0.8599539995193481,  Max= 0.0515699982643127,  Norm= 1.4720675119552129
+sensorScanAngle_order_4:  Min= -7.8507480621337891,  Max= 4.0678691864013672,  Norm= 15.7210972063640568
+sensorScanAngle_order_3:  Min= -1.3815360069274902,  Max= 2.9289789199829102,  Norm= 3.8889424517336728
+sensorScanAngle_order_2:  Min= -2.3326070308685303,  Max= 12.3417730331420898,  Norm= 14.9321885192200234
+     sensorScanAngle:  Min= -0.8599539995193481,  Max= 0.0515699982643127,  Norm= 1.4720675116572872
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -1.0170290470123291,  Max= 5.4732007980346680,  Norm= 6.0392561017253250
-   lapseRate_order_2:  Min= -0.0425609983503819,  Max= 0.0148299997672439,  Norm= 0.0666483218797807
-           lapseRate:  Min= -0.0729560032486916,  Max= 0.1905740052461624,  Norm= 0.2311132609268330
+            constant:  Min= -1.0170290470123291,  Max= 5.4732007980346680,  Norm= 6.0392561016503397
+   lapseRate_order_2:  Min= -0.0425609983503819,  Max= 0.0148299997672439,  Norm= 0.0666483218547571
+           lapseRate:  Min= -0.0729560032486916,  Max= 0.1905740052461624,  Norm= 0.2311132609165824
   emissivityJacobian:  Min= -0.2061479985713959,  Max= 65.8069763183593750,  Norm= 71.9926754270231868
-sensorScanAngle_order_4:  Min= -4.1118102073669434,  Max= 3.1943600177764893,  Norm= 7.9544089959165003
-sensorScanAngle_order_3:  Min= -4.4489440917968750,  Max= 2.1760199069976807,  Norm= 5.8037595689369166
-sensorScanAngle_order_2:  Min= -3.6290500164031982,  Max= 4.3954691886901855,  Norm= 6.8459311388078694
-     sensorScanAngle:  Min= -0.8942109942436218,  Max= 0.5390170216560364,  Norm= 1.4666757280511520
+sensorScanAngle_order_4:  Min= -4.1118102073669434,  Max= 3.1943600177764893,  Norm= 7.9544089958702440
+sensorScanAngle_order_3:  Min= -4.4489440917968750,  Max= 2.1760199069976807,  Norm= 5.8037595689897064
+sensorScanAngle_order_2:  Min= -3.6290500164031982,  Max= 4.3954691886901855,  Norm= 6.8459311387769173
+     sensorScanAngle:  Min= -0.8942109942436218,  Max= 0.5390170216560364,  Norm= 1.4666757281174878
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
@@ -125,42 +126,43 @@ sensorScanAngle_order_3:  Min= -1.8485900163650513,  Max= 1.3970370292663574,  N
 sensorScanAngle_order_2:  Min= -1.2139259576797485,  Max= 12.6756038665771484,  Norm= 14.6835678104604010
      sensorScanAngle:  Min= -0.2204570025205612,  Max= 0.5160130262374878,  Norm= 0.8446536277225672
 ---------------------------------------------------------------
-CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 8785.2956104448894621, nobs = 32373, Jo/n = 0.2713772467934665, err = 2.5760129573598358
-CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 705.8444262640520037, nobs = 3291, Jo/n = 0.2144771881689614, err = 4.3465843002662394
-CostJo   : Nonlinear Jo(aircar_winds_233) = 18639.0167756840455695, nobs = 68484, Jo/n = 0.2721660063034292, err = 2.6398078223451464
-CostJo   : Nonlinear Jo(aircft_airTemperature_130) = 2.3241521116224955, nobs = 4, Jo/n = 0.5810380279056239, err = 1.2612894425755301
-CostJo   : Nonlinear Jo(aircft_airTemperature_131) = 16.5435241747966053, nobs = 59, Jo/n = 0.2803987148270611, err = 0.8331908093214907
-CostJo   : Nonlinear Jo(aircft_airTemperature_134) = 22.9449713994544737, nobs = 40, Jo/n = 0.5736242849863619, err = 1.3982398249747574
+CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 8799.1494782636145828, nobs = 32373, Jo/n = 0.2718051919273349, err = 2.5760129573598358
+CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 707.9534503014077700, nobs = 3291, Jo/n = 0.2151180341237945, err = 4.3465843002662394
+CostJo   : Nonlinear Jo(aircar_winds_233) = 18646.1967512418850674, nobs = 68484, Jo/n = 0.2722708479534181, err = 2.6398078223451464
+CostJo   : Nonlinear Jo(aircft_airTemperature_130) = 2.3242517926551387, nobs = 4, Jo/n = 0.5810629481637847, err = 1.2612894425755301
+CostJo   : Nonlinear Jo(aircft_airTemperature_131) = 17.1012500080341781, nobs = 59, Jo/n = 0.2898516950514268, err = 0.8331908093214907
+CostJo   : Nonlinear Jo(aircft_airTemperature_134) = 24.1251175758706786, nobs = 40, Jo/n = 0.6031279393967670, err = 1.3982398249747574
 CostJo   : Nonlinear Jo(aircft_airTemperature_135) = 0.0000000000000000 --- No Observations
-CostJo   : Nonlinear Jo(aircft_specificHumidity_134) = 5.9225109469323982, nobs = 13, Jo/n = 0.4555777651486460, err = 0.0010058671437075
-CostJo   : Nonlinear Jo(aircft_winds_230) = 7.9649351403003017, nobs = 12, Jo/n = 0.6637445950250251, err = 3.2950999736785889
-CostJo   : Nonlinear Jo(aircft_winds_231) = 7.6981532945821707, nobs = 118, Jo/n = 0.0652385872422218, err = 5.6567001342773438
-CostJo   : Nonlinear Jo(aircft_winds_234) = 5.0363223325351019, nobs = 62, Jo/n = 0.0812310053634694, err = 5.2087096909111796
+CostJo   : Nonlinear Jo(aircft_specificHumidity_134) = 5.3222173239208859, nobs = 13, Jo/n = 0.4094013326092989, err = 0.0010058671437075
+CostJo   : Nonlinear Jo(aircft_winds_230) = 7.9654609402008472, nobs = 12, Jo/n = 0.6637884116834040, err = 3.2950999736785889
+CostJo   : Nonlinear Jo(aircft_winds_231) = 7.6099773989275601, nobs = 118, Jo/n = 0.0644913338892166, err = 5.6567001342773438
+CostJo   : Nonlinear Jo(aircft_winds_234) = 5.0382336653702131, nobs = 62, Jo/n = 0.0812618333124228, err = 5.2087096909111796
 CostJo   : Nonlinear Jo(aircft_winds_235) = 0.0000000000000000 --- No Observations
-CostJo   : Nonlinear Jo(msonet_airTemperature_188) = 486.8133781807041487, nobs = 30488, Jo/n = 0.0159673766131168, err = 3899484925.9557981491088867
-CostJo   : Nonlinear Jo(msonet_specificHumidity_188) = 8529.0322743194337818, nobs = 35383, Jo/n = 0.2410488730271439, err = 42.9425386205578050
-CostJo   : Nonlinear Jo(msonet_winds_288) = 1625.7916551489292942, nobs = 9944, Jo/n = 0.1634947360366985, err = 3.3460290952563323
-CostJo   : Nonlinear Jo(atms_npp) = 517.9169464022407965, nobs = 11566, Jo/n = 0.0447792621824521, err = 4.2456198974349633
-CostJo   : Nonlinear Jo(abi_g16) = 281.7206822824001051, nobs = 6220, Jo/n = 0.0452927141933119, err = 1.9781496622783417
-CostJo   : Nonlinear Jo(abi_g18) = 147.7121703663221126, nobs = 4219, Jo/n = 0.0350111804613231, err = 1.9470200811016578
-CostJo   : Nonlinear Jo(atms_n21) = 2330.9791251425240262, nobs = 16240, Jo/n = 0.1435331973609928, err = 4.9371578119925035
-CostJo   : Nonlinear Jo(amsua_n19) = 11.3266474934875880, nobs = 5, Jo/n = 2.2653294986975174, err = 0.3517965917449892
-CostJo   : Nonlinear Jo(amsua_metop-b) = 3.3050951823118622, nobs = 2, Jo/n = 1.6525475911559311, err = 0.3052757520588904
+CostJo   : Nonlinear Jo(msonet_airTemperature_188) = 486.8760647232920178, nobs = 30489, Jo/n = 0.0159689089416935, err = 3898579768.0971894264221191
+CostJo   : Nonlinear Jo(msonet_specificHumidity_188) = 8529.0881253967072553, nobs = 35383, Jo/n = 0.2410504514992145, err = 42.9425386205578050
+CostJo   : Nonlinear Jo(gnss_ztd_zenithTotalDelay) = 348.9021675916848153, nobs = 463, Jo/n = 0.7535683965263171, err = 0.0099999997764826
+CostJo   : Nonlinear Jo(msonet_winds_288) = 1625.3338087043425730, nobs = 9944, Jo/n = 0.1634486935543386, err = 3.3460290952563323
+CostJo   : Nonlinear Jo(atms_npp) = 518.0383420193957136, nobs = 11566, Jo/n = 0.0447897580857164, err = 4.2456198974349633
+CostJo   : Nonlinear Jo(abi_g16) = 282.9100986137581799, nobs = 6220, Jo/n = 0.0454839386838840, err = 1.9781496622783417
+CostJo   : Nonlinear Jo(abi_g18) = 148.3448419280597363, nobs = 4219, Jo/n = 0.0351611381673524, err = 1.9470200811016578
+CostJo   : Nonlinear Jo(atms_n21) = 2331.2327354821486551, nobs = 16240, Jo/n = 0.1435488137612161, err = 4.9371578119925035
+CostJo   : Nonlinear Jo(amsua_n19) = 11.3269117438041285, nobs = 5, Jo/n = 2.2653823487608258, err = 0.3517965917449892
+CostJo   : Nonlinear Jo(amsua_metop-b) = 3.3051578085140685, nobs = 2, Jo/n = 1.6525789042570342, err = 0.3052757520588904
 CostJo   : Nonlinear Jo(amsua_metop-c) = 0.0000000000000000 --- No Observations
-CostJb   : Nonlinear Jb = 183.9097829994429958
-CostFunction: Nonlinear J = 42317.0991393110161880
-DRPCGMinimizer: reduction in residual norm = 0.0075564326631891
+CostJb   : Nonlinear Jb = 184.2986673501685857
+CostFunction: Nonlinear J = 42692.4431098737622960
+DRPCGMinimizer: reduction in residual norm = 0.0073784859322996
 CostFunction::addIncrement: Analysis: 
 ----------------------------------------------------------------------------------------------------
 State print | number of fields = 21 | cube sphere face size: C420
-eastward_wind                                | Min:-2.7236874567431286e+01 Max:+5.6286606720511656e+01 RMS:+1.3301251805867265e+01
-northward_wind                               | Min:-4.3556860819127863e+01 Max:+4.4004618212820922e+01 RMS:+6.4508675208041106e+00
-air_temperature                              | Min:+1.9402554828046902e+02 Max:+3.1448919622001227e+02 RMS:+2.5828119623643227e+02
-air_pressure_thickness                       | Min:+1.4040909681010376e+02 Max:+3.3267802666368189e+03 RMS:+1.7747194421374063e+03
-water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.6766780514855457e-02 RMS:+5.5754562619826850e-03
-cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+3.3452120355023944e-04 RMS:+2.7073132033863538e-06
-cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+1.3897378235876684e-03 RMS:+1.9363979480097596e-05
-ozone_mass_mixing_ratio                      | Min:+0.0000000000000000e+00 Max:+1.6036766017065118e-05 RMS:+4.4486562141129282e-06
+eastward_wind                                | Min:-2.7742752001105437e+01 Max:+5.6285696338318964e+01 RMS:+1.3301611066209423e+01
+northward_wind                               | Min:-4.3556604396360157e+01 Max:+4.4004844406568438e+01 RMS:+6.4503264579692123e+00
+air_temperature                              | Min:+1.9402554909983408e+02 Max:+3.1448919770251348e+02 RMS:+2.5828002209019246e+02
+air_pressure_thickness                       | Min:+1.4040907115794295e+02 Max:+3.3267810121825664e+03 RMS:+1.7747183975518833e+03
+water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.6748411049021373e-02 RMS:+5.5754462942066065e-03
+cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+3.3450979660773678e-04 RMS:+2.7037543975733972e-06
+cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+1.3900030417421695e-03 RMS:+1.9373593991989505e-05
+ozone_mass_mixing_ratio                      | Min:+0.0000000000000000e+00 Max:+1.6036765847717251e-05 RMS:+4.4486562608413015e-06
 geopotential_height_times_gravity_at_surface | Min:+0.0000000000000000e+00 Max:+3.5301851562500000e+04 RMS:+7.8466628379223766e+03
 f10m                                         | Min:+1.0004938840866089e+00 Max:+1.0948654413223267e+00 RMS:+1.0188698647586809e+00
 slmsk                                        | Min:+0.0000000000000000e+00 Max:+2.0000000000000000e+00 RMS:+7.8767192390790086e-01
@@ -173,73 +175,73 @@ soilt                                        | Min:+2.7023922729492188e+02 Max:+
 soilm                                        | Min:+1.4970073476433754e-02 Max:+1.0000000000000000e+00 RMS:+6.3592927195821791e-01
 eastward_wind_at_surface                     | Min:-1.2974018096923828e+01 Max:+1.2164360046386719e+01 RMS:+3.6171520010516645e+00
 northward_wind_at_surface                    | Min:-1.3966897010803223e+01 Max:+1.2346966743469238e+01 RMS:+3.7014659136589292e+00
-air_pressure_at_surface                      | Min:+6.6032238105942422e+04 Max:+1.0240429530422998e+05 RMS:+9.6254279579514929e+04
+air_pressure_at_surface                      | Min:+6.6032224781131736e+04 Max:+1.0240430443442249e+05 RMS:+9.6254128337884365e+04
 ----------------------------------------------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -3.1749183419360438,  Max= 5.9326539039611816,  Norm= 8.1697046800069391
-   lapseRate_order_2:  Min= -6.2611070716565003,  Max= 0.3554621991192503,  Norm= 7.9282337276150123
-           lapseRate:  Min= -1.2915949813613863,  Max= 1.6109903254545352,  Norm= 2.3984214896989648
-  emissivityJacobian:  Min= -11.9624032974243164,  Max= 28.4276466369628906,  Norm= 32.8380364195106011
-sensorScanAngle_order_4:  Min= -11.4137296676635742,  Max= 2.9004794994098022,  Norm= 14.1392189257166052
-sensorScanAngle_order_3:  Min= -2.9370005778632846,  Max= 5.1574392318725586,  Norm= 7.0533830189226547
-sensorScanAngle_order_2:  Min= -1.8874052679809428,  Max= 12.5343616047985602,  Norm= 20.0535891156559245
-     sensorScanAngle:  Min= -0.6364780068397522,  Max= 0.5157620451723054,  Norm= 1.0541938347136499
+            constant:  Min= -3.1750350225837431,  Max= 5.9326539039611816,  Norm= 8.1697802034036311
+   lapseRate_order_2:  Min= -6.2610126002301669,  Max= 0.3555264969262151,  Norm= 7.9281651395957127
+           lapseRate:  Min= -1.2914992923763688,  Max= 1.6107486516638756,  Norm= 2.3983801959001632
+  emissivityJacobian:  Min= -11.9624032974243164,  Max= 28.4276466369628906,  Norm= 32.8380364089827026
+sensorScanAngle_order_4:  Min= -11.4137296676635742,  Max= 2.8962885094988513,  Norm= 14.1383663317962185
+sensorScanAngle_order_3:  Min= -2.9379886075894524,  Max= 5.1574392318725586,  Norm= 7.0556854283564405
+sensorScanAngle_order_2:  Min= -1.8874082292979990,  Max= 12.5338499203960421,  Norm= 20.0523375841994067
+     sensorScanAngle:  Min= -0.6364780068397522,  Max= 0.5152690217405109,  Norm= 1.0541834276345008
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -0.6026972863847593,  Max= 0.4327504399540609,  Norm= 0.9832079446564567
-   lapseRate_order_2:  Min= -0.4321203271569596,  Max= 0.6035116853300079,  Norm= 1.0139152442610457
-           lapseRate:  Min= 0.0848069504179029,  Max= 0.8112428207503459,  Norm= 0.9349009401383642
-  emissivityJacobian:  Min= -0.0186086184027722,  Max= 1.5574769973754883,  Norm= 1.5587490505499162
-sensorScanAngle_order_4:  Min= -3.1475186646242865,  Max= 0.0260250313905771,  Norm= 4.7486852219239246
-sensorScanAngle_order_3:  Min= -0.3462313431529050,  Max= 8.7396509171403185,  Norm= 12.6553080653913099
-sensorScanAngle_order_2:  Min= -9.1792354306019082,  Max= 2.0844565088870466,  Norm= 12.8824558625210361
-     sensorScanAngle:  Min= -1.6816680491915210,  Max= 4.2624750816705079,  Norm= 6.6528336415023395
+            constant:  Min= -0.6026928298449760,  Max= 0.4328540713565474,  Norm= 0.9832138997040049
+   lapseRate_order_2:  Min= -0.4321222437386776,  Max= 0.6035660825278397,  Norm= 1.0140014166801579
+           lapseRate:  Min= 0.0847675737876300,  Max= 0.8112458368680819,  Norm= 0.9349699764494287
+  emissivityJacobian:  Min= -0.0171513451003270,  Max= 1.5574769973754883,  Norm= 1.5587612595695863
+sensorScanAngle_order_4:  Min= -3.1475097590256755,  Max= 0.0261737595436888,  Norm= 4.7486319350393966
+sensorScanAngle_order_3:  Min= -0.3462210127649181,  Max= 8.7396613972161283,  Norm= 12.6553408279783532
+sensorScanAngle_order_2:  Min= -9.1792248521198392,  Max= 2.0844667035653388,  Norm= 12.8824549716100094
+     sensorScanAngle:  Min= -1.6816602475472591,  Max= 4.2624834275955505,  Norm= 6.6528346165892227
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -0.1628967948486552,  Max= 0.3774224978672738,  Norm= 0.5768757547741127
-   lapseRate_order_2:  Min= -0.9790169292076564,  Max= 0.3213888703738203,  Norm= 1.1096088137300848
-           lapseRate:  Min= -0.2307463441712712,  Max= 0.2241898891208400,  Norm= 0.4986091748437236
-  emissivityJacobian:  Min= -0.0626212240396575,  Max= 2.0302479267120361,  Norm= 2.0319942241743174
-sensorScanAngle_order_4:  Min= -0.4327907186597914,  Max= 0.6869584029822249,  Norm= 1.2333705625614306
-sensorScanAngle_order_3:  Min= -0.6289098481258010,  Max= 0.3504218299474788,  Norm= 1.2353603019632535
-sensorScanAngle_order_2:  Min= -1.0728016034432959,  Max= 0.6747783837178427,  Norm= 1.9040804222388832
-     sensorScanAngle:  Min= -0.1416973398461628,  Max= 1.1460416897154704,  Norm= 2.0319048436545359
+            constant:  Min= -0.1627252623038434,  Max= 0.3774265561610849,  Norm= 0.5769170520464283
+   lapseRate_order_2:  Min= -0.9790416116907945,  Max= 0.3214480066974363,  Norm= 1.1096871650254883
+           lapseRate:  Min= -0.2307600118536750,  Max= 0.2241830613740267,  Norm= 0.4986550170074463
+  emissivityJacobian:  Min= -0.0620215841932954,  Max= 2.0302479267120361,  Norm= 2.0318788591720578
+sensorScanAngle_order_4:  Min= -0.4327823371693056,  Max= 0.6869676306546475,  Norm= 1.2336746509118888
+sensorScanAngle_order_3:  Min= -0.6288729927926838,  Max= 0.3504317648293919,  Norm= 1.2350660837347984
+sensorScanAngle_order_2:  Min= -1.0727626789064042,  Max= 0.6747883461700245,  Norm= 1.9038683841901416
+     sensorScanAngle:  Min= -0.1417625693613706,  Max= 1.1460733260859857,  Norm= 2.0320369851679803
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -0.8959118094667367,  Max= 4.7917661666870117,  Norm= 5.4402819922559580
-   lapseRate_order_2:  Min= -0.3578640908766814,  Max= 8.7650606930899517,  Norm= 13.3836066739726967
-           lapseRate:  Min= -1.1437489986419678,  Max= 1.6876130507247238,  Norm= 2.7420004983488249
-  emissivityJacobian:  Min= -20.5245133443373255,  Max= 23.6768348297096516,  Norm= 34.3882423551752012
-sensorScanAngle_order_4:  Min= -40.2378305457891514,  Max= 26.3832473224552899,  Norm= 64.4952877620468854
-sensorScanAngle_order_3:  Min= -4.3194479942321777,  Max= 0.9901728873173853,  Norm= 6.9013565633292702
-sensorScanAngle_order_2:  Min= -21.2826238461421084,  Max= 5.0058602408639477,  Norm= 31.1403738774596874
-     sensorScanAngle:  Min= -0.2889094650710433,  Max= 1.0508226900684501,  Norm= 1.8524624770945528
+            constant:  Min= -0.8959077280652632,  Max= 4.7917661666870117,  Norm= 5.4397633697997270
+   lapseRate_order_2:  Min= -0.3582356064261227,  Max= 8.7646270966298268,  Norm= 13.3824603962122879
+           lapseRate:  Min= -1.1437489986419678,  Max= 1.6921868424915820,  Norm= 2.7426581396389338
+  emissivityJacobian:  Min= -20.5245287929110845,  Max= 23.6768151599556624,  Norm= 34.3883134982131011
+sensorScanAngle_order_4:  Min= -40.2376469635287748,  Max= 26.3833187651687133,  Norm= 64.4949397936226063
+sensorScanAngle_order_3:  Min= -4.3194479942321777,  Max= 0.9890279083353575,  Norm= 6.9015520570970175
+sensorScanAngle_order_2:  Min= -21.2824203360955373,  Max= 5.0058525490760513,  Norm= 31.1400579245340694
+     sensorScanAngle:  Min= -0.2877875142007442,  Max= 1.0500381473711786,  Norm= 1.8503641083836542
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -1.2869069576263428,  Max= 5.0442228317260742,  Norm= 5.7467259096844963
-   lapseRate_order_2:  Min= -4.3341188430786133,  Max= 5.5988078117370605,  Norm= 7.7420520011281919
-           lapseRate:  Min= -2.2925119400024414,  Max= 1.4939149618148804,  Norm= 3.7178457989779585
+            constant:  Min= -1.2869069576263428,  Max= 5.0442228317260742,  Norm= 5.7467259097012100
+   lapseRate_order_2:  Min= -4.3341188430786133,  Max= 5.5988078117370605,  Norm= 7.7420520011284983
+           lapseRate:  Min= -2.2925119400024414,  Max= 1.4939149618148804,  Norm= 3.7178457989702007
   emissivityJacobian:  Min= -5.6364941596984863,  Max= 53.2439270019531250,  Norm= 60.1876723426919042
-sensorScanAngle_order_4:  Min= -7.8507480621337891,  Max= 4.0678691864013672,  Norm= 15.7210972065732228
-sensorScanAngle_order_3:  Min= -1.3815360069274902,  Max= 2.9289789199829102,  Norm= 3.8889424513676647
-sensorScanAngle_order_2:  Min= -2.3326070308685303,  Max= 12.3417730331420898,  Norm= 14.9321885193216950
-     sensorScanAngle:  Min= -0.8599539995193481,  Max= 0.0515699982643127,  Norm= 1.4720675112933768
+sensorScanAngle_order_4:  Min= -7.8507480621337891,  Max= 4.0678691864013672,  Norm= 15.7210972065789942
+sensorScanAngle_order_3:  Min= -1.3815360069274902,  Max= 2.9289789199829102,  Norm= 3.8889424513555526
+sensorScanAngle_order_2:  Min= -2.3326070308685303,  Max= 12.3417730331420898,  Norm= 14.9321885193261359
+     sensorScanAngle:  Min= -0.8599539995193481,  Max= 0.0515699982643127,  Norm= 1.4720675112672545
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
-            constant:  Min= -1.0170290470123291,  Max= 5.4732007980346680,  Norm= 6.0392561026946527
-   lapseRate_order_2:  Min= -0.0425609983503819,  Max= 0.0148299997672439,  Norm= 0.0666483397957763
-           lapseRate:  Min= -0.0729560032486916,  Max= 0.1905740052461624,  Norm= 0.2311132543424324
+            constant:  Min= -1.0170290470123291,  Max= 5.4732007980346680,  Norm= 6.0392561026998433
+   lapseRate_order_2:  Min= -0.0425609983503819,  Max= 0.0148299997672439,  Norm= 0.0666483398431008
+           lapseRate:  Min= -0.0729560032486916,  Max= 0.1905740052461624,  Norm= 0.2311132543263981
   emissivityJacobian:  Min= -0.2061479985713959,  Max= 65.8069763183593750,  Norm= 71.9926754270231868
-sensorScanAngle_order_4:  Min= -4.1118102073669434,  Max= 3.1943600177764893,  Norm= 7.9544089965336626
-sensorScanAngle_order_3:  Min= -4.4489440917968750,  Max= 2.1760199069976807,  Norm= 5.8037595682197924
-sensorScanAngle_order_2:  Min= -3.6290500164031982,  Max= 4.3954691886901855,  Norm= 6.8459311392284699
-     sensorScanAngle:  Min= -0.8942109942436218,  Max= 0.5390170216560364,  Norm= 1.4666757271201734
+sensorScanAngle_order_4:  Min= -4.1118102073669434,  Max= 3.1943600177764893,  Norm= 7.9544089965369542
+sensorScanAngle_order_3:  Min= -4.4489440917968750,  Max= 2.1760199069976807,  Norm= 5.8037595682159759
+sensorScanAngle_order_2:  Min= -3.6290500164031982,  Max= 4.3954691886901855,  Norm= 6.8459311392307081
+     sensorScanAngle:  Min= -0.8942109942436218,  Max= 0.5390170216560364,  Norm= 1.4666757271152413
 ---------------------------------------------------------------
 Obs bias coefficients: 
 ---------------------------------------------------------------
@@ -252,27 +254,28 @@ sensorScanAngle_order_3:  Min= -1.8485900163650513,  Max= 1.3970370292663574,  N
 sensorScanAngle_order_2:  Min= -1.2139259576797485,  Max= 12.6756038665771484,  Norm= 14.6835678104604010
      sensorScanAngle:  Min= -0.2204570025205612,  Max= 0.5160130262374878,  Norm= 0.8446536277225672
 ---------------------------------------------------------------
-CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 8787.4785830126638757, nobs = 32373, Jo/n = 0.2714446786832442, err = 2.5760129573598358
-CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 705.6888659058797657, nobs = 3291, Jo/n = 0.2144299197526222, err = 4.3465843002662394
-CostJo   : Nonlinear Jo(aircar_winds_233) = 18638.4628207591267710, nobs = 68484, Jo/n = 0.2721579174808587, err = 2.6398078223451464
-CostJo   : Nonlinear Jo(aircft_airTemperature_130) = 2.3234031893725620, nobs = 4, Jo/n = 0.5808507973431405, err = 1.2612894425755301
-CostJo   : Nonlinear Jo(aircft_airTemperature_131) = 16.6309992545759968, nobs = 59, Jo/n = 0.2818813432978983, err = 0.8331908093214907
-CostJo   : Nonlinear Jo(aircft_airTemperature_134) = 22.9448528130777873, nobs = 40, Jo/n = 0.5736213203269447, err = 1.3982398249747574
+CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 8800.8997668167485244, nobs = 32373, Jo/n = 0.2718592582342306, err = 2.5760129573598358
+CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 707.5651776297636388, nobs = 3291, Jo/n = 0.2150000539744040, err = 4.3465843002662394
+CostJo   : Nonlinear Jo(aircar_winds_233) = 18645.7849805302175810, nobs = 68484, Jo/n = 0.2722648352977369, err = 2.6398078223451464
+CostJo   : Nonlinear Jo(aircft_airTemperature_130) = 2.3234493497248159, nobs = 4, Jo/n = 0.5808623374312040, err = 1.2612894425755301
+CostJo   : Nonlinear Jo(aircft_airTemperature_131) = 17.1051098808089677, nobs = 59, Jo/n = 0.2899171166238808, err = 0.8331908093214907
+CostJo   : Nonlinear Jo(aircft_airTemperature_134) = 24.1547450825129815, nobs = 40, Jo/n = 0.6038686270628245, err = 1.3982398249747574
 CostJo   : Nonlinear Jo(aircft_airTemperature_135) = 0.0000000000000000 --- No Observations
-CostJo   : Nonlinear Jo(aircft_specificHumidity_134) = 5.9249481780617108, nobs = 13, Jo/n = 0.4557652444662855, err = 0.0010058671437075
-CostJo   : Nonlinear Jo(aircft_winds_230) = 7.9641323763085330, nobs = 12, Jo/n = 0.6636776980257111, err = 3.2950999736785889
-CostJo   : Nonlinear Jo(aircft_winds_231) = 7.6925417921164758, nobs = 118, Jo/n = 0.0651910321365803, err = 5.6567001342773438
-CostJo   : Nonlinear Jo(aircft_winds_234) = 5.0410699353574309, nobs = 62, Jo/n = 0.0813075796025392, err = 5.2087096909111796
+CostJo   : Nonlinear Jo(aircft_specificHumidity_134) = 5.3167754005321086, nobs = 13, Jo/n = 0.4089827231178545, err = 0.0010058671437075
+CostJo   : Nonlinear Jo(aircft_winds_230) = 7.9654239119874433, nobs = 12, Jo/n = 0.6637853259989536, err = 3.2950999736785889
+CostJo   : Nonlinear Jo(aircft_winds_231) = 7.6090713030595776, nobs = 118, Jo/n = 0.0644836551106744, err = 5.6567001342773438
+CostJo   : Nonlinear Jo(aircft_winds_234) = 5.0426642706741722, nobs = 62, Jo/n = 0.0813332946882931, err = 5.2087096909111796
 CostJo   : Nonlinear Jo(aircft_winds_235) = 0.0000000000000000 --- No Observations
-CostJo   : Nonlinear Jo(msonet_airTemperature_188) = 487.8579800078672406, nobs = 30488, Jo/n = 0.0160016393337663, err = 3899484925.9557981491088867
-CostJo   : Nonlinear Jo(msonet_specificHumidity_188) = 8526.4058742751203681, nobs = 35383, Jo/n = 0.2409746452894079, err = 42.9425386205578050
-CostJo   : Nonlinear Jo(msonet_winds_288) = 1624.6221945350514488, nobs = 9944, Jo/n = 0.1633771313892851, err = 3.3460290952563323
-CostJo   : Nonlinear Jo(atms_npp) = 517.2671343048519930, nobs = 11566, Jo/n = 0.0447230792240059, err = 4.2456198974349633
-CostJo   : Nonlinear Jo(abi_g16) = 280.1048176580096651, nobs = 6220, Jo/n = 0.0450329288839244, err = 1.9781496622783417
-CostJo   : Nonlinear Jo(abi_g18) = 146.9342079506661207, nobs = 4219, Jo/n = 0.0348267854824997, err = 1.9470200811016578
-CostJo   : Nonlinear Jo(atms_n21) = 2329.9711702406502809, nobs = 16240, Jo/n = 0.1434711311724538, err = 4.9371578119925035
-CostJo   : Nonlinear Jo(amsua_n19) = 11.3385289823856219, nobs = 5, Jo/n = 2.2677057964771246, err = 0.3517965917449892
-CostJo   : Nonlinear Jo(amsua_metop-b) = 3.3035736670521043, nobs = 2, Jo/n = 1.6517868335260522, err = 0.3052757520588904
+CostJo   : Nonlinear Jo(msonet_airTemperature_188) = 487.9115227038810190, nobs = 30489, Jo/n = 0.0160028706321585, err = 3898579768.0971894264221191
+CostJo   : Nonlinear Jo(msonet_specificHumidity_188) = 8526.8515938157361234, nobs = 35383, Jo/n = 0.2409872422862882, err = 42.9425386205578050
+CostJo   : Nonlinear Jo(gnss_ztd_zenithTotalDelay) = 350.3522989628000914, nobs = 463, Jo/n = 0.7567004297252702, err = 0.0099999997764826
+CostJo   : Nonlinear Jo(msonet_winds_288) = 1624.0798383770870714, nobs = 9944, Jo/n = 0.1633225903436331, err = 3.3460290952563323
+CostJo   : Nonlinear Jo(atms_npp) = 517.3811440631111509, nobs = 11566, Jo/n = 0.0447329365435856, err = 4.2456198974349633
+CostJo   : Nonlinear Jo(abi_g16) = 281.2993824228343556, nobs = 6220, Jo/n = 0.0452249810969187, err = 1.9781496622783417
+CostJo   : Nonlinear Jo(abi_g18) = 147.4906848076827259, nobs = 4219, Jo/n = 0.0349586832917001, err = 1.9470200811016578
+CostJo   : Nonlinear Jo(atms_n21) = 2330.2051752230404418, nobs = 16240, Jo/n = 0.1434855403462463, err = 4.9371578119925035
+CostJo   : Nonlinear Jo(amsua_n19) = 11.3385671609399523, nobs = 5, Jo/n = 2.2677134321879904, err = 0.3517965917449892
+CostJo   : Nonlinear Jo(amsua_metop-b) = 3.3035652214123141, nobs = 2, Jo/n = 1.6517826107061571, err = 0.3052757520588904
 CostJo   : Nonlinear Jo(amsua_metop-c) = 0.0000000000000000 --- No Observations
-CostJb   : Nonlinear Jb = 184.7517072306054899
-CostFunction: Nonlinear J = 42312.7094060687886667
+CostJb   : Nonlinear Jb = 185.0662143512084299
+CostFunction: Nonlinear J = 42689.0471512857693597
