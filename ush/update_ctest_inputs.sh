@@ -8,7 +8,9 @@ DYCORE="BOTH" # [FV3JEDI, MPASJEDI, BOTH]
 
 # FV3-JEDI tests
 rrfs_fv3jedi_tests=(
+    "rrfs_fv3jedi_2024052700_3Dvar"
     "rrfs_fv3jedi_2024052700_Ens3Dvar"
+    "rrfs_fv3jedi_2024052700_HybEns3Dvar"
     "rrfs_fv3jedi_2024052700_getkf_observer"
     "rrfs_fv3jedi_2024052700_getkf_solver"
 )

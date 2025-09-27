@@ -15,5 +15,5 @@ source ${ushdir}/load_rdas.sh
 set -x
 cd ${ushdir}/../build/rrfs-test
 pwd
-ctest -j8 # or ctest -VV for verbose outputs
+ctest -j10 # or ctest -VV for verbose outputs
 exit $?
