@@ -28,6 +28,7 @@
              obsfile: "data/obs/ioda_atms_n21.nc"
              missing file action: "warn"
          obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_atms_n21.nc4
@@ -52,14 +53,14 @@
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 200e3 # orig
        obs bias:
-         input file:  data/obs/atms_n21.satbias.nc4
-         output file: out_atms_n21.satbias.nc4
+         input file:  data/satbias_in/atms_n21.satbias.nc
+         output file: data/satbias_out/atms_n21.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &atms_n21_tlapse  data/obs/atms_n21.tlapse.txt
+             tlapse: &atms_n21_tlapse  data/satbias_in/atms_n21.tlapse.txt
            - name: lapseRate
              tlapse: *atms_n21_tlapse
            - name: emissivityJacobian
@@ -76,11 +77,11 @@
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/atms_n21.satbias_cov.nc4
+             input file: data/satbias_in/atms_n21.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_atms_n21.satbias_cov.nc4
+           output file: data/satbias_out/atms_n21.satbias_cov.nc
 
        obs pre filters:
        # Step 0-A: Create Diagnostic Flags

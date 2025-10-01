@@ -35,13 +35,17 @@ obtype_configs=(
     "abi_g18.yaml"
     "atms_n21.yaml"
     #"atms_n20.yaml" # Waiting to add to ctest (different results on Hera/Jet?)
-    #"amsua_n19.yaml" # Waiting to add to ctest
+    "amsua_n19.yaml" # Waiting to add to ctest
+    "amsua_metop-b.yaml" 
+    "amsua_metop-c.yaml" 
 )
 
 # Define the basic configuration and final ctest YAMLs
 declare -A basic_configs
 basic_configs=(
+    ["fv3jedi_3dvar.yaml"]="rrfs_fv3jedi_2024052700_3Dvar.yaml"
     ["fv3jedi_en3dvar.yaml"]="rrfs_fv3jedi_2024052700_Ens3Dvar.yaml"
+    ["fv3jedi_hyb3denvar.yaml"]="rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml"
     ["fv3jedi_getkf_observer.yaml"]="rrfs_fv3jedi_2024052700_getkf_observer.yaml"
     ["fv3jedi_getkf_solver.yaml"]="rrfs_fv3jedi_2024052700_getkf_solver.yaml"
     ["mpasjedi_en3dvar.yaml"]="rrfs_mpasjedi_2024052700_Ens3Dvar.yaml"
@@ -66,7 +70,7 @@ for basic_config in "${!basic_configs[@]}"; do
         cp  "./templates/obtype_config/$config" ./replace.yaml
         if [[ $basic_config == *"solver"* ]]; then
             # New obs filename
-            previous_path=`sed -n '/obsdataout/{n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$config`
+            previous_path=`sed -n '/obsdataout/{n; n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$config`
             int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest_yaml::-5}\//gI")
             new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
             obs_filename_new="obsfile: ${new_path}"
@@ -106,6 +110,7 @@ for basic_config in "${!basic_configs[@]}"; do
     python commentQC.py ${ctest_yaml}
 
     # Move to testinput and remove the old temporary yaml
+    sed -i -e "s/@emptyObsSpaceAction@/create output/"  ./jedi.yaml
     ctest_yaml=${basic_configs[$basic_config]}
     echo "Super YAML created in ../testinput/${ctest_yaml}"
     mv ./jedi.yaml ../testinput/$ctest_yaml

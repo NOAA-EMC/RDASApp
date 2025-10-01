@@ -1,0 +1,161 @@
+cost function:
+  cost type: 3D-Var
+  time window:
+      begin: 2024-05-26T21:00:00Z
+      length: PT6H
+  analysis variables: &3dvars [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
+
+  geometry:
+    fms initialization:
+      namelist filename: DataFix/fmsmpp.nml
+      field table filename: DataFix/field_table
+    namelist filename: DataFix/input_lam_C775_NP16X10.nml
+    akbk: DataFix/fix/akbk66.nc
+    # input.nml
+    npz: 65
+    layout: [16,10]
+    io_layout: [1,1]
+    ntiles: 1
+
+
+  background:
+    datetime: &analysisDate 2024-05-27T00:00:00Z
+    filetype: fms restart
+    datapath: data/bkg
+    filename_core: 20240527.000000.fv_core.res.tile1.nc
+    filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
+    filename_sfcd: 20240527.000000.sfc_data.nc
+    filename_sfcw: 20240527.000000.fv_srf_wnd.res.tile1.nc
+    filename_cplr: 20240527.000000.coupler.res
+    state variables:
+      - eastward_wind
+      - northward_wind
+      - air_temperature
+      - air_pressure_thickness
+      - water_vapor_mixing_ratio_wrt_moist_air
+      - cloud_liquid_ice
+      - cloud_liquid_water
+      - ozone_mass_mixing_ratio
+      - geopotential_height_times_gravity_at_surface
+      - f10m
+      - slmsk
+      - sheleg
+      - skin_temperature_at_surface
+      - vtype
+      - stype
+      - vfrac
+      - soilt
+      - soilm
+      - eastward_wind_at_surface
+      - northward_wind_at_surface
+      - air_pressure_at_surface
+    field io names: &io_names
+      eastward_wind: ua
+      northward_wind: va
+      air_temperature: T
+      air_pressure_thickness: DELP
+      water_vapor_mixing_ratio_wrt_moist_air: sphum
+      cloud_liquid_ice: ice_wat
+      cloud_liquid_water: liq_wat
+      ozone_mass_mixing_ratio: o3mr
+      geopotential_height_times_gravity_at_surface: phis
+      skin_temperature_at_surface: tsfc
+      soilt: tslb
+      soilm: smois
+      eastward_wind_at_surface: u_srf
+      northward_wind_at_surface: v_srf
+  background error:
+    covariance model: SABER
+    saber central block:
+      saber block name: gsi static covariance
+      read:
+        gsi akbk: DataFix/fix/akbk66.nc
+        gsi error covariance file: berror_stats
+        gsi berror namelist file: gsiparm_regional.anl
+        processor layout x direction: 16
+        processor layout y direction: 10
+        debugging deep bypass gsi B error: false
+        debugging mode: false
+        regional mode: true
+    saber outer blocks:
+    - saber block name: interpolation
+      inner geometry:
+        function space: StructuredColumns
+        custom grid matching gsi:
+          type: rotated_lonlat
+          lats: "252"
+          lons: "420"
+          lat_start: "-29.335138"
+          lat_end: "29.335138"
+          lon_start: "-50.033098"
+          lon_end: "50.033098"
+          north_pole_lat: "128.500001"
+          north_pole_lon: "82.500018"
+        custom partitioner matching gsi:
+          bands: 10  # matches GSI partition for 1 or 2 MPI tasks, but too simplistic in general
+        halo: 1
+      forward interpolator:
+        local interpolator type: oops unstructured grid interpolator
+      inverse interpolator:
+        local interpolator type: oops unstructured grid interpolator
+      state variables to inverse:  # Make sure to also re-order the state passed to GSI-B constructor
+      - eastward_wind
+      - northward_wind
+      - air_temperature
+      - water_vapor_mixing_ratio_wrt_moist_air
+      - air_pressure_at_surface
+      - air_pressure_thickness
+    linear variable change:
+      linear variable change name: Control2Analysis
+      input variables: [eastward_wind,northward_wind,virtual_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
+      output variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
+  observations:
+     observers:
+        "@OBSERVATIONS@"
+
+variational:
+  minimizer:
+    algorithm: DRPCG
+  iterations:
+  - ninner: 50
+    gradient norm reduction: 1e-3
+    geometry:
+      fms initialization:
+        namelist filename: DataFix/fmsmpp.nml
+        field table filename: DataFix/field_table
+      namelist filename: DataFix/input_lam_C775_NP16X10.nml
+      akbk: DataFix/fix/akbk66.nc
+      # input.nml
+      npz: 65
+      layout: [16,10]
+      io_layout: [1,1]
+      ntiles: 1
+      fieldsets:
+      - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
+  - ninner: 50
+    gradient norm reduction: 1e-3
+    geometry:
+      fms initialization:
+        namelist filename: DataFix/fmsmpp.nml
+        field table filename: DataFix/field_table
+      namelist filename: DataFix/input_lam_C775_NP16X10.nml
+      akbk: DataFix/fix/akbk66.nc
+      # input.nml
+      npz: 65
+      layout: [16,10]
+      io_layout: [1,1]
+      ntiles: 1
+      fieldsets:
+      - fieldset: DataFix/fix/dynamics_lam_cmaq.yaml
+
+output:
+  filetype: fms restart
+  datapath: ./
+  prefix: 3dvar-fv3_lam-C775
+  frequency: PT1H
+test:
+  reference filename: testoutput/rrfs-fv3jedi-3dvar.ref
+  test output filename: rrfs-fv3jedi-3dvar.out
+  float relative tolerance: 0.02
+  float absolute tolerance: 1.0e-6
+  integer tolerance: 3

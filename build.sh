@@ -5,6 +5,18 @@
 # 2 - configure; build; install
 # 4 - optional, run unit tests
 
+# Deactivate virtual env or conda env to prevent build issues
+if [[ -n "$VIRTUAL_ENV" || -n "$CONDA_PREFIX" ]]; then
+  unset VIRTUAL_ENV
+  unset CONDA_PREFIX
+  unset CONDA_DEFAULT_ENV
+  unset CONDA_SHLVL
+  export PATH=$(echo "$PATH" | tr ':' '\n' | grep -vi 'conda' | grep -vi 'miniforge' | paste -sd ':' -)
+  if [[ -n "$LD_LIBRARY_PATH" ]]; then
+    export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -vi 'conda' | grep -vi 'miniforge' | paste -sd ':' -)
+  fi
+fi
+
 module purge
 set -eu
 START=$(date +%s)
@@ -23,12 +35,14 @@ usage() {
   echo "  -c  additional CMake options           DEFAULT: <none>"
   echo "  -v  build with verbose output          DEFAULT: NO"
   echo "  -j  number of build jobs               DEFAULT: 4 on Orion, 6 on other machines"
+  echo "  -b  build JCB                          DEFAULT: YES"
   echo "  -f  force a clean build                DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
   echo "  -x  build super executables            DEFAULT: NO"
   echo "  -t  include RRFS,BUFR_QUERY test data  DEFAULT: YES"
   echo "  -d  compile in the debug mode          DEFAULT: NO"
+  echo "  -w  compile with workaround codes      DEFAULT: YES"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -49,8 +63,10 @@ DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 DEBUG_OPT=""
 BUFRQUERY_OPT=""
+BUILD_JCB="YES"
+BUILD_WORKAROUND="YES"
 
-while getopts "p:c:m:j:t:hvfsxd" opt; do
+while getopts "p:c:m:j:t:b:w:hvfsxd" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -64,11 +80,17 @@ while getopts "p:c:m:j:t:hvfsxd" opt; do
     j)
       BUILD_JOBS=$OPTARG
       ;;
+    b)
+      BUILD_JCB=$OPTARG
+      ;;
     t)
       BUILD_RRFS_TEST=$OPTARG
       if [[ "$OPTARG" == "NO" ]]; then
         BUFRQUERY_OPT="-DSKIP_DOWNLOAD_TEST_DATA=ON"
       fi
+      ;;
+    w)
+      BUILD_WORKAROUND=$OPTARG
       ;;
     v)
       BUILD_VERBOSE=YES
@@ -84,7 +106,7 @@ while getopts "p:c:m:j:t:hvfsxd" opt; do
       ;;
     x)
       BUILD_SUPER_EXE=YES
-      ;; 
+      ;;
     h|\?|:)
       usage
       ;;
@@ -92,10 +114,12 @@ while getopts "p:c:m:j:t:hvfsxd" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules | jet | gaea | wcoss2 | ursa )
+  hera | orion | hercules | jet | gaea | wcoss2 | ursa | derecho)
     echo "Building RDASApp on $BUILD_TARGET"
     echo "  Build initiated `date`"
-    [[ "${BUILD_TARGET}" != *gaea* ]] && source $dir_root/ush/module-setup.sh
+    if [[ "${BUILD_TARGET}" != *gaea* ]] &&  [[ "${BUILD_TARGET}" != *derecho* ]]; then
+      source $dir_root/ush/module-setup.sh
+    fi
     module use $dir_root/modulefiles
     module load RDAS/$BUILD_TARGET.$COMPILER
     CMAKE_OPTS+=" ${DEBUG_OPT} ${BUFRQUERY_OPT} -DMPIEXEC_EXECUTABLE=$MPIEXEC_EXEC -DMPIEXEC_NUMPROC_FLAG=$MPIEXEC_NPROC -DBUILD_GSIBEC=ON -DMACHINE_ID=$MACHINE_ID"
@@ -113,7 +137,7 @@ if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nod
 else # hera, hercules, jet, gaea
   BUILD_JOBS=${BUILD_JOBS:-6}
 fi
-#clt from GDASapp 
+#clt from GDASapp
 # TODO: Remove LD_LIBRARY_PATH line as soon as permanent solution is available
  if [[ $BUILD_TARGET == 'wcoss2' ]]; then
      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/cray/pe/mpich/8.1.19/ofi/intel/19.0/lib"
@@ -159,7 +183,18 @@ else
   exit 1
 fi
 
-# Create super yamls and link in test data 
+# Install the jcb clients
+if [[ $BUILD_JCB == 'YES' ]]; then
+  cd $dir_root/sorc/jcb
+  python jcb_client_init.py
+  # Build an example jedi.yaml
+  PYTHONPATH="${PYTHONPATH}:$dir_root/sorc/jcb/src/:$dir_root/build/lib/python3.*:${dir_root}/sorc/wxflow/src"
+  cd $dir_root/sorc/jcb/src/jcb/configuration/apps/rdas/test/client_integration
+  python run.py
+  cd ${BUILD_DIR}
+fi
+
+# Create super yamls and link in test data
 if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
 
   # Build the ctest yamls
@@ -180,7 +215,20 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     echo "Linking in test data for FV3-JEDI case"
     $dir_root/rrfs-test/scripts/link_fv3jedi_expr.sh
   fi
-fi 
+fi
+
+# Copy workaround codes (remove these as soon as PRs are merged)
+if [[ $BUILD_WORKAROUND == 'YES' ]]; then
+  # Workaround for regional GSIBEC
+  # Saber PR #1088: https://github.com/JCSDA-internal/saber/pull/1088
+  cp ../sorc/_workaround_/saber/GSIParameters.h        ../sorc/saber/src/saber/gsi/utils/GSIParameters.h
+  cp ../sorc/_workaround_/saber/GridCheckHelper.cc     ../sorc/saber/src/saber/gsi/utils/GridCheckHelper.cc
+  cp ../sorc/_workaround_/saber/gsi_covariance_mod.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
+  cp ../sorc/_workaround_/saber/gsi_grid_mod.f90       ../sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90
+  cp ../sorc/_workaround_/saber/Geometry.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
+  # No PR for gsibec yet
+  cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
+fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"
 # Configure

@@ -31,7 +31,7 @@ EDATE=2024050623
 # V2 retro experiment details (similar to rrfs-workflow/workflow/exp.setup)
 VERSION="v2.0.9"
 EXP_NAME="baseline1_3denvar12km209"
-OPSROOT="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
+OPSROOT="/scratch4/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/workflow/${VERSION}"
 COMROOT="${OPSROOT}/exp/${EXP_NAME}/com"
 DATAROOT="${OPSROOT}/exp/${EXP_NAME}/stmp"
 JDIAGDIR="${DATAROOT}"
@@ -39,7 +39,7 @@ JDIAGDIR="${DATAROOT}"
 # RRFSv1 EXP_NAME (RRFSv1 = benchmark)
 CTL_VERSION="v0.8.6"
 CTL_NAME="CONUS13km_ColdStart00-12Z_133-233TQW"
-DATA_SOURCE="/scratch1/BMC/wrfruc/rli/RRFS_V1/rrfs.${CTL_VERSION}/${CTL_NAME}/stmp"
+DATA_SOURCE="/scratch3/BMC/wrfruc/Ruifang.Li/RRFS_V1/rrfs.${CTL_VERSION}/${CTL_NAME}/stmp"
 CTL_OPSROOT="${OPSROOT}"
 CTL_DATAROOT="${CTL_OPSROOT}/exp/${CTL_NAME}/stmp"
 CTL_JDIAGDIR="${CTL_DATAROOT}"
@@ -48,7 +48,7 @@ CTL_JDIAGDIR="${CTL_DATAROOT}"
 INCLUDE_PATTERN="diag_conv_*.nc4.gz"
 
 # Specify your RDASApp build (mostly for module loads)
-RDASApp="/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.phase2_sonde"
+RDASApp="/scratch4/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20241204.phase2_sonde"
 
 # Specify the diag directories
 #### END OF USER-DEFINED VARIABLES ##########################################
@@ -117,7 +117,7 @@ while [[ ${date} -le ${EDATE} ]]; do
   if [[ ${CONVERT_JDIAG_TO_GDIAG:=NO} == "YES" ]] ; then
     echo "? Working on convert jdiag to gdiag: ${pdy} ${cyc}Z"
     # Array of full file paths (only need to specify _anl files)
-    #jdiags=(/scratch2/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20250324.DA_mon/rrfs-test/ush/diagnostics_and_graphics/jedivar_06/jdiag*)
+    #jdiags=(/scratch4/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20250324.DA_mon/rrfs-test/ush/diagnostics_and_graphics/jedivar_06/jdiag*)
     jdiags=(${JDIAGDIR}/${pdy}/rrfs_jedivar_${cyc}_${VERSION}/det/jedivar_${cyc}/jdiag*)
     #echo ${jdiags[1]}; exit
 

@@ -13,6 +13,7 @@
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_winds_280.nc
@@ -24,9 +25,6 @@
 
        obs operator:
            name: VertInterp
-           hofx_scaling: true
-           hofx scaling field: wind_reduction_factor_at_10m
-           hofx scaling field group: GeoVaLs
            vertical coordinate: air_pressure
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
@@ -57,8 +55,22 @@
            filter variables:
            - name: windEastward
            - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 280
            action:
              name: accept # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 280
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList

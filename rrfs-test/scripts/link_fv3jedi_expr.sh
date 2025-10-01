@@ -15,7 +15,9 @@ echo "expdir is at: ${expdir}"
 
 ${RDASApp}/ush/init.sh
 cp -r ${RDASApp}/rrfs-test/testoutput ./testoutput
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3Dvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_Ens3Dvar.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_observer.yaml . 
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_solver.yaml . 
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_bumploc.yaml ./bumploc.yaml
@@ -27,7 +29,9 @@ cp ${RDASApp}/rrfs-test/ush/fv3jedi_increment_fulldom.py .
 rm -rf data; mkdir data
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/* data/
 # link correct ioda files
-rm -rf data/obs; mkdir  data/obs
+rm -rf data/{obs,satbias_in}
+mkdir -p data/{obs,satbias_in,satbias_out}
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/satbias_in/* data/satbias_in/
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/obs/* data/obs/  # keep this line for now to be backward compatible
 for dcfile in data/obs/ioda*dc.nc; do # link to DA runtime prescribed file names
   dcfile=${dcfile##*obs/}
@@ -41,3 +45,4 @@ ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/obs/atms_npp_obs_2024052700_dc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/DataFix DataFix
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data_static Data_static
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/INPUT INPUT
+ln -snf ${RDASApp}/fix/gsi_bec/* ./

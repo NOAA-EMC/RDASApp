@@ -7,6 +7,12 @@
                1,  1,  1, -1, -1,
                1,  1,  1,  1,  1,
                1,  1]
+         _anchor_error: &atms_n20_error [
+             4.500,  4.500,  4.500,  2.500,  0.550,
+             0.300,  0.300,  0.400,  0.400,  0.400,
+             0.450,  0.450,  0.550,  0.800,  4.000,
+             4.000,  4.000,  3.500,  3.000,  3.000,
+             3.000,  3.000]
          _anchor_obserr_bound_max: &atms_n20_obserr_bound_max
              [4.5, 4.5, 3.0, 3.0, 1.0,
               1.0, 1.0, 1.0, 1.0, 1.0,
@@ -22,6 +28,7 @@
              obsfile: "data/obs/ioda_atms_n20.nc"
              missing file action: "warn"
          obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_atms_n20.nc4
@@ -46,14 +53,14 @@
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 200e3 # orig
        obs bias:
-         input file:  data/obs/atms_n20.satbias.nc4
-         output file: out_atms_n20.satbias.nc4
+         input file:  data/satbias_in/atms_n20.satbias.nc
+         output file: data/satbias_out/atms_n20.satbias.nc
          variational bc:
            predictors:
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &atms_n20_tlapse  data/obs/atms_n20.tlapse.txt
+             tlapse: &atms_n20_tlapse  data/satbias_in/atms_n20.tlapse.txt
            - name: lapseRate
              tlapse: *atms_n20_tlapse
            - name: emissivityJacobian
@@ -70,11 +77,11 @@
            step size: 1.0e-4
            largest analysis variance: 10000.0
            prior:
-             input file: data/obs/atms_n20.satbias_cov.nc4
+             input file: data/satbias_in/atms_n20.satbias_cov.nc
              inflation:
                ratio: 1.1
                ratio for small dataset: 2.0
-           output file: out_atms_n20.satbias_cov.nc4
+           output file: data/satbias_out/atms_n20.satbias_cov.nc
 
        obs pre filters:
        # Step 0-A: Create Diagnostic Flags
@@ -365,11 +372,7 @@
              channels: *atms_n20_channels
              options:
                channels: *atms_n20_channels
-               obserr_clearsky:  [ 4.500,  4.500,  4.500,  2.500,  0.550,
-                                   0.300,  0.300,  0.400,  0.400,  0.400,
-                                   0.450,  0.450,  0.550,  0.800,  4.000,
-                                   4.000,  4.000,  3.500,  3.000,  3.000,
-                                   3.000,  3.000]
+               obserr_clearsky: *atms_n20_error
                clwret_function:
                  name: CLWRetFromObs@DerivedMetaData
                obserr_function:
@@ -484,11 +487,7 @@
                obserr_function:
                  name: InitialObsError@DerivedMetaData
                  channels: *atms_n20_channels
-               obserr_clearsky:  [ 4.500,  4.500,  4.500,  2.500,  0.550,
-                                   0.300,  0.300,  0.400,  0.400,  0.400,
-                                   0.450,  0.450,  0.550,  0.800,  4.000,
-                                   4.000,  4.000,  3.500,  3.000,  3.000,
-                                   3.000,  3.000]
+               obserr_clearsky: *atms_n20_error
 
        - filter: Perform Action
          filter variables:

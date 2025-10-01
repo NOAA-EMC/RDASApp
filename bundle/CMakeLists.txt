@@ -65,10 +65,10 @@ if(BUILD_RDASBUNDLE)
   ecbuild_bundle( PROJECT crtm SOURCE "../sorc/crtm" )
 
 # Build GSI-B
-#   option(BUILD_GSIBEC "Build GSI-B" OFF)
-#   if(BUILD_GSIBEC)
-#     ecbuild_bundle( PROJECT gsibec SOURCE "../sorc/gsibec" )
-#   endif()
+  option(BUILD_GSIBEC "Build GSI-B" OFF)
+  if(BUILD_GSIBEC)
+    ecbuild_bundle( PROJECT gsibec SOURCE "../sorc/gsibec" )
+  endif()
 
 # EMC BUFR-query library
   ecbuild_bundle( PROJECT bufr-query SOURCE "../sorc/bufr-query" )

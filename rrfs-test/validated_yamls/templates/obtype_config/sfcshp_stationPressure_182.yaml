@@ -13,6 +13,7 @@
              sort variable: "pressure"
              sort order: "descending"
          obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_sfcshp_stationPressure_182.nc
@@ -45,8 +46,21 @@
          - filter: Perform Action
            filter variables:
            - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 182
            action:
              name: accept # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 182
+           action:
+             name: reduce obs space
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList

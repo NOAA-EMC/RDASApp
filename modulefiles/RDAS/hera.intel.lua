@@ -71,9 +71,6 @@ load("py-pyyaml/6.0")
 load("py-scipy/1.11.3")
 load("py-xarray/2023.7.0")
 
--- hack for wxflow
-prepend_path("PYTHONPATH", "/scratch1/NCEPDEV/da/python/gdasapp/wxflow/20240307/src")
-
 setenv("CC","mpiicc")
 setenv("FC","mpiifort")
 setenv("CXX","mpiicpc")

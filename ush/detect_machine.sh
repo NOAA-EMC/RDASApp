@@ -33,6 +33,8 @@ case $(hostname -f) in
   ufe*) MACHINE_ID=ursa ;;
   uecflow01) MACHINE_ID=ursa ;;
 
+  derecho*) MACHINE_ID=derecho ;;
+
   s4-submit.ssec.wisc.edu) MACHINE_ID=s4 ;; ### s4
 
   fe[1-8]) MACHINE_ID=jet ;; ### jet01-8
@@ -75,12 +77,15 @@ elif [[ -d /lfs/h1 && ! -d /lfs/h3 ]]; then
 elif [[ -d /mnt/lfs5 ]]; then
   # We are on NOAA Jet
   MACHINE_ID=jet
-elif [[ -d /scratch1 ]]; then
-  # We are on NOAA Hera
-  MACHINE_ID=hera
 elif [[ -d /scratch3 ]]; then
-  # We are on NOAA Ursa
-  MACHINE_ID=ursa
+  # We are on NOAA Hera or Ursa
+  if [[ -d /apps/slurm_hera ]]; then
+    # We are on Hera
+    MACHINE_ID=hera
+  else
+    # We are on Ursa
+    MACHINE_ID=ursa
+  fi
 elif [[ -d /work ]]; then
   # We are on MSU Orion or Hercules
   if [[ -d /apps/other ]]; then

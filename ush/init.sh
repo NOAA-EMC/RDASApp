@@ -6,7 +6,7 @@ basedir="$(dirname "$ushdir")"
 
 case ${MACHINE_ID} in
   wcoss2)
-    RDAS_DATA=/lfs/h2/emc/da/noscrub/Ting.Lei/dr-rdas-data/RDAS_DATA
+    RDAS_DATA=/lfs/h2/emc/lam/noscrub/RDAS_DATA
     ;;
   hera)
     RDAS_DATA=/scratch4/BMC/rtrr/RDAS_DATA
@@ -19,6 +19,9 @@ case ${MACHINE_ID} in
     ;;
   orion|hercules)
     RDAS_DATA=/work/noaa/zrtrr/RDAS_DATA
+    ;;
+  derecho)
+    RDAS_DATA=/to/be/done
     ;;
   gaea)
     if [[ -d /gpfs/f5 ]]; then
