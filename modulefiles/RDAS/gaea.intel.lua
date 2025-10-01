@@ -6,7 +6,7 @@ local pkgName    = myModuleName()
 local pkgVersion = myModuleVersion()
 local pkgNameVer = myModuleFullName()
 
-prepend_path("MODULEPATH", '/ncrc/proj/epic/spack-stack/c6/spack-stack-1.9.2/envs/ue-oneapi-2024.2.1/install/modulefiles/Core')
+prepend_path("MODULEPATH", '/ncrc/proj/epic/spack-stack/c6/spack-stack-1.9.3/envs/ue-oneapi-2024.2.1/install/modulefiles/Core')
 
 load("stack-oneapi/2024.2.1")
 load("stack-python/3.11.7")
