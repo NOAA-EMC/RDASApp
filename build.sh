@@ -25,6 +25,12 @@ dir_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $dir_root/ush/detect_machine.sh
 source $dir_root/ush/init.sh
 
+# temporary bug fix, https://github.com/JCSDA-internal/oops/issues/3030
+ccfile="sorc/oops/src/oops/base/ParameterTraitsObsVariables.cc"
+if ! grep "#include <algorithm>" ${ccfile} >/dev/null; then
+  sed -i -e "s/#include <map>/#include <algorithm>\n#include <map>/" ${ccfile}
+fi
+
 # ==============================================================================
 usage() {
   set +x
