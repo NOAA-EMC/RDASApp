@@ -25,6 +25,12 @@ dir_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $dir_root/ush/detect_machine.sh
 source $dir_root/ush/init.sh
 
+# temporary bug fix, https://github.com/JCSDA-internal/oops/issues/3030
+ccfile="sorc/oops/src/oops/base/ParameterTraitsObsVariables.cc"
+if ! grep "#include <algorithm>" ${ccfile} >/dev/null; then
+  sed -i -e "s/#include <map>/#include <algorithm>\n#include <map>/" ${ccfile}
+fi
+
 # ==============================================================================
 usage() {
   set +x
@@ -188,9 +194,13 @@ if [[ $BUILD_JCB == 'YES' ]]; then
   cd $dir_root/sorc/jcb
   python jcb_client_init.py
   # Build an example jedi.yaml
-  PYTHONPATH="${PYTHONPATH}:$dir_root/sorc/jcb/src/:$dir_root/build/lib/python3.*:${dir_root}/sorc/wxflow/src"
-  cd $dir_root/sorc/jcb/src/jcb/configuration/apps/rdas/test/client_integration
-  python run.py
+  #PYTHONPATH="${PYTHONPATH}:$dir_root/sorc/jcb/src/:$dir_root/build/lib/python3.*:${dir_root}/sorc/wxflow/src"
+  #cd $dir_root/sorc/jcb/src/jcb/configuration/apps/rdas/test/client_integration
+  #python run.py
+  # Link the RDASApp/parm/jcb-rdas regular folder instead of submodule
+  cd $dir_root/sorc/jcb/src/jcb/configuration/apps/
+  mv rdas rdas.bak
+  ln -sf $dir_root/parm/jcb-rdas rdas
   cd ${BUILD_DIR}
 fi
 

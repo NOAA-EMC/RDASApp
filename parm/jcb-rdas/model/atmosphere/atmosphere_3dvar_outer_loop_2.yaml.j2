@@ -2,11 +2,11 @@
   gradient norm reduction: {{gradient_norm_reduction}}
   geometry:
     fms initialization:
-      namelist filename: {{atmosphere_fv3jedi_files_path}}/fmsmpp.nml
-      field table filename: {{atmosphere_fv3jedi_files_path}}/field_table
-    namelist filename: {{atmosphere_fv3jedi_files_path}}/input_lam_C775_NP16X10.nml
-    field metadata override: "Data/fieldmetadata/tlei-gfs-restart.yaml"
-    akbk: {{atmosphere_fv3jedi_files_path}}/fix/akbk66.nc
+      namelist filename: fmsmpp.nml
+      field table filename: field_table
+    namelist filename: input_lam_C775_NP16X10.nml
+    field metadata override: gfs-restart.yaml
+    akbk: fv3_akbk
     npz: {{atmosphere_npz_anl}}
     layout:
     - {{atmosphere_layout_x}}
@@ -16,4 +16,4 @@
     - {{atmosphere_io_layout_x}}
     ntiles: {{atmosphere_ntiles}}
     fieldsets:
-    - fieldset: {{atmosphere_fv3jedi_files_path}}/fix/dynamics_lam_cmaq.yaml
+    - fieldset: dynamics_lam_cmaq.yaml
