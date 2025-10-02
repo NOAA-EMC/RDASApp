@@ -3,7 +3,7 @@ cost function:
   time window:
       begin: 2024-05-26T21:00:00Z
       length: PT6H
-  analysis variables: &3dvars [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
+  analysis variables: &3dvars [eastward_wind,northward_wind,air_temperature,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
 
   geometry:
     fms initialization:
@@ -107,8 +107,8 @@ cost function:
       - air_pressure_thickness
     linear variable change:
       linear variable change name: Control2Analysis
-      input variables: [eastward_wind,northward_wind,virtual_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
-      output variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
+      input variables: [eastward_wind,northward_wind,virtual_temperature,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
+      output variables: [eastward_wind,northward_wind,air_temperature,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
   observations:
      observers:
         "@OBSERVATIONS@"
