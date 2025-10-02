@@ -253,7 +253,7 @@ def thin_vad_obs(ds, station_filter=None, vad_near_analtime=False):
                         superob[(grp_name, var_name)] = np.mean(valid_data)
                     else:  # vtype == 'int'
                         if grp_name == 'QualityMarker':  # GSI takes the QM from the lowest level in the block
-                            superob[(grp_name, var_name)] = int(valid_data[0])  # GSI method
+                            superob[(grp_name, var_name)] = int(valid_data[0][0])  # GSI method
                         elif grp_name == 'MetaData' and var_name == 'height':  # Sometimes height superob will be float
                             superob[(grp_name, var_name)] = np.mean(valid_data)
                         else:
