@@ -232,6 +232,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/saber/Geometry.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
   # No PR for gsibec yet
   cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
+  # Workaround for not including air_pressure_thickness as an analysis variable
+  # No PR yet for this
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
 fi
 
 # temporary bug fix, https://github.com/JCSDA-internal/oops/issues/3030
