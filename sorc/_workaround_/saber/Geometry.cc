@@ -179,7 +179,7 @@ void setupGsiMatchingGrid(const eckit::Configuration & config,
       double rlon = lonlatView(j, 0);
       double rlat = lonlatView(j, 1);
       double rlon0 = north_pole_lon - 180.0;
-      double rlat0 = north_pole_lat - 90.0;
+      double rlat0 = 90.0 - north_pole_lat;
 
       double xtt = std::cos(deg2rad(rlat)) * std::cos(deg2rad(rlon));
       double ytt = std::cos(deg2rad(rlat)) * std::sin(deg2rad(rlon));
@@ -263,3 +263,4 @@ void Geometry::print(std::ostream & os) const {
 
 }  // namespace interpolation
 }  // namespace saber
+

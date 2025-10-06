@@ -89,7 +89,8 @@ cost function:
           lat_end: "29.335138"
           lon_start: "-50.033098"
           lon_end: "50.033098"
-          north_pole_lat: "128.500001"
+          #north_pole_lat: "128.500001"
+          north_pole_lat: "51.499998"
           north_pole_lon: "82.500018"
         custom partitioner matching gsi:
           bands: 10  # matches GSI partition for 1 or 2 MPI tasks, but too simplistic in general
