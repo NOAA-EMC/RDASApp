@@ -249,10 +249,12 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   if (( $(echo "$spack_minor_float >= 9.0" | bc -l) )); then
     cp ../sorc/_workaround_/saber/Geometry_ss1p9.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
     cp ../sorc/_workaround_/saber/gsi_covariance_mod_ss1p9.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
-    sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3Dvar.yaml
-    sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
-    sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_3Dvar.yaml
-    sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
+    if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
+      sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3Dvar.yaml
+      sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
+      sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_3Dvar.yaml
+      sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
+    fi
   fi
 
 fi
