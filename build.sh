@@ -25,12 +25,6 @@ dir_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $dir_root/ush/detect_machine.sh
 source $dir_root/ush/init.sh
 
-# temporary bug fix, https://github.com/JCSDA-internal/oops/issues/3030
-ccfile="sorc/oops/src/oops/base/ParameterTraitsObsVariables.cc"
-if ! grep "#include <algorithm>" ${ccfile} >/dev/null; then
-  sed -i -e "s/#include <map>/#include <algorithm>\n#include <map>/" ${ccfile}
-fi
-
 # ==============================================================================
 usage() {
   set +x
@@ -257,6 +251,16 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
     fi
   fi
 
+  # Workaround for not including air_pressure_thickness as an analysis variable
+  # No PR yet for this
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
+fi
+
+# temporary bug fix, https://github.com/JCSDA-internal/oops/issues/3030
+ccfile="../sorc/oops/src/oops/base/ParameterTraitsObsVariables.cc"
+if ! grep "#include <algorithm>" ${ccfile} >/dev/null; then
+  sed -i -e "s/#include <map>/#include <algorithm>\n#include <map>/" ${ccfile}
+>>>>>>> origin/develop
 fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"
