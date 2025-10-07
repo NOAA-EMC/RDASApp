@@ -237,7 +237,7 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Spack-stack 1.9 uses a different workaround version
   # Remove me once all machines are updated to >1.9
   modfile="$dir_root/modulefiles/RDAS/$BUILD_TARGET.$COMPILER.lua"
-  spack_version=$(grep -o "spack-stack-[0-9.]*" "$modfile" | head -n1 | sed 's/spack-stack-//')
+  spack_version=$(grep -oE 'spack-stack(-nco)?-[0-9]+(\.[0-9]+)*' "$modfile" | head -n1 | sed -E 's/^.*spack-stack(-nco)?-//')
   spack_minor=$(echo "$spack_version" | sed -E 's/^1\.([0-9]+).*/\1/')
   spack_minor_float=$(echo "$spack_minor" | awk '{printf "%.1f", $1}')
   if (( $(echo "$spack_minor_float >= 9.0" | bc -l) )); then
