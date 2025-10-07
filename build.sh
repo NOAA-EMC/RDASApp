@@ -238,6 +238,23 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/saber/Geometry.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
   # No PR for gsibec yet
   cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
+
+  # Check which spack-stack version we are on
+  # Spack-stack 1.9 uses a different workaround version
+  # Remove me once all machines are updated to >1.9
+  modfile="$dir_root/modulefiles/RDAS/$BUILD_TARGET.$COMPILER.lua"
+  spack_version=$(grep -o "spack-stack-[0-9.]*" "$modfile" | head -n1 | sed 's/spack-stack-//')
+  spack_minor=$(echo "$spack_version" | sed -E 's/^1\.([0-9]+).*/\1/')
+  spack_minor_float=$(echo "$spack_minor" | awk '{printf "%.1f", $1}')
+  if (( $(echo "$spack_minor_float >= 9.0" | bc -l) )); then
+    cp ../sorc/_workaround_/saber/Geometry_ss1p9.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
+    cp ../sorc/_workaround_/saber/gsi_covariance_mod_ss1p9.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
+    sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3Dvar.yaml
+    sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
+    sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_3Dvar.yaml
+    sed -i 's/north_pole_lat: "128\.500001"/north_pole_lat: "51.499998"/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
+  fi
+
 fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"
