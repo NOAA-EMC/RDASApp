@@ -260,7 +260,6 @@ fi
 ccfile="../sorc/oops/src/oops/base/ParameterTraitsObsVariables.cc"
 if ! grep "#include <algorithm>" ${ccfile} >/dev/null; then
   sed -i -e "s/#include <map>/#include <algorithm>\n#include <map>/" ${ccfile}
->>>>>>> origin/develop
 fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"
