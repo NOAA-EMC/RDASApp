@@ -15,6 +15,8 @@ import matplotlib.ticker as mticker
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from operator import itemgetter
 import shapely.speedups
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
 
 shapely.speedups.enable()
 
@@ -34,10 +36,6 @@ in tern means that it is going to be not an exact match of the domain grid
 # Disable warnings
 warnings.filterwarnings('ignore')
 
-# Set matplotlib backend
-matplotlib.use('agg')
-import matplotlib.pyplot as plt
-
 # Functions for calculating run times.
 def tic():
     return timer()
@@ -50,145 +48,7 @@ def toc(tic=tic, label=""):
     secs = int(elapsed % 3600 % 60)
     print(f"{label}({elapsed:.2f}s), {hrs:02}:{mins:02}:{secs:02}")
 
-def alpha_shape(points, alpha, only_outer=True):
-    """
-    Solution from Iddo Hanniel (https://stackoverflow.com/questions/50549128/boundary-enclosing-a-given-set-of-points)
-    Compute the alpha shape (concave hull) of a set of points
-    :param points: np.array of shape (n,2) points.
-    :param alpha: alpha value.
-    :param only_outer: boolean value to specify if we keep only the outer border
-    or also inner edges.
-    :return: set of (i,j) pairs representing edges of the alpha-shape. (i,j) are
-    the indices in the points array.
-    """
-    assert points.shape[0] > 3, "Need at least four points"
-
-    def add_edge(edges, i, j):
-        """
-        Add an edge between the i-th and j-th points,
-        if not in the list already
-        """
-        if (i, j) in edges or (j, i) in edges:
-            # already added
-            assert (j, i) in edges, "Can't go twice over same directed edge right?"
-            if only_outer:
-                # if both neighboring triangles are in shape, it's not a boundary edge
-                edges.remove((j, i))
-            return
-        edges.add((i, j))
-
-    points = points.data
-    tri = Delaunay(points)
-    edges = set()
-    # Loop over triangles:
-    # ia, ib, ic = indices of corner points of the triangle
-    # Depending on SciPy version, might need tri.simplices or tri.vertices
-    if hasattr(tri, "simplices"):
-        triangles = tri.simplices
-    else:
-        triangles = tri.vertices
-    for ia, ib, ic in triangles:
-        pa = points[ia]
-        pb = points[ib]
-        pc = points[ic]
-        # Computing radius of triangle circumcircle
-        # www.mathalino.com/reviewer/derivation-of-formulas/derivation-of-formula-for-radius-of-circumcircle
-        a = np.sqrt((pa[0] - pb[0]) ** 2 + (pa[1] - pb[1]) ** 2)
-        b = np.sqrt((pb[0] - pc[0]) ** 2 + (pb[1] - pc[1]) ** 2)
-        c = np.sqrt((pc[0] - pa[0]) ** 2 + (pc[1] - pa[1]) ** 2)
-        s = (a + b + c) / 2.0
-        area = np.sqrt(s * (s - a) * (s - b) * (s - c))
-        circum_r = a * b * c / (4.0 * area)
-        if circum_r < alpha:
-            add_edge(edges, ia, ib)
-            add_edge(edges, ib, ic)
-            add_edge(edges, ic, ia)
-    return edges
-
-def find_edges_with(i, edge_set):
-    i_first = [j for (x,j) in edge_set if x==i]
-    i_second = [j for (j,x) in edge_set if x==i]
-    return i_first, i_second
-
-def stitch_boundaries(edges):
-    """
-    Sort the edges computed by alpha_shape
-    """
-    edge_set = edges.copy()
-    boundary_lst = []
-    while len(edge_set) > 0:
-        boundary = []
-        edge0 = edge_set.pop()
-        boundary.append(edge0)
-        last_edge = edge0
-        while len(edge_set) > 0:
-            i,j = last_edge
-            j_first, j_second = find_edges_with(j, edge_set)
-            if j_first:
-                edge_set.remove((j, j_first[0]))
-                edge_with_j = (j, j_first[0])
-                boundary.append(edge_with_j)
-                last_edge = edge_with_j
-            elif j_second:
-                edge_set.remove((j_second[0], j))
-                edge_with_j = (j, j_second[0])  # flip edge rep
-                boundary.append(edge_with_j)
-                last_edge = edge_with_j
-
-            if edge0[0] == last_edge[1]:
-                break
-
-        boundary_lst.append(boundary)
-    return boundary_lst
-
-def shrink_boundary(points, centroid, factor=0.01):
-    new_points = []
-    for point in points:
-        direction = point - centroid
-        distance_to_centroid = np.linalg.norm(direction)
-        direction_normalized = direction / distance_to_centroid
-        new_point = point - factor * direction_normalized * distance_to_centroid
-        new_points.append(new_point)
-    return np.array(new_points)
-
-tic1 = tic()
-
-# Parse command-line arguments
-# Note:
-#    The grid file is what contains variables grid_lat/grid_lon
-#    OR latCell/lonCell for FV3 and MPAS respectively.
-#    Examples can be found in the following rrfs-test cases:
-#      - rrfs-data_fv3jedi_2022052619/Data/bkg/fv3_grid_spec.nc
-#      - mpas_2024052700/data/restart.2024-05-27_00.00.00.nc
-parser = argparse.ArgumentParser()
-parser.add_argument('-g', '--grid', type=str, help='grid file', required=True)
-parser.add_argument('-o', '--obs', type=str, help='ioda observation file', required=True)
-parser.add_argument('-f', '--fig', action='store_true', help='disable figure (default is False)', required=False)
-parser.add_argument('-s', '--shrink', type=float, help='hull shrink factor', required=True)
-args = parser.parse_args()
-
-# Assign filenames
-obs_filename = args.obs
-grid_filename = args.grid  # see note above.
-make_fig = args.fig
-hull_shrink_factor = args.shrink
-
-print(f"Obs file: {obs_filename}")
-print(f"Grid file: {grid_filename}")
-print(f"Figure flag: {args.fig}")
-print(f"Hull shrink factor: {hull_shrink_factor}")
-
-# Plotting options
-plot_box_width = 100. # define size of plot domain (units: lat/lon degrees)
-plot_box_height = 50
-cen_lat = 34.5
-cen_lon = -97.5
-#hull_shrink_factor = 0.10  #10% was found to work fairly well.
-
-grid_ds = nc.Dataset(grid_filename, 'r')
-obs_ds = nc.Dataset(obs_filename, 'r')
-
-def _normalize_lon_360(lon):
+def normalize_lon(lon):
     lon = np.asarray(lon)
     return np.where(lon < 0.0, lon + 360.0, lon)
 
@@ -215,7 +75,7 @@ def polygon_from_structured_edges(grid_ds):
         raise RuntimeError("grid_lat/grid_lon must be 2-D arrays of the same shape.")
 
     # Normalize longitudes to [0,360)
-    glon = _normalize_lon_360(glon)
+    glon = normalize_lon(glon)
 
     # Extract perimeter in CCW order: top → right → bottom → left
     top    = np.c_[glon[0, :],          glat[0, :]]
@@ -226,9 +86,6 @@ def polygon_from_structured_edges(grid_ds):
     ring = np.vstack([top, right, bottom, left])
     return ring
 
-def normalize_lon(lon):
-    return _normalize_lon_360(lon)
-
 def bbox_filter(coords, ring):
     mins = ring.min(axis=0)
     maxs = ring.max(axis=0)
@@ -237,7 +94,7 @@ def bbox_filter(coords, ring):
         (coords[:,1] >= mins[1]) & (coords[:,1] <= maxs[1])
     )
 
-def shrink_ring(points, factor=0.01):
+def shrink_boundary(points, factor=0.01):
     centroid = np.nanmean(points, axis=0)
     v = points - centroid
     return centroid + (1.0 - factor) * v
@@ -279,23 +136,59 @@ def build_domain_ring(grid_ds):
 
     return ring
 
+tic1 = tic()
+
+# Parse command-line arguments
+# Note:
+#    The grid file is what contains variables grid_lat/grid_lon
+#    OR latCell/lonCell for FV3 and MPAS respectively.
+#    Examples can be found in the following rrfs-test cases:
+#      - rrfs-data_fv3jedi_2022052619/Data/bkg/fv3_grid_spec.nc
+#      - mpas_2024052700/data/restart.2024-05-27_00.00.00.nc
+parser = argparse.ArgumentParser()
+parser.add_argument('-g', '--grid', type=str, help='grid file', required=True)
+parser.add_argument('-o', '--obs', type=str, help='ioda observation file', required=True)
+parser.add_argument('-f', '--fig', action='store_true', help='disable figure (default is False)', required=False)
+parser.add_argument('-s', '--shrink', type=float, help='hull shrink factor', required=True)
+args = parser.parse_args()
+
+# Assign filenames
+obs_filename = args.obs
+grid_filename = args.grid  # see note above.
+make_fig = args.fig
+hull_shrink_factor = args.shrink
+
+print(f"Obs file: {obs_filename}")
+print(f"Grid file: {grid_filename}")
+print(f"Figure flag: {args.fig}")
+print(f"Hull shrink factor: {hull_shrink_factor}")
+
+# Plotting options
+plot_box_width = 100. # define size of plot domain (units: lat/lon degrees)
+plot_box_height = 50
+cen_lat = 34.5
+cen_lon = -97.5
+#hull_shrink_factor = 0.10  #10% was found to work fairly well.
+
+grid_ds = nc.Dataset(grid_filename, 'r')
+obs_ds = nc.Dataset(obs_filename, 'r')
+
 # Build ring
 ring = build_domain_ring(grid_ds)
 
 # Optional slight shrink to avoid grazing the exact boundary
-ring = shrink_ring(ring, factor=hull_shrink_factor)
+ring = shrink_boundary(ring, factor=hull_shrink_factor)
 
 # Build polygon
-from matplotlib.path import Path
 domain_path = Path(ring)
 
-# --- Observation coords (normalize lon) ---
+# Observation coords (normalize lon)
 obs_lat = obs_ds.groups['MetaData'].variables['latitude'][:]
 obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
 obs_lon = normalize_lon(obs_lon)
 obs_coords = np.c_[obs_lon, obs_lat]
 
-# --- Fast prefilter with bbox ---
+# Fast prefilter with bbox
 prefilter_mask = bbox_filter(obs_coords, ring)
 candidates = np.where(prefilter_mask)[0]
 
@@ -418,7 +311,6 @@ gl1.ylabel_style = {'size': 5, 'color': 'gray'}
 # Plot the domain and the observations
 #m1.fill(adjusted_lon.flatten(), grid_lat.flatten(), color='b', label='Domain Boundary', zorder=1, transform=ccrs.PlateCarree())
 m1.scatter(adjusted_lon.flatten(), grid_lat.flatten(), c='b', s=1, label='Domain Boundary', zorder=2)
-#m1.plot(edge_points[:, 0], edge_points[:, 1], 'tab:purple', label='Concave Hull', zorder=10, transform=ccrs.PlateCarree())
 
 # Plot included observations
 included_lat = obs_lat[inside_indices]
