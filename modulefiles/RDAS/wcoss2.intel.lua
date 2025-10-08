@@ -96,6 +96,12 @@ load("py-wheel/0.41.2")
 append_path("MODULEPATH", "/apps/ops/test/nco/modulefiles/core")
 load("rocoto/1.3.5")
 
+-- Workaround for matplotlib: use a virtualenv overlayed on spack-stack packages
+local venv = "/lfs/h2/emc/da/noscrub/samuel.degelia/rdas-mpl-311"
+prepend_path("PATH", pathJoin(venv, "bin"))
+setenv("VIRTUAL_ENV", venv)
+setenv("PYTHONNOUSERSITE", "1")
+
 setenv("CC","cc")
 setenv("CXX","CC")
 setenv("FC","ifort")
