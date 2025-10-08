@@ -88,7 +88,7 @@ elif [[ -d /scratch3 ]]; then
   fi
 elif [[ -d /work ]]; then
   # We are on MSU Orion or Hercules
-  if [[ -d /apps/other ]]; then
+  if [[ -d /apps/etc ]]; then
     # We are on Hercules
     MACHINE_ID=hercules
   else
