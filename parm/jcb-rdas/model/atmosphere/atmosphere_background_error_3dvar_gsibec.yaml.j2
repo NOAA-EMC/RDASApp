@@ -1,0 +1,44 @@
+covariance model: SABER
+saber central block:
+  saber block name: gsi static covariance
+  read:
+    gsi akbk: fv3_akbk
+    gsi error covariance file: berror_stats
+    gsi berror namelist file: gsiparm_regional.anl
+    processor layout x direction: {{atmosphere_layout_gsib_x}}
+    processor layout y direction: {{atmosphere_layout_gsib_y}}
+    debugging deep bypass gsi B error: false
+    debugging mode: false
+    regional mode: true
+saber outer blocks:
+- saber block name: interpolation
+  inner geometry:
+    function space: StructuredColumns
+    custom grid matching gsi:
+      type: rotated_lonlat
+      lats: "252"
+      lons: "420"
+      lat_start: "-29.335138"
+      lat_end: "29.335138"
+      lon_start: "-50.033098"
+      lon_end: "50.033098"
+      north_pole_lat: "128.500001"
+      north_pole_lon: "82.500018"
+    custom partitioner matching gsi:
+      bands: 10  # matches GSI partition for 1 or 2 MPI tasks, but too simplistic in general
+    halo: 1
+  forward interpolator:
+    local interpolator type: oops unstructured grid interpolator
+  inverse interpolator:
+    local interpolator type: oops unstructured grid interpolator
+  state variables to inverse:  # Make sure to also re-order the state passed to GSI-B constructor
+  - eastward_wind
+  - northward_wind
+  - air_temperature
+  - water_vapor_mixing_ratio_wrt_moist_air
+  - air_pressure_at_surface
+  - air_pressure_thickness
+linear variable change:
+  linear variable change name: Control2Analysis
+  input variables: [eastward_wind,northward_wind,virtual_temperature,water_vapor_mixing_ratio_wrt_moist_air,air_pressure_at_surface]
+  output variables: [eastward_wind,northward_wind,air_temperature,water_vapor_mixing_ratio_wrt_moist_air,air_pressure_at_surface]

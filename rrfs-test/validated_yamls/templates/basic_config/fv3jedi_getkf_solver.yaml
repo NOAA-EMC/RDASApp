@@ -1,7 +1,7 @@
 time window:
        begin: 2024-05-26T21:00:00Z
        length: PT6H
-increment variables: [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio]
+increment variables: [eastward_wind,northward_wind,air_temperature,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
 geometry:
   fms initialization:
     namelist filename: DataFix/fmsmpp.nml
@@ -45,6 +45,7 @@ background:
           - soilm
           - eastward_wind_at_surface
           - northward_wind_at_surface
+          - air_pressure_at_surface
         field io names: &io_names
           eastward_wind: ua
           northward_wind: va

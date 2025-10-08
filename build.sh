@@ -188,9 +188,13 @@ if [[ $BUILD_JCB == 'YES' ]]; then
   cd $dir_root/sorc/jcb
   python jcb_client_init.py
   # Build an example jedi.yaml
-  PYTHONPATH="${PYTHONPATH}:$dir_root/sorc/jcb/src/:$dir_root/build/lib/python3.*:${dir_root}/sorc/wxflow/src"
-  cd $dir_root/sorc/jcb/src/jcb/configuration/apps/rdas/test/client_integration
-  python run.py
+  #PYTHONPATH="${PYTHONPATH}:$dir_root/sorc/jcb/src/:$dir_root/build/lib/python3.*:${dir_root}/sorc/wxflow/src"
+  #cd $dir_root/sorc/jcb/src/jcb/configuration/apps/rdas/test/client_integration
+  #python run.py
+  # Link the RDASApp/parm/jcb-rdas regular folder instead of submodule
+  cd $dir_root/sorc/jcb/src/jcb/configuration/apps/
+  mv rdas rdas.bak
+  ln -sf $dir_root/parm/jcb-rdas rdas
   cd ${BUILD_DIR}
 fi
 
@@ -228,6 +232,34 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/saber/Geometry.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
   # No PR for gsibec yet
   cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
+
+  # Check which spack-stack version we are on
+  # Spack-stack 1.9 uses a different workaround version
+  # Remove me once all machines are updated to >1.9
+  modfile="$dir_root/modulefiles/RDAS/$BUILD_TARGET.$COMPILER.lua"
+  spack_version=$(grep -oE 'spack-stack(-nco)?-[0-9]+(\.[0-9]+)*' "$modfile" | head -n1 | sed -E 's/^.*spack-stack(-nco)?-//')
+  spack_minor=$(echo "$spack_version" | sed -E 's/^1\.([0-9]+).*/\1/')
+  spack_minor_float=$(echo "$spack_minor" | awk '{printf "%.1f", $1}')
+  if (( $(echo "$spack_minor_float >= 9.0" | bc -l) )); then
+    cp ../sorc/_workaround_/saber/Geometry_ss1p9.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
+    cp ../sorc/_workaround_/saber/gsi_covariance_mod_ss1p9.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
+    if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
+      sed -i 's/128.500001/51.499998/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3Dvar.yaml
+      sed -i 's/128.500001/51.499998/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
+      sed -i 's/128.500001/51.499998/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_3Dvar.yaml
+      sed -i 's/128.500001/51.499998/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
+    fi
+  fi
+
+  # Workaround for not including air_pressure_thickness as an analysis variable
+  # No PR yet for this
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
+fi
+
+# temporary bug fix, https://github.com/JCSDA-internal/oops/issues/3030
+ccfile="../sorc/oops/src/oops/base/ParameterTraitsObsVariables.cc"
+if ! grep "#include <algorithm>" ${ccfile} >/dev/null; then
+  sed -i -e "s/#include <map>/#include <algorithm>\n#include <map>/" ${ccfile}
 fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"
