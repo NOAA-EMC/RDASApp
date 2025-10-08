@@ -15,8 +15,6 @@ import matplotlib.ticker as mticker
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from operator import itemgetter
 import shapely.speedups
-matplotlib.use('agg')
-import matplotlib.pyplot as plt
 
 shapely.speedups.enable()
 
@@ -35,6 +33,10 @@ in tern means that it is going to be not an exact match of the domain grid
 
 # Disable warnings
 warnings.filterwarnings('ignore')
+
+# Set matplotlib backend
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
 
 # Functions for calculating run times.
 def tic():
@@ -94,11 +96,6 @@ def bbox_filter(coords, ring):
         (coords[:,1] >= mins[1]) & (coords[:,1] <= maxs[1])
     )
 
-def shrink_boundary(points, factor=0.01):
-    centroid = np.nanmean(points, axis=0)
-    v = points - centroid
-    return centroid + (1.0 - factor) * v
-
 def polygon_from_unstructured_decimated(grid_ds, target_points=20000):
     lon = normalize_lon(np.degrees(grid_ds.variables['lonCell'][:]))
     lat = np.degrees(grid_ds.variables['latCell'][:])
@@ -135,6 +132,11 @@ def build_domain_ring(grid_ds):
         ring[:,0] = np.where(L > 180.0, L - 360.0, L)
 
     return ring
+
+def shrink_boundary(points, factor=0.01):
+    centroid = np.nanmean(points, axis=0)
+    v = points - centroid
+    return centroid + (1.0 - factor) * v
 
 tic1 = tic()
 
