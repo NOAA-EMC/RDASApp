@@ -188,58 +188,119 @@ cen_lon = -97.5
 grid_ds = nc.Dataset(grid_filename, 'r')
 obs_ds = nc.Dataset(obs_filename, 'r')
 
-# Extract the grid latitude and longitude
-if 'grid_lat' in grid_ds.variables and 'grid_lon' in grid_ds.variables:  # FV3 grid
-    grid_lat = grid_ds.variables['grid_lat'][:, :]
-    grid_lon = grid_ds.variables['grid_lon'][:, :]
-    grid_lat = grid_lat.flatten()
-    grid_lon = grid_lon.flatten()
-    dycore = "FV3"
-elif 'latCell' in grid_ds.variables and 'lonCell' in grid_ds.variables:  # MPAS grid
-    grid_lat = np.degrees(grid_ds.variables['latCell'][:])  # Convert radians to degrees
-    grid_lon = np.degrees(grid_ds.variables['lonCell'][:])  # Convert radians to degrees
-    dycore = "MPAS"
-else:
-    raise ValueError("Unrecognized grid format: 'grid_lat'/'grid_lon' or 'latCell'/'lonCell' not found.")
+def _normalize_lon_360(lon):
+    lon = np.asarray(lon)
+    return np.where(lon < 0.0, lon + 360.0, lon)
 
-print(f"Max/Min Lat: {np.max(grid_lat)}, {np.min(grid_lat)}")
-print(f"Max/Min Lon: {np.max(grid_lon)-360}, {np.min(grid_lon)-360}\n")
+def polygon_from_structured_edges(grid_ds):
+    """
+    Build a domain boundary ring from a structured FV3-style grid using only
+    the outer perimeter (no triangulation). Works for variables named either
+    (grid_lat, grid_lon) or (grid_latt, grid_lont).
+    """
+    vars_ = grid_ds.variables
+    # Accept common FV3 names
+    if 'grid_lat' in vars_ and 'grid_lon' in vars_:
+        glat = np.array(vars_['grid_lat'][:])
+        glon = np.array(vars_['grid_lon'][:])
+    elif 'grid_latt' in vars_ and 'grid_lont' in vars_:
+        glat = np.array(vars_['grid_latt'][:])
+        glon = np.array(vars_['grid_lont'][:])
+    else:
+        raise RuntimeError(
+            "Structured grid expected but did not find grid_lat/grid_lon or grid_latt/grid_lont."
+        )
 
-# Get the points along the edge of the domain and sort
-points = np.vstack([grid_lon, grid_lat]).T
-edges = alpha_shape(points, alpha=0.25, only_outer = True)
-edges_sorted = stitch_boundaries(edges)
+    if glat.ndim != 2 or glon.ndim != 2 or glat.shape != glon.shape:
+        raise RuntimeError("grid_lat/grid_lon must be 2-D arrays of the same shape.")
 
-# Now grab the lat/lon points of the boundary (could be improved)
-edge_points = []
-for idx in edges_sorted[0]:
-    ipt = idx[0]; jpt = idx[1]
-    point_1 = points[ipt]
-    point_2 = points[jpt]
-    edge_points.append(point_1)
-    edge_points.append(point_2)
-edge_points = np.asarray(edge_points)
+    # Normalize longitudes to [0,360)
+    glon = _normalize_lon_360(glon)
 
-# Shrink the hull boundary to avoid problems right at the boundary
-centroid = np.nanmean(edge_points, axis=0)
-edge_points = shrink_boundary(edge_points, centroid, factor=hull_shrink_factor)
+    # Extract perimeter in CCW order: top → right → bottom → left
+    top    = np.c_[glon[0, :],          glat[0, :]]
+    right  = np.c_[glon[1:, -1],        glat[1:, -1]]
+    bottom = np.c_[glon[-1, -2::-1],    glat[-1, -2::-1]]     # exclude last to avoid dup
+    left   = np.c_[glon[-2:0:-1, 0],    glat[-2:0:-1, 0]]     # exclude corners already used
 
-# Create a Path object for the polygon domain
-domain_path = Path(edge_points)
+    ring = np.vstack([top, right, bottom, left])
+    return ring
 
-# Extract observation latitudes and longitudes
+def normalize_lon(lon):
+    return _normalize_lon_360(lon)
+
+def bbox_filter(coords, ring):
+    mins = ring.min(axis=0)
+    maxs = ring.max(axis=0)
+    return (
+        (coords[:,0] >= mins[0]) & (coords[:,0] <= maxs[0]) &
+        (coords[:,1] >= mins[1]) & (coords[:,1] <= maxs[1])
+    )
+
+def shrink_ring(points, factor=0.01):
+    centroid = np.nanmean(points, axis=0)
+    v = points - centroid
+    return centroid + (1.0 - factor) * v
+
+def polygon_from_unstructured_decimated(grid_ds, target_points=20000):
+    lon = normalize_lon(np.degrees(grid_ds.variables['lonCell'][:]))
+    lat = np.degrees(grid_ds.variables['latCell'][:])
+    n = lon.size
+    if n <= target_points:
+        use_idx = np.arange(n)
+    else:
+        stride = max(1, n // target_points)
+        use_idx = np.arange(0, n, stride)
+    pts = np.c_[lon[use_idx], lat[use_idx]]
+
+    # Convex hull on decimated points
+    from scipy.spatial import ConvexHull
+    hull = ConvexHull(pts)
+    ring = pts[hull.vertices]
+    return ring
+
+def build_domain_ring(grid_ds):
+    vars_ = grid_ds.variables.keys()
+    if (('grid_lat' in vars_ and 'grid_lon' in vars_) or
+        ('grid_latt' in vars_ and 'grid_lont' in vars_)):
+        ring = polygon_from_structured_edges(grid_ds)
+    elif 'latCell' in vars_ and 'lonCell' in vars_:
+        ring = polygon_from_unstructured_decimated(grid_ds, target_points=20000)
+    else:
+        raise RuntimeError("Unsupported grid file: need grid_lat/grid_lon (or grid_latt/grid_lont) or latCell/lonCell.")
+
+    # Normalize and optionally fix the dateline seam
+    ring[:,0] = normalize_lon(ring[:,0])
+    L = ring[:,0]
+    span_direct = L.max() - L.min()
+    span_shift  = (np.where(L > 180.0, L - 360.0, L)).ptp()
+    if span_shift < span_direct:
+        ring[:,0] = np.where(L > 180.0, L - 360.0, L)
+
+    return ring
+
+# Build ring
+ring = build_domain_ring(grid_ds)
+
+# Optional slight shrink to avoid grazing the exact boundary
+ring = shrink_ring(ring, factor=hull_shrink_factor)
+
+# Build polygon
+from matplotlib.path import Path
+domain_path = Path(ring)
+
+# --- Observation coords (normalize lon) ---
 obs_lat = obs_ds.groups['MetaData'].variables['latitude'][:]
 obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
-obs_lon = np.where(obs_lon < 0, obs_lon + 360, obs_lon)
+obs_lon = normalize_lon(obs_lon)
+obs_coords = np.c_[obs_lon, obs_lat]
 
-# Pair the observation lat/lon as coordinates
-obs_coords = np.vstack((obs_lon, obs_lat)).T
+# --- Fast prefilter with bbox ---
+prefilter_mask = bbox_filter(obs_coords, ring)
+candidates = np.where(prefilter_mask)[0]
 
-# Check if each observation is within the domain
-inside_domain = domain_path.contains_points(obs_coords)
-
-# Get indices of observations within the domain
-inside_indices = np.where(inside_domain)[0]
+inside_small = domain_path.contains_points(obs_coords[candidates])
+inside_indices = candidates[inside_small]
 toc(tic1,label="Time to find obs within domain: ")
 
 tic2 = tic()
@@ -287,6 +348,20 @@ for group in groups:
 fout.setncattr('Orig_obs_file', obs_filename)
 fout.setncattr('Grid_file', grid_filename)
 fout.setncattr('Shrink_factor',hull_shrink_factor)
+
+# Extract the grid latitude and longitude
+if 'grid_lat' in grid_ds.variables and 'grid_lon' in grid_ds.variables:  # FV3 grid
+    grid_lat = grid_ds.variables['grid_lat'][:, :]
+    grid_lon = grid_ds.variables['grid_lon'][:, :]
+    grid_lat = grid_lat.flatten()
+    grid_lon = grid_lon.flatten()
+    dycore = "FV3"
+elif 'latCell' in grid_ds.variables and 'lonCell' in grid_ds.variables:  # MPAS grid
+    grid_lat = np.degrees(grid_ds.variables['latCell'][:])  # Convert radians to degrees
+    grid_lon = np.degrees(grid_ds.variables['lonCell'][:])  # Convert radians to degrees
+    dycore = "MPAS"
+else:
+    raise ValueError("Unrecognized grid format: 'grid_lat'/'grid_lon' or 'latCell'/'lonCell' not found.")
 
 # Close the datasets
 obs_ds.close()
@@ -343,7 +418,7 @@ gl1.ylabel_style = {'size': 5, 'color': 'gray'}
 # Plot the domain and the observations
 #m1.fill(adjusted_lon.flatten(), grid_lat.flatten(), color='b', label='Domain Boundary', zorder=1, transform=ccrs.PlateCarree())
 m1.scatter(adjusted_lon.flatten(), grid_lat.flatten(), c='b', s=1, label='Domain Boundary', zorder=2)
-m1.plot(edge_points[:, 0], edge_points[:, 1], 'tab:purple', label='Concave Hull', zorder=10, transform=ccrs.PlateCarree())
+#m1.plot(edge_points[:, 0], edge_points[:, 1], 'tab:purple', label='Concave Hull', zorder=10, transform=ccrs.PlateCarree())
 
 # Plot included observations
 included_lat = obs_lat[inside_indices]
