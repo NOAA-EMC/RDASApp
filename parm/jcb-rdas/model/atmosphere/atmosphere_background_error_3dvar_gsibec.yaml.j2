@@ -22,16 +22,16 @@ saber outer blocks:
       lat_end: "29.335138"
       lon_start: "-50.033098"
       lon_end: "50.033098"
-      north_pole_lat: "128.500001"
+      north_pole_lat: "51.499998"
       north_pole_lon: "82.500018"
     custom partitioner matching gsi:
-      bands: 10  # matches GSI partition for 1 or 2 MPI tasks, but too simplistic in general
+      bands: 10
     halo: 1
   forward interpolator:
     local interpolator type: oops unstructured grid interpolator
   inverse interpolator:
     local interpolator type: oops unstructured grid interpolator
-  state variables to inverse:  # Make sure to also re-order the state passed to GSI-B constructor
+  state variables to inverse:
   - eastward_wind
   - northward_wind
   - air_temperature
@@ -40,5 +40,15 @@ saber outer blocks:
   - air_pressure_thickness
 linear variable change:
   linear variable change name: Control2Analysis
-  input variables: [eastward_wind,northward_wind,virtual_temperature,water_vapor_mixing_ratio_wrt_moist_air,air_pressure_at_surface]
-  output variables: [eastward_wind,northward_wind,air_temperature,water_vapor_mixing_ratio_wrt_moist_air,air_pressure_at_surface]
+  input variables:
+  - eastward_wind
+  - northward_wind
+  - virtual_temperature
+  - water_vapor_mixing_ratio_wrt_moist_air
+  - air_pressure_at_surface
+  output variables:
+  - eastward_wind
+  - northward_wind
+  - air_temperature
+  - water_vapor_mixing_ratio_wrt_moist_air
+  - air_pressure_at_surface
