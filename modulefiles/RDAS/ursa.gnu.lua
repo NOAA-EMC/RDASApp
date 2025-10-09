@@ -6,7 +6,7 @@ local pkgName    = myModuleName()
 local pkgVersion = myModuleVersion()
 local pkgNameVer = myModuleFullName()
 
-prepend_path("MODULEPATH", '/contrib/spack-stack/spack-stack-1.9.2/envs/ue-gcc-12.4.0/install/modulefiles/Core')
+prepend_path("MODULEPATH", '/contrib/spack-stack/spack-stack-1.9.3/envs/ue-gcc-12.4.0/install/modulefiles/Core')
 
 load("stack-gcc/12.4.0")
 load("stack-python/3.11.7")
