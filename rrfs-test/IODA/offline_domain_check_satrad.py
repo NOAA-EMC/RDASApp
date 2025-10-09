@@ -105,13 +105,8 @@ def polygon_from_mpas_boundary(grid_ds, simplify_target=20000):
     """
     Build the exact MPAS outer boundary by walking boundary edges.
     Returns ring as (N,2) [lon_deg, lat_deg] in [0,360) lon (no seam shift yet).
-    simplify_target: if the ring has more vertices than this, stride-subsample it.
+    simplify_target: if the ring has more vertices than this, subsample it.
     """
-    # Required topology
-    for v in ("cellsOnEdge", "verticesOnEdge", "lonVertex", "latVertex"):
-        if v not in grid_ds.variables:
-            raise RuntimeError("MPAS boundary requires cellsOnEdge, verticesOnEdge, lonVertex, latVertex.")
-
     cellsOnEdge    = to_plain_array(grid_ds.variables["cellsOnEdge"][:])   # (nEdges, 2), int
     verticesOnEdge = to_plain_array(grid_ds.variables["verticesOnEdge"][:])# (nEdges, 2), int
     lonVertex      = to_plain_array(grid_ds.variables["lonVertex"][:])     # (nVertices,)
@@ -131,8 +126,8 @@ def polygon_from_mpas_boundary(grid_ds, simplify_target=20000):
     if not np.any(boundary_mask):
         raise RuntimeError("No boundary edges found (is this a global mesh?).")
 
-    bedges = verticesOnEdge[boundary_mask].astype(np.int64)  # 1-based indices
     # Convert to 0-based; drop invalids (<=0) and edges that touch bad vertices
+    bedges = verticesOnEdge[boundary_mask].astype(np.int64)  # 1-based indices
     v1 = bedges[:, 0] - 1
     v2 = bedges[:, 1] - 1
     ok = (v1 >= 0) & (v2 >= 0)
@@ -190,7 +185,7 @@ def polygon_from_mpas_boundary(grid_ds, simplify_target=20000):
     lon = np.where(lon < 0.0, lon + 360.0, lon)
     ring = np.c_[lon, lat]
 
-    # Optional lightweight simplification by uniform stride
+    # Simplification wherein if the ring has more vertices than this, subsample it.
     if simplify_target and ring.shape[0] > simplify_target:
         stride = max(1, ring.shape[0] // simplify_target)
         ring = ring[::stride]
