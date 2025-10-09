@@ -29,6 +29,7 @@ module list
 
 export OOPS_TRACE=1
 export OMP_NUM_THREADS=1
+export LD_LIBRARY_PATH=${RDASApp}/build/lib64:${LD_LIBRARY_PATH}
 
 ulimit -s unlimited
 ulimit -v unlimited
