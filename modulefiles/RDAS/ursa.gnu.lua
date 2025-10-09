@@ -14,7 +14,6 @@ load("stack-openmpi/4.1.6")
 load("jedi-mpas-env/1.0.0")
 load("jedi-fv3-env/1.0.0")
 load("py-jinja2/3.1.4")
-unload("gsibec/1.2.1")
 
 setenv("CC","mpicc")
 setenv("FC","mpif90")

@@ -94,6 +94,8 @@ if(FV3_DYCORE)
                         ARGS     ${ARGS_NAME}
                         COMMAND  ${COMMAND_NAME} )
 	 endif()
+         set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
+                      "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
          set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
 
@@ -159,6 +161,8 @@ if(MPAS_DYCORE)
                         ARGS     ${ARGS_NAME}
                         COMMAND  ${COMMAND_NAME} )
 	 endif()
+         set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
+                      "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
          set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
 
@@ -200,6 +204,8 @@ if(MPAS_DYCORE)
                                 ioda_msonet.nc 
 			        ${IODA_CONV_COMP_TOL}
                         DEPENDS bufr2ioda.x )
+      set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
+                   "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
 
 
 endif()
