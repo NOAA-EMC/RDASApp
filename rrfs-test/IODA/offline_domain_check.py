@@ -15,6 +15,7 @@ import matplotlib.ticker as mticker
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from operator import itemgetter
 import shapely.speedups
+from collections import defaultdict
 
 shapely.speedups.enable()
 
@@ -54,6 +55,18 @@ def normalize_lon(lon):
     lon = np.asarray(lon)
     return np.where(lon < 0.0, lon + 360.0, lon)
 
+def bbox_filter(coords, ring):
+    mins = ring.min(axis=0)
+    maxs = ring.max(axis=0)
+    return (
+        (coords[:,0] >= mins[0]) & (coords[:,0] <= maxs[0]) &
+        (coords[:,1] >= mins[1]) & (coords[:,1] <= maxs[1])
+    )
+
+def to_plain_array(a):
+    # netCDF masked arrays to plain ndarray
+    return np.array(a.filled(np.nan)) if np.ma.isMaskedArray(a) else np.array(a)
+
 def polygon_from_structured_edges(grid_ds):
     """
     Build a domain boundary ring from a structured FV3-style grid using only
@@ -79,7 +92,7 @@ def polygon_from_structured_edges(grid_ds):
     # Normalize longitudes to [0,360)
     glon = normalize_lon(glon)
 
-    # Extract perimeter in CCW order: top → right → bottom → left
+    # Extract perimeter in CCW order: top > right > bottom > left
     top    = np.c_[glon[0, :],          glat[0, :]]
     right  = np.c_[glon[1:, -1],        glat[1:, -1]]
     bottom = np.c_[glon[-1, -2::-1],    glat[-1, -2::-1]]     # exclude last to avoid dup
@@ -88,49 +101,121 @@ def polygon_from_structured_edges(grid_ds):
     ring = np.vstack([top, right, bottom, left])
     return ring
 
-def bbox_filter(coords, ring):
-    mins = ring.min(axis=0)
-    maxs = ring.max(axis=0)
-    return (
-        (coords[:,0] >= mins[0]) & (coords[:,0] <= maxs[0]) &
-        (coords[:,1] >= mins[1]) & (coords[:,1] <= maxs[1])
-    )
+def polygon_from_mpas_boundary(grid_ds, simplify_target=20000):
+    """
+    Build the exact MPAS outer boundary by walking boundary edges.
+    Returns ring as (N,2) [lon_deg, lat_deg] in [0,360) lon (no seam shift yet).
+    simplify_target: if the ring has more vertices than this, stride-subsample it.
+    """
+    # Required topology
+    for v in ("cellsOnEdge", "verticesOnEdge", "lonVertex", "latVertex"):
+        if v not in grid_ds.variables:
+            raise RuntimeError("MPAS boundary requires cellsOnEdge, verticesOnEdge, lonVertex, latVertex.")
 
-def polygon_from_unstructured_decimated(grid_ds, target_points=20000):
-    lon = normalize_lon(np.degrees(grid_ds.variables['lonCell'][:]))
-    lat = np.degrees(grid_ds.variables['latCell'][:])
-    n = lon.size
-    if n <= target_points:
-        use_idx = np.arange(n)
-    else:
-        stride = max(1, n // target_points)
-        use_idx = np.arange(0, n, stride)
-    pts = np.c_[lon[use_idx], lat[use_idx]]
+    cellsOnEdge    = to_plain_array(grid_ds.variables["cellsOnEdge"][:])   # (nEdges, 2), int
+    verticesOnEdge = to_plain_array(grid_ds.variables["verticesOnEdge"][:])# (nEdges, 2), int
+    lonVertex      = to_plain_array(grid_ds.variables["lonVertex"][:])     # (nVertices,)
+    latVertex      = to_plain_array(grid_ds.variables["latVertex"][:])
 
-    # Convex hull on decimated points
-    from scipy.spatial import ConvexHull
-    hull = ConvexHull(pts)
-    ring = pts[hull.vertices]
+    # Convert to degrees; clean invalids
+    lonv = np.degrees(lonVertex)
+    latv = np.degrees(latVertex)
+    goodv = np.isfinite(lonv) & np.isfinite(latv)
+    if not goodv.all():
+        # If any bad vertices exist, just ignore edges touching them
+        pass
+
+    # Boundary edges have a missing neighbor (cell id == 0)
+    ce = cellsOnEdge.astype(np.int64)
+    boundary_mask = (ce[:, 0] == 0) | (ce[:, 1] == 0)
+    if not np.any(boundary_mask):
+        raise RuntimeError("No boundary edges found (is this a global mesh?).")
+
+    bedges = verticesOnEdge[boundary_mask].astype(np.int64)  # 1-based indices
+    # Convert to 0-based; drop invalids (<=0) and edges that touch bad vertices
+    v1 = bedges[:, 0] - 1
+    v2 = bedges[:, 1] - 1
+    ok = (v1 >= 0) & (v2 >= 0)
+    if not goodv.all():
+        ok &= goodv[v1] & goodv[v2]
+    v1, v2 = v1[ok], v2[ok]
+
+    # Build adjacency along boundary
+    adj = defaultdict(list)
+    for a, b in zip(v1, v2):
+        adj[a].append(b)
+        adj[b].append(a)
+
+    # Each boundary vertex should have degree 2 (closed polygon).
+    # If not, we still try to walk and skip dead-ends.
+    visited_e = set()
+    loops = []
+    for s in list(adj.keys()):
+        for nb in adj[s]:
+            e = (min(s, nb), max(s, nb))
+            if e in visited_e:
+                continue
+            # Trace a loop starting with edge
+            ring_idx = [s, nb]
+            visited_e.add(e)
+            prev, cur = s, nb
+            while True:
+                nbs = adj[cur]
+                # Pick the neighbor that isn't the one we came from
+                nxt = nbs[0] if nbs[0] != prev else (nbs[1] if len(nbs) > 1 else None)
+                if nxt is None:
+                    break
+                e2 = (min(cur, nxt), max(cur, nxt))
+                if e2 in visited_e:
+                    # closed?
+                    if nxt == ring_idx[0]:
+                        loops.append(ring_idx)
+                    break
+                visited_e.add(e2)
+                ring_idx.append(nxt)
+                prev, cur = cur, nxt
+                if cur == ring_idx[0]:
+                    loops.append(ring_idx)
+                    break
+
+    if not loops:
+        raise RuntimeError("Could not assemble a boundary loop from MPAS edges.")
+
+    # Choose the largest loop (by vertex count)
+    ring_ids = max(loops, key=len)
+
+    # Compose lon/lat; normalize lon to [0,360)
+    lon = lonv[ring_ids]
+    lat = latv[ring_ids]
+    lon = np.where(lon < 0.0, lon + 360.0, lon)
+    ring = np.c_[lon, lat]
+
+    # Optional lightweight simplification by uniform stride
+    if simplify_target and ring.shape[0] > simplify_target:
+        stride = max(1, ring.shape[0] // simplify_target)
+        ring = ring[::stride]
+
     return ring
 
 def build_domain_ring(grid_ds):
-    vars_ = grid_ds.variables.keys()
-    if (('grid_lat' in vars_ and 'grid_lon' in vars_) or
-        ('grid_latt' in vars_ and 'grid_lont' in vars_)):
+    varsin = grid_ds.variables.keys()
+    if (('grid_lat' in varsin and 'grid_lon' in varsin) or
+        ('grid_latt' in varsin and 'grid_lont' in varsin)):
         ring = polygon_from_structured_edges(grid_ds)
-    elif 'latCell' in vars_ and 'lonCell' in vars_:
-        ring = polygon_from_unstructured_decimated(grid_ds, target_points=20000)
+    elif {'cellsOnEdge','verticesOnEdge','lonVertex','latVertex'}.issubset(varsin):
+        ring = polygon_from_mpas_boundary(grid_ds, simplify_target=20000)
     else:
-        raise RuntimeError("Unsupported grid file: need grid_lat/grid_lon (or grid_latt/grid_lont) or latCell/lonCell.")
+        raise RuntimeError("Unsupported grid file: need grid_lat/grid_lon (or grid_latt/grid_lont) or cells/verticesOnEdge")
 
     # Normalize and optionally fix the dateline seam
     ring[:,0] = normalize_lon(ring[:,0])
     L = ring[:,0]
     span_direct = L.max() - L.min()
-    span_shift  = (np.where(L > 180.0, L - 360.0, L)).ptp()
-    if span_shift < span_direct:
-        ring[:,0] = np.where(L > 180.0, L - 360.0, L)
-
+    L_shift = np.where(L > 180.0, L - 360.0, L)
+    span_shift = L_shift.max() - L_shift.min()
+    lon_offset = -360 if span_shift < span_direct else 0
+    if lon_offset == -360:
+        ring[:, 0] = L_shift
     return ring
 
 def shrink_boundary(points, factor=0.01):
