@@ -13,7 +13,7 @@ if [[ "$1" == "atl12km" ]]; then
   BUMPLOC="atl12km-401km11levels"
   exprname="atl_2024052700"
 fi
-expdir=${RDASApp}/expr/${exprname}  # can be set to any directory 
+expdir=${RDASApp}/expr/${exprname}  # can be set to any directory
 mkdir -p ${expdir}
 cd ${expdir}
 echo "expdir is at: ${expdir}"
@@ -30,13 +30,13 @@ cp ${RDASApp}/sorc/mpas-jedi/test/testinput/namelists/geovars.yaml .
 cp ${RDASApp}/rrfs-test/testinput/namelist.atmosphere .
 cp ${RDASApp}/rrfs-test/testinput/streams.atmosphere .
 cp ${RDASApp}/rrfs-test/example_yamls/sglobs_t120_mpasjedi.yaml .
-cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_Ens3Dvar.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_3denvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_observer.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_solver.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_bumploc.yaml ./bumploc.yaml
 if [[ "${exprname}" == "atl_2024052700" ]]; then
   sed -i -e "s/conus12km_mpas.graph/atl12km.graph/" ./namelist.atmosphere
-  sed -i -e "s/conus12km-401km11levels/atl12km-401km11levels/" ./rrfs_mpasjedi_2024052700_Ens3Dvar.yaml
+  sed -i -e "s/conus12km-401km11levels/atl12km-401km11levels/" ./rrfs_mpasjedi_2024052700_3denvar.yaml
 fi
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/mpasjedi_expr/run_bump.sh > run_bump.sh
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/mpasjedi_expr/run_jedi.sh > run_jedi.sh

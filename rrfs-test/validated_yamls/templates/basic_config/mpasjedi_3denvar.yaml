@@ -100,8 +100,8 @@ cost function:
         "@OBSERVATIONS@"
 
 test:
-  reference filename: testoutput/rrfs-mpasjedi-ens3dvar.ref
-  test output filename: ./rrfs-mpasjedi-ens3dvar.out
+  reference filename: testoutput/rrfs-mpasjedi-3denvar.ref
+  test output filename: ./rrfs-mpasjedi-3denvar.out
   float relative tolerance: 0.02
   float absolute tolerance: 1.0e-6
   integer tolerance: 3
