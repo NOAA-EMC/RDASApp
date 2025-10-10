@@ -191,11 +191,11 @@ variational:
 output:
   filetype: fms restart
   datapath: ./
-  prefix: hybens3dvar-fv3_lam-C775
+  prefix: hybrid3denvar-fv3_lam-C775
   frequency: PT1H
 test:
-  reference filename: testoutput/rrfs-fv3jedi-hybens3dvar.ref
-  test output filename: rrfs-fv3jedi-hybens3dvar.out
+  reference filename: testoutput/rrfs-fv3jedi-hybrid3denvar.ref
+  test output filename: rrfs-fv3jedi-hybrid3denvar.out
   float relative tolerance: 0.02
   float absolute tolerance: 1.0e-6
   integer tolerance: 3
