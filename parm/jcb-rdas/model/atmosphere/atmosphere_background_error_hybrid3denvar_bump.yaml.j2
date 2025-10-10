@@ -1,0 +1,106 @@
+covariance model: hybrid
+components:
+- covariance:
+    covariance model: SABER
+    saber central block:
+      saber block name: gsi static covariance
+      read:
+        gsi akbk: fv3_akbk
+        gsi error covariance file: berror_stats
+        gsi berror namelist file: gsiparm_regional.anl
+        processor layout x direction: {{atmosphere_layout_gsib_x}}
+        processor layout y direction: {{atmosphere_layout_gsib_y}}
+        debugging deep bypass gsi B error: false
+        debugging mode: false
+        regional mode: true
+    saber outer blocks:
+    - saber block name: interpolation
+      inner geometry:
+        function space: StructuredColumns
+        custom grid matching gsi:
+          type: rotated_lonlat
+          lats: "252"
+          lons: "420"
+          lat_start: "-29.335138"
+          lat_end: "29.335138"
+          lon_start: "-50.033098"
+          lon_end: "50.033098"
+          north_pole_lat: "51.499998"
+          north_pole_lon: "82.500018"
+        custom partitioner matching gsi:
+          bands: 10
+        halo: 1
+      forward interpolator:
+        local interpolator type: oops unstructured grid interpolator
+      inverse interpolator:
+        local interpolator type: oops unstructured grid interpolator
+      state variables to inverse:
+      - eastward_wind
+      - northward_wind
+      - air_temperature
+      - water_vapor_mixing_ratio_wrt_moist_air
+      - air_pressure_at_surface
+      - air_pressure_thickness
+    linear variable change:
+      linear variable change name: Control2Analysis
+      input variables:
+      - eastward_wind
+      - northward_wind
+      - virtual_temperature
+      - water_vapor_mixing_ratio_wrt_moist_air
+      - air_pressure_at_surface
+      output variables:
+      - eastward_wind
+      - northward_wind
+      - air_temperature
+      - water_vapor_mixing_ratio_wrt_moist_air
+      - air_pressure_at_surface
+  weight:
+    value: 0.15
+
+- covariance:
+    covariance model: ensemble
+    members from template:
+      template:
+        datetime: "{{ atmosphere_background_time_iso }}"
+        filetype: fms restart
+        state variables: {{analysis_variables}}
+        field io names:
+          eastward_wind: {{eastward_wind}}
+          northward_wind: {{northward_wind}}
+          air_temperature: {{air_temperature}}
+          air_pressure_thickness: {{air_pressure_thickness}}
+          water_vapor_mixing_ratio_wrt_moist_air: {{water_vapor_mixing_ratio_wrt_moist_air}}
+          cloud_liquid_ice: {{cloud_liquid_ice}}
+          cloud_liquid_water: {{cloud_liquid_water}}
+          ozone_mass_mixing_ratio: {{ozone_mass_mixing_ratio}}
+          geopotential_height_times_gravity_at_surface: {{geopotential_height_times_gravity_at_surface}}
+          skin_temperature_at_surface: {{skin_temperature_at_surface}}
+          soilt: {{soilt}}
+          soilm: {{soilm}}
+          eastward_wind_at_surface: {{eastward_wind_at_surface}}
+          northward_wind_at_surface: {{northward_wind_at_surface}}
+        datapath: {{ atmosphere_background_ensemble_path }}
+        filename_core: {{atmosphere_background_time_prefix}}{{filename_core}}
+        filename_trcr: {{atmosphere_background_time_prefix}}{{filename_trcr}}
+        filename_sfcd: {{atmosphere_background_time_prefix}}{{filename_sfcd}}
+        filename_sfcw: {{atmosphere_background_time_prefix}}{{filename_sfcw}}
+        filename_cplr: {{atmosphere_background_time_prefix}}{{filename_cplr}}
+      pattern: "%mem%"
+      nmembers: 30
+      zero padding: 3
+    localization:
+      localization method: SABER
+      saber central block:
+        saber block name: BUMP_NICAS
+        active variables: {{analysis_variables}}
+        read:
+          io:
+            files prefix: {{atmosphere_fv3jedi_files_path}}/bump_401km_0p04sigma_mpi160/bumploc_401km0p04sigma
+          drivers:
+             multivariate strategy: duplicated
+             read local nicas: true
+          model:
+             level for 2d variables: last
+  weight:
+    value: 0.85
