@@ -201,9 +201,34 @@ fi
 # Create super yamls and link in test data
 if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
 
-  # Build the ctest yamls
+  # Build the ctest yamls - gen_yaml
   cd $dir_root/rrfs-test/validated_yamls
   ./gen_yaml_ctest.sh
+
+  # Build the ctest yamls - jcb
+  PYTHONPATH="${PYTHONPATH}:$dir_root/sorc/jcb/src/:$dir_root/build/lib/python3.*:${dir_root}/sorc/wxflow/src"
+
+  cd $dir_root/rrfs-test/testinput
+
+  ctest_yamls=(
+    rrfs_fv3jedi_2024052700_3dvar.yaml
+    rrfs_fv3jedi_2024052700_3denvar.yaml
+    rrfs_fv3jedi_2024052700_getkf_observer.yaml
+    rrfs_fv3jedi_2024052700_getkf_solver.yaml
+    rrfs_fv3jedi_2024052700_hybrid3denvar.yaml
+#    rrfs_mpasjedi_2024052700_bumploc.yaml
+#    rrfs_mpasjedi_2024052700_3denvar.yaml
+#    rrfs_mpasjedi_2024052700_getkf_observer.yaml
+#    rrfs_mpasjedi_2024052700_getkf_solver.yaml
+  )
+
+  cp $dir_root/parm/jcb-rdas/test/ci/run_jcb_ctest.py .
+  for ctest_yaml in "${ctest_yamls[@]}"; do
+    jcb_config="jcb-$ctest_yaml"
+    cp $dir_root/parm/jcb-rdas/test/ci/$jcb_config .
+    python run_jcb_ctest.py 2024052700 $jcb_config $ctest_yaml
+    ctest=${ctest_yaml%.yaml}
+  done
   cd ${BUILD_DIR}
 
   # Link in test data for experiments: MPAS-JEDI
@@ -244,10 +269,10 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
     cp ../sorc/_workaround_/saber/Geometry_ss1p9.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
     cp ../sorc/_workaround_/saber/gsi_covariance_mod_ss1p9.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
     if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
-      sed -i 's/128.500001/51.499998/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3Dvar.yaml
-      sed -i 's/128.500001/51.499998/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
-      sed -i 's/128.500001/51.499998/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_3Dvar.yaml
-      sed -i 's/128.500001/51.499998/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml
+      sed -i 's/128.500001/51.499998/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar.yaml
+      sed -i 's/128.500001/51.499998/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_hybrid3denvar.yaml
+      sed -i 's/128.500001/51.499998/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_3dvar.yaml
+      sed -i 's/128.500001/51.499998/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_hybrid3denvar.yaml
     fi
   fi
 
