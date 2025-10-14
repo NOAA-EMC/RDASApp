@@ -21,6 +21,10 @@ cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_hybrid3denvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_observer.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_solver.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_bumploc.yaml ./bumploc.yaml
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar_conv_surface.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar_conv_upperair.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar_remote.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar_satrad.yaml .
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_expr/run_bump.sh > run_bump.sh
 sed -e "s#@RDASApp@#${RDASApp}#" ${RDASApp}/rrfs-test/scripts/templates/fv3jedi_expr/run_jedi.sh > run_jedi.sh
 cp ${RDASApp}/rrfs-test/ush/colormap.py .
@@ -53,5 +57,6 @@ ln -snf ${RDASApp}/fix/expr_data/${exprname}/Data_static Data_static
 cp ${RDASApp}/fix/expr_data/${exprname}/DataFix/fmsmpp.nml .
 cp ${RDASApp}/fix/expr_data/${exprname}/DataFix/field_table .
 cp ${RDASApp}/fix/expr_data/${exprname}/DataFix/input_lam_C775_NP16X10.nml .
+cp ${RDASApp}/fix/expr_data/${exprname}/DataFix/fix/dynamics_lam_cmaq.yaml .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/INPUT INPUT
 ln -snf ${RDASApp}/fix/gsi_bec/* ./

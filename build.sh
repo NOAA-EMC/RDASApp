@@ -211,6 +211,7 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
   cd $dir_root/rrfs-test/testinput
 
   ctest_yamls=(
+    # Algorithm ctests
     rrfs_fv3jedi_2024052700_3dvar.yaml
     rrfs_fv3jedi_2024052700_3denvar.yaml
     rrfs_fv3jedi_2024052700_getkf_observer.yaml
@@ -220,6 +221,12 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
 #    rrfs_mpasjedi_2024052700_3denvar.yaml
 #    rrfs_mpasjedi_2024052700_getkf_observer.yaml
 #    rrfs_mpasjedi_2024052700_getkf_solver.yaml
+
+    # Observation ctests (fv3jedi & 3dvar only)
+    rrfs_fv3jedi_2024052700_3dvar_conv_surface.yaml
+    rrfs_fv3jedi_2024052700_3dvar_conv_upperair.yaml
+    rrfs_fv3jedi_2024052700_3dvar_remote.yaml
+    rrfs_fv3jedi_2024052700_3dvar_satrad.yaml
   )
 
   cp $dir_root/parm/jcb-rdas/test/ci/run_jcb_ctest.py .
