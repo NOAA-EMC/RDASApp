@@ -8,11 +8,17 @@ include(funcs.cmake)
 
 # FV3-JEDI tests
 set(rrfs_fv3jedi_tests)
+# Algorithm tests
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar"            "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar"          "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_hybrid3denvar"    "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf_observer"   "fv3jedi_letkf.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf_solver"     "fv3jedi_letkf.x")
+# Observation tests
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_surface"  "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_upperair" "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_remote"        "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_satrad"        "fv3jedi_var.x")
 
 # MPAS-JEDI tests
 set(rrfs_mpasjedi_tests)
@@ -73,6 +79,7 @@ if(FV3_DYCORE)
          file(COPY ${src_casedir}/fmsmpp.nml DESTINATION ${casedir})
          file(COPY ${src_casedir}/field_table DESTINATION ${casedir})
          file(COPY ${src_casedir}/input_lam_C775_NP16X10.nml DESTINATION ${casedir})
+         file(COPY ${src_casedir}/dynamics_lam_cmaq.yaml DESTINATION ${casedir})
 
          file(CREATE_LINK ${src_casedir}/INPUT ${casedir}/INPUT SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)

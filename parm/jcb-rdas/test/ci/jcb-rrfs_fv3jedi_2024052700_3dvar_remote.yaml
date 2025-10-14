@@ -1,5 +1,5 @@
 # This is overwritten in the testing but allows command line test of jcb
-algorithm: local_ensemble_da_observer
+algorithm: 3dvar
 
 # Search path for model and obs for JCB (relative for the submodule, or can be absolute)
 # --------------------------------------------------------------------------------------
@@ -41,8 +41,8 @@ analysis_variables:
 # Testing
 # -------
 do_testing: true
-test_reference_filename: testoutput/rrfs-fv3jedi-getkf-observer.ref
-test_output_filename: rrfs-fv3jedi-getkf-observer.out
+test_reference_filename: testoutput/rrfs-fv3jedi-3dvar-remote.ref
+test_output_filename: rrfs-fv3jedi-3dvar-remote.out
 test_float_relative_tolerance: 0.02
 test_float_absolute_tolerance: 1.0e-6
 test_integer_tolerance: 3
@@ -57,6 +57,8 @@ atmosphere_npz_ges: 65
 atmosphere_npx_anl: 420
 atmosphere_npy_anl: 252
 atmosphere_npz_anl: 65
+atmosphere_fv3jedi_files_path: DataFix
+atmosphere_fv3jedi_files_path: DataFix
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
 atmosphere_io_layout_y: 1
@@ -69,11 +71,11 @@ atmosphere_background_ensemble_path: "data/inputs/mem%mem%"
 
 atmosphere_background_time_iso: '2024-05-27T00:00:00Z'
 atmosphere_background_time_prefix: ""
-filename_core: 20240527.000000.fv_core.res.tile1.nc
-filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
-filename_sfcd: 20240527.000000.sfc_data.nc
-filename_sfcw: 20240527.000000.fv_srf_wnd.res.tile1.nc
-filename_cplr: 20240527.000000.coupler.res
+filename_core: fv_core.res.tile1.nc
+filename_trcr: fv_tracer.res.tile1.nc
+filename_sfcd: sfc_data.nc
+filename_sfcw: fv_srf_wnd.res.tile1.nc
+filename_cplr: coupler.res
 
 state_variables:
 - eastward_wind
@@ -148,9 +150,9 @@ observations:
 #- adpupa_winds_220
 #- adpupa_winds_232
 
-- aircar_airTemperature_133
-- aircar_specificHumidity_133
-- aircar_winds_233
+#- aircar_airTemperature_133
+#- aircar_specificHumidity_133
+#- aircar_winds_233
 
 #- aircft_airTemperature_130
 #- aircft_airTemperature_131
@@ -196,9 +198,9 @@ observations:
 #- sfcshp_winds_284
 
 # Remote
-#- gnss_zenithTotalDelay
-#- satwnd_winds_245_270
-#- satwnd_winds_245_272
+- gnss_zenithTotalDelay
+- satwnd_winds_245_270
+- satwnd_winds_245_272
 
 # SatRad
 #- abi_g16
@@ -297,7 +299,7 @@ atmosphere_obsbiascovout_suffix: ".satbias_cov.nc"
 
 # Local Ensemble DA (LETKF)
 # -------------------------
-local_ensemble_da_solver: Deterministic GETKF
+local_ensemble_da_solver: GETKF
 
 increment_variables:
 - eastward_wind
@@ -310,22 +312,20 @@ increment_variables:
 - ozone_mass_mixing_ratio
 
 # Veritcal localization for GETKF
-vl_fraction_of_retained_variance: 0.850
-vl_lengthscale: 0.50
+vl_fraction_of_retained_variance: 0.750
+vl_lengthscale: 2.1
 vl_lengthscale_units: logp
-inflation_rtps: 0.95
+inflation_rtps: 0.85
 inflation_rtpp: 0.0
 inflation_mult: 1.0
 
 # Driver
-driver_update_obs_config_with_geometry_info: false
-driver_run_as_observer_only: true
-driver_save_posterior_mean: true
+driver_update_obs_config_with_geometry_info: true
+driver_save_posterior_mean: false
 driver_save_posterior_ensemble: false
-driver_save_prior_mean: true
+driver_save_prior_mean: false
 driver_save_posterior_mean_increment: false
-driver_save_posterior_ensemble_increments: false
-
+driver_save_posterior_ensemble_increments: true
 
 # Diagnostics
 atmosphere_ensemble_increment_prefix: "./anl/mem%{member}%/atminc."

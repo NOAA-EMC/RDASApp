@@ -16,15 +16,13 @@ output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-#background_error_file: atmosphere_background_error_3denvar_bump
 background_error_file: atmosphere_background_error_3dvar_gsibec
-#background_error_file: atmosphere_background_error_3dvar_bumpID
-
 
 # Global analysis things
 # ----------------------
-window_begin: '2024-05-26T21:00:00Z'
-window_length: PT6H
+window_begin: '2024-05-26T22:30:00Z'
+window_end: '2024-05-27T01:30:00Z'
+window_length: PT3H
 bound_to_include: begin
 minimizer: DRPCG
 final_diagnostics_departures: oman
@@ -38,10 +36,16 @@ analysis_variables:
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - air_pressure_at_surface
+- ozone_mass_mixing_ratio
 
 # Testing
 # -------
-do_testing: false
+do_testing: true
+test_reference_filename: testoutput/rrfs-fv3jedi-getkf-solver.ref
+test_output_filename: rrfs-fv3jedi-getkf-solver.out
+test_float_relative_tolerance: 0.02
+test_float_absolute_tolerance: 1.0e-6
+test_integer_tolerance: 3
 
 # Model things
 # ------------
@@ -109,6 +113,7 @@ soilt: tslb
 soilm: smois
 eastward_wind_at_surface: u_srf
 northward_wind_at_surface: v_srf
+abi_simulated_channels: 7-16
 
 # Background error
 atmosphere_bump_data_directory: DATA/berror
@@ -124,7 +129,7 @@ north_pole_lat: 51.499998
 north_pole_lon: 82.500018
 
 # Forecasting
-atmosphere_forecast_length: PT6H
+atmosphere_forecast_length: PT3H
 atmosphere_forecast_timestep: PT1H
 
 # Write final increment on Gaussian grid in variational
@@ -146,7 +151,7 @@ observations:
 - aircar_airTemperature_133
 - aircar_specificHumidity_133
 - aircar_winds_233
-#
+
 #- aircft_airTemperature_130
 #- aircft_airTemperature_131
 #- aircft_airTemperature_134
@@ -189,6 +194,14 @@ observations:
 #- sfcshp_winds_280
 #- sfcshp_winds_282
 #- sfcshp_winds_284
+
+# Remote
+#- gnss_zenithTotalDelay
+#- satwnd_winds_245_270
+#- satwnd_winds_245_272
+
+# SatRad
+#- abi_g16
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -246,6 +259,14 @@ iuse_sfcshp_stationPressure_182: accept
 iuse_sfcshp_winds_280: accept
 iuse_sfcshp_winds_282: accept
 iuse_sfcshp_winds_284: accept
+
+# Remote
+iuse_gnss_zenithTotalDelay: accept
+iuse_satwnd_winds_245_270: accept
+iuse_satwnd_winds_245_272: accept
+
+# SatRad
+iuse_abi_g16: accept
 
 crtm_coefficient_path: "Data/crtm"
 
