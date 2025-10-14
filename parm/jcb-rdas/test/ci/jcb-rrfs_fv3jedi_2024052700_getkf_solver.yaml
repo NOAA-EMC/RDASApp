@@ -16,10 +16,7 @@ output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-#background_error_file: atmosphere_background_error_3denvar_bump
 background_error_file: atmosphere_background_error_3dvar_gsibec
-#background_error_file: atmosphere_background_error_3dvar_bumpID
-
 
 # Global analysis things
 # ----------------------
@@ -38,10 +35,16 @@ analysis_variables:
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - air_pressure_at_surface
+- ozone_mass_mixing_ratio
 
 # Testing
 # -------
-do_testing: false
+do_testing: true
+test_reference_filename: testoutput/rrfs-fv3jedi-getkf-solver.ref
+test_output_filename: rrfs-fv3jedi-getkf-solver.out
+test_float_relative_tolerance: 0.02
+test_float_absolute_tolerance: 1.0e-6
+test_integer_tolerance: 3
 
 # Model things
 # ------------
@@ -146,7 +149,7 @@ observations:
 - aircar_airTemperature_133
 - aircar_specificHumidity_133
 - aircar_winds_233
-#
+
 #- aircft_airTemperature_130
 #- aircft_airTemperature_131
 #- aircft_airTemperature_134
@@ -189,6 +192,14 @@ observations:
 #- sfcshp_winds_280
 #- sfcshp_winds_282
 #- sfcshp_winds_284
+
+# Remote
+#- gnss_zenithTotalDelay
+#- satwnd_winds_245_270
+#- satwnd_winds_245_272
+
+# SatRad
+#- abi_g16
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional

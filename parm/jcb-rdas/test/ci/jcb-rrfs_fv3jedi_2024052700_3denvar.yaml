@@ -38,7 +38,12 @@ analysis_variables:
 
 # Testing
 # -------
-do_testing: false
+do_testing: true
+test_reference_filename: testoutput/rrfs-fv3jedi-3denvar.ref
+test_output_filename: rrfs-fv3jedi-3denvar.out
+test_float_relative_tolerance: 0.02
+test_float_absolute_tolerance: 1.0e-6
+test_integer_tolerance: 3
 
 # Model things
 # ------------
