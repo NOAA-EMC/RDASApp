@@ -20,8 +20,9 @@ background_error_file: atmosphere_background_error_hybrid3denvar_bump
 
 # Global analysis things
 # ----------------------
-window_begin: '2024-05-26T21:00:00Z'
-window_length: PT6H
+window_begin: '2024-05-26T22:30:00Z'
+window_end: '2024-05-27T01:30:00Z'
+window_length: PT3H
 bound_to_include: begin
 minimizer: DRPCG
 final_diagnostics_departures: oman
@@ -114,6 +115,7 @@ soilt: tslb
 soilm: smois
 eastward_wind_at_surface: u_srf
 northward_wind_at_surface: v_srf
+abi_simulated_channels: 7-16
 
 # Background error
 atmosphere_bump_data_directory: DATA/berror
@@ -129,7 +131,7 @@ north_pole_lat: 51.499998
 north_pole_lon: 82.500018
 
 # Forecasting
-atmosphere_forecast_length: PT6H
+atmosphere_forecast_length: PT3H
 atmosphere_forecast_timestep: PT1H
 
 # Write final increment on Gaussian grid in variational
@@ -259,6 +261,14 @@ iuse_sfcshp_stationPressure_182: accept
 iuse_sfcshp_winds_280: accept
 iuse_sfcshp_winds_282: accept
 iuse_sfcshp_winds_284: accept
+
+# Remote
+iuse_gnss_zenithTotalDelay: accept
+iuse_satwnd_winds_245_270: accept
+iuse_satwnd_winds_245_272: accept
+
+# SatRad
+iuse_abi_g16: accept
 
 crtm_coefficient_path: "Data/crtm"
 

@@ -104,9 +104,9 @@
          horizontal_mesh: 60
          use_reduced_horizontal_grid: true
          distance_norm: maximum
-         time_mesh: 'PT03H'
-         time_min: '2024-05-26T22:30:00Z'
-         time_max: '2024-05-27T01:30:00Z'
+         time_mesh: '{{window_length}}'
+         time_min: '{{window_begin}}'
+         time_max: '{{window_end}}'
          #  round_horizontal_bin_count_to_nearest: true
          #  partition_longitude_bins_using_mesh: true
          actions:
