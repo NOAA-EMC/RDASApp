@@ -36,19 +36,19 @@ obtype_configs=(
     "atms_n21.yaml"
     #"atms_n20.yaml" # Waiting to add to ctest (different results on Hera/Jet?)
     "amsua_n19.yaml" # Waiting to add to ctest
-    "amsua_metop-b.yaml" 
-    "amsua_metop-c.yaml" 
+    "amsua_metop-b.yaml"
+    "amsua_metop-c.yaml"
 )
 
 # Define the basic configuration and final ctest YAMLs
 declare -A basic_configs
 basic_configs=(
-    ["fv3jedi_3dvar.yaml"]="rrfs_fv3jedi_2024052700_3Dvar.yaml"
-    ["fv3jedi_en3dvar.yaml"]="rrfs_fv3jedi_2024052700_Ens3Dvar.yaml"
-    ["fv3jedi_hyb3denvar.yaml"]="rrfs_fv3jedi_2024052700_HybEns3Dvar.yaml"
-    ["fv3jedi_getkf_observer.yaml"]="rrfs_fv3jedi_2024052700_getkf_observer.yaml"
-    ["fv3jedi_getkf_solver.yaml"]="rrfs_fv3jedi_2024052700_getkf_solver.yaml"
-    ["mpasjedi_en3dvar.yaml"]="rrfs_mpasjedi_2024052700_Ens3Dvar.yaml"
+    #["fv3jedi_3dvar.yaml"]="rrfs_fv3jedi_2024052700_3dvar.yaml"
+    #["fv3jedi_3denvar.yaml"]="rrfs_fv3jedi_2024052700_3denvar.yaml"
+    #["fv3jedi_hybrid3denvar.yaml"]="rrfs_fv3jedi_2024052700_hybrid3denvar.yaml"
+    #["fv3jedi_getkf_observer.yaml"]="rrfs_fv3jedi_2024052700_getkf_observer.yaml"
+    #["fv3jedi_getkf_solver.yaml"]="rrfs_fv3jedi_2024052700_getkf_solver.yaml"
+    ["mpasjedi_3denvar.yaml"]="rrfs_mpasjedi_2024052700_3denvar.yaml"
     ["mpasjedi_getkf_observer.yaml"]="rrfs_mpasjedi_2024052700_getkf_observer.yaml"
     ["mpasjedi_getkf_solver.yaml"]="rrfs_mpasjedi_2024052700_getkf_solver.yaml"
 )
@@ -66,7 +66,7 @@ for basic_config in "${!basic_configs[@]}"; do
     for config in "${obtype_configs[@]}"; do
 # hliu
 
-        # If this is a LETKF solver ctest, we need to replace the input obs file with the observer's jdiag file 
+        # If this is a LETKF solver ctest, we need to replace the input obs file with the observer's jdiag file
         cp  "./templates/obtype_config/$config" ./replace.yaml
         if [[ $basic_config == *"solver"* ]]; then
             # New obs filename

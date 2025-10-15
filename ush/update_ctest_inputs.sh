@@ -8,20 +8,33 @@ DYCORE="BOTH" # [FV3JEDI, MPASJEDI, BOTH]
 
 # FV3-JEDI tests
 rrfs_fv3jedi_tests=(
-    "rrfs_fv3jedi_2024052700_3Dvar"
-    "rrfs_fv3jedi_2024052700_Ens3Dvar"
-    "rrfs_fv3jedi_2024052700_HybEns3Dvar"
+    "rrfs_fv3jedi_2024052700_3dvar"
+    "rrfs_fv3jedi_2024052700_3denvar"
+    "rrfs_fv3jedi_2024052700_hybrid3denvar"
     "rrfs_fv3jedi_2024052700_getkf_observer"
     "rrfs_fv3jedi_2024052700_getkf_solver"
+    "rrfs_fv3jedi_2024052700_3dvar_conv_upperair"
+    "rrfs_fv3jedi_2024052700_3dvar_conv_surface"
+    "rrfs_fv3jedi_2024052700_3dvar_remote"
+    "rrfs_fv3jedi_2024052700_3dvar_satrad"
 )
 
 # MPAS-JEDI tests
 rrfs_mpasjedi_tests=(
-    "rrfs_mpasjedi_2024052700_Ens3Dvar"
+    "rrfs_mpasjedi_2024052700_3denvar"
     "rrfs_mpasjedi_2024052700_getkf_observer"
     "rrfs_mpasjedi_2024052700_getkf_solver"
     "rrfs_mpasjedi_2024052700_bumploc"
 )
+
+# Select tests based on DYCORE
+ctest_yamls=()
+if [[ "$DYCORE" == "FV3JEDI" || "$DYCORE" == "BOTH" ]]; then
+  ctest_yamls+=("${fv3_tests[@]}")
+fi
+if [[ "$DYCORE" == "MPASJEDI" || "$DYCORE" == "BOTH" ]]; then
+  ctest_yamls+=("${mpas_tests[@]}")
+fi
 
 echo "Use test data from rrfs-test-data repository"
 RDASApp=$( git rev-parse --show-toplevel 2>/dev/null )
@@ -39,6 +52,18 @@ cd ${RDASApp}/rrfs-test/validated_yamls
 ./gen_yaml_ctest.sh
 cd ${currdir}
 
+# Run jcb to regenerate the ctest yamls
+PYTHONPATH="${PYTHONPATH}:${RDASApp}/sorc/jcb/src/:${RDASApp}/build/lib/python3.*:${RDASApp}/sorc/wxflow/src"
+cd "${src_yaml}"
+cp "${RDASApp}/parm/jcb-rdas/test/ci/run_jcb_ctest.py" .
+
+for ctest_yaml in "${ctest_yamls[@]}"; do
+  jcb_config="jcb-${ctest_yaml}"
+  cp "${RDASApp}/parm/jcb-rdas/test/ci/${jcb_config}" .
+  python run_jcb_ctest.py 2024052700 "${jcb_config}" "${ctest_yaml}.yaml"
+done
+cd ${currdir}
+
 if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then
    # Relink fix into expr in case new obs are added
    echo "Linking in test data for FV3-JEDI case"
@@ -49,9 +74,20 @@ if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then
       casedir=${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
       src_casedir=${rrfs_test_data_local}/rrfs-data_fv3jedi_2024052700
       ln -snf ${src_casedir}/DataFix ${casedir}/DataFix
+      ln -snf ${casedir}/DataFix/field_table ${casedir}/.
+      ln -snf ${casedir}/DataFix/fmsmpp.nml ${casedir}/.
+      ln -snf ${casedir}/DataFix/input_lam_C775_NP16X10.nml ${casedir}/.
+      ln -snf ${casedir}/DataFix/fix/dynamics_lam_cmaq.yaml ${casedir}/.
       ln -snf ${src_casedir}/Data_static ${casedir}/Data_static
       ln -snf ${src_casedir}/INPUT ${casedir}/INPUT
       ln -snf ${src_casedir}/data ${casedir}/data
+      ln -snf ${casedir}/data/bkg/20240527*nc ${casedir}/.
+      ln -snf ${casedir}/data/bkg/20240527.000000.fv_core.res.nc ${casedir}/fv_core.res.nc
+      ln -snf ${casedir}/data/bkg/20240527.000000.fv_core.res.tile1.nc ${casedir}/fv_core.res.tile1.nc
+      ln -snf ${casedir}/data/bkg/20240527.000000.fv_srf_wnd.res.tile1.nc ${casedir}/fv_srf_wnd.res.tile1.nc
+      ln -snf ${casedir}/data/bkg/20240527.000000.fv_tracer.res.tile1.nc ${casedir}/fv_tracer.res.tile1.nc
+      ln -snf ${casedir}/data/bkg/20240527.000000.phy_data.nc ${casedir}/phy_data.nc
+      ln -snf ${casedir}/data/bkg/20240527.000000.sfc_data.nc ${casedir}/sfc_data.nc
       ln -snf ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput
       cp ${src_yaml}/${case}.yaml ${casedir}
    done

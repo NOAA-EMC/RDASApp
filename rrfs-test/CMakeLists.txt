@@ -8,16 +8,22 @@ include(funcs.cmake)
 
 # FV3-JEDI tests
 set(rrfs_fv3jedi_tests)
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3Dvar"            "fv3jedi_var.x")
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_Ens3Dvar"         "fv3jedi_var.x")
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_HybEns3Dvar"      "fv3jedi_var.x")
+# Algorithm tests
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar"            "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar"          "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_hybrid3denvar"    "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf_observer"   "fv3jedi_letkf.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf_solver"     "fv3jedi_letkf.x")
+# Observation tests
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_surface"  "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_upperair" "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_remote"        "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_satrad"        "fv3jedi_var.x")
 
 # MPAS-JEDI tests
 set(rrfs_mpasjedi_tests)
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        "mpasjedi_error_covariance_toolbox.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_Ens3Dvar"       "mpasjedi_variational.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3denvar"        "mpasjedi_variational.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_observer" "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_solver"   "mpasjedi_enkf.x")
 
@@ -45,7 +51,7 @@ if(FV3_DYCORE)
          get_from_dictionary(rrfs_fv3jedi_tests case exe)
 
 	 # Some case-dependent settings still needed
-         if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
+         if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
             if ("${MACHINE_ID}" STREQUAL "hercules")
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
             else()
@@ -70,8 +76,19 @@ if(FV3_DYCORE)
          endif()
          file(CREATE_LINK ${src_casedir}/DataFix ${casedir}/DataFix SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/Data_static ${casedir}/Data_static SYMBOLIC)
+         file(COPY ${src_casedir}/fmsmpp.nml DESTINATION ${casedir})
+         file(COPY ${src_casedir}/field_table DESTINATION ${casedir})
+         file(COPY ${src_casedir}/input_lam_C775_NP16X10.nml DESTINATION ${casedir})
+         file(COPY ${src_casedir}/dynamics_lam_cmaq.yaml DESTINATION ${casedir})
+
          file(CREATE_LINK ${src_casedir}/INPUT ${casedir}/INPUT SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv_core.res.nc ${casedir}/fv_core.res.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv_core.res.tile1.nc ${casedir}/fv_core.res.tile1.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv_srf_wnd.res.tile1.nc ${casedir}/fv_srf_wnd.res.tile1.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv_tracer.res.tile1.nc ${casedir}/fv_tracer.res.tile1.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/phy_data.nc ${casedir}/phy_data.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/sfc_data.nc ${casedir}/sfc_data.nc SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/berror_stats ${casedir}/berror_stats SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/fv3_akbk ${casedir}/fv3_akbk SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/fv3_grid_spec ${casedir}/fv3_grid_spec SYMBOLIC)
@@ -94,6 +111,8 @@ if(FV3_DYCORE)
                         ARGS     ${ARGS_NAME}
                         COMMAND  ${COMMAND_NAME} )
 	 endif()
+         set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
+                      "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
          set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
 
@@ -109,7 +128,7 @@ if(MPAS_DYCORE)
          get_from_dictionary(rrfs_mpasjedi_tests case exe)
 
 	 # Some case-dependent settings still needed
-         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_Ens3Dvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
+         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
             if ("${MACHINE_ID}" STREQUAL "hercules")
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
             else()
@@ -159,6 +178,8 @@ if(MPAS_DYCORE)
                         ARGS     ${ARGS_NAME}
                         COMMAND  ${COMMAND_NAME} )
 	 endif()
+         set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
+                      "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
          set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
 
@@ -197,9 +218,11 @@ if(MPAS_DYCORE)
                                 netcdf
                                 "${CMAKE_BINARY_DIR}/bin/bufr2ioda.x ${case}.yaml"
                                 data/obs/ioda_msonet_ctest.nc
-                                ioda_msonet.nc 
+                                ioda_msonet.nc
 			        ${IODA_CONV_COMP_TOL}
                         DEPENDS bufr2ioda.x )
+      set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
+                   "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
 
 
 endif()

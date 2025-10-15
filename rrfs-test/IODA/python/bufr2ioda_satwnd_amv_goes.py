@@ -73,7 +73,7 @@ def bufr_to_ioda(config, logger):
     data_type = config["data_type"]
     data_description = config["data_description"]
     data_provider = config["data_provider"]
-    cycle_type = config["cycle_type"]
+    #cycle_type = config["cycle_type"]
     dump_dir = config["dump_directory"]
     ioda_dir = config["ioda_directory"]
     cycle = config["cycle_datetime"]

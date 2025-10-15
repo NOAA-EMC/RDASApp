@@ -8,16 +8,20 @@ DYCORE="BOTH" # [FV3JEDI, MPASJEDI, BOTH]
 
 # FV3-JEDI tests
 rrfs_fv3jedi_tests=(
-    "rrfs_fv3jedi_2024052700_3Dvar"
-    "rrfs_fv3jedi_2024052700_Ens3Dvar"
-    "rrfs_fv3jedi_2024052700_HybEns3Dvar"
+    "rrfs_fv3jedi_2024052700_3dvar"
+    "rrfs_fv3jedi_2024052700_3denvar"
+    "rrfs_fv3jedi_2024052700_hybrid3denvar"
     "rrfs_fv3jedi_2024052700_getkf_observer"
     "rrfs_fv3jedi_2024052700_getkf_solver"
+    "rrfs_fv3jedi_2024052700_3dvar_conv_upperair"
+    "rrfs_fv3jedi_2024052700_3dvar_conv_surface"
+    "rrfs_fv3jedi_2024052700_3dvar_remote"
+    "rrfs_fv3jedi_2024052700_3dvar_satrad"
 )
 
 # MPAS-JEDI tests
 rrfs_mpasjedi_tests=(
-    "rrfs_mpasjedi_2024052700_Ens3Dvar"
+    "rrfs_mpasjedi_2024052700_3denvar"
     "rrfs_mpasjedi_2024052700_getkf_observer"
     "rrfs_mpasjedi_2024052700_getkf_solver"
     "rrfs_mpasjedi_2024052700_bumploc"

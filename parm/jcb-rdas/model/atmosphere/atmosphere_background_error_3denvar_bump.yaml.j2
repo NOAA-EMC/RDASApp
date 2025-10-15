@@ -21,11 +21,11 @@ members from template:
       northward_wind_at_surface: {{northward_wind_at_surface}}
     datapath: {{ atmosphere_background_ensemble_path }}
     #filename is datetime templated: true
-    filename_core: {{atmosphere_background_time_prefix}}fv_core.res.tile1.nc
-    filename_trcr: {{atmosphere_background_time_prefix}}fv_tracer.res.tile1.nc
-    filename_sfcd: {{atmosphere_background_time_prefix}}sfc_data.nc
-    filename_sfcw: {{atmosphere_background_time_prefix}}fv_srf_wnd.res.tile1.nc
-    filename_cplr: {{atmosphere_background_time_prefix}}coupler.res
+    filename_core: {{atmosphere_background_time_prefix}}{{filename_core}}
+    filename_trcr: {{atmosphere_background_time_prefix}}{{filename_trcr}}
+    filename_sfcd: {{atmosphere_background_time_prefix}}{{filename_sfcd}}
+    filename_sfcw: {{atmosphere_background_time_prefix}}{{filename_sfcw}}
+    filename_cplr: {{atmosphere_background_time_prefix}}{{filename_cplr}}
   pattern: "%mem%"
   nmembers: {{atmosphere_number_ensemble_members}}
   zero padding: 3

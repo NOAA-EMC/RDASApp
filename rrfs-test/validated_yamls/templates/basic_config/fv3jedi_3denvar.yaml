@@ -3,7 +3,7 @@ cost function:
   time window:
       begin: 2024-05-26T21:00:00Z
       length: PT6H
-  analysis variables: &3dvars [eastward_wind,northward_wind,air_temperature,air_pressure_thickness,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
+  analysis variables: &3dvars [eastward_wind,northward_wind,air_temperature,water_vapor_mixing_ratio_wrt_moist_air,cloud_liquid_ice,cloud_liquid_water,ozone_mass_mixing_ratio,air_pressure_at_surface]
 
   geometry:
     fms initialization:
@@ -136,11 +136,11 @@ variational:
 output:
   filetype: fms restart
   datapath: ./
-  prefix: ens3dvar-fv3_lam-C775 #Ens3dvar-fv3_lam-C775
+  prefix: 3denvar-fv3_lam-C775
   frequency: PT1H
 test:
-  reference filename: testoutput/rrfs-fv3jedi-ens3dvar.ref
-  test output filename: rrfs-fv3jedi-ens3dvar.out
+  reference filename: testoutput/rrfs-fv3jedi-3denvar.ref
+  test output filename: rrfs-fv3jedi-3denvar.out
   float relative tolerance: 0.02
   float absolute tolerance: 1.0e-6
   integer tolerance: 3
