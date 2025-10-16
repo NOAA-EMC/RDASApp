@@ -30,10 +30,10 @@ rrfs_mpasjedi_tests=(
 # Select tests based on DYCORE
 ctest_yamls=()
 if [[ "$DYCORE" == "FV3JEDI" || "$DYCORE" == "BOTH" ]]; then
-  ctest_yamls+=("${fv3_tests[@]}")
+  ctest_yamls+=("${rrfs_fv3jedi_tests[@]}")
 fi
 if [[ "$DYCORE" == "MPASJEDI" || "$DYCORE" == "BOTH" ]]; then
-  ctest_yamls+=("${mpas_tests[@]}")
+  ctest_yamls+=("${rrfs_mpasjedi_tests[@]}")
 fi
 
 echo "Use test data from rrfs-test-data repository"
@@ -58,9 +58,10 @@ cd "${src_yaml}"
 cp "${RDASApp}/parm/jcb-rdas/test/ci/run_jcb_ctest.py" .
 
 for ctest_yaml in "${ctest_yamls[@]}"; do
+  ctest_yaml="${ctest_yaml}.yaml"
   jcb_config="jcb-${ctest_yaml}"
   cp "${RDASApp}/parm/jcb-rdas/test/ci/${jcb_config}" .
-  python run_jcb_ctest.py 2024052700 "${jcb_config}" "${ctest_yaml}.yaml"
+  python run_jcb_ctest.py 2024052700 "${jcb_config}" "${ctest_yaml}"
 done
 cd ${currdir}
 
