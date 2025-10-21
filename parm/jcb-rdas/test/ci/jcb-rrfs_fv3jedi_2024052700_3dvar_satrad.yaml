@@ -116,6 +116,10 @@ soilm: smois
 eastward_wind_at_surface: u_srf
 northward_wind_at_surface: v_srf
 abi_simulated_channels: 7-16
+abi_active_channels: [-1, 1, 1, 1, -1, -1, -1, -1, -1, -1]
+abi_use_flag_clddet: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2]
+abi_obs_error: [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
+abi_obserr_bound_max: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
 
 # Background error
 atmosphere_bump_data_directory: DATA/berror
@@ -204,6 +208,7 @@ observations:
 
 # SatRad
 - abi_g16
+- abi_g18
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -269,6 +274,7 @@ iuse_satwnd_winds_245_272: accept
 
 # SatRad
 iuse_abi_g16: accept
+iuse_abi_g18: accept
 
 crtm_coefficient_path: "Data/crtm"
 
