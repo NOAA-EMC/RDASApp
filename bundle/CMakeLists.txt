@@ -41,6 +41,10 @@ ecbuild_bundle_initialize()
 # Build bundle source code.
 if(BUILD_RDASBUNDLE)
 
+  if(BUILD_RDAS_TOOLS)
+    ecbuild_bundle( PROJECT rdas_tools.fd SOURCE "../sorc/rdas_tools.fd" )
+  endif()
+
 # jedi-cmake
   ecbuild_bundle( PROJECT jedicmake SOURCE "../sorc/jedicmake" )
   include( jedicmake/cmake/Functions/git_functions.cmake )
