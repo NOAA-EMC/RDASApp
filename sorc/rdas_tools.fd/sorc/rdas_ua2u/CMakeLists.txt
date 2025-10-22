@@ -9,15 +9,16 @@ find_package(ZLIB REQUIRED)
 # --- NetCDF (manual, since no Config file is provided) ---
 if(NOT DEFINED NetCDF_INCLUDE_DIR)
   set(NetCDF_INCLUDE_DIR
-      "/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/netcdf-fortran-4.6.1-oykkcn7/include")
+      "$ENV{netcdf_fortran_ROOT}/include"
+  )
 endif()
 
 if(NOT DEFINED NetCDF_LIBRARIES)
   file(GLOB NETCDFF_LIB
-    "/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/netcdf-fortran-4.6.1-oykkcn7/lib/libnetcdff.so*"
+    "$ENV{netcdf_fortran_ROOT}/lib/libnetcdff.so*"
   )
   file(GLOB NETCDFC_LIB
-    "/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/netcdf-c-4.9.2-zjvomwn/lib/libnetcdf.so*"
+    "$ENV{netcdf_c_ROOT}/lib/libnetcdf.so*"
   )
   set(NetCDF_LIBRARIES
       ${NETCDFF_LIB}
@@ -39,8 +40,6 @@ add_executable(rdas_ua2u.x
   sub_rdas_u_ua.f90
   rdas_ua2u_driver.f90
 )
-
-
 
 # --- Include paths ---
 target_include_directories(rdas_ua2u.x PRIVATE
