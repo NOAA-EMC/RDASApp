@@ -43,7 +43,7 @@ usage() {
   echo "  -t  include RRFS,BUFR_QUERY test data  DEFAULT: YES"
   echo "  -d  compile in the debug mode          DEFAULT: NO"
   echo "  -w  compile with workaround codes      DEFAULT: YES"
-  echo "  -r  compile rdas tools (ua2u)          DEFAULT: YES"
+  echo "  -r  compile rdas tools (ua2u)          DEFAULT: (fv3:YES; mpas:NO)"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -60,7 +60,7 @@ CLEAN_BUILD="NO"
 BUILD_JCSDA="YES"
 BUILD_SUPER_EXE="NO"
 BUILD_RRFS_TEST="YES"
-BUILD_RDAS_TOOLS="YES"
+BUILD_RDAS_TOOLS="NO"
 DYCORE="FV3andMPAS"
 COMPILER="${COMPILER:-intel}"
 DEBUG_OPT=""
@@ -300,6 +300,15 @@ if ! grep "#include <algorithm>" ${ccfile} >/dev/null; then
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)
+# Default: build only if FV3 or FV3andMPAS, or if explicitly requested with -r YES
+if [[ "$BUILD_RDAS_TOOLS" == "YES" ]]; then
+  echo "User override: forcing BUILD_RDAS_TOOLS=ON"
+elif [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
+  BUILD_RDAS_TOOLS="YES"
+else
+  BUILD_RDAS_TOOLS="NO"
+fi
+
 if [[ "$BUILD_RDAS_TOOLS" == "YES" ]]; then
   CMAKE_OPTS+=" -DBUILD_RDAS_TOOLS=ON"
 else
