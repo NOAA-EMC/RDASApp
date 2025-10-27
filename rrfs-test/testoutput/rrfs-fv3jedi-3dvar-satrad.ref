@@ -3,6 +3,9 @@ CostJo   : Nonlinear Jo(abi_g18) = 2.8007954285190277e+02, nobs = 4110, Jo/n = 6
 CostJo   : Nonlinear Jo(amsua_n19) = 1.6177412251364011e+01, nobs = 5, Jo/n = 3.2354824502728023e+00, err = 3.5179659174498923e-01
 CostJo   : Nonlinear Jo(amsua_metop-b) = 4.2363376239886872e+00, nobs = 2, Jo/n = 2.1181688119943436e+00, err = 3.0527575205889040e-01
 CostJo   : Nonlinear Jo(amsua_metop-c) = 0.0000000000000000e+00 --- No Observations
+CostJo   : Nonlinear Jo(atms_npp) = 0.0000000000000000e+00 --- No Observations
+CostJo   : Nonlinear Jo(atms_n20) = 0.0000000000000000e+00 --- No Observations
+CostJo   : Nonlinear Jo(atms_n21) = 0.0000000000000000e+00 --- No Observations
 CostFunction: Nonlinear J = 8.3500092276561475e+02
 DRPCGMinimizer: reduction in residual norm = 4.5359056181185359e-01
 CostFunction::addIncrement: Analysis: 
@@ -85,11 +88,47 @@ sensorScanAngle_order_3:  Min= -1.8485900163650513,  Max= 1.3970370292663574,  N
 sensorScanAngle_order_2:  Min= -1.2139259576797485,  Max= 12.6756038665771484,  Norm= 14.6835678104604010
      sensorScanAngle:  Min= -0.2204570025205612,  Max= 0.5160130262374878,  Norm= 0.8446536277225672
 ---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -3.2681350708007812,  Max= 5.9326539039611816,  Norm= 8.2438337132764303
+   lapseRate_order_2:  Min= -6.1261420249938965,  Max= 0.4009099900722504,  Norm= 7.5470137971187929
+           lapseRate:  Min= -1.4141420125961304,  Max= 1.8317229747772217,  Norm= 2.8207174469238971
+  emissivityJacobian:  Min= -11.9624032974243164,  Max= 28.4276466369628906,  Norm= 32.8380400572436102
+sensorScanAngle_order_4:  Min= -11.4137296676635742,  Max= 4.5065021514892578,  Norm= 14.2813006849191773
+sensorScanAngle_order_3:  Min= -1.9341880083084106,  Max= 5.1574392318725586,  Norm= 6.0125528641707149
+sensorScanAngle_order_2:  Min= -1.9775760173797607,  Max= 12.9127044677734375,  Norm= 20.5651132347271854
+     sensorScanAngle:  Min= -0.6364780068397522,  Max= 0.4666450023651123,  Norm= 0.8976951800869037
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -3.1740009784698486,  Max= 6.0050358772277832,  Norm= 8.3924108697072999
+   lapseRate_order_2:  Min= -14.8825683593750000,  Max= 0.3792220056056976,  Norm= 15.6307867311789632
+           lapseRate:  Min= -1.3946679830551147,  Max= 2.7890770435333252,  Norm= 4.6162333346944679
+  emissivityJacobian:  Min= -12.8823566436767578,  Max= 25.0114250183105469,  Norm= 32.4018977667705670
+sensorScanAngle_order_4:  Min= -9.4885225296020508,  Max= 7.8837571144104004,  Norm= 15.9271837627780712
+sensorScanAngle_order_3:  Min= -2.9291279315948486,  Max= -0.0790150016546249,  Norm= 4.1503912529672702
+sensorScanAngle_order_2:  Min= -0.7337229847908020,  Max= 11.0155429840087891,  Norm= 17.3563696099145197
+     sensorScanAngle:  Min= -0.2449470013380051,  Max= 0.6768429875373840,  Norm= 1.0947341340218522
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -0.9481769800186157,  Max= 4.7917661666870117,  Norm= 5.4146854918946969
+   lapseRate_order_2:  Min= -0.0327779985964298,  Max= 8.6499185562133789,  Norm= 11.7133397659650367
+           lapseRate:  Min= -1.4106880426406860,  Max= 3.6079139709472656,  Norm= 5.3388895605508662
+  emissivityJacobian:  Min= -20.4853649139404297,  Max= 23.7017307281494141,  Norm= 34.7059836151493784
+sensorScanAngle_order_4:  Min= -41.0015716552734375,  Max= 26.5449314117431641,  Norm= 66.0927638796272703
+sensorScanAngle_order_3:  Min= -4.3194479942321777,  Max= 0.2986190021038055,  Norm= 6.6648223718324271
+sensorScanAngle_order_2:  Min= -22.9652671813964844,  Max= 4.6946859359741211,  Norm= 33.1227317767442813
+     sensorScanAngle:  Min= -0.1856029927730560,  Max= 1.1675239801406860,  Norm= 1.9335939678545804
+---------------------------------------------------------------
 CostJo   : Nonlinear Jo(abi_g16) = 574.2819014731333027, nobs = 6247, Jo/n = 0.0919292302662291, err = 1.9806437921044140
 CostJo   : Nonlinear Jo(abi_g18) = 507.2306787685944869, nobs = 4110, Jo/n = 0.1234137904546459, err = 1.9408515605923529
 CostJo   : Nonlinear Jo(amsua_n19) = 16.1774122322243059, nobs = 5, Jo/n = 3.2354824464448613, err = 0.3517965917449892
 CostJo   : Nonlinear Jo(amsua_metop-b) = 4.2362792678674790, nobs = 2, Jo/n = 2.1181396339337395, err = 0.3052757520588904
 CostJo   : Nonlinear Jo(amsua_metop-c) = 0.0000000000000000 --- No Observations
+CostJo   : Nonlinear Jo(atms_npp) = 0.0000000000000000 --- No Observations
+CostJo   : Nonlinear Jo(atms_n20) = 0.0000000000000000 --- No Observations
+CostJo   : Nonlinear Jo(atms_n21) = 0.0000000000000000 --- No Observations
 CostFunction: Nonlinear J = 1101.9262717418196189
 DRPCGMinimizer: reduction in residual norm = 0.0239924695232576
 CostFunction::addIncrement: Analysis: 
@@ -172,9 +211,45 @@ sensorScanAngle_order_3:  Min= -1.8485900163650513,  Max= 1.3970370292663574,  N
 sensorScanAngle_order_2:  Min= -1.2139259576797485,  Max= 12.6756038665771484,  Norm= 14.6835678104604010
      sensorScanAngle:  Min= -0.2204570025205612,  Max= 0.5160130262374878,  Norm= 0.8446536277225672
 ---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -3.2681350708007812,  Max= 5.9326539039611816,  Norm= 8.2438337132764303
+   lapseRate_order_2:  Min= -6.1261420249938965,  Max= 0.4009099900722504,  Norm= 7.5470137971187929
+           lapseRate:  Min= -1.4141420125961304,  Max= 1.8317229747772217,  Norm= 2.8207174469238971
+  emissivityJacobian:  Min= -11.9624032974243164,  Max= 28.4276466369628906,  Norm= 32.8380400572436102
+sensorScanAngle_order_4:  Min= -11.4137296676635742,  Max= 4.5065021514892578,  Norm= 14.2813006849191773
+sensorScanAngle_order_3:  Min= -1.9341880083084106,  Max= 5.1574392318725586,  Norm= 6.0125528641707149
+sensorScanAngle_order_2:  Min= -1.9775760173797607,  Max= 12.9127044677734375,  Norm= 20.5651132347271854
+     sensorScanAngle:  Min= -0.6364780068397522,  Max= 0.4666450023651123,  Norm= 0.8976951800869037
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -3.1740009784698486,  Max= 6.0050358772277832,  Norm= 8.3924108697072999
+   lapseRate_order_2:  Min= -14.8825683593750000,  Max= 0.3792220056056976,  Norm= 15.6307867311789632
+           lapseRate:  Min= -1.3946679830551147,  Max= 2.7890770435333252,  Norm= 4.6162333346944679
+  emissivityJacobian:  Min= -12.8823566436767578,  Max= 25.0114250183105469,  Norm= 32.4018977667705670
+sensorScanAngle_order_4:  Min= -9.4885225296020508,  Max= 7.8837571144104004,  Norm= 15.9271837627780712
+sensorScanAngle_order_3:  Min= -2.9291279315948486,  Max= -0.0790150016546249,  Norm= 4.1503912529672702
+sensorScanAngle_order_2:  Min= -0.7337229847908020,  Max= 11.0155429840087891,  Norm= 17.3563696099145197
+     sensorScanAngle:  Min= -0.2449470013380051,  Max= 0.6768429875373840,  Norm= 1.0947341340218522
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -0.9481769800186157,  Max= 4.7917661666870117,  Norm= 5.4146854918946969
+   lapseRate_order_2:  Min= -0.0327779985964298,  Max= 8.6499185562133789,  Norm= 11.7133397659650367
+           lapseRate:  Min= -1.4106880426406860,  Max= 3.6079139709472656,  Norm= 5.3388895605508662
+  emissivityJacobian:  Min= -20.4853649139404297,  Max= 23.7017307281494141,  Norm= 34.7059836151493784
+sensorScanAngle_order_4:  Min= -41.0015716552734375,  Max= 26.5449314117431641,  Norm= 66.0927638796272703
+sensorScanAngle_order_3:  Min= -4.3194479942321777,  Max= 0.2986190021038055,  Norm= 6.6648223718324271
+sensorScanAngle_order_2:  Min= -22.9652671813964844,  Max= 4.6946859359741211,  Norm= 33.1227317767442813
+     sensorScanAngle:  Min= -0.1856029927730560,  Max= 1.1675239801406860,  Norm= 1.9335939678545804
+---------------------------------------------------------------
 CostJo   : Nonlinear Jo(abi_g16) = 567.3230043975514718, nobs = 6247, Jo/n = 0.0908152720341846, err = 1.9806437921044140
 CostJo   : Nonlinear Jo(abi_g18) = 377.7011378101389028, nobs = 4110, Jo/n = 0.0918980870584280, err = 1.9408515605923529
 CostJo   : Nonlinear Jo(amsua_n19) = 16.1774122183204909, nobs = 5, Jo/n = 3.2354824436640981, err = 0.3517965917449892
 CostJo   : Nonlinear Jo(amsua_metop-b) = 4.2362852928038555, nobs = 2, Jo/n = 2.1181426464019277, err = 0.3052757520588904
 CostJo   : Nonlinear Jo(amsua_metop-c) = 0.0000000000000000 --- No Observations
+CostJo   : Nonlinear Jo(atms_npp) = 0.0000000000000000 --- No Observations
+CostJo   : Nonlinear Jo(atms_n20) = 0.0000000000000000 --- No Observations
+CostJo   : Nonlinear Jo(atms_n21) = 0.0000000000000000 --- No Observations
 CostFunction: Nonlinear J = 965.4378397188146437
