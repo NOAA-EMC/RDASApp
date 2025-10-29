@@ -20,8 +20,8 @@ background_error_file: atmosphere_background_error_3dvar_gsibec
 
 # Global analysis things
 # ----------------------
-# window_begin: '2024-05-26T22:30:00Z'
-# window_end: '2024-05-27T01:30:00Z'
+window_begin: '2024-05-26T22:30:00Z'
+window_end: '2024-05-27T01:30:00Z'
 window_length: PT6H
 bound_to_include: begin
 minimizer: DRPCG
@@ -41,8 +41,8 @@ analysis_variables:
 # Testing
 # -------
 do_testing: true
-test_reference_filename: testoutput/rrfs-fv3jedi-3dvar.ref
-test_output_filename: rrfs-fv3jedi-3dvar.out
+test_reference_filename: testoutput/rrfs-fv3jedi-3dvar-satrad.ref
+test_output_filename: rrfs-fv3jedi-3dvar-satrad.out
 test_float_relative_tolerance: 0.02
 test_float_absolute_tolerance: 1.0e-6
 test_integer_tolerance: 3
@@ -150,9 +150,9 @@ observations:
 #- adpupa_winds_220
 #- adpupa_winds_232
 
-- aircar_airTemperature_133
-- aircar_specificHumidity_133
-- aircar_winds_233
+#- aircar_airTemperature_133
+#- aircar_specificHumidity_133
+#- aircar_winds_233
 
 #- aircft_airTemperature_130
 #- aircft_airTemperature_131
@@ -203,7 +203,7 @@ observations:
 #- satwnd_winds_245_272
 
 # SatRad
-#- abi_g16
+- abi_g16
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional

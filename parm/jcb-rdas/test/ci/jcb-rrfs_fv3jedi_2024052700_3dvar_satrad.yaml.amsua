@@ -20,8 +20,8 @@ background_error_file: atmosphere_background_error_3dvar_gsibec
 
 # Global analysis things
 # ----------------------
-# window_begin: '2024-05-26T22:30:00Z'
-# window_end: '2024-05-27T01:30:00Z'
+window_begin: '2024-05-26T22:30:00Z'
+window_end: '2024-05-27T01:30:00Z'
 window_length: PT6H
 bound_to_include: begin
 minimizer: DRPCG
@@ -41,8 +41,8 @@ analysis_variables:
 # Testing
 # -------
 do_testing: true
-test_reference_filename: testoutput/rrfs-fv3jedi-3dvar.ref
-test_output_filename: rrfs-fv3jedi-3dvar.out
+test_reference_filename: testoutput/rrfs-fv3jedi-3dvar-satrad.ref
+test_output_filename: rrfs-fv3jedi-3dvar-satrad.out
 test_float_relative_tolerance: 0.02
 test_float_absolute_tolerance: 1.0e-6
 test_integer_tolerance: 3
@@ -116,7 +116,22 @@ soilm: smois
 eastward_wind_at_surface: u_srf
 northward_wind_at_surface: v_srf
 abi_simulated_channels: 7-16
+abi_active_channels: [-1, 1, 1, 1, -1, -1, -1, -1, -1, -1]
+abi_use_flag_clddet: [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2]
+abi_obs_error: [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
+abi_obserr_bound_max: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
 
+amsua_simulated_channels: 1-15
+amsua_obs_error: [2.500, 2.200, 2.000, 0.550, 0.300,
+                  0.230, 0.230, 0.250, 0.250, 0.350,
+                  0.400, 0.550, 0.800, 3.000, 3.500]
+amsua_obserr_bound_max: [4.5, 4.5, 4.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.5, 3.5, 4.5, 4.5, 4.5]
+
+amsua_n19_use_flag: [ 1,  1,  1,  1,  1, 1, -1, -1,  1,  1, -1,  -1,  -1,  1,  1 ]
+
+amsua_metop_b_use_flag: [ -1,  -1,  -1,  -1,  -1, -1, -1,  1,  1,  1,  -1,   -1,   -1, -1,  -1 ]
+
+amsua_metop_c_use_flag: [ 1,  1,  1,  1,  1, 1, 1,  1,  1,  1, -1,  -1,  -1, 1,  1 ]
 # Background error
 atmosphere_bump_data_directory: DATA/berror
 atmosphere_gsibec_path: DATA/berror
@@ -150,9 +165,9 @@ observations:
 #- adpupa_winds_220
 #- adpupa_winds_232
 
-- aircar_airTemperature_133
-- aircar_specificHumidity_133
-- aircar_winds_233
+#- aircar_airTemperature_133
+#- aircar_specificHumidity_133
+#- aircar_winds_233
 
 #- aircft_airTemperature_130
 #- aircft_airTemperature_131
@@ -203,7 +218,11 @@ observations:
 #- satwnd_winds_245_272
 
 # SatRad
-#- abi_g16
+- abi_g16
+- abi_g18
+- amsua_n19
+- amsua_metop-b
+- amsua_metop-c
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -269,6 +288,10 @@ iuse_satwnd_winds_245_272: accept
 
 # SatRad
 iuse_abi_g16: accept
+iuse_abi_g18: accept
+iuse_amsua_n19: accept
+iuse_amsua_metop-b: accept
+iuse_amsua_metop-c: accept
 
 crtm_coefficient_path: "Data/crtm"
 
