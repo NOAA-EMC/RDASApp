@@ -14,8 +14,8 @@ def update_cycle_times(config, cycle_str):
     prefix_str = cycle_time.strftime("%Y%m%d.%H%M%S.")
 
     # Example: window_begin is 3h before cycle
-    config["window_begin"] = (cycle_time - timedelta(hours=1.5)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    config["window_end"] = (cycle_time + timedelta(hours=1.5)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    config["window_begin"] = (cycle_time - timedelta(hours=3.0)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    config["window_end"] = (cycle_time + timedelta(hours=3.0)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     return config
 
