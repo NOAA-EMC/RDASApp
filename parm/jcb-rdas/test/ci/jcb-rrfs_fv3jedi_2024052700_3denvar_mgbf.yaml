@@ -49,8 +49,9 @@ test_integer_tolerance: 3
 
 # Model things
 # ------------
-atmosphere_layout_x: 16
-atmosphere_layout_y: 10
+fv3lam_nml: input_lam_C775_NP14X14.nml
+atmosphere_layout_x: 14
+atmosphere_layout_y: 14
 atmosphere_npx_ges: 420
 atmosphere_npy_ges: 252
 atmosphere_npz_ges: 65
