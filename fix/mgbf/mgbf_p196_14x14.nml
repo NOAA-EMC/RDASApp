@@ -1,68 +1,15 @@
 &PARAMETERS_MGBETA
-!TEST  mg_ampl0=2.0,
-!  mg_ampl0=1.5,
-!  mg_ampl0=0.5,
-!clt  mg_ampl01=4.0,mg_ampl02=.0,mg_ampl03=2.0,
   mg_ampl01=5.0,mg_ampl02=1.0,mg_ampl03=2.0,
-!  mg_weig1=60.,mg_weig2=40.,mg_weig3=30.,mg_weig4=20.,
-!  mg_weig1=60.,mg_weig2=40.,mg_weig3=50.,mg_weig4=65.,
-!  mg_weig1=60.,mg_weig2=80.,mg_weig3=100.,mg_weig4=120.,
-!  mg_weig1=60.,mg_weig2=100.,mg_weig3=140.,mg_weig4=180.,
-!!  mg_weig1=6.,mg_weig2=24.,mg_weig3=96.,mg_weig4=384.,
-!  mg_weig1=1.,mg_weig2=4.,mg_weig3=16.,mg_weig4=64.,
-!  mg_weig1=1.,mg_weig2=6.,mg_weig3=20.,mg_weig4=70.,
-!  mg_weig1=1.,mg_weig2=11.,mg_weig3=26.,mg_weig4=79.,
-!  mg_weig1=1.,mg_weig2=1.,mg_weig3=26.,mg_weig4=79.,
-!  mg_weig1=2.,mg_weig2=60.,mg_weig3=120.,mg_weig4=240.,
-!
-!      1            1          1            1
-!  mg_weig1=1.,mg_weig2=4.,mg_weig3=16.,mg_weig4=16.,
-!      1            2          3            4
-!clt  mg_weig1=32.,mg_weig2=64.,mg_weig3=8.,mg_weig4=1.,
-!clt  mg_weig1=32.,mg_weig2=64.,mg_weig3=8.,mg_weig4=1.,
-!clt best  mg_weig1=16.,mg_weig2=124.,mg_weig3=32.,mg_weig4=1.,
-!clt   mg_weig1=128.,mg_weig2=356.,mg_weig3=32.,mg_weig4=1.,
-!clt better   mg_weig1=16.,mg_weig2=248.,mg_weig3=32.,mg_weig4=1.,
-!clt better   mg_weig1=16.,mg_weig2=248.,mg_weig3=64.,mg_weig4=1.,
-!clt   mg_weig1=16.,mg_weig2=30.,mg_weig3=50.,mg_weig4=190.,
-!clt not bad   mg_weig1=20.,mg_weig2=135.,mg_weig3=15000.,mg_weig4=1.,
-   mg_weig1=20.,mg_weig2=135.,mg_weig3=15000.,mg_weig4=1.,
-!
+  mg_weig1=20.,mg_weig2=135.,mg_weig3=15000.,mg_weig4=1.,
   hx=6,hy=6,hz=12,p=2,
-!
   mgbf_line=.true., mgbf_proc=5,
-!  mgbf_line=.false., mgbf_proc=2,
-!  mgbf_line=.false., mgbf_proc=3,
-!  mgbf_line=.true.,  mgbf_proc=4,
-!  mgbf_line=.true., mgbf_proc=5,
-!  mgbf_line=.true., mgbf_proc=6,
-!  mgbf_line=.true., mgbf_proc=7,
-  lm_a=60,lm=60,km2=0,km3=6,
+  lm_a=65,lm=65,km2=0,km3=6,
   coef_normalization_const=1.2236
-!
-   nxPE=8,nyPE=8,im_filt=28,jm_filt=28,
-!
-!GSI - REDUCED DOMAIN
-    nm0 = 224,
-    mm0 = 224,
-!
-!SMALL DOMAIN FOR TESTING
-!    nm0 = 384,
-!    mm0 = 384,
-!
-!vertical resolutions
-!    lmf = 50, lmh = 50,
-!    lmf = 48, lmh = 48,
-!clt    lmf = 48, lmh = 24,
-!    lmf = 50, lmh = 25,
-
-    l_vertical_filter=.true.,
-    gm_max=2,
-    l_for_localization=.true.,
-!For standalone tests (plotting)
-    ldelta=.false.,
-     
-!    ldelta=.true.,
+  nxPE=14,nyPE=14,im_filt=16,jm_filt=16,
+  nm0 = 224,
+  mm0 = 224,
+  l_vertical_filter=.true.,
+  gm_max=2,
+  l_for_localization=.true.,
+  ldelta=.false.,
 /
-~
-
