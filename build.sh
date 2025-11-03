@@ -297,7 +297,8 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
 
   # Workaround for adding MGBF
-  cp -r ../sorc/_workaround_/saber/mgbf/mgbf_src      ../sorc/saber/src/saber/mgbf
+  mkdir -p ../sorc/saber/src/saber/mgbf
+  cp -r ../sorc/_workaround_/saber/mgbf/mgbf_src/*    ../sorc/saber/src/saber/mgbf/
   cp ../sorc/_workaround_/saber/mgbf/Localization.h   ../sorc/saber/src/saber/oops/Localization.h
   cp ../sorc/_workaround_/saber/mgbf/Interpolation.cc ../sorc/saber/src/saber/interpolation/Interpolation.cc
   cp ../sorc/_workaround_/saber/mgbf/CMakeLists.txt   ../sorc/saber/src/saber/CMakeLists.txt
