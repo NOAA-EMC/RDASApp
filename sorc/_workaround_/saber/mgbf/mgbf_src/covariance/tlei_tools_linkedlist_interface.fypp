@@ -1,0 +1,32 @@
+!----------------------------------------------------------------------
+! Module: tools_linkedlist_interface
+!> Linked list interface
+! Source: ECMWF
+! Original licensing: Apache Licence Version 2.0
+! Modified by Benjamin Menetrier for SABER
+! Licensing: this code is distributed under the CeCILL-C license
+! Copyright © 2015-... UCAR, CERFACS, METEO-FRANCE and IRIT
+!----------------------------------------------------------------------
+
+! Node type
+type node_type
+  integer(LIST_KEY_TYPE) :: key              !< Key
+  type(LISTED_TYPE) :: element               !< Listed element
+  type(node_type),pointer  :: next => NULL() !< Next node pointer
+end type node_type
+
+! Registry type
+type :: registry_type
+   logical :: l_init = .false.               !< Initialization flag
+   integer(LIST_KEY_TYPE) :: count  = 0      !< Counter
+   type(node_type),pointer :: head => NULL() !< Node pointer
+   type(fckit_mpi_comm) :: f_comm            !< MPI communicator (fckit wrapper)
+contains
+   procedure :: init => tools_linkedlist_implementation_init
+   procedure :: add => tools_linkedlist_implementation_add
+   procedure :: has => tools_linkedlist_implementation_has
+   procedure :: get_key => tools_linkedlist_implementation_get_key
+   procedure :: get => tools_linkedlist_implementation_get
+   procedure :: remove => tools_linkedlist_implementation_remove
+   procedure :: finalize => tools_linkedlist_implementation_finalize
+end type registry_type
