@@ -97,7 +97,7 @@ call this%def_offset_coef
 call this%def_mg_weights
 
 if(this%mgbf_line) then
-   write(6,*)'thinkdeb init_mg_line is called'
+   !write(6,*)'thinkdeb init_mg_line is called'
    call this%init_mg_line
 endif
 

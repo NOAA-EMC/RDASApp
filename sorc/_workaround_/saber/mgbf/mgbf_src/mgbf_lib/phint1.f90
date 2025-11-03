@@ -597,7 +597,7 @@ real(r_kind)               :: z
 integer(i_kind)           :: i, j, k, s
 
 !------------------------------------------------------------------------------
-write(6,*)'thinkdeb10000  zofs in interpolation zofs ',zofs
+!write(6,*)'thinkdeb10000  zofs in interpolation zofs ',zofs
 do j = 1, ny
   do i = 1, nx
     do k = 0, nz
