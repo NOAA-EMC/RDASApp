@@ -1,0 +1,263 @@
+!----------------------------------------------------------------------
+! Module: tools_linkedlist_implementation
+!> Linked list implementation
+! Source: ECMWF
+! Original licensing: Apache Licence Version 2.0
+! Modified by Benjamin Menetrier for SABER
+! Licensing: this code is distributed under the CeCILL-C license
+! Copyright © 2015-... UCAR, CERFACS, METEO-FRANCE and IRIT
+!----------------------------------------------------------------------
+
+!----------------------------------------------------------------------
+! Subroutine: tools_linkedlist_implementation_init
+!> Initialize the linked list
+!----------------------------------------------------------------------
+subroutine tools_linkedlist_implementation_init(self,f_comm)
+
+implicit none
+
+! Passed variable
+class(registry_type),intent(inout) :: self       !< Registry
+type(fckit_mpi_comm),intent(in),target :: f_comm !< FCKIT MPI communicator wrapper
+
+! Get own FCKIT MPI communicator wrapper
+self%f_comm = f_comm
+
+! Set count to zero and allocate the head of the list
+if ((.not.self%l_init).or.(.not.associated(self%head))) then
+   self%count = 0
+   allocate(self%head)
+   nullify(self%head%next)
+   self%l_init = .true.
+end if
+
+end subroutine tools_linkedlist_implementation_init
+
+!----------------------------------------------------------------------
+! Subroutine: tools_linkedlist_implementation_add
+!> Add element to the linked list
+!----------------------------------------------------------------------
+subroutine tools_linkedlist_implementation_add(self,key,use_key)
+
+implicit none
+
+! Passed variables
+class(registry_type),intent(inout) :: self  !< Registry
+integer(LIST_KEY_TYPE),intent(inout) :: key !< Key
+logical,intent(in),optional :: use_key      !< Use input key
+
+! Local variable
+logical :: luse_key
+type(node_type),pointer :: next
+
+! Local flag
+luse_key = .false.
+if (present(use_key)) luse_key = use_key
+
+! Increase global counter
+self%count = self%count+1
+
+! Assign key
+if (.not.luse_key) key = self%count
+
+! Allocate next element and assign key
+allocate(next)
+next%key = key
+
+! Move the head to the front of the list
+next%next => self%head%next
+self%head%next => next
+
+end subroutine tools_linkedlist_implementation_add
+
+!----------------------------------------------------------------------
+! Function: tools_linkedlist_implementation_has
+!> Check if an element exists in the list
+!----------------------------------------------------------------------
+function tools_linkedlist_implementation_has(self,key) result(exists)
+
+implicit none
+
+! Passed variables
+class(registry_type),intent(in) :: self  !< Registry
+integer(LIST_KEY_TYPE),intent(in) :: key !< Key
+
+! Returned variable
+logical :: exists
+
+! Local variable
+integer :: i
+type(node_type),pointer :: next
+
+! Initialization
+exists = .false.
+i = 1
+
+! Note that the list starts from self%head%next
+next => self%head
+
+! Sweep the linked list to find matching key
+do while(associated(next).and.(i<=self%count))
+   next => next%next
+   if (key==next%key) then
+      exists = .true.
+      exit
+   end if
+   i = i+1
+end do
+
+end function tools_linkedlist_implementation_has
+
+!----------------------------------------------------------------------
+! Function: tools_linkedlist_implementation_get_key
+!> Get key from index
+!----------------------------------------------------------------------
+function tools_linkedlist_implementation_get_key(self,index) result(key)
+
+use iso_fortran_env, only: output_unit
+
+implicit none
+
+! Passed variables
+class(registry_type),intent(in) :: self !< Registry
+integer,intent(in) :: index             !< Index
+
+! Returned variable
+integer(LIST_KEY_TYPE) :: key
+
+! Local variable
+integer :: i
+type(node_type),pointer :: next
+
+! Check required index
+if ((index<1).or.(index>self%count)) then
+   write(output_unit,'(a)') '!!! ABORT in tools_linkedlist_implementation_get_key: index out of bounds'
+   call flush(output_unit)
+   call self%f_comm%abort(1)
+end if
+
+! Note that the list starts from self%head%next
+next => self%head
+
+! Sweep the linked list to find matching key
+i = 0
+do while(associated(next))
+   next => next%next
+   i = i+1
+   if (i==index) then
+      key = next%key
+      exit
+   end if
+end do
+
+end function tools_linkedlist_implementation_get_key
+
+!----------------------------------------------------------------------
+! Subroutine: tools_linkedlist_implementation_get
+!> Fetch element of the linked list by key
+!----------------------------------------------------------------------
+subroutine tools_linkedlist_implementation_get(self,key,ptr)
+
+use iso_fortran_env, only: output_unit
+
+implicit none
+
+! Passed variables
+class(registry_type),intent(in) :: self        !< Registry
+integer(LIST_KEY_TYPE),intent(in) :: key       !< Key
+type(LISTED_TYPE),intent(inout),pointer :: ptr !< Listed type pointer
+
+! Local variable
+type(node_type),pointer :: next
+
+! Note that the list starts from self%head%next
+next => self%head
+ptr => NULL()
+
+! Sweep the linked list to find matching key
+do while(associated(next))
+   next => next%next
+   if (key==next%key) then
+      ptr => next%element
+      exit
+   end if
+end do
+
+! Abort if pointer is not found
+if (.not.associated(ptr)) then
+   write(output_unit,'(a)') '!!! ABORT in tools_linkedlist_implementation_get: pointer not found'
+   call flush(output_unit)
+   call self%f_comm%abort(1)
+end if
+
+end subroutine tools_linkedlist_implementation_get
+
+!----------------------------------------------------------------------
+! Subroutine: tools_linkedlist_implementation_remove
+!> Remove element of the linked list
+!----------------------------------------------------------------------
+subroutine tools_linkedlist_implementation_remove(self,key)
+
+implicit none
+
+! Passed variables
+class(registry_type),intent(inout) :: self  !< Registry
+integer(LIST_KEY_TYPE),intent(inout) :: key !< Key
+
+! Local variables
+type(node_type),pointer :: prev
+type(node_type),pointer :: next
+
+! Note that the list starts from self%head%next
+next => self%head%next
+prev => NULL()
+
+! Sweep the linked list to find matching key
+do while(associated(next))
+   if (key==next%key) exit
+   prev => next
+   next => next%next
+end do
+
+! Reconnect the list
+if (associated(next%next)) then
+   if (associated(prev)) then
+      prev%next => next%next
+   else
+      self%head%next=>next%next
+   end if
+end if
+
+! Remove the node and set key to 0
+if (associated(next)) deallocate(next)
+key = 0
+
+! Decrease global counter
+self%count = self%count-1
+
+end subroutine tools_linkedlist_implementation_remove
+
+!----------------------------------------------------------------------
+! Subroutine: tools_linkedlist_implementation_finalize
+!> Finalize the linked list, deallocate all nodes
+!----------------------------------------------------------------------
+subroutine tools_linkedlist_implementation_finalize(self)
+
+implicit none
+
+! Passed variables
+class(registry_type),intent(inout) :: self !< Registry
+
+! Local variable
+type(node_type),pointer :: current
+type(node_type),pointer :: next
+
+! Sweep the linked list and deallocate all nodes
+next => self%head
+do while(associated(next))
+   current => next
+   next => next%next
+   deallocate(current)
+end do
+
+end subroutine tools_linkedlist_implementation_finalize
