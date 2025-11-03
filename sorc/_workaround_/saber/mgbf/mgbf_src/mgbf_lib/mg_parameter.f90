@@ -772,7 +772,7 @@ logical :: l_exist
   this%nm = this%nm0/this%nxm
   this%mm = this%mm0/this%nym
   !write(6,*)'thinkdeb999 2 6 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  call flush(6)
+  !call flush(6)
   if(this%l_anal_sub_of_filt ) then
     if(this%im_filt.ne.this%nm.or.this%jm_filt.ne.this%mm) then
        write(6,*)'l_anal_sub_of_filter is true but the numbers of analysis/filtering grids are wrong, stop'
@@ -784,7 +784,7 @@ logical :: l_exist
     endif
   endif
   !write(6,*)'thinkdeb999 2 7 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  call flush(6)
+  !call flush(6)
 
 !***
 !***     Filter grid
@@ -884,7 +884,7 @@ logical :: l_exist
 !
 
   !write(6,*)'thinkdeb999 2 8 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  call flush(6)
+  !call flush(6)
   allocate(this%ixm(this%gm))
   allocate(this%jym(this%gm))
   allocate(this%nxy(this%gm))
@@ -900,7 +900,7 @@ logical :: l_exist
   call def_ngens(this%jym,this%gm,this%nym)
 
   !write(6,*)'thinkdeb999 2 9 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  call flush(6)
+  !call flush(6)
   do g=1,this%gm
     this%nxy(g)=this%ixm(g)*this%jym(g)
   enddo
@@ -976,7 +976,7 @@ logical :: l_exist
 #if 1 
 
   !write(6,*)'thinkdeb999 2 10 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  call flush(6)
+  !call flush(6)
 contains
 
 subroutine convert_vert_varied_aspt
@@ -992,7 +992,7 @@ subroutine convert_vert_varied_aspt
   allocate(sigofz(lm_a),sigofis(lm))
   call MPI_COMM_RANK(MPI_COMM_WORLD,mype,ierr)
   !write(6,*)'thinkdeb999 2.0 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  call flush(6)
+  !call flush(6)
   if(this%l_vert_stretched_filtgrid) then 
       if(mype.eq.0) then 
         open(newunit=myunit,file="mgbf_vert_aspt_profile.txt",status='old',iostat=ierr)
@@ -1025,7 +1025,7 @@ subroutine convert_vert_varied_aspt
          endif
   else
   !write(6,*)'thinkdeb999 2 0.1 ',this%l_vert_stretched_filtgrid  ,' '
-  call flush(6)
+  !call flush(6)
       sigofz=sqrt(mg_ampl01)
       
   endif 

@@ -156,11 +156,11 @@ if(nscale == 1 .and. nvargrp ==1 ) then
                                       ! by the current sdl/vdl enhanced version
 endif
 allocate(self%intstate(nscale,nvargrp))
-call flush(6)
+!call flush(6)
 do iscale=1,nscale
   do ivargrp=1,nvargrp
-   write(6,*)'the999 nml is ', trim(self%mgbf_nml_group(iscale,ivargrp))  
-   call flush(6)
+   !write(6,*)'the999 nml is ', trim(self%mgbf_nml_group(iscale,ivargrp))  
+   !call flush(6)
    call  self%intstate(iscale,ivargrp)%mg_initialize(self%mgbf_nml_group(iscale,ivargrp))  !mgbf_nml like mgbeta.nml
   enddo
 enddo

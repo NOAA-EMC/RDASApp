@@ -851,7 +851,7 @@ real(r_kind)               :: z
 integer(i_kind)           :: i, j, k, s
 
 !------------------------------------------------------------------------------
-write(6,*)'intgrid_f2a_3d_ad 1 ',ny,nx,nz
+!write(6,*)'intgrid_f2a_3d_ad 1 ',ny,nx,nz
 !clt todo some optimization could be done, when the interpolation coeff is homogeneous
 do j = 1, ny
   do i = 1, nx
@@ -877,8 +877,8 @@ do j = 1, ny
     end do
   end do
 end do
-write(6,*)'intgrid_f2a_3d_ad 100'
-call flush(6)
+!write(6,*)'intgrid_f2a_3d_ad 100'
+!call flush(6)
 
 end subroutine intgrid_f2a_3d_ad
 subroutine intgrid_f2a_3d_ad_top2bot(nz, ns, nx, ny, zofs, az, as)
