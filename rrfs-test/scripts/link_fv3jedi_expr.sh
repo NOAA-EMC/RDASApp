@@ -60,3 +60,4 @@ cp ${RDASApp}/fix/expr_data/${exprname}/DataFix/input_lam_C775_NP16X10.nml .
 cp ${RDASApp}/fix/expr_data/${exprname}/DataFix/fix/dynamics_lam_cmaq.yaml .
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/INPUT INPUT
 ln -snf ${RDASApp}/fix/gsi_bec/* ./
+ln -snf ${RDASApp}/fix/mgbf/* ./
