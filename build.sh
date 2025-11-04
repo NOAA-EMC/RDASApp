@@ -275,17 +275,16 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Spack-stack 1.9 uses a different workaround version
   # Remove me once all machines are updated to >1.9
   modfile="$dir_root/modulefiles/RDAS/$BUILD_TARGET.$COMPILER.lua"
-  spack_version=$(grep -oE 'spack-stack(-nco)?-[0-9]+(\.[0-9]+)*' "$modfile" | head -n1 | sed -E 's/^.*spack-stack(-nco)?-//')
+  spack_version=$(grep -oE 'spack-stack(-nco)?[-/][0-9]+(\.[0-9]+)*' "$modfile" | head -n1 | sed -E 's/^spack-stack(-nco)?[-/]//')
   spack_minor=$(echo "$spack_version" | sed -E 's/^1\.([0-9]+).*/\1/')
   spack_minor_float=$(echo "$spack_minor" | awk '{printf "%.1f", $1}')
   if (( $(echo "$spack_minor_float >= 9.0" | bc -l) )); then
     cp ../sorc/_workaround_/saber/Geometry_ss1p9.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
     cp ../sorc/_workaround_/saber/gsi_covariance_mod_ss1p9.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
+  else
     if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
-      sed -i 's/128.500001/51.499998/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar.yaml
-      sed -i 's/128.500001/51.499998/' ${dir_root}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_hybrid3denvar.yaml
-      sed -i 's/128.500001/51.499998/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_3dvar.yaml
-      sed -i 's/128.500001/51.499998/' ${dir_root}/expr/fv3_2024052700/rrfs_fv3jedi_2024052700_hybrid3denvar.yaml
+      sed -i 's/51.499998/128.500001/' ${dir_root}/rrfs-test/testinput/*yaml
+      sed -i 's/51.499998/128.500001/' ${dir_root}/expr/fv3_2024052700/*yaml
     fi
   fi
 
