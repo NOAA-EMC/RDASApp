@@ -181,6 +181,7 @@ lon_start: -50.033098
 lon_end: 50.033098
 north_pole_lat: 51.499998
 north_pole_lon: 82.500018
+gsi_bands: 10
 
 # Forecasting
 atmosphere_forecast_length: PT6H
