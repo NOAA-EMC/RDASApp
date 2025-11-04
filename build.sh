@@ -281,9 +281,10 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   if (( $(echo "$spack_minor_float >= 9.0" | bc -l) )); then
     cp ../sorc/_workaround_/saber/Geometry_ss1p9.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
     cp ../sorc/_workaround_/saber/gsi_covariance_mod_ss1p9.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
+  else
     if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
-      sed -i 's/128.500001/51.499998/' ${dir_root}/rrfs-test/testinput/*yaml
-      sed -i 's/128.500001/51.499998/' ${dir_root}/expr/fv3_2024052700/*yaml
+      sed -i 's/51.499998/128.500001/' ${dir_root}/rrfs-test/testinput/*yaml
+      sed -i 's/51.499998/128.500001/' ${dir_root}/expr/fv3_2024052700/*yaml
     fi
   fi
 
