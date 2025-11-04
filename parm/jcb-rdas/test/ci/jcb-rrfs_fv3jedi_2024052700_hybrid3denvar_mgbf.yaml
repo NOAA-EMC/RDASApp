@@ -137,8 +137,8 @@ abi_simulated_channels: 7-16
 atmosphere_bump_data_directory: DATA/berror
 atmosphere_gsibec_path: DATA/berror
 atmosphere_number_ensemble_members: 30
-atmosphere_layout_gsib_x: 16
-atmosphere_layout_gsib_y: 10
+atmosphere_layout_gsib_x: 14
+atmosphere_layout_gsib_y: 14
 lat_start: -29.335138
 lat_end: 29.335138
 lon_start: -50.033098
