@@ -94,15 +94,30 @@ components:
     localization:
       localization method: SABER
       saber central block:
-        saber block name: BUMP_NICAS
-        active variables: {{analysis_variables}}
-        read:
-          io:
-            files prefix: {{atmosphere_fv3jedi_files_path}}/bump_401km_0p04sigma_mpi160/bumploc_401km0p04sigma
-          drivers:
-             multivariate strategy: duplicated
-             read local nicas: true
-          model:
-             level for 2d variables: last
+        saber block name: MGBF_covariance
+        mgbf namelist file: {{mgbf_nml}}
+      saber outer blocks:
+      -  saber block name: interpolation
+         inner geometry:
+           function space: StructuredColumns
+           grid:
+             type : "regional"
+             nx : {{mgbf_nx}}
+             ny : {{mgbf_ny}}
+             dx : {{mgbf_dx}}
+             dy : {{mgbf_dy}}
+             lonlat(centre) : {{mgbf_lonlat}}
+             projection :
+               type       : lambert_conformal_conic
+               latitude0  : {{mgbf_lat0}}
+               longitude0 : {{mgbf_lon0}}
+               units: "degrees"
+             y_numbering : 1
+           partitioner: checkerboard
+           halo: 1
+         forward interpolator:
+           local interpolator type: oops unstructured grid interpolator
+         inverse interpolator:
+           local nterpolator type: oops unstructured grid interpolator
   weight:
     value: 0.85

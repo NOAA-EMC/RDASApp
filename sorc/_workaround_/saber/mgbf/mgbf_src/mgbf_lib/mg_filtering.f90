@@ -867,7 +867,7 @@ include "type_intstat_point2this.inc"
 !***
 !*** Adjoint of beta filter in vertical direction
 !**wr*
-write(6,*)'thinkdeb999 l_vertical_fitler ',l_vertical_filter
+!write(6,*)'thinkdeb999 l_vertical_fitler ',l_vertical_filter
   if(l_vertical_filter) then
                                                  call btim(vfiltT_tim)
      call this%sup_vrbeta1T_bkg(km,km3,hx,hy,hz,im,jm,lm,pasp1,ss1,VALL)

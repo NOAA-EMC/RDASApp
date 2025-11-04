@@ -156,11 +156,11 @@ if(nscale == 1 .and. nvargrp ==1 ) then
                                       ! by the current sdl/vdl enhanced version
 endif
 allocate(self%intstate(nscale,nvargrp))
-call flush(6)
+!call flush(6)
 do iscale=1,nscale
   do ivargrp=1,nvargrp
-   write(6,*)'the999 nml is ', trim(self%mgbf_nml_group(iscale,ivargrp))  
-   call flush(6)
+   !write(6,*)'the999 nml is ', trim(self%mgbf_nml_group(iscale,ivargrp))  
+   !call flush(6)
    call  self%intstate(iscale,ivargrp)%mg_initialize(self%mgbf_nml_group(iscale,ivargrp))  !mgbf_nml like mgbeta.nml
   enddo
 enddo
@@ -368,11 +368,11 @@ integer :: ilev1,ilev2
                 afield= fields%field(isize)  !clttodo
                 fs= afield%functionspace()  !cltthinkfore debug
                 n_owned_size= fs%size_owned() !clt for debug
-                write(6,*)'thinkdeb333 iszie-rank ',isize,' ',afield%name(),' ',afield%rank()
+                !write(6,*)'thinkdeb333 iszie-rank ',isize,' ',afield%name(),' ',afield%rank()
                 if(afield%rank() == 2)  then
-                    write(6,*)'thinkdeb333 iszie ',isize,' ',afield%name()
+                    !write(6,*)'thinkdeb333 iszie ',isize,' ',afield%name()
                     nz=afield%levels()
-                    write(6,*)'thinkdeb333 iszie-nz ',isize,' ',afield%name(),' ',nz
+                    !write(6,*)'thinkdeb333 iszie-nz ',isize,' ',afield%name(),' ',nz
                     call afield%data(ptr_2d)
                     if(nz /= 1 .and. nz /= nz3d ) then
                       write(6,*)'the vertical dimension of the input fields are not as expectd ,stop ',nz,' ',nz3d 
