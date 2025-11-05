@@ -8,7 +8,6 @@
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
-             #obsfile: "obsout/sfcship_uv_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -30,9 +29,6 @@
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
-           #gsi geovals:
-           #  filename: "obsout/sfcship_uv_geoval_2024052700.nc"
-           #  levels_are_top_down: False
            variables:
            - name: windEastward
            - name: windNorthward
@@ -93,10 +89,10 @@
          - filter: Domain Check
            udescriptor: "time_window_check"
            where:
-             - variable:
-                 name: MetaData/timeOffset # units: s
-               minvalue: -5400
-               maxvalue:  5400
+           - variable:
+               name: MetaData/timeOffset # units: s
+             minvalue: -5400 # combined obs spaces -900
+             maxvalue:  5400 #                      900
            action:
              name: reduce obs space
 
@@ -230,6 +226,8 @@
            where:
            - variable: QualityMarker/windEastward
              is_in: 3
+           - variable: ObsType/windEastward
+             is_in: 284
 
          # Error inflation when observation pressure < 50 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -243,6 +241,8 @@
            where:
            - variable: MetaData/pressure
              maxvalue: 5000.0
+           - variable: ObsType/windEastward
+             is_in: 284
 
          # Bounds Check (ObsError)
          - filter: Bounds Check

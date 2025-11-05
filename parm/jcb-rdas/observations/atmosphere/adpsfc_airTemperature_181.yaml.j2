@@ -29,9 +29,6 @@
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
-           #gsi geovals:
-           #  filename: "obsout/sfc_tsen_geoval_2024052700.nc"
-           #  levels_are_top_down: False
            variables:
            - name: airTemperature
 
@@ -88,10 +85,10 @@
          - filter: Domain Check
            udescriptor: "time_window_check"
            where:
-             - variable:
-                 name: MetaData/timeOffset # units: s
-               minvalue: -900
-               maxvalue:  900
+           - variable:
+               name: MetaData/timeOffset # units: s
+             minvalue: -900
+             maxvalue:  900
            action:
              name: reduce obs space
 
@@ -186,6 +183,8 @@
            where:
            - variable: QualityMarker/airTemperature
              is_in: 3
+           - variable: ObsType/airTemperature
+             is_in: 181
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -198,6 +197,8 @@
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           - variable: ObsType/airTemperature
+             is_in: 181
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -225,6 +226,9 @@
          - filter: Variable Assignment
            udescriptor: "create_temporary_ObsErrorData"
            apply at iterations: 0,1
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 181
            assignments:
            - name: TempObsErrorData/airTemperature
              type: float
@@ -251,6 +255,8 @@
            - variable:
                name: ObsErrorData/airTemperature
              value: is_valid
+           - variable: ObsType/airTemperature
+             is_in: 181
            defer to post: true
 
          # Set ObsError set "error parameter" if > "min value"
@@ -269,6 +275,8 @@
            - variable:
                name: ObsErrorData/airTemperature
              value: is_valid
+           - variable: ObsType/airTemperature
+             is_in: 181
            defer to post: true
 
          # Gross Error Check
@@ -281,9 +289,10 @@
            action:
              name: reject
            where:
-           - variable: ObsType/airTemperature
            - variable: QualityMarker/airTemperature
              is_not_in: 3
+           - variable: ObsType/airTemperature
+             is_in: 181
            defer to post: true
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
@@ -296,9 +305,10 @@
            action:
              name: reject
            where:
-           - variable: ObsType/airTemperature
            - variable: QualityMarker/airTemperature
              is_in: 3
+           - variable: ObsType/airTemperature
+             is_in: 181
            defer to post: true
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
@@ -314,6 +324,8 @@
            - variable:
                name: TempObsErrorData/airTemperature
              value: is_valid
+           - variable: ObsType/airTemperature
+             is_in: 181
            defer to post: true
 
          #- filter: GOMsaver

@@ -81,10 +81,10 @@
          - filter: Domain Check
            udescriptor: "time_window_check"
            where:
-             - variable:
-                 name: MetaData/timeOffset # units: s
-               minvalue: -5400
-               maxvalue:  5400
+           - variable:
+               name: MetaData/timeOffset # units: s
+             minvalue: -5400
+             maxvalue:  5400
            action:
              name: reduce obs space
 
@@ -131,6 +131,7 @@
 
          # Error inflation based on pressure check (setupps.f90)
          - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
            filter variables:
            - name: stationPressure
            where:
@@ -171,6 +172,8 @@
            where:
            - variable: QualityMarker/stationPressure
              is_in: 3
+           - variable: ObsType/stationPressure
+             is_in: 182
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -183,6 +186,8 @@
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           - variable: ObsType/stationPressure
+             is_in: 182
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -210,6 +215,9 @@
          - filter: Variable Assignment
            udescriptor: "create_temporary_ObsErrorData"
            apply at iterations: 0,1
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 182
            assignments:
            - name: TempObsErrorData/stationPressure
              type: float
@@ -236,6 +244,8 @@
            - variable:
                name: ObsErrorData/stationPressure
              value: is_valid
+           - variable: ObsType/stationPressure
+             is_in: 182
            defer to post: true
 
          # Set ObsError set "error parameter" if > "min value"
@@ -254,6 +264,8 @@
            - variable:
                name: ObsErrorData/stationPressure
              value: is_valid
+           - variable: ObsType/stationPressure
+             is_in: 182
            defer to post: true
 
          # Gross Error Check
@@ -266,9 +278,10 @@
            action:
              name: reject
            where:
-           - variable: ObsType/stationPressure
            - variable: QualityMarker/stationPressure
              is_not_in: 3
+           - variable: ObsType/stationPressure
+             is_in: 182
            defer to post: true
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
@@ -281,9 +294,10 @@
            action:
              name: reject
            where:
-           - variable: ObsType/stationPressure
            - variable: QualityMarker/stationPressure
              is_in: 3
+           - variable: ObsType/stationPressure
+             is_in: 182
            defer to post: true
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
@@ -299,6 +313,8 @@
            - variable:
                name: TempObsErrorData/stationPressure
              value: is_valid
+           - variable: ObsType/stationPressure
+             is_in: 182
            defer to post: true
 
          #- filter: GOMsaver
