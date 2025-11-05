@@ -16,7 +16,7 @@ output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-background_error_file: atmosphere_background_error_3dvar_gsibec
+background_error_file: atmosphere_background_error_hybrid3denvar_mgbf
 
 # Global analysis things
 # ----------------------
@@ -41,17 +41,17 @@ analysis_variables:
 # Testing
 # -------
 do_testing: true
-test_reference_filename: testoutput/rrfs-fv3jedi-3dvar.ref
-test_output_filename: rrfs-fv3jedi-3dvar.out
+test_reference_filename: testoutput/rrfs-fv3jedi-hybrid3denvar_mgbf.ref
+test_output_filename: rrfs-fv3jedi-hybrid3denvar_mgbf.out
 test_float_relative_tolerance: 0.02
 test_float_absolute_tolerance: 1.0e-6
 test_integer_tolerance: 3
 
 # Model things
 # ------------
-fv3lam_nml: input_lam_C775_NP16X10.nml
-atmosphere_layout_x: 16
-atmosphere_layout_y: 10
+fv3lam_nml: input_lam_C775_NP14X14.nml
+atmosphere_layout_x: 14
+atmosphere_layout_y: 14
 atmosphere_npx_ges: 420
 atmosphere_npy_ges: 252
 atmosphere_npz_ges: 65
@@ -71,7 +71,7 @@ atmosphere_background_path: "./"
 atmosphere_background_ensemble_path: "data/inputs/mem%mem%"
 
 atmosphere_background_time_iso: '2024-05-27T00:00:00Z'
-atmosphere_background_time_prefix: ""
+atmosphere_background_time_prefix: "20240527.000000."
 filename_core: fv_core.res.tile1.nc
 filename_trcr: fv_tracer.res.tile1.nc
 filename_sfcd: sfc_data.nc
@@ -137,15 +137,25 @@ abi_simulated_channels: 7-16
 atmosphere_bump_data_directory: DATA/berror
 atmosphere_gsibec_path: DATA/berror
 atmosphere_number_ensemble_members: 30
-atmosphere_layout_gsib_x: 16
-atmosphere_layout_gsib_y: 10
+atmosphere_layout_gsib_x: 14
+atmosphere_layout_gsib_y: 14
 lat_start: -29.335138
 lat_end: 29.335138
 lon_start: -50.033098
 lon_end: 50.033098
 north_pole_lat: 51.499998
 north_pole_lon: 82.500018
-gsi_bands: 10
+gsi_bands: 14
+
+# Ensemble localization
+mgbf_nml: mgbf_p196_14x14.nml
+mgbf_nx: 224
+mgbf_ny: 224
+mgbf_dx: 30.0e3
+mgbf_dy: 30.0e3
+mgbf_lonlat: [261, 40]
+mgbf_lat0: 40
+mgbf_lon0: 261
 
 # Forecasting
 atmosphere_forecast_length: PT6H

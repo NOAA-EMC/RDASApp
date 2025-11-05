@@ -1325,7 +1325,7 @@ if(this%l_mgbf_inhomogeneous ) then
    allocate(par_weig_g(4))
    par_weig_g=(/this%mg_weig1,this%mg_weig2,this%mg_weig3,this%mg_weig4/)
    do ig=start_idx,end_idx
-   write(6,*)'thinkdeb255 par_weig_g(ig) ',par_weig_g(ig)
+   !write(6,*)'thinkdeb255 par_weig_g(ig) ',par_weig_g(ig)
    weigh_tmp=par_weig_g(ig)
    call this%upsending_normalized(weigh_tmp,this%weig_var(:,:,:,ig))
   !clto call this%upsending(weigh_tmp,this%weig_var(:,:,:,ig))
@@ -1367,15 +1367,15 @@ this%b_diff_h(:,:,:)=0.
 select case(this%my_hgen)
 case(2) 
 !cltorg   this%a_diff_h(:,:,:)=this%mg_weig2
-write(12,*)'thinkdeb256 weigh2 ',this%mg_weig2,minval(this%weig_var(:,:,:,2)),(this%weig_var(:,:,:,2))
+!write(12,*)'thinkdeb256 weigh2 ',this%mg_weig2,minval(this%weig_var(:,:,:,2)),(this%weig_var(:,:,:,2))
    this%a_diff_h(:,:,:)=this%weig_var(:,:,:,2)
 case(3) 
 !cltorg   this%a_diff_h(:,:,:)=this%mg_weig3 
-write(12,*)'thinkdeb256 weigh3 ',this%mg_weig3,minval(this%weig_var(:,:,:,3)),(this%weig_var(:,:,:,3))
+!write(12,*)'thinkdeb256 weigh3 ',this%mg_weig3,minval(this%weig_var(:,:,:,3)),(this%weig_var(:,:,:,3))
    this%a_diff_h(:,:,:)=this%weig_var(:,:,:,3)
-write(6,*)'thinkdeb256 weigh3 1 ',this%weig_var(:,:,:,3)
+!write(6,*)'thinkdeb256 weigh3 1 ',this%weig_var(:,:,:,3)
 case default 
-write(12,*)'thinkdeb256 weigh4 ',this%mg_weig1,minval(this%weig_var(:,:,:,4)),(this%weig_var(:,:,:,4))
+!write(12,*)'thinkdeb256 weigh4 ',this%mg_weig1,minval(this%weig_var(:,:,:,4)),(this%weig_var(:,:,:,4))
 !cltorg   this%a_diff_h(:,:,:)=this%mg_weig4
    this%a_diff_h(:,:,:)=this%weig_var(:,:,:,4)
 end select
