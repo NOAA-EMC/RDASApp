@@ -89,10 +89,10 @@
          - filter: Domain Check
            udescriptor: "time_window_check"
            where:
-             - variable:
-                 name: MetaData/timeOffset # units: s
-               minvalue: -900
-               maxvalue:  900
+           - variable:
+               name: MetaData/timeOffset # units: s
+             minvalue: -900
+             maxvalue:  900
            action:
              name: reduce obs space
 
@@ -226,6 +226,8 @@
            where:
            - variable: QualityMarker/windEastward
              is_in: 3
+           - variable: ObsType/windEastward
+             is_in: 287
 
          # Error inflation when observation pressure < 50 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -239,6 +241,8 @@
            where:
            - variable: MetaData/pressure
              maxvalue: 5000.0
+           - variable: ObsType/windEastward
+             is_in: 287
 
          # Bounds Check (ObsError)
          - filter: Bounds Check

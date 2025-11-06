@@ -8,7 +8,6 @@
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
-             #obsfile: "obsout/sfcship_q_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -30,9 +29,6 @@
            observation vertical coordinate: pressure
            observation vertical coordinate group: MetaData
            interpolation method: log-linear
-           #gsi geovals:
-           #  filename: "obsout/sfcship_q_geoval_2024052700.nc"
-           #  levels_are_top_down: False
            variables:
            - name: specificHumidity
 
@@ -89,10 +85,10 @@
          - filter: Domain Check
            udescriptor: "time_window_check"
            where:
-             - variable:
-                 name: MetaData/timeOffset # units: s
-               minvalue: -900
-               maxvalue:  900
+           - variable:
+               name: MetaData/timeOffset # units: s
+             minvalue: -900
+             maxvalue:  900
            action:
              name: reduce obs space
 
@@ -139,6 +135,7 @@
 
          # Error inflation based on pressure check (setupq.f90)
          - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
            filter variables:
            - name: specificHumidity
            where:
@@ -178,6 +175,8 @@
            where:
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           - variable: ObsType/specificHumidity
+             is_in: 183
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -190,6 +189,8 @@
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+           - variable: ObsType/specificHumidity
+             is_in: 183
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -217,6 +218,9 @@
          - filter: Variable Assignment
            udescriptor: "create_temporary_ObsErrorData"
            apply at iterations: 0,1
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 183
            assignments:
            - name: TempObsErrorData/specificHumidity
              type: float
@@ -243,6 +247,8 @@
            - variable:
                name: ObsErrorData/specificHumidity
              value: is_valid
+           - variable: ObsType/specificHumidity
+             is_in: 183
            defer to post: true
 
          # Set ObsError set "error parameter" if > "min value"
@@ -261,6 +267,8 @@
            - variable:
                name: ObsErrorData/specificHumidity
              value: is_valid
+           - variable: ObsType/specificHumidity
+             is_in: 183
            defer to post: true
 
          # Gross Error Check
@@ -273,9 +281,10 @@
            action:
              name: reject
            where:
-           - variable: ObsType/specificHumidity
            - variable: QualityMarker/specificHumidity
              is_not_in: 3
+           - variable: ObsType/specificHumidity
+             is_in: 183
            defer to post: true
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
@@ -288,9 +297,10 @@
            action:
              name: reject
            where:
-           - variable: ObsType/specificHumidity
            - variable: QualityMarker/specificHumidity
              is_in: 3
+           - variable: ObsType/specificHumidity
+             is_in: 183
            defer to post: true
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
@@ -306,6 +316,8 @@
            - variable:
                name: TempObsErrorData/specificHumidity
              value: is_valid
+           - variable: ObsType/specificHumidity
+             is_in: 183
            defer to post: true
 
          #- filter: GOMsaver

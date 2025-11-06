@@ -91,11 +91,16 @@
          # Time window filter
          - filter: Domain Check
            udescriptor: "time_window_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
            where:
-             - variable:
-                 name: MetaData/timeOffset # units: s
-               minvalue: -5400
-               maxvalue:  5400
+           - variable:
+               name: MetaData/timeOffset # units: s
+             minvalue: -5400
+             maxvalue:  5400
+           - variable: ObsType/windEastward
+             is_in: 233
            action:
              name: reduce obs space
 
@@ -110,6 +115,9 @@
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
              name: MetaData/longitude_latitude_pressure
+           where:
+           - variable: ObsType/windEastward
+             is_in: 233
            action:
              name: reduce obs space
 
@@ -123,6 +131,9 @@
            - name:  GeoVaLs/observable_domain_mask
            minvalue: 0.0
            maxvalue: 0.5
+           where:
+           - variable: ObsType/windEastward
+             is_in: 233
 
          # Initial error assignment
          - filter: Perform Action
@@ -223,6 +234,8 @@
            where:
            - variable: QualityMarker/windEastward
              is_in: 3
+           - variable: ObsType/windEastward
+             is_in: 233
 
          # Error inflation when observation pressure < 50 hPa (read_prepbufr.f90)
          - filter: Perform Action
@@ -236,6 +249,8 @@
            where:
            - variable: MetaData/pressure
              maxvalue: 5000.0
+           - variable: ObsType/windEastward
+             is_in: 233
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
@@ -247,6 +262,9 @@
            - name:  ObsErrorData/windEastward
            minvalue: 0.0
            maxvalue: 1000
+           where:
+           - variable: ObsType/windEastward
+             is_in: 233
            action:
              name: reduce obs space
 
@@ -258,6 +276,9 @@
            - name: windNorthward
            minvalue: -200
            maxvalue: 200
+           where:
+           - variable: ObsType/windEastward
+             is_in: 233
            action:
              name: reduce obs space
 
