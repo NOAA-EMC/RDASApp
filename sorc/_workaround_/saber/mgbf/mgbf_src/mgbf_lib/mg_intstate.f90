@@ -1354,8 +1354,8 @@ endif
 !--------------------------------------------------------
 gen_fac=1.
 !cltorg this%a_diff_f(:,:,:)=this%mg_weig1 
-write(tmpfilename, '("mgbf_tmpfile_", I0, ".txt")') this%mype
-open(12,file=trim(tmpfilename),form="formatted")
+!write(tmpfilename, '("mgbf_tmpfile_", I0, ".txt")') this%mype
+!open(12,file=trim(tmpfilename),form="formatted")
 if(this%l_mgbf_inhomogeneous ) then
 this%a_diff_f(:,:,:)=this%weig_var(:,:,:,1) 
 !cltorg this%a_diff_h(:,:,:)=this%mg_weig1 
