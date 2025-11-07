@@ -86,13 +86,18 @@
              name: reduce obs space
 
          # Time window filter
-         - filter: Domain Check
+         - filter: Bounds Check
            udescriptor: "time_window_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/timeOffset
+           minvalue: -360
+           maxvalue: 360
            where:
-           - variable:
-               name: MetaData/timeOffset # units: s
-             minvalue: -360
-             maxvalue:  360
+           - variable: ObsType/windEastward
+             is_in: 227
            action:
              name: reduce obs space
 
@@ -267,6 +272,9 @@
          # Assign abs(windEastward)
          - filter: Variable Assignment
            udescriptor: "variable_assign_absolute_windEastward"
+           where:
+           - variable: ObsType/windEastward
+             is_in: 227
            assignments:
            - name: AbsObsValue/windEastward
              type: float
@@ -280,6 +288,9 @@
          # Assign abs(windNorthward)
          - filter: Variable Assignment
            udescriptor: "variable_assign_absolute_windNorthward"
+           where:
+           - variable: ObsType/windEastward
+             is_in: 227
            assignments:
            - name: AbsObsValue/windNorthward
              type: float
@@ -306,6 +317,8 @@
                name: AbsObsValue/windNorthward
              minvalue: 0
              maxvalue: 1
+           - variable: ObsType/windEastward
+             is_in: 227
            where operator: and
            action:
              name: reject
@@ -319,6 +332,9 @@
            test variables:
            - name: MetaData/pressure
            minvalue: 40000
+           where:
+           - variable: ObsType/windEastward
+             is_in: 227
            action:
              name: reject
 

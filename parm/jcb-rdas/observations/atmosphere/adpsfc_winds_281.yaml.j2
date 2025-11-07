@@ -86,13 +86,18 @@
              name: reduce obs space
 
          # Time window filter
-         - filter: Domain Check
+         - filter: Bounds Check
            udescriptor: "time_window_check"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/timeOffset
+           minvalue: -900
+           maxvalue: 900
            where:
-           - variable:
-               name: MetaData/timeOffset # units: s
-             minvalue: -900
-             maxvalue:  900
+           - variable: ObsType/windEastward
+             is_in: 281
            action:
              name: reduce obs space
 

@@ -78,13 +78,17 @@
              name: reduce obs space
 
          # Time window filter
-         - filter: Domain Check
+         - filter: Bounds Check
            udescriptor: "time_window_check"
+           filter variables:
+           - name: stationPressure
+           test variables:
+           - name: MetaData/timeOffset
+           minvalue: -5400
+           maxvalue: 5400
            where:
-           - variable:
-               name: MetaData/timeOffset # units: s
-             minvalue: -5400
-             maxvalue:  5400
+           - variable: ObsType/stationPressure
+             is_in: 120
            action:
              name: reduce obs space
 
