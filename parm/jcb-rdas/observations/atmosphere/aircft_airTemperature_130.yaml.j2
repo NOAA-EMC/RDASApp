@@ -82,13 +82,17 @@
              name: reduce obs space
 
          # Time window filter
-         - filter: Domain Check
+         - filter: Bounds Check
            udescriptor: "time_window_check"
+           filter variables:
+           - name: airTemperature
+           test variables:
+           - name: MetaData/timeOffset
+           minvalue: -5400
+           maxvalue: 5400
            where:
-           - variable:
-               name: MetaData/timeOffset # units: s
-             minvalue: -5400
-             maxvalue:  5400
+           - variable: ObsType/airTemperature
+             is_in: 130
            action:
              name: reduce obs space
 
