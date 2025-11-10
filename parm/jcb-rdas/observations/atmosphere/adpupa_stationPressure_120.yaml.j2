@@ -102,6 +102,9 @@
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
              name: MetaData/longitude_latitude_pressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 120
            action:
              name: reduce obs space
 
@@ -201,6 +204,9 @@
            - name:  ObsErrorData/stationPressure
            minvalue: 0.0
            maxvalue: 1000
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 120
            action:
              name: reduce obs space
 
@@ -211,6 +217,9 @@
            - name: stationPressure
            minvalue: 20000.0
            maxvalue: 120000.0
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 120
            action:
              name: reduce obs space
 

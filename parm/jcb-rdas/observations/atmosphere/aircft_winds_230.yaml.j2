@@ -112,6 +112,9 @@
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
              name: MetaData/longitude_latitude_pressure
+           where:
+           - variable: ObsType/windEastward
+             is_in: 230
            action:
              name: reduce obs space
 
@@ -253,6 +256,9 @@
            - name:  ObsErrorData/windEastward
            minvalue: 0.0
            maxvalue: 1000
+           where:
+           - variable: ObsType/windEastward
+             is_in: 230
            action:
              name: reduce obs space
 
@@ -264,6 +270,9 @@
            - name: windNorthward
            minvalue: -200
            maxvalue: 200
+           where:
+           - variable: ObsType/windEastward
+             is_in: 230
            action:
              name: reduce obs space
 

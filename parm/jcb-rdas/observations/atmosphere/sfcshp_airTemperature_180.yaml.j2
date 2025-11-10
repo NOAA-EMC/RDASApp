@@ -106,6 +106,9 @@
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
              name: MetaData/longitude_latitude_pressure
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 180
            action:
              name: reduce obs space
 
@@ -205,6 +208,9 @@
            - name:  ObsErrorData/airTemperature
            minvalue: 0.0
            maxvalue: 1000
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 180
            action:
              name: reduce obs space
 
@@ -215,6 +221,9 @@
            - name: airTemperature
            minvalue: 100
            maxvalue: 400
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 180
            action:
              name: reduce obs space
 
