@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # --- Setup paths ---
-RDASApp="/scratch4/NCEPDEV/fv3-cam/Donald.E.Lippi/RRFSv2/PRs/RDASApp.20251105.jcb_combine_obs_spaces"
+RDASApp=$( git rev-parse --show-toplevel 2>/dev/null )
 OBS_DIR="$RDASApp/parm/jcb-rdas/observations/atmosphere"
 PYTHON_SCRIPT="$OBS_DIR/tools/combine_obs_spaces.py"
 
@@ -13,10 +13,22 @@ cd "$OBS_DIR"
 
 # --- Detect all unique observation prefixes (e.g., adpsfc, aircar, etc.) ---
 prefixes=$(ls *Hum*.yaml.j2 2>/dev/null | awk -F'_' '{print $1}' | sort -u)
+prefixes=(
+    adpsfc
+    aircar
+    adpsfc
+    adpupa
+    aircft
+    msonet
+    sfcshp
+    vadwnd
+    proflr
+    rassda
+)
 echo $prefixes
 # Optional: limit to specific type while testing
 #prefixes="adpsfc"
-for prefix in $prefixes; do
+for prefix in ${prefixes[@]}; do
     echo "Processing prefix: $prefix"
 
     # Find YAML templates for this prefix (skip already-combined files)
