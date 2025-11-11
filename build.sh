@@ -119,7 +119,7 @@ while getopts "p:c:m:j:t:b:r:w:hvfsxd" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules | jet | gaea | wcoss2 | ursa | derecho)
+  hera | orion | hercules | jet | gaeac? | wcoss2 | ursa | derecho)
     echo "Building RDASApp on $BUILD_TARGET"
     echo "  Build initiated `date`"
     if [[ "${BUILD_TARGET}" != *gaea* ]] &&  [[ "${BUILD_TARGET}" != *derecho* ]]; then
@@ -139,7 +139,9 @@ esac
 # Set default number of build jobs based on machine
 if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nodes
   BUILD_JOBS=${BUILD_JOBS:-4}
-else # hera, hercules, jet, gaea
+elif [[ $BUILD_TARGET == 'gaeac6' ]] || [[ $BUILD_TARGET == 'ursa' ]]; then # each node has 192 cores
+  BUILD_JOBS=${BUILD_JOBS:-12}
+else # hera, hercules, jet, etc
   BUILD_JOBS=${BUILD_JOBS:-6}
 fi
 #clt from GDASapp
