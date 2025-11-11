@@ -23,7 +23,7 @@ case ${MACHINE_ID} in
   derecho)
     RDAS_DATA=/to/be/done
     ;;
-  gaea)
+  gaeac?)
     if [[ -d /gpfs/f5 ]]; then
       RDAS_DATA=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/RDAS_DATA
     elif [[ -d /gpfs/f6 ]]; then
