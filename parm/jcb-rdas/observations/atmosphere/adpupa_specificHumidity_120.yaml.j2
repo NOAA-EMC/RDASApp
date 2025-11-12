@@ -106,6 +106,9 @@
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
              name: MetaData/longitude_latitude_pressure
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 120
            action:
              name: reduce obs space
 
@@ -206,6 +209,9 @@
            - name:  ObsErrorData/specificHumidity
            minvalue: 0.0
            maxvalue: 1000
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 120
            action:
              name: reduce obs space
 
@@ -216,6 +222,9 @@
            - name: specificHumidity
            minvalue: 0.0
            maxvalue: 1.0
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 120
            action:
              name: reduce obs space
 

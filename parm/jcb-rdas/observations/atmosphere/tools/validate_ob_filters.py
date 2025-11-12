@@ -9,11 +9,6 @@ from pathlib import Path
 SAFE_UDESC = {
     "online_domain_check",
     "quality_marker_check",
-    "duplicate_check",
-    "bounds_check_ObsError",
-    "bounds_check_ObsValue",
-    "gross_error_check",
-    "gross_error_check_0.7",
 }
 
 def extract_filters(lines):
@@ -80,7 +75,12 @@ def validate_file(filename):
             issues.append(f"FILTER {fnum} (udescriptor={udesc}): Missing where:")
             continue
 
-        # require ObsType reference inside where
+        # require ObsType reference inside where except wind gross error checks
+        if "gross_error" in udesc.lower():
+            if "winds" in filename.lower():  # wind gross error checks
+                continue
+
+        # Require ObsType reference inside where
         if not where_has_obstype(block):
             issues.append(f"FILTER {fnum} (udescriptor={udesc}): where block missing ObsType reference")
 
