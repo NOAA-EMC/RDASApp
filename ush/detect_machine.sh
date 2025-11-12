@@ -8,9 +8,6 @@
 #
 # Thank you for your contribution
 
-# If the MACHINE_ID variable is set, skip this script.
-[[ -n ${MACHINE_ID:-} ]] && return
-
 # First detect w/ hostname
 case $(hostname -f) in
 
@@ -21,10 +18,10 @@ case $(hostname -f) in
   dlogin0[1-9].dogwood.wcoss2.ncep.noaa.gov) MACHINE_ID=wcoss2 ;; ### dogwood01-9
   dlogin10.dogwood.wcoss2.ncep.noaa.gov)     MACHINE_ID=wcoss2 ;; ### dogwood10
 
-  gaea|gaea5[1-8])     MACHINE_ID=gaea ;;
-  gaea6[1-8])          MACHINE_ID=gaea ;;
-  gaea.ncrc.gov|gaea5[1-8].ncrc.gov) MACHINE_ID=gaea ;;
-  gaea6[1-8].ncrc.gov)               MACHINE_ID=gaea ;;
+  gaea|gaea5[1-8])     MACHINE_ID=gaeac5 ;;
+  gaea6[1-8])          MACHINE_ID=gaeac6 ;;
+  gaea.ncrc.gov|gaea5[1-8].ncrc.gov) MACHINE_ID=gaeac5 ;;
+  gaea6[1-8].ncrc.gov)               MACHINE_ID=gaeac6 ;;
 
   hfe0[1-9]) MACHINE_ID=hera ;; ### hera01-09
   hfe1[0-2]) MACHINE_ID=hera ;; ### hera10-12
@@ -59,9 +56,6 @@ if [[ ${MACHINE_ID} == "UNKNOWN" ]]; then
    esac
 fi
 
-# Overwrite auto-detect with MACHINE if set
-MACHINE_ID=${MACHINE:-${MACHINE_ID}}
-
 # If MACHINE_ID is no longer UNKNNOWN, return it
 if [[ "${MACHINE_ID}" != "UNKNOWN" ]]; then
   return
@@ -95,10 +89,10 @@ elif [[ -d /work ]]; then
     MACHINE_ID=orion
   fi
 elif [[ -d /gpfs/f5 && -d /ncrc ]]; then
-  # We are on GAEA
-  MACHINE_ID=gaea
+  # We are on GAEA C5
+  MACHINE_ID=gaeac5
 elif [[ -d /gpfs/f6 && -d /ncrc ]]; then
-  MACHINE_ID=gaea
+  MACHINE_ID=gaeac6
 elif [[ -d /data/prod ]]; then
   # We are on SSEC's S4
   MACHINE_ID=s4
