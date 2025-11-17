@@ -103,12 +103,27 @@ for group in groups:
 longitude_latitude_pressure = [f"{lon}_{lat}_{pres}" for lon, lat, pres in zip(obs_lon, obs_lat, obs_prs)]
 longitude_latitude_pressure = np.array(longitude_latitude_pressure)
 
+metadata_group = fout.groups['MetaData']
+
 # Add the longitude_latitude_pressure variable to the file
 var = "longitude_latitude_pressure"
 data = longitude_latitude_pressure
-metadata_group = fout.groups['MetaData']
-metadata_group.createVariable(f"{var}", 'str', 'Location', fill_value=fill)
+if var not in metadata_group.variables:
+    metadata_group.createVariable(f"{var}", 'str', 'Location', fill_value=fill)
 metadata_group.variables[f"{var}"][:] = data
+
+# Add the exp_err_norm to file (for goes-r amvs)
+if 'expectedError' in metadata_group.variables:
+    u = fout.groups['ObsValue'].variables['windEastward'][:]
+    v = fout.groups['ObsValue'].variables['windNorthward'][:]
+    speed = np.sqrt(u*u + v*v)
+    ee = fout.groups['MetaData'].variables['expectedError'][:]
+    experr_norm = (10.0 - 0.1 * ee) / speed
+    var = "exp_err_norm"
+    data = experr_norm.astype('f4')
+    if var not in metadata_group.variables:
+        metadata_group.createVariable(f"{var}", 'f4', 'Location', fill_value=fill)
+    metadata_group.variables[f"{var}"][:] = data
 
 # Close the datasets
 obs_ds.close()
