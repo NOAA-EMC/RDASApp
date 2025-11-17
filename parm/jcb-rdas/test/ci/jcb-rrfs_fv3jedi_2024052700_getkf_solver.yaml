@@ -343,7 +343,7 @@ driver_save_prior_mean: true
 driver_save_posterior_mean_increment: false
 driver_save_posterior_ensemble_increments: false
 driver_read_HX_from_disk: true
-driver_do_posterior_observer: true
+driver_do_posterior_observer: false
 
 
 # Diagnostics
