@@ -70,15 +70,15 @@ def validate_file(filename):
         if udesc in SAFE_UDESC:
             continue
 
-        # require where block
-        if not has_where_block(block):
-            issues.append(f"FILTER {fnum} (udescriptor={udesc}): Missing where:")
-            continue
-
         # require ObsType reference inside where except wind gross error checks
         if "gross_error" in udesc.lower():
             if "winds" in filename.lower():  # wind gross error checks
                 continue
+
+        # require where block
+        if not has_where_block(block):
+            issues.append(f"FILTER {fnum} (udescriptor={udesc}): Missing where:")
+            continue
 
         # Require ObsType reference inside where
         if not where_has_obstype(block):
