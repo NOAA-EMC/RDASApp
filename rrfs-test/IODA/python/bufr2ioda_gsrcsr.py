@@ -64,7 +64,8 @@ def bufr_to_ioda(config, logger):
     logger.info(f"sensor_id = {sensor_id}")
     logger.info(f"reference_time = {reference_time}")
 
-    bufrfile = f"{cycle_type}.t{hh}z.{data_type}.tm00.{data_format}"
+    #bufrfile = f"{cycle_type}.t{hh}z.{data_type}.tm00.{data_format}"
+    bufrfile = f"abibufr"
     DATA_PATH = os.path.join(
         dump_dir, bufrfile
         #dump_dir, f"{cycle_type}.{yyyymmdd}", str(hh), "atmos", bufrfile
@@ -287,7 +288,8 @@ def bufr_to_ioda(config, logger):
             }
 
             # Create IODA ObsSpace
-            iodafile = f"{cycle_type}.t{hh}z.{satinst}.tm00.nc"
+            #iodafile = f"{cycle_type}.t{hh}z.{satinst}.tm00.nc"
+            iodafile = f"ioda_{satinst}.nc"
             OUTPUT_PATH = os.path.join(ioda_dir, iodafile)
             logger.info(f"Create output file : {OUTPUT_PATH}")
             obsspace = ioda_ospace.ObsSpace(OUTPUT_PATH, mode="w", dim_dict=dims)
