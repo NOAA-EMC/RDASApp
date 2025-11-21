@@ -6,10 +6,10 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs/ioda_satwnd.abi_goes-16.nc"
+             obsfile: "data/obs/ioda_satwnd.abi_goes-18.nc"
              missing file action: "warn"
          obsdataout:
-           empty obs space action: "create output"
+           empty obs space action: "@emptyObsSpaceAction@"
            engine:
              type: H5File
              obsfile: jdiag_satwnd_winds_246_272.nc
