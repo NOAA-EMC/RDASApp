@@ -6,6 +6,23 @@ import pandas as pd
 import numpy as np
 import jinja2
 
+colorize_match=True
+drop_noYAML=False
+
+# ANSI colors
+RED = "\033[91m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
+RESET = "\033[0m"
+
+def colorize(text):
+    if text == "Match":
+        return f"{GREEN}{text}{RESET}"
+    elif text == "Mismatch":
+        return f"{RED}{text}{RESET}"
+    else:
+        return f"{YELLOW}{text}{RESET}"
+
 # Map YAML variable name -> convinfo otype
 VAR_TO_OTYPE = {
     "airTemperature": "t",
@@ -14,16 +31,17 @@ VAR_TO_OTYPE = {
     "winds": "uv",
 }
 
-# Assuming identity mapping for filter names based on udescription
+# Assuming identity mapping for filter names based on udescriptor
 # If there's a specific mapping, define it here
 udesc_to_filtername = {
     "gross_error_check": "gross_error_check",
     "ermin_set": "ermin_set",
     "ermax_set": "ermax_set",
+    "time_window_check": "time_window_check",
 }
 
 def parse_yaml(filename):
-    """Extract gross/ermin/ermax from YAML structure using udescription mapping."""
+    """Extract gross/ermin/ermax/twindow from YAML structure using udescriptor mapping."""
     with open(filename, "r") as f:
         text = f.read()
 
@@ -43,7 +61,7 @@ def parse_yaml(filename):
     if otype is None:
         raise ValueError(f"Unmapped variable name '{varname}' in {base}")
 
-    gross = ermin = ermax = None
+    gross = ermin = ermax = twindow = None
 
     # Find the 'obs filters' section
     filters = []
@@ -56,7 +74,7 @@ def parse_yaml(filename):
         if not isinstance(block, dict):
             continue
 
-        udesc = block.get("udescription")
+        udesc = block.get("udescriptor")
         if not udesc:
             continue
 
@@ -102,10 +120,22 @@ def parse_yaml(filename):
             if ermax is None:
                 ermax = block.get("action", {}).get("error parameter")
 
+        # ===== EXTRACT TIME WINDOW =====
+        if filter_name == "time_window_check":
+            tw_min = None
+            tw_max = None
+            tw_min = block.get("minvalue")
+            tw_max = block.get("maxvalue")
+            if tw_min is not None and tw_max is not None:
+                # typical YAML has minvalue: -twin, maxvalue: +twin
+                twindow_sec = max(abs(tw_min), abs(tw_max))
+                twindow = twindow_sec #/ 3600.0
+
     return {
         "file": base,
         "otype": otype,
         "type": int(typecode),
+        "yaml_twindow": twindow,
         "yaml_gross": gross,
         "yaml_ermin": ermin,
         "yaml_ermax": ermax,
@@ -125,13 +155,14 @@ def parse_convinfo(filename="convinfo.rrfs"):
             otype = parts[0]
             typecode = int(parts[1])
             # Based on header: otype type sub iuse twindow numgrp ngroup nmiter gross ermax ermin ...
-            # So gross=parts[8], ermax=parts[9], ermin=parts[10]
+            twindow = float(parts[4])*3600.
             gross = float(parts[8])
             ermax = float(parts[9])
             ermin = float(parts[10])
             rows.append({
                 "otype": otype,
                 "type": typecode,
+                "conv_twindow": twindow,
                 "conv_gross": gross,
                 "conv_ermin": ermin,
                 "conv_ermax": ermax,
@@ -160,22 +191,35 @@ def main():
     cond_ermin = (df['yaml_ermin'] / scale_factor == df['conv_ermin'])
     cond_ermax = (df['yaml_ermax'] / scale_factor == df['conv_ermax'])
 
+    # twindow comparison
+    df['twin_match'] = np.where(
+        df['yaml_twindow'].isna(),
+        'N/A',
+        np.where(df['yaml_twindow'] == df['conv_twindow'], 'Match', 'Mismatch')
+    )
+
     df['match'] = np.where(
         df['yaml_gross'].isna(),
         'N/A',
-        np.where(
-            cond_gross & cond_ermin & cond_ermax,
-            'Match',
-            'Mismatch'
-        )
+        np.where(cond_gross & cond_ermin & cond_ermax, 'Match', 'Mismatch')
     )
+
+    # Colorize
+    if colorize_match:
+        df['match'] = df['match'].apply(colorize)
+        df['twin_match'] = df['twin_match'].apply(colorize)
 
     # Sort nicely
     df = df.sort_values(by=["otype", "type"])
 
+    # Finalize table
+    if drop_noYAML:
+        df = df[df['file'].notna()]
+    else:
+        df['file'] = df['file'].fillna("(no YAML)")
+
     # Show and save
     print(df.to_string(index=False))
-    #df.to_csv("yaml_vs_convinfo.csv", index=False)
 
 if __name__ == "__main__":
     main()
