@@ -21,7 +21,7 @@ case ${MACHINE_ID} in
     RDAS_DATA=/work/noaa/zrtrr/RDAS_DATA
     ;;
   derecho)
-    RDAS_DATA=/to/be/done
+    RDAS_DATA=/glade/work/geguo/RDAS_DATA
     ;;
   gaeac?)
     if [[ -d /gpfs/f5 ]]; then
