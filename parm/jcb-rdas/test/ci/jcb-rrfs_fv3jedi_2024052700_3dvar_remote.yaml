@@ -218,6 +218,8 @@ observations:
 - gnss_zenithTotalDelay
 - satwnd_winds_245_270
 - satwnd_winds_245_272
+- satwnd_winds_246_270
+- satwnd_winds_246_272
 
 # SatRad
 #- abi_g16
@@ -283,6 +285,8 @@ iuse_sfcshp_winds_284: accept
 iuse_gnss_zenithTotalDelay: accept
 iuse_satwnd_winds_245_270: accept
 iuse_satwnd_winds_245_272: accept
+iuse_satwnd_winds_246_270: accept
+iuse_satwnd_winds_246_272: accept
 
 # SatRad
 iuse_abi_g16: accept
