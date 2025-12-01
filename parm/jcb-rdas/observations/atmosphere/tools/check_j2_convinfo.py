@@ -42,25 +42,48 @@ udesc_to_filtername = {
 
 def parse_yaml(filename):
     """Extract gross/ermin/ermax/twindow from YAML structure using udescriptor mapping."""
+
+    # === READ YAML FILE ===
     with open(filename, "r") as f:
         text = f.read()
 
+    # Render Jinja template (empty context removes placeholders)
     template = jinja2.Template(text)
-    rendered = template.render()  # Render with empty context to remove placeholders
+    rendered = template.render()
     data = yaml.safe_load(rendered)
 
     if not isinstance(data, list):
         raise ValueError(f"{filename}: expected list of filters at top level")
 
+    # === EXTRACT VARIABLE, TYPECODE, SUBTYPE FROM FILENAME ===
     base = os.path.basename(filename)
-    parts = base.replace(".yaml.j2", "").split("_")
-    varname = parts[1]
-    typecode = parts[-1]
+    name = base.replace(".yaml.j2", "")
+    parts = name.split("_")
 
+    # parts format examples:
+    #   sfcshp_winds_280.yaml.j2           -> nums = [280]
+    #   satwnd_winds_245_270.yaml.j2      -> nums = [245, 270]
+
+    varname = parts[1]
+
+    # Pull numeric tokens after varname
+    nums = [p for p in parts[2:] if p.isdigit()]
+
+    if len(nums) == 1:
+        typecode = int(nums[0])
+        subtype = 0  # subtype default when not specified
+    elif len(nums) == 2:
+        typecode = int(nums[0])
+        subtype = int(nums[1])
+    else:
+        raise ValueError(f"Unexpected numeric pattern in YAML filename '{base}'")
+
+    # YAML -> otype mapping
     otype = VAR_TO_OTYPE.get(varname)
     if otype is None:
         raise ValueError(f"Unmapped variable name '{varname}' in {base}")
 
+    # === EXTRACT FILTER PARAMETERS ===
     gross = ermin = ermax = twindow = None
 
     # Find the 'obs filters' section
@@ -70,6 +93,7 @@ def parse_yaml(filename):
             filters = section['obs filters']
             break
 
+    # Loop through filter blocks
     for block in filters:
         if not isinstance(block, dict):
             continue
@@ -82,13 +106,11 @@ def parse_yaml(filename):
         if not filter_name:
             continue
 
-        # ===== NEW LOGIC FOR GROSS / ERMIN / ERMAX =====
-
-        # Only pull the main gross value from "gross_error_check"
+        # ===== GROSS ERROR CHECK =====
         if filter_name == "gross_error_check":
-            # For Background Check, threshold is directly in the block
             gross = block.get("threshold")
             if gross is None:
+                # Look for WindsSPDBCheck
                 fat = block.get("function absolute threshold", [])
                 if fat and isinstance(fat, list):
                     func = fat[0]
@@ -104,7 +126,7 @@ def parse_yaml(filename):
                         if ermax_list:
                             ermax = ermax_list[0]
 
-        # Error min
+        # ===== ERMIN =====
         elif filter_name == "ermin_set":
             fvars = block.get("filter variables", [])
             if fvars:
@@ -112,7 +134,7 @@ def parse_yaml(filename):
             if ermin is None:
                 ermin = block.get("action", {}).get("error parameter")
 
-        # Error max
+        # ===== ERMAX =====
         elif filter_name == "ermax_set":
             fvars = block.get("filter variables", [])
             if fvars:
@@ -120,21 +142,20 @@ def parse_yaml(filename):
             if ermax is None:
                 ermax = block.get("action", {}).get("error parameter")
 
-        # ===== EXTRACT TIME WINDOW =====
+        # ===== TIME WINDOW =====
         if filter_name == "time_window_check":
-            tw_min = None
-            tw_max = None
             tw_min = block.get("minvalue")
             tw_max = block.get("maxvalue")
             if tw_min is not None and tw_max is not None:
-                # typical YAML has minvalue: -twin, maxvalue: +twin
                 twindow_sec = max(abs(tw_min), abs(tw_max))
-                twindow = twindow_sec #/ 3600.0
+                twindow = twindow_sec  # seconds, matching convinfo format
 
+    # === RETURN RESULTS ===
     return {
         "file": base,
         "otype": otype,
-        "type": int(typecode),
+        "type": typecode,
+        "subtype": subtype,
         "yaml_twindow": twindow,
         "yaml_gross": gross,
         "yaml_ermin": ermin,
@@ -145,6 +166,7 @@ def parse_yaml(filename):
 def parse_convinfo(filename="convinfo.rrfs"):
     """Read convinfo.rrfs into a dataframe."""
     rows = []
+    VALID_OTYPES = {"ps", "q", "t", "uv"}
     with open(filename) as f:
         for line in f:
             if line.strip().startswith("!"):  # skip comments
@@ -152,9 +174,17 @@ def parse_convinfo(filename="convinfo.rrfs"):
             parts = line.split()
             if len(parts) < 11:
                 continue
+            # Skip any otype no in desired set
+            otype = parts[0]
+            if otype not in VALID_OTYPES:
+                continue
+            # Skip entries where iuse != 1
+            iuse = int(parts[3])
+            if iuse != 1:
+                continue
             otype = parts[0]
             typecode = int(parts[1])
-            # Based on header: otype type sub iuse twindow numgrp ngroup nmiter gross ermax ermin ...
+            subtype  = int(parts[2])
             twindow = float(parts[4])*3600.
             gross = float(parts[8])
             ermax = float(parts[9])
@@ -162,6 +192,7 @@ def parse_convinfo(filename="convinfo.rrfs"):
             rows.append({
                 "otype": otype,
                 "type": typecode,
+                "subtype": subtype,
                 "conv_twindow": twindow,
                 "conv_gross": gross,
                 "conv_ermin": ermin,
@@ -183,7 +214,8 @@ def main():
     df_conv = parse_convinfo("convinfo.rrfs")
 
     # Merge for comparison
-    df = pd.merge(df_yaml, df_conv, on=["otype", "type"], how="outer")
+    #df = pd.merge(df_yaml, df_conv, on=["otype", "type"], how="outer")
+    df = pd.merge(df_yaml, df_conv, on=["otype","type","subtype"], how="outer")
 
     # Add match column with scaling for 'ps'
     scale_factor = np.where(df['otype'] == 'ps', 100.0, 1.0)
