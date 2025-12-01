@@ -236,7 +236,7 @@
            test variables:
            - name: MetaData/pressure
            minvalue: 15000.
-           minvalue: 40000.
+           maxvalue: 40000.
            where:
            - variable: ObsType/windEastward
              is_in: 246
