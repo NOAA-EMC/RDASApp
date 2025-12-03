@@ -1,1 +1,0 @@
-../../../../fix/.agent/jcsda/mpas-jedi-data/testinput_tier_1/480km_2stream/x1.2562.grid.nc
