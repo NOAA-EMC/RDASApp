@@ -74,7 +74,7 @@ atmosphere_background_time_iso: '2024-05-27T00:00:00Z'
 atmosphere_background_time_prefix: "20240527.000000."
 filename_core: fv_core.res.tile1.nc
 filename_trcr: fv_tracer.res.tile1.nc
-filename_phys: phy_data.nc
+filename_phys: phy_data_prepdbz.nc
 filename_sfcd: sfc_data.nc
 filename_sfcw: fv_srf_wnd.res.tile1.nc
 filename_cplr: coupler.res
