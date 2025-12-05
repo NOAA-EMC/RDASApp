@@ -59,7 +59,7 @@ PYTHONPATH="${PYTHONPATH}:${RDASApp}/sorc/jcb/src/:${RDASApp}/build/lib/python3.
 cd "${src_yaml}"
 cp "${RDASApp}/parm/jcb-rdas/test/ci/run_jcb_ctest.py" .
 
-for ctest_yaml in "${ctest_yamls[@]}"; do
+for ctest_yaml in "${rrfs_fv3jedi_tests[@]}"; do
   ctest_yaml="${ctest_yaml}.yaml"
   jcb_config="jcb-${ctest_yaml}"
   cp "${RDASApp}/parm/jcb-rdas/test/ci/${jcb_config}" .
