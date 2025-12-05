@@ -6,8 +6,7 @@
          obsdatain:
            engine:
              type: H5File
-             #obsfile: "data/obs/ioda_mrms_refl.nc"
-             obsfile: "/scratch4/BMC/zrtrr/Samuel.Degelia/DBZ/ioda_mrms_refl.nc" # todo: remove hard coded variable after staging data
+             obsfile: "data/obs/ioda_mrms_refl.nc"
              missing file action: "warn"
          obsdataout:
            empty obs space action: "{{empty_obs_space_action}}"
@@ -17,7 +16,10 @@
              allow overwrite: true
          io pool:
            max pool size: 1
-         simulated variables: [equivalent_reflectivity_factor]
+        simulated variables:
+        - equivalentReflectivityFactor
+        observed variables:
+        - equivalentReflectivityFactor
 
        obs operator:
          name: VertInterp
