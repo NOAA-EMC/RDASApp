@@ -74,6 +74,7 @@ atmosphere_background_time_iso: '2024-05-27T00:00:00Z'
 atmosphere_background_time_prefix: ""
 filename_core: fv_core.res.tile1.nc
 filename_trcr: fv_tracer.res.tile1.nc
+filename_phys: phy_data.nc
 filename_sfcd: sfc_data.nc
 filename_sfcw: fv_srf_wnd.res.tile1.nc
 filename_cplr: coupler.res
@@ -130,6 +131,7 @@ cloud_droplet_number_concentration: water_nc
 cloud_ice_number_concentration: ice_nc
 rain_number_concentration: rain_nc
 upward_air_velocity: W
+equivalent_reflectivity_factor: ref_f3d
 
 abi_simulated_channels: 7-16
 

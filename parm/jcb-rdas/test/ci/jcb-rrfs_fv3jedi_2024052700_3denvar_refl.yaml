@@ -16,7 +16,7 @@ output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-background_error_file: atmosphere_background_error_3dvar_gsibec
+background_error_file: atmosphere_background_error_3denvar_bump
 
 # Global analysis things
 # ----------------------
@@ -37,12 +37,13 @@ analysis_variables:
 - water_vapor_mixing_ratio_wrt_moist_air
 - air_pressure_at_surface
 - ozone_mass_mixing_ratio
+- equivalent_reflectivity_factor
 
 # Testing
 # -------
 do_testing: true
-test_reference_filename: testoutput/rrfs-fv3jedi-3dvar-conv-upperair.ref
-test_output_filename: rrfs-fv3jedi-3dvar-conv-upperair.out
+test_reference_filename: testoutput/rrfs-fv3jedi-3denvar_refl.ref
+test_output_filename: rrfs-fv3jedi-3denvar_refl.out
 test_float_relative_tolerance: 0.02
 test_float_absolute_tolerance: 1.0e-6
 test_integer_tolerance: 3
@@ -71,7 +72,7 @@ atmosphere_background_path: "./"
 atmosphere_background_ensemble_path: "data/inputs/mem%mem%"
 
 atmosphere_background_time_iso: '2024-05-27T00:00:00Z'
-atmosphere_background_time_prefix: ""
+atmosphere_background_time_prefix: "20240527.000000."
 filename_core: fv_core.res.tile1.nc
 filename_trcr: fv_tracer.res.tile1.nc
 filename_phys: phy_data.nc
@@ -108,6 +109,7 @@ state_variables:
 - cloud_ice_number_concentration
 - rain_number_concentration
 - upward_air_velocity
+- equivalent_reflectivity_factor
 
 eastward_wind: ua
 northward_wind: va
@@ -161,31 +163,31 @@ atmosphere_final_increment_prefix: "./anl/atminc."
 # ------------------
 observations:
 # Upper-air conventional
-- adpupa_airTemperature_120
-- adpupa_airTemperature_132
-- adpupa_specificHumidity_120
-- adpupa_specificHumidity_132
-- adpupa_stationPressure_120
-- adpupa_winds_220
-- adpupa_winds_232
+#- adpupa_airTemperature_120
+#- adpupa_airTemperature_132
+#- adpupa_specificHumidity_120
+#- adpupa_specificHumidity_132
+#- adpupa_stationPressure_120
+#- adpupa_winds_220
+#- adpupa_winds_232
 
-- aircar_airTemperature_133
-- aircar_specificHumidity_133
-- aircar_winds_233
+#- aircar_airTemperature_133
+#- aircar_specificHumidity_133
+#- aircar_winds_233
+#
+#- aircft_airTemperature_130
+#- aircft_airTemperature_131
+#- aircft_airTemperature_134
+#- aircft_airTemperature_135
+#- aircft_specificHumidity_134
+#- aircft_winds_230
+#- aircft_winds_231
+#- aircft_winds_234
+#- aircft_winds_235
 
-- aircft_airTemperature_130
-- aircft_airTemperature_131
-- aircft_airTemperature_134
-- aircft_airTemperature_135
-- aircft_specificHumidity_134
-- aircft_winds_230
-- aircft_winds_231
-- aircft_winds_234
-- aircft_winds_235
-
-- proflr_winds_227
-- vadwnd_winds_224
-- rassda_airTemperature_126
+#- proflr_winds_227
+#- vadwnd_winds_224
+#- rassda_airTemperature_126
 
 # Surface conventional
 #- adpsfc_airTemperature_181
@@ -223,6 +225,9 @@ observations:
 
 # SatRad
 #- abi_g16
+
+# Radar
+- mrms_refl
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -288,6 +293,9 @@ iuse_satwnd_winds_245_272: accept
 
 # SatRad
 iuse_abi_g16: accept
+
+# Radar
+iuse_mrms_refl: accept
 
 crtm_coefficient_path: "Data/crtm"
 
