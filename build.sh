@@ -280,28 +280,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # No PR for gsibec yet
   cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
 
-  # Check which spack-stack version we are on
-  # Spack-stack 1.9 uses a different workaround version
-  # Remove me once all machines are updated to >1.9
-  modfile="$dir_root/modulefiles/RDAS/$BUILD_TARGET.$COMPILER.lua"
-  spack_version=$(grep -oE 'spack-stack(-nco)?[-/][0-9]+(\.[0-9]+)*' "$modfile" | head -n1 | sed -E 's/^spack-stack(-nco)?[-/]//')
-  spack_minor=$(echo "$spack_version" | sed -E 's/^1\.([0-9]+).*/\1/')
-  spack_minor_float=$(echo "$spack_minor" | awk '{printf "%.1f", $1}')
-  if (( $(echo "$spack_minor_float >= 9.0" | bc -l) )); then
-    cp ../sorc/_workaround_/saber/Geometry_ss1p9.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
-    cp ../sorc/_workaround_/saber/gsi_covariance_mod_ss1p9.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
-  else
-    if [[ $DYCORE == 'FV3' || $DYCORE == 'FV3andMPAS' ]]; then
-      sed -i 's/51.499998/128.500001/' ${dir_root}/rrfs-test/testinput/*yaml
-      sed -i 's/51.499998/128.500001/' ${dir_root}/expr/fv3_2024052700/*yaml
-    fi
-  fi
-
-  # Workaround for not including air_pressure_thickness as an analysis variable
-  # PR https://github.com/JCSDA-internal/fv3-jedi/pull/1422 is merged
-  # This workaround can be removed the next time we update RDASApp submodules
-  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
-
   # Workaround for adding MGBF
   # No PR yet
   mkdir -p ../sorc/saber/src/saber/mgbf
@@ -311,17 +289,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/saber/mgbf/CMakeLists.txt   ../sorc/saber/src/saber/CMakeLists.txt
   cp ../sorc/_workaround_/saber/mgbf/compiler_flags_Intel_Fortran.cmake  ../sorc/saber/cmake/compiler_flags_Intel_Fortran.cmake
 
-  # Workaround for ObsErrorFactorPressureCheck
-  # UFO PR: https://github.com/JCSDA-internal/ufo/pull/3899
-  cp ../sorc/_workaround_/ufo/ObsErrorFactorPressureCheck.cc ../sorc/ufo/src/ufo/filters/obsfunctions/
-
-fi
-
-# temporary bug fix, https://github.com/JCSDA-internal/oops/issues/3030
-# PR is merged so this workaround can be removed the next time we updated RDASApp submodules
-ccfile="../sorc/oops/src/oops/base/ParameterTraitsObsVariables.cc"
-if ! grep "#include <algorithm>" ${ccfile} >/dev/null; then
-  sed -i -e "s/#include <map>/#include <algorithm>\n#include <map>/" ${ccfile}
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)

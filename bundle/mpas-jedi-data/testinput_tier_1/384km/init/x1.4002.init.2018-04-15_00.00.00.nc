@@ -1,1 +1,0 @@
-../../../../../fix/.agent/jcsda/mpas-jedi-data/testinput_tier_1/384km/init/x1.4002.init.2018-04-15_00.00.00.nc
