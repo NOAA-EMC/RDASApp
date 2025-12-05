@@ -19,10 +19,12 @@ members from template:
       soilm: {{soilm}}
       eastward_wind_at_surface: {{eastward_wind_at_surface}}
       northward_wind_at_surface: {{northward_wind_at_surface}}
+      equivalent_reflectivity_factor: {{equivalent_reflectivity_factor}}
     datapath: {{ atmosphere_background_ensemble_path }}
     #filename is datetime templated: true
     filename_core: {{atmosphere_background_time_prefix}}{{filename_core}}
     filename_trcr: {{atmosphere_background_time_prefix}}{{filename_trcr}}
+    filename_phys: {{atmosphere_background_time_prefix}}{{filename_phys}}
     filename_sfcd: {{atmosphere_background_time_prefix}}{{filename_sfcd}}
     filename_sfcw: {{atmosphere_background_time_prefix}}{{filename_sfcw}}
     filename_cplr: {{atmosphere_background_time_prefix}}{{filename_cplr}}
