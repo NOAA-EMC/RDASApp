@@ -289,6 +289,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/saber/mgbf/CMakeLists.txt   ../sorc/saber/src/saber/CMakeLists.txt
   cp ../sorc/_workaround_/saber/mgbf/compiler_flags_Intel_Fortran.cmake  ../sorc/saber/cmake/compiler_flags_Intel_Fortran.cmake
 
+  # Workaround for reading reflectivity from phy_data.nc file
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
+
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)
