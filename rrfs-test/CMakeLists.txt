@@ -21,6 +21,7 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_surface
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_upperair" "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_remote"        "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_satrad"        "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar_refl"        "fv3jedi_var.x")
 
 # MPAS-JEDI tests
 set(rrfs_mpasjedi_tests)
