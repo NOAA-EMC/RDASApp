@@ -78,7 +78,7 @@
            - name: windEastward
            - name: windNorthward
            test variables:
-           -  name: MetaData/timeOffset # units: s
+           - name: MetaData/timeOffset # units: s
            minvalue: -5400
            maxvalue:  5400
            where:
