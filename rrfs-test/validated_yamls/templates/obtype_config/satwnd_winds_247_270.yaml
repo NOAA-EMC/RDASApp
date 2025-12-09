@@ -77,11 +77,10 @@
            filter variables:
            - name: windEastward
            - name: windNorthward
-           where:
-             - variable:
-                 name: MetaData/timeOffset # units: s
-               minvalue: -5400
-               maxvalue:  5400
+           test variables:
+           -  name: MetaData/timeOffset # units: s
+           minvalue: -5400
+           maxvalue:  5400
            where:
            - variable: ObsType/windEastward
              is_in: 247
