@@ -1,6 +1,6 @@
 Initial state for member 1:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6499134063720703e+01 Max:+4.9989711761474609e+01 RMS:+1.3262253391734740e+01
 northward_wind                               | Min:-3.1644960403442383e+01 Max:+3.3157646179199219e+01 RMS:+6.5269264427806881e+00
 air_temperature                              | Min:+1.9785134887695312e+02 Max:+3.1549230957031250e+02 RMS:+2.5814909365142250e+02
@@ -22,10 +22,11 @@ soilm                                        | Min:+1.9251115620136261e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.1691210746765137e+01 Max:+1.2939825057983398e+01 RMS:+3.6328999816775500e+00
 northward_wind_at_surface                    | Min:-1.2777438163757324e+01 Max:+1.0426343917846680e+01 RMS:+3.5638121190691381e+00
 air_pressure_at_surface                      | Min:+6.5999654708862305e+04 Max:+1.0244225860595703e+05 RMS:+9.6273838523071594e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.9181728363037109e+01 RMS:+1.8769473407694153e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 2:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.8106489181518555e+01 Max:+5.6901546478271484e+01 RMS:+1.3116083626982322e+01
 northward_wind                               | Min:-3.1490596771240234e+01 Max:+3.9901718139648438e+01 RMS:+6.5588310604157840e+00
 air_temperature                              | Min:+1.9690568542480469e+02 Max:+3.1674716186523438e+02 RMS:+2.5830189401229040e+02
@@ -47,10 +48,11 @@ soilm                                        | Min:+1.9309213384985924e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.4864308357238770e+01 Max:+1.1469396591186523e+01 RMS:+3.4569871212569332e+00
 northward_wind_at_surface                    | Min:-1.2729414939880371e+01 Max:+1.1221634864807129e+01 RMS:+3.9029664001499098e+00
 air_pressure_at_surface                      | Min:+6.5999968078613281e+04 Max:+1.0241223886108398e+05 RMS:+9.6246022626065373e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+5.9590534210205078e+01 RMS:+2.3376537771649231e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 3:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6645488739013672e+01 Max:+4.8789447784423828e+01 RMS:+1.3210939712799370e+01
 northward_wind                               | Min:-2.7244195938110352e+01 Max:+3.2044513702392578e+01 RMS:+6.1573691735834428e+00
 air_temperature                              | Min:+1.9786824035644531e+02 Max:+3.1720043945312500e+02 RMS:+2.5824192583175966e+02
@@ -72,10 +74,11 @@ soilm                                        | Min:+1.9155632704496384e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0340871810913086e+01 Max:+1.2073328018188477e+01 RMS:+3.5179110487994820e+00
 northward_wind_at_surface                    | Min:-1.2953789710998535e+01 Max:+9.7136249542236328e+00 RMS:+3.5734807281397258e+00
 air_pressure_at_surface                      | Min:+6.5997691864013672e+04 Max:+1.0241733068847656e+05 RMS:+9.6287159850314289e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.4477657318115234e+01 RMS:+1.7741592975804632e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 4:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6819168090820312e+01 Max:+5.3625953674316406e+01 RMS:+1.3383426690730147e+01
 northward_wind                               | Min:-2.9948707580566406e+01 Max:+2.7059003829956055e+01 RMS:+6.1318265632636297e+00
 air_temperature                              | Min:+1.9757196044921875e+02 Max:+3.1528298950195312e+02 RMS:+2.5820521138487823e+02
@@ -97,10 +100,11 @@ soilm                                        | Min:+1.9235495477914810e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.1100131988525391e+01 Max:+1.1823708534240723e+01 RMS:+3.3877647664301809e+00
 northward_wind_at_surface                    | Min:-1.2767584800720215e+01 Max:+9.5143880844116211e+00 RMS:+3.7279408990995409e+00
 air_pressure_at_surface                      | Min:+6.5944516647338867e+04 Max:+1.0233963116455078e+05 RMS:+9.6212601865170742e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.6072883605957031e+01 RMS:+1.8527358048001918e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 5:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6862178802490234e+01 Max:+4.9266716003417969e+01 RMS:+1.3266688514728612e+01
 northward_wind                               | Min:-3.2490325927734375e+01 Max:+4.0594707489013672e+01 RMS:+6.4533389874139893e+00
 air_temperature                              | Min:+1.9749073791503906e+02 Max:+3.1577050781250000e+02 RMS:+2.5817849129742751e+02
@@ -122,10 +126,11 @@ soilm                                        | Min:+1.9241584464907646e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.2925534248352051e+01 Max:+1.3966143608093262e+01 RMS:+3.3427000669741425e+00
 northward_wind_at_surface                    | Min:-1.2250809669494629e+01 Max:+1.2599195480346680e+01 RMS:+3.5274782615186409e+00
 air_pressure_at_surface                      | Min:+6.6056926773071289e+04 Max:+1.0238409317016602e+05 RMS:+9.6283817669327764e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.8272666931152344e+01 RMS:+2.2378827988073713e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 6:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7373611450195312e+01 Max:+5.0075763702392578e+01 RMS:+1.3143567364481166e+01
 northward_wind                               | Min:-2.6300935745239258e+01 Max:+3.5502925872802734e+01 RMS:+6.0481649386029286e+00
 air_temperature                              | Min:+1.9782315063476562e+02 Max:+3.1600143432617188e+02 RMS:+2.5831177472705548e+02
@@ -147,10 +152,11 @@ soilm                                        | Min:+1.9276939332485199e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0643139839172363e+01 Max:+1.1018150329589844e+01 RMS:+3.3030948121895305e+00
 northward_wind_at_surface                    | Min:-1.3539147377014160e+01 Max:+9.1913623809814453e+00 RMS:+3.5562932363918800e+00
 air_pressure_at_surface                      | Min:+6.6026166946411133e+04 Max:+1.0240255944824219e+05 RMS:+9.6265726797189811e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+5.2798191070556641e+01 RMS:+1.7531756280180126e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 7:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6941808700561523e+01 Max:+4.8607387542724609e+01 RMS:+1.3002154725017949e+01
 northward_wind                               | Min:-2.6337463378906250e+01 Max:+3.1117197036743164e+01 RMS:+5.8862135505792832e+00
 air_temperature                              | Min:+1.9747534179687500e+02 Max:+3.1579403686523438e+02 RMS:+2.5839351379880895e+02
@@ -172,10 +178,11 @@ soilm                                        | Min:+1.9178230315446854e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.9843854904174805e+00 Max:+1.1445445060729980e+01 RMS:+3.2386021166234484e+00
 northward_wind_at_surface                    | Min:-1.3317169189453125e+01 Max:+9.6216878890991211e+00 RMS:+3.5098755037030194e+00
 air_pressure_at_surface                      | Min:+6.6039166946411133e+04 Max:+1.0243373638916016e+05 RMS:+9.6265543705044664e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+5.1118461608886719e+01 RMS:+1.9115281975281739e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 8:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6109445571899414e+01 Max:+4.9386592864990234e+01 RMS:+1.3093839374879357e+01
 northward_wind                               | Min:-2.7203722000122070e+01 Max:+2.5723331451416016e+01 RMS:+5.8111438559023263e+00
 air_temperature                              | Min:+1.9761149597167969e+02 Max:+3.1740347290039062e+02 RMS:+2.5830830023356691e+02
@@ -197,10 +204,11 @@ soilm                                        | Min:+1.9199229776859283e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.4295978546142578e+00 Max:+1.1411372184753418e+01 RMS:+3.2840804598248927e+00
 northward_wind_at_surface                    | Min:-1.3214738845825195e+01 Max:+9.8313846588134766e+00 RMS:+3.5908485318447054e+00
 air_pressure_at_surface                      | Min:+6.5988197769165039e+04 Max:+1.0245471434020996e+05 RMS:+9.6263015868081508e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.7587364196777344e+01 RMS:+1.6983663926390116e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 9:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6310241699218750e+01 Max:+4.9246311187744141e+01 RMS:+1.3160478015113144e+01
 northward_wind                               | Min:-2.8684217453002930e+01 Max:+3.1660406112670898e+01 RMS:+6.2221365374410373e+00
 air_temperature                              | Min:+1.9741758728027344e+02 Max:+3.1513531494140625e+02 RMS:+2.5822722106009360e+02
@@ -222,10 +230,11 @@ soilm                                        | Min:+1.9151629880070686e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0496703147888184e+01 Max:+1.2061970710754395e+01 RMS:+3.3455760995338530e+00
 northward_wind_at_surface                    | Min:-1.3634943962097168e+01 Max:+1.0129566192626953e+01 RMS:+3.6632152300382641e+00
 air_pressure_at_surface                      | Min:+6.5987205993652344e+04 Max:+1.0246438691711426e+05 RMS:+9.6298425040348142e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.8754928588867188e+01 RMS:+1.8815980431889372e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 10:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7050924301147461e+01 Max:+5.1978160858154297e+01 RMS:+1.3250525990200163e+01
 northward_wind                               | Min:-2.8364637374877930e+01 Max:+3.3916038513183594e+01 RMS:+6.0548781194070758e+00
 air_temperature                              | Min:+1.9768316650390625e+02 Max:+3.1774792480468750e+02 RMS:+2.5819200831116444e+02
@@ -247,10 +256,11 @@ soilm                                        | Min:+1.9351001828908920e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.4312715530395508e+00 Max:+1.1629189491271973e+01 RMS:+3.3396088575015415e+00
 northward_wind_at_surface                    | Min:-1.2216028213500977e+01 Max:+9.9193477630615234e+00 RMS:+3.6255961400869170e+00
 air_pressure_at_surface                      | Min:+6.5946974960327148e+04 Max:+1.0236015788269043e+05 RMS:+9.6199104369883717e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.6621196746826172e+01 RMS:+2.0019714935875617e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 11:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6616983413696289e+01 Max:+5.1781116485595703e+01 RMS:+1.3340566336547429e+01
 northward_wind                               | Min:-2.9337350845336914e+01 Max:+3.0298658370971680e+01 RMS:+6.0080666677559575e+00
 air_temperature                              | Min:+1.9742958068847656e+02 Max:+3.1527807617187500e+02 RMS:+2.5825495555392627e+02
@@ -272,10 +282,11 @@ soilm                                        | Min:+1.9248144701123238e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.5292758941650391e+00 Max:+1.1816952705383301e+01 RMS:+3.2343006893631125e+00
 northward_wind_at_surface                    | Min:-1.3380660057067871e+01 Max:+9.3056859970092773e+00 RMS:+3.7530589322639081e+00
 air_pressure_at_surface                      | Min:+6.5972039489746094e+04 Max:+1.0236727513122559e+05 RMS:+9.6208668599126773e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.4457557678222656e+01 RMS:+1.9590107133384158e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 12:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6444913864135742e+01 Max:+5.0670928955078125e+01 RMS:+1.3059387416111200e+01
 northward_wind                               | Min:-2.5791559219360352e+01 Max:+3.5664493560791016e+01 RMS:+6.0356068821683024e+00
 air_temperature                              | Min:+1.9762724304199219e+02 Max:+3.1485104370117188e+02 RMS:+2.5835058150462601e+02
@@ -297,10 +308,11 @@ soilm                                        | Min:+1.9240844994783401e-02 Max:+
 eastward_wind_at_surface                     | Min:-8.9233903884887695e+00 Max:+1.1439523696899414e+01 RMS:+3.2099653590443782e+00
 northward_wind_at_surface                    | Min:-1.2949017524719238e+01 Max:+9.3580150604248047e+00 RMS:+3.5174509417432640e+00
 air_pressure_at_surface                      | Min:+6.6024483444213867e+04 Max:+1.0236315533447266e+05 RMS:+9.6221960853918339e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.7886676788330078e+01 RMS:+1.8429514853330617e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 13:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7489501953125000e+01 Max:+5.1677898406982422e+01 RMS:+1.3404039223126290e+01
 northward_wind                               | Min:-3.4519397735595703e+01 Max:+4.2484031677246094e+01 RMS:+6.6609980771881654e+00
 air_temperature                              | Min:+1.9744311523437500e+02 Max:+3.1274356079101562e+02 RMS:+2.5817134043512766e+02
@@ -322,10 +334,11 @@ soilm                                        | Min:+1.9144624471664429e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0852389335632324e+01 Max:+1.2020939826965332e+01 RMS:+3.3600411560126036e+00
 northward_wind_at_surface                    | Min:-1.3401623725891113e+01 Max:+9.9918022155761719e+00 RMS:+3.8914064653237195e+00
 air_pressure_at_surface                      | Min:+6.6015612838745117e+04 Max:+1.0243187297058105e+05 RMS:+9.6259164977481298e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.4189376831054688e+01 RMS:+1.9356926669489902e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 14:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7420936584472656e+01 Max:+5.0758155822753906e+01 RMS:+1.3204250461270959e+01
 northward_wind                               | Min:-2.8945447921752930e+01 Max:+3.1073390960693359e+01 RMS:+6.2801355306844835e+00
 air_temperature                              | Min:+1.9733168029785156e+02 Max:+3.1695617675781250e+02 RMS:+2.5818316147176864e+02
@@ -347,10 +360,11 @@ soilm                                        | Min:+1.9299428910017014e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.9875345230102539e+00 Max:+1.1882641792297363e+01 RMS:+3.4200838445535999e+00
 northward_wind_at_surface                    | Min:-1.2942864418029785e+01 Max:+9.7974967956542969e+00 RMS:+3.5442389408038739e+00
 air_pressure_at_surface                      | Min:+6.5934989044189453e+04 Max:+1.0241067868041992e+05 RMS:+9.6215574070879549e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.9607604980468750e+01 RMS:+1.8979599463585188e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 15:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7825143814086914e+01 Max:+4.9406520843505859e+01 RMS:+1.3118676905373471e+01
 northward_wind                               | Min:-2.8515384674072266e+01 Max:+3.6520645141601562e+01 RMS:+6.2768326066375959e+00
 air_temperature                              | Min:+1.9744734191894531e+02 Max:+3.1465881347656250e+02 RMS:+2.5836200283915286e+02
@@ -372,10 +386,11 @@ soilm                                        | Min:+1.9316306337714195e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0429913520812988e+01 Max:+1.2154385566711426e+01 RMS:+3.4312175995387397e+00
 northward_wind_at_surface                    | Min:-1.2884078025817871e+01 Max:+1.0011810302734375e+01 RMS:+3.7102796823939070e+00
 air_pressure_at_surface                      | Min:+6.5973745223999023e+04 Max:+1.0244205108642578e+05 RMS:+9.6253599720194223e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+5.0178947448730469e+01 RMS:+1.9787020848711694e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 16:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7000873565673828e+01 Max:+4.8411666870117188e+01 RMS:+1.2812108646217458e+01
 northward_wind                               | Min:-2.7646337509155273e+01 Max:+3.1859035491943359e+01 RMS:+6.1592265312787653e+00
 air_temperature                              | Min:+1.9738623046875000e+02 Max:+3.1518194580078125e+02 RMS:+2.5841559459506198e+02
@@ -397,10 +412,11 @@ soilm                                        | Min:+1.9184436649084091e-02 Max:+
 eastward_wind_at_surface                     | Min:-8.7631273269653320e+00 Max:+1.1287795066833496e+01 RMS:+3.2676982582632697e+00
 northward_wind_at_surface                    | Min:-1.3355172157287598e+01 Max:+9.6950159072875977e+00 RMS:+3.5742693283186693e+00
 air_pressure_at_surface                      | Min:+6.5895913436889648e+04 Max:+1.0238008300781250e+05 RMS:+9.6181590383456773e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.1981380462646484e+01 RMS:+2.0210055014289807e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 17:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7157186508178711e+01 Max:+4.8312816619873047e+01 RMS:+1.2693449542711418e+01
 northward_wind                               | Min:-3.0899242401123047e+01 Max:+2.6454854965209961e+01 RMS:+6.1894928930491639e+00
 air_temperature                              | Min:+1.9791487121582031e+02 Max:+3.1676629638671875e+02 RMS:+2.5815196624742401e+02
@@ -422,10 +438,11 @@ soilm                                        | Min:+1.9310735166072845e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.3698091506958008e+00 Max:+1.1300599098205566e+01 RMS:+3.3538538472973913e+00
 northward_wind_at_surface                    | Min:-1.2610709190368652e+01 Max:+1.0136912345886230e+01 RMS:+3.6525551630889184e+00
 air_pressure_at_surface                      | Min:+6.5961837402343750e+04 Max:+1.0242596435546875e+05 RMS:+9.6300631019680921e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.6960330963134766e+01 RMS:+1.9648390916991796e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 18:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.5910966873168945e+01 Max:+5.0213520050048828e+01 RMS:+1.2684898114999005e+01
 northward_wind                               | Min:-2.8452053070068359e+01 Max:+3.1736547470092773e+01 RMS:+6.2438461983275237e+00
 air_temperature                              | Min:+1.9727775573730469e+02 Max:+3.1751290893554688e+02 RMS:+2.5852499824577694e+02
@@ -447,10 +464,11 @@ soilm                                        | Min:+1.9209371879696846e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.3483943939208984e+00 Max:+1.1714021682739258e+01 RMS:+3.3757181832790994e+00
 northward_wind_at_surface                    | Min:-1.3701957702636719e+01 Max:+9.7644786834716797e+00 RMS:+3.5402259803463010e+00
 air_pressure_at_surface                      | Min:+6.5936910842895508e+04 Max:+1.0239707908630371e+05 RMS:+9.6169446540868536e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.5207752227783203e+01 RMS:+2.0291811901199854e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 19:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7315406799316406e+01 Max:+5.1392955780029297e+01 RMS:+1.3073973334094115e+01
 northward_wind                               | Min:-2.9755792617797852e+01 Max:+3.5338039398193359e+01 RMS:+6.2739654397669051e+00
 air_temperature                              | Min:+1.9728047180175781e+02 Max:+3.1603353881835938e+02 RMS:+2.5837421789937997e+02
@@ -472,10 +490,11 @@ soilm                                        | Min:+1.9208477810025215e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.2092492103576660e+01 Max:+1.1092357635498047e+01 RMS:+3.3857479778925068e+00
 northward_wind_at_surface                    | Min:-1.2614321708679199e+01 Max:+9.2131290435791016e+00 RMS:+3.4297167929060897e+00
 air_pressure_at_surface                      | Min:+6.5962027343750000e+04 Max:+1.0236653034973145e+05 RMS:+9.6229221971481675e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.3489124298095703e+01 RMS:+1.6517085988893399e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 20:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6014789581298828e+01 Max:+5.0938194274902344e+01 RMS:+1.3135252640240266e+01
 northward_wind                               | Min:-2.7819715499877930e+01 Max:+4.2136608123779297e+01 RMS:+6.0615455303343353e+00
 air_temperature                              | Min:+1.9755606079101562e+02 Max:+3.1374545288085938e+02 RMS:+2.5830948065709242e+02
@@ -497,10 +516,11 @@ soilm                                        | Min:+1.9211076200008392e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.1851888656616211e+01 Max:+1.1261158943176270e+01 RMS:+3.4935126585099110e+00
 northward_wind_at_surface                    | Min:-1.3056243896484375e+01 Max:+9.6190900802612305e+00 RMS:+3.5835695284316902e+00
 air_pressure_at_surface                      | Min:+6.5997152374267578e+04 Max:+1.0246106604003906e+05 RMS:+9.6256736958087538e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+6.1195442199707031e+01 RMS:+2.0563750746635665e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 21:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6188514709472656e+01 Max:+4.9040836334228516e+01 RMS:+1.3144082217481774e+01
 northward_wind                               | Min:-2.7916820526123047e+01 Max:+3.2147224426269531e+01 RMS:+6.0427201942716620e+00
 air_temperature                              | Min:+1.9798027038574219e+02 Max:+3.1827590942382812e+02 RMS:+2.5832274445326016e+02
@@ -522,10 +542,11 @@ soilm                                        | Min:+1.9177291542291641e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.1290343284606934e+01 Max:+1.1202477455139160e+01 RMS:+3.4166357970280785e+00
 northward_wind_at_surface                    | Min:-1.2946801185607910e+01 Max:+1.1436056137084961e+01 RMS:+3.5621992336622808e+00
 air_pressure_at_surface                      | Min:+6.5968064834594727e+04 Max:+1.0233502999877930e+05 RMS:+9.6196759018903860e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.9335563659667969e+01 RMS:+2.3615385593009695e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 22:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6561527252197266e+01 Max:+4.8666740417480469e+01 RMS:+1.3091693318963667e+01
 northward_wind                               | Min:-2.9531391143798828e+01 Max:+4.1920310974121094e+01 RMS:+6.2035271192375916e+00
 air_temperature                              | Min:+1.9776399230957031e+02 Max:+3.1377987670898438e+02 RMS:+2.5832041647578075e+02
@@ -547,10 +568,11 @@ soilm                                        | Min:+1.9297555088996887e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0355843544006348e+01 Max:+1.1481708526611328e+01 RMS:+3.4679632545212113e+00
 northward_wind_at_surface                    | Min:-1.3145040512084961e+01 Max:+9.2159337997436523e+00 RMS:+3.4886816976149366e+00
 air_pressure_at_surface                      | Min:+6.5965308883666992e+04 Max:+1.0237827529907227e+05 RMS:+9.6246400648665076e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.4390937805175781e+01 RMS:+1.9747700211649666e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 23:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6444728851318359e+01 Max:+4.8763851165771484e+01 RMS:+1.3099235664536977e+01
 northward_wind                               | Min:-2.8629962921142578e+01 Max:+3.6595153808593750e+01 RMS:+6.1928383554810056e+00
 air_temperature                              | Min:+1.9762374877929688e+02 Max:+3.1161056518554688e+02 RMS:+2.5811576547819158e+02
@@ -572,10 +594,11 @@ soilm                                        | Min:+1.9208293408155441e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0533911705017090e+01 Max:+1.2737628936767578e+01 RMS:+3.2747263091382495e+00
 northward_wind_at_surface                    | Min:-1.3030513763427734e+01 Max:+9.3269882202148438e+00 RMS:+3.6704737718483078e+00
 air_pressure_at_surface                      | Min:+6.5982646423339844e+04 Max:+1.0235869651794434e+05 RMS:+9.6303988175414299e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+3.9236633300781250e+01 RMS:+1.8683226428650044e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 24:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.5959833145141602e+01 Max:+5.0840129852294922e+01 RMS:+1.2791609173604185e+01
 northward_wind                               | Min:-2.5882120132446289e+01 Max:+3.3780193328857422e+01 RMS:+6.2699357601347225e+00
 air_temperature                              | Min:+1.9693624877929688e+02 Max:+3.1788452148437500e+02 RMS:+2.5821402232625758e+02
@@ -597,10 +620,11 @@ soilm                                        | Min:+1.9297059625387192e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0224506378173828e+01 Max:+1.1570606231689453e+01 RMS:+3.3144745982222714e+00
 northward_wind_at_surface                    | Min:-1.3152282714843750e+01 Max:+9.5144872665405273e+00 RMS:+3.7770920262330576e+00
 air_pressure_at_surface                      | Min:+6.5962999664306641e+04 Max:+1.0238247872924805e+05 RMS:+9.6230633479119628e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.9934772491455078e+01 RMS:+1.9450742138490098e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 25:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.5737062454223633e+01 Max:+4.8331359863281250e+01 RMS:+1.2742030102551887e+01
 northward_wind                               | Min:-2.6674322128295898e+01 Max:+3.5979244232177734e+01 RMS:+6.1021957276195957e+00
 air_temperature                              | Min:+1.9779255676269531e+02 Max:+3.1500466918945312e+02 RMS:+2.5834410377066223e+02
@@ -622,10 +646,11 @@ soilm                                        | Min:+1.9322697073221207e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0136228561401367e+01 Max:+1.1409724235534668e+01 RMS:+3.2810001667726296e+00
 northward_wind_at_surface                    | Min:-1.2669143676757812e+01 Max:+9.5565891265869141e+00 RMS:+3.6182034366881664e+00
 air_pressure_at_surface                      | Min:+6.5971399734497070e+04 Max:+1.0236228491210938e+05 RMS:+9.6208408723768662e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.5402057647705078e+01 RMS:+1.8247708731526002e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 26:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.7192140579223633e+01 Max:+4.8479965209960938e+01 RMS:+1.3023038228859477e+01
 northward_wind                               | Min:-3.0041959762573242e+01 Max:+3.2485038757324219e+01 RMS:+6.3402114089915784e+00
 air_temperature                              | Min:+1.9756379699707031e+02 Max:+3.1647195434570312e+02 RMS:+2.5825730174456390e+02
@@ -647,10 +672,11 @@ soilm                                        | Min:+1.9277278333902359e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.9883956909179688e+00 Max:+1.1656060218811035e+01 RMS:+3.3210037226044888e+00
 northward_wind_at_surface                    | Min:-1.2633304595947266e+01 Max:+9.3295946121215820e+00 RMS:+3.5141500469824520e+00
 air_pressure_at_surface                      | Min:+6.5961236251831055e+04 Max:+1.0232979615783691e+05 RMS:+9.6231474356262610e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.1298461914062500e+01 RMS:+2.1122648148477206e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 27:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6835887908935547e+01 Max:+5.1580230712890625e+01 RMS:+1.3433123126087798e+01
 northward_wind                               | Min:-3.0115221023559570e+01 Max:+3.7450244903564453e+01 RMS:+6.4044244439862377e+00
 air_temperature                              | Min:+1.9748735046386719e+02 Max:+3.1594540405273438e+02 RMS:+2.5809387761781346e+02
@@ -672,10 +698,11 @@ soilm                                        | Min:+1.9272554665803909e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.8928718566894531e+00 Max:+1.2953110694885254e+01 RMS:+3.5237678348879196e+00
 northward_wind_at_surface                    | Min:-1.3290473937988281e+01 Max:+1.0209788322448730e+01 RMS:+3.6526832127137068e+00
 air_pressure_at_surface                      | Min:+6.5929355773925781e+04 Max:+1.0237815058898926e+05 RMS:+9.6236236129757657e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.7810054779052734e+01 RMS:+1.8608752439355345e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 28:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6543588638305664e+01 Max:+5.3827819824218750e+01 RMS:+1.2944445366453357e+01
 northward_wind                               | Min:-2.9944709777832031e+01 Max:+4.2218105316162109e+01 RMS:+6.6230214626247257e+00
 air_temperature                              | Min:+1.9664276123046875e+02 Max:+3.1659667968750000e+02 RMS:+2.5824445487907747e+02
@@ -697,10 +724,11 @@ soilm                                        | Min:+1.9273666664958000e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0387012481689453e+01 Max:+1.1728924751281738e+01 RMS:+3.3489474322654407e+00
 northward_wind_at_surface                    | Min:-1.3679360389709473e+01 Max:+9.4382076263427734e+00 RMS:+3.8859635019627885e+00
 air_pressure_at_surface                      | Min:+6.5970034317016602e+04 Max:+1.0240479768371582e+05 RMS:+9.6263810035438713e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+5.9450252532958984e+01 RMS:+2.1889031582969802e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 29:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.8364118576049805e+01 Max:+5.2326923370361328e+01 RMS:+1.3025650924803463e+01
 northward_wind                               | Min:-2.4769571304321289e+01 Max:+3.4585147857666016e+01 RMS:+5.9663506723325979e+00
 air_temperature                              | Min:+1.9760345458984375e+02 Max:+3.1414794921875000e+02 RMS:+2.5820728545901579e+02
@@ -722,10 +750,11 @@ soilm                                        | Min:+1.9267085939645767e-02 Max:+
 eastward_wind_at_surface                     | Min:-9.8029747009277344e+00 Max:+1.1659111022949219e+01 RMS:+3.3170189231306759e+00
 northward_wind_at_surface                    | Min:-1.3648909568786621e+01 Max:+8.6021451950073242e+00 RMS:+3.6655068269960633e+00
 air_pressure_at_surface                      | Min:+6.5975116287231445e+04 Max:+1.0238499757385254e+05 RMS:+9.6243259508690768e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.8860099792480469e+01 RMS:+1.8306700881342721e+00
 ----------------------------------------------------------------------------------------------------
 Initial state for member 30:
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 21 | cube sphere face size: C420
+State print | number of fields = 22 | cube sphere face size: C420
 eastward_wind                                | Min:-2.6312522888183594e+01 Max:+5.3131935119628906e+01 RMS:+1.3197811453053422e+01
 northward_wind                               | Min:-2.8507663726806641e+01 Max:+3.5720829010009766e+01 RMS:+6.3053290523285064e+00
 air_temperature                              | Min:+1.9741838073730469e+02 Max:+3.1695635986328125e+02 RMS:+2.5831926554311929e+02
@@ -747,6 +776,7 @@ soilm                                        | Min:+1.9322484731674194e-02 Max:+
 eastward_wind_at_surface                     | Min:-1.0924118995666504e+01 Max:+1.1375329017639160e+01 RMS:+3.3466594586774581e+00
 northward_wind_at_surface                    | Min:-1.2990812301635742e+01 Max:+1.0442095756530762e+01 RMS:+3.7639049738976675e+00
 air_pressure_at_surface                      | Min:+6.5963377578735352e+04 Max:+1.0241638323974609e+05 RMS:+9.6187182823114563e+04
+equivalent_reflectivity_factor               | Min:+0.0000000000000000e+00 Max:+4.7162796020507812e+01 RMS:+2.0101593488094474e+00
 ----------------------------------------------------------------------------------------------------
 H(x) for member 1:
 

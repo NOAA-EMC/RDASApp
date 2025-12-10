@@ -165,6 +165,7 @@ fix/.agent
 rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar*.yaml
 rrfs-test/testinput/rrfs_fv3jedi_2024052700_3denvar.yaml
 rrfs-test/testinput/rrfs_fv3jedi_2024052700_3denvar_mgbf.yaml
+rrfs-test/testinput/rrfs_fv3jedi_2024052700_3denvar_refl.yaml
 rrfs-test/testinput/rrfs_fv3jedi_2024052700_hybrid3denvar.yaml
 rrfs-test/testinput/rrfs_fv3jedi_2024052700_hybrid3denvar_mgbf.yaml
 rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_observer.yaml
