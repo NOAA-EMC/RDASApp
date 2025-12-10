@@ -14,7 +14,7 @@ SAFE_UDESC_FILTERS = {
 # ---------------------------------------------------------------------------
 # List of obs spaces that do not have an ObsType variable (no where required)
 # ---------------------------------------------------------------------------
-SAFE_UDESC_OBSPACES = {
+SAFE_WHERE_OBSPACES = {
     "abi_g16",
     "abi_g18",
     "amsua_metop-b",
@@ -86,7 +86,7 @@ def validate_file(filename):
             continue
 
         # if this ob does not have an ObsType variable, no where needed
-        if any(token in filename for token in SAFE_UDESC_OBSPACES):
+        if any(token in filename for token in SAFE_WHERE_OBSPACES):
            continue
 
         # require ObsType reference inside where except wind gross error checks
