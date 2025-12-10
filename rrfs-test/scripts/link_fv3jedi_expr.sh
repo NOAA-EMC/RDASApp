@@ -17,6 +17,7 @@ ${RDASApp}/ush/init.sh
 cp -r ${RDASApp}/rrfs-test/testoutput ./testoutput
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3denvar.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3denvar_refl.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_hybrid3denvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_observer.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_solver.yaml .
@@ -37,6 +38,7 @@ ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/bkg/20240527.000000.fv_core.re
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/bkg/20240527.000000.fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/bkg/20240527.000000.fv_tracer.res.tile1.nc fv_tracer.res.tile1.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/bkg/20240527.000000.phy_data.nc phy_data.nc
+ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/bkg/20240527.000000.phy_data_prepdbz.nc phy_data_prepdbz.nc
 ln -snf ${RDASApp}/fix/expr_data/${exprname}/data/bkg/20240527.000000.sfc_data.nc sfc_data.nc
 # link correct ioda files
 rm -rf data/{obs,satbias_in}
