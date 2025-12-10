@@ -42,6 +42,15 @@
            action:
              name: {{iuse_mrms_refl | default("passivate", true)}} # accept, reject, passivate
 
+         # Initial error assignment
+         - filter: Perform Action
+           udescriptor: "intial_error_assignment"
+           filter variables:
+           - name: equivalentReflectivityFactor
+           action:
+             name: assign error
+             error parameter: 5.0
+
          # Gross Error Check
          - filter: Background Check
            udescriptor: "gross_error_check"

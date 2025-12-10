@@ -6,9 +6,24 @@ from pathlib import Path
 # --------------------------------------------------------
 #  List of udescriptors that are SAFE (no where required)
 # --------------------------------------------------------
-SAFE_UDESC = {
+SAFE_UDESC_FILTERS = {
     "online_domain_check",
     "quality_marker_check",
+}
+
+# ---------------------------------------------------------------------------
+# List of obs spaces that do not have an ObsType variable (no where required)
+# ---------------------------------------------------------------------------
+SAFE_UDESC_OBSPACES = {
+    "abi_g16",
+    "abi_g18",
+    "amsua_metop-b",
+    "amsua_metop-c",
+    "amsua_n19",
+    "atms_n20",
+    "atms_n21",
+    "atms_npp",
+    "mrms_refl",
 }
 
 def extract_filters(lines):
@@ -67,8 +82,12 @@ def validate_file(filename):
             continue
 
         # if udescriptor is safe, no where needed
-        if udesc in SAFE_UDESC:
+        if udesc in SAFE_UDESC_FILTERS:
             continue
+
+        # if this ob does not have an ObsType variable, no where needed
+        if any(token in filename for token in SAFE_UDESC_OBSPACES):
+           continue
 
         # require ObsType reference inside where except wind gross error checks
         if "gross_error" in udesc.lower():
