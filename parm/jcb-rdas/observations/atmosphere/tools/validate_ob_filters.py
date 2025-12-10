@@ -6,7 +6,7 @@ from pathlib import Path
 # --------------------------------------------------------
 #  List of udescriptors that are SAFE (no where required)
 # --------------------------------------------------------
-SAFE_UDESC_FILTERS = {
+SAFE_UDESC = {
     "online_domain_check",
     "quality_marker_check",
 }
@@ -82,7 +82,7 @@ def validate_file(filename):
             continue
 
         # if udescriptor is safe, no where needed
-        if udesc in SAFE_UDESC_FILTERS:
+        if udesc in SAFE_UDESC:
             continue
 
         # if this ob does not have an ObsType variable, no where needed
