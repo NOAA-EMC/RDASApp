@@ -11,6 +11,21 @@ SAFE_UDESC = {
     "quality_marker_check",
 }
 
+# ---------------------------------------------------------------------------
+# List of obs spaces that do not have an ObsType variable (no where required)
+# ---------------------------------------------------------------------------
+SAFE_WHERE_OBSPACES = {
+    "abi_g16",
+    "abi_g18",
+    "amsua_metop-b",
+    "amsua_metop-c",
+    "amsua_n19",
+    "atms_n20",
+    "atms_n21",
+    "atms_npp",
+    "mrms_refl",
+}
+
 def extract_filters(lines):
     filters = []
     current = None
@@ -69,6 +84,10 @@ def validate_file(filename):
         # if udescriptor is safe, no where needed
         if udesc in SAFE_UDESC:
             continue
+
+        # if this ob does not have an ObsType variable, no where needed
+        if any(token in filename for token in SAFE_WHERE_OBSPACES):
+           continue
 
         # require ObsType reference inside where except wind gross error checks
         if "gross_error" in udesc.lower():
