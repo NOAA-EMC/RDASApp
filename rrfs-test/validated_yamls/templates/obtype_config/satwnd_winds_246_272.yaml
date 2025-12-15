@@ -29,9 +29,6 @@
            - name: windEastward
            - name: windNorthward
 
-       linear obs operator:
-         name: VertInterp
-
        obs error:
          covariance model: diagonal
 
