@@ -236,6 +236,10 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     rrfs_fv3jedi_2024052700_3dvar_conv_upperair.yaml
     rrfs_fv3jedi_2024052700_3dvar_remote.yaml
     rrfs_fv3jedi_2024052700_3dvar_satrad.yaml
+
+    # Observation ctests (fv3jedi & 3denvar only)
+    rrfs_fv3jedi_2024052700_3denvar_refl.yaml
+
   )
 
   cp $dir_root/parm/jcb-rdas/test/ci/run_jcb_ctest.py .
@@ -283,6 +287,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/saber/mgbf/Interpolation.cc ../sorc/saber/src/saber/interpolation/Interpolation.cc
   cp ../sorc/_workaround_/saber/mgbf/CMakeLists.txt   ../sorc/saber/src/saber/CMakeLists.txt
   cp ../sorc/_workaround_/saber/mgbf/compiler_flags_Intel_Fortran.cmake  ../sorc/saber/cmake/compiler_flags_Intel_Fortran.cmake
+
+  # Workaround for reading reflectivity from phy_data.nc file
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
 
 fi
 

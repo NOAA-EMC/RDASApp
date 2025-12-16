@@ -1,0 +1,63 @@
+     - obs space:
+         name: refl10cm
+         distribution:
+           name: "{{distribution}}"
+           halo size: 500e3
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "data/obs/ioda_mrms_refl.nc"
+             missing file action: "warn"
+         obsdataout:
+           empty obs space action: "{{empty_obs_space_action}}"
+           engine:
+             type: H5File
+             obsfile: jdiag_mrms_refl.nc
+             allow overwrite: true
+         io pool:
+           max pool size: 1
+         simulated variables: [equivalentReflectivityFactor]
+         observed variables: [equivalentReflectivityFactor]
+
+       obs operator:
+         name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         interpolation method: linear
+
+       obs error:
+         covariance model: diagonal
+
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 200e3 # orig
+
+       obs filters:
+         # ------------------
+         # MRMS Reflectivity
+         # ------------------
+         # Accept, reject, or passivate (monitor)
+         - filter: Perform Action
+           udescriptor: "iuse_check"
+           action:
+             name: {{iuse_mrms_refl | default("passivate", true)}} # accept, reject, passivate
+
+         # Initial error assignment
+         - filter: Perform Action
+           udescriptor: "intial_error_assignment"
+           filter variables:
+           - name: equivalentReflectivityFactor
+           action:
+             name: assign error
+             error parameter: 5.0
+
+         # Gross Error Check
+         - filter: Background Check
+           udescriptor: "gross_error_check"
+           apply at iterations: 0,1
+           filter variables:
+           - name: equivalentReflectivityFactor
+           threshold: 12.0
+           action:
+             name: reject
+           defer to post: true

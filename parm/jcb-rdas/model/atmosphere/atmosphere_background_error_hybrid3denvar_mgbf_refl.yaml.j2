@@ -19,8 +19,8 @@ components:
         function space: StructuredColumns
         custom grid matching gsi:
           type: rotated_lonlat
-          lats: {{gsibec_lats}}
-          lons: {{gsibec_lons}}
+          lats: {{atmosphere_npy_ges}}
+          lons: {{atmosphere_npx_ges}}
           lat_start: {{lat_start}}
           lat_end: {{lat_end}}
           lon_start: {{lon_start}}
@@ -41,8 +41,6 @@ components:
       - water_vapor_mixing_ratio_wrt_moist_air
       - air_pressure_at_surface
       - air_pressure_thickness
-      - geopotential_height_times_gravity_at_surface
-      - ozone_mass_mixing_ratio
     linear variable change:
       linear variable change name: Control2Analysis
       input variables:
@@ -52,6 +50,13 @@ components:
       - water_vapor_mixing_ratio_wrt_moist_air
       - air_pressure_at_surface
       - ozone_mass_mixing_ratio
+      - cloud_liquid_water
+      - cloud_liquid_ice
+      - rain_water
+      - snow_water
+      - graupel
+      - upward_air_velocity
+      - equivalent_reflectivity_factor
       output variables:
       - eastward_wind
       - northward_wind
@@ -59,6 +64,13 @@ components:
       - water_vapor_mixing_ratio_wrt_moist_air
       - air_pressure_at_surface
       - ozone_mass_mixing_ratio
+      - cloud_liquid_water
+      - cloud_liquid_ice
+      - rain_water
+      - snow_water
+      - graupel
+      - upward_air_velocity
+      - equivalent_reflectivity_factor
   weight:
     value: 0.15
 
@@ -88,9 +100,11 @@ components:
           snow_water: {{snow_water}}
           graupel: {{graupel}}
           upward_air_velocity: {{upward_air_velocity}}
+          equivalent_reflectivity_factor: {{equivalent_reflectivity_factor}}
         datapath: {{ atmosphere_background_ensemble_path }}
         filename_core: {{atmosphere_background_time_prefix}}{{filename_core}}
         filename_trcr: {{atmosphere_background_time_prefix}}{{filename_trcr}}
+        filename_phys: {{atmosphere_background_time_prefix}}{{filename_phys}}
         filename_sfcd: {{atmosphere_background_time_prefix}}{{filename_sfcd}}
         filename_sfcw: {{atmosphere_background_time_prefix}}{{filename_sfcw}}
         filename_cplr: {{atmosphere_background_time_prefix}}{{filename_cplr}}
@@ -100,15 +114,30 @@ components:
     localization:
       localization method: SABER
       saber central block:
-        saber block name: BUMP_NICAS
-        active variables: {{analysis_variables}}
-        read:
-          io:
-            files prefix: {{atmosphere_fv3jedi_files_path}}/bump_401km_0p04sigma_mpi160/bumploc_401km0p04sigma
-          drivers:
-             multivariate strategy: duplicated
-             read local nicas: true
-          model:
-             level for 2d variables: last
+        saber block name: MGBF_covariance
+        mgbf namelist file: {{mgbf_nml}}
+      saber outer blocks:
+      -  saber block name: interpolation
+         inner geometry:
+           function space: StructuredColumns
+           grid:
+             type : "regional"
+             nx : {{mgbf_nx}}
+             ny : {{mgbf_ny}}
+             dx : {{mgbf_dx}}
+             dy : {{mgbf_dy}}
+             lonlat(centre) : {{mgbf_lonlat}}
+             projection :
+               type       : lambert_conformal_conic
+               latitude0  : {{mgbf_lat0}}
+               longitude0 : {{mgbf_lon0}}
+               units: "degrees"
+             y_numbering : 1
+           partitioner: checkerboard
+           halo: 1
+         forward interpolator:
+           local interpolator type: oops unstructured grid interpolator
+         inverse interpolator:
+           local nterpolator type: oops unstructured grid interpolator
   weight:
     value: 0.85
