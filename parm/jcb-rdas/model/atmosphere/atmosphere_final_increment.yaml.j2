@@ -1,0 +1,25 @@
+output:
+  state component:
+    filetype: fms restart
+    datapath: ./
+    prefix: inc_jedi
+    frequency: {{atmosphere_forecast_timestep}}
+    state variables: {{analysis_variables}}
+    field io names:
+      eastward_wind: {{eastward_wind}}
+      northward_wind: {{northward_wind}}
+      air_temperature: {{air_temperature}}
+      air_pressure_at_surface: {{air_pressure_at_surface}}
+      water_vapor_mixing_ratio_wrt_moist_air: {{water_vapor_mixing_ratio_wrt_moist_air}}
+      ozone_mass_mixing_ratio: {{ozone_mass_mixing_ratio}}
+
+geometry:
+  fms initialization:
+    namelist filename: fmsmpp.nml
+    field table filename: field_table
+  namelist filename: {{fv3lam_nml}}
+  akbk: fv3_akbk
+  npz: {{atmosphere_npz_ges}}
+  layout: [{{atmosphere_layout_x}}, {{atmosphere_layout_y}}]
+  io_layout: [{{atmosphere_io_layout_x}}, {{atmosphere_io_layout_y}}]
+  ntiles: {{atmosphere_ntiles}}
