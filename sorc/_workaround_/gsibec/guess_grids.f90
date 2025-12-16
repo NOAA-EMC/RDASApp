@@ -1197,6 +1197,7 @@ end subroutine final_
   real(r_kind),dimension(:,:,:),pointer::ptr
   character(len=80) :: uvar
   integer jj,ier,i,j
+
   jj=islot
   call gsi_bundlegetpointer(gsi_metguess_bundle(jj),trim(vname),ptr,ier)
   if (ier/=0) then
@@ -1279,6 +1280,7 @@ end subroutine final_
          ptr=ptr/constoz   ! RT_TBD: is this the best place for this?
       endif
   endif
+
   end subroutine guess_basics3_
 !--------------------------------------------------------
  subroutine put_data_1d(x)

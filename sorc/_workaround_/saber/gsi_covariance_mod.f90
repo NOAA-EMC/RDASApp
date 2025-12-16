@@ -258,8 +258,8 @@ if (.not. self%grid%noGSI) then
        endif
      endif
      deallocate(tbdvars)
-
   endif
+
   if(jouter==1) call rf_set()
 
 endif ! noGSI
@@ -573,7 +573,6 @@ do ii=1,ntimes
      deallocate(aux1)
    enddo
    do iv=1,size(gvars3d)
-     if(trim(gvars3d(iv))=='prse') cycle
      if (self%cv) then
         call gsi_bundlegetpointer (gsicv%step(ii),gvars3d(iv),gsivar3d,ier)
      else

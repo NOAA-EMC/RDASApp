@@ -59,7 +59,7 @@ use m_kinds, only: r_kind,i_kind
 use control_vectors, only: control_vector
 use control_vectors, only: cvars3d,cvars2d
 use bias_predictors, only: predictors
-use gridmod, only: regional,lat2,lon2,nsig,nlat,nlon,twodvar_regional,mpas_regional,fv3_regional
+use gridmod, only: regional,lat2,lon2,nsig, nlat, nlon, twodvar_regional, mpas_regional, fv3_regional            
 use jfunc, only: nsclen,npclen,ntclen
 use jfunc, only: qoption
 use gsi_4dvar, only: nsubwin, l4dvar, lsqrtb, ladtest_obs
@@ -302,6 +302,7 @@ do jj=1,nsubwin
 
 !  Calculate sensible temperature
    if(do_tv_to_tsen .and. .not.regional) call tv_to_tsen(cv_t,sv_q,sv_tsen)
+   !if(do_tv_to_tsen .or. fv3_regional) call tv_to_tsen(cv_t,sv_q,sv_tsen)
 
    if(mpas_regional .and. qoption==1) sv_q = cv_rh * 100. 
 

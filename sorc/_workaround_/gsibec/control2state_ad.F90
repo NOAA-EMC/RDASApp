@@ -280,6 +280,7 @@ do jj=1,nsubwin
 
 !  Adjoint of control to initial state
    call gsi_bundleputvar ( wbundle, 't' ,  rv_tv,  istatus )
+   !call gsi_bundleputvar ( wbundle, 't' ,  zero,  istatus )
    if(mpas_regional .and. qoption==1) then
      rv_q = rv_q * 100.
      call gsi_bundleputvar ( wbundle, 'q' ,  rv_q,   istatus )
@@ -313,6 +314,7 @@ do jj=1,nsubwin
    end if
 !  Calculate sensible temperature
    if(do_tv_to_tsen_ad .and. .not.regional) call tv_to_tsen_ad(cv_t,rv_q,rv_tsen)
+   !if(do_tv_to_tsen_ad .or. fv3_regional) call tv_to_tsen_ad(cv_t,rv_q,rv_tsen)
 
    rv_prse = 0.
 

@@ -137,6 +137,8 @@ subroutine compute_derived(mype,init_pass)
   use mpeu_util, only: getindex
   use mpeu_util, only: die, tell
   use gsi_io, only: verbose
+  use gen_qsat
+
   implicit none
 
 
@@ -191,7 +193,7 @@ subroutine compute_derived(mype,init_pass)
   iderivative=0
   ice=.true.
   do ii=1,nfldsig
-     call genqsat(ges_qsat(1,1,1,ii),ges_tsen(1,1,1,ii),ges_prsl(1,1,1,ii),lat2,lon2, &
+     call genqsat(ges_qsat(:,:,:,ii),ges_tsen(:,:,:,ii),ges_prsl(:,:,:,ii),lat2,lon2, &
                   nsig,ice,iderivative)
   enddo
 
@@ -439,13 +441,13 @@ subroutine compute_derived(mype,init_pass)
      end if
       
      ice=.true.
-     call genqsat(qsatg,ges_tsen(1,1,1,ntguessig),ges_prsl(1,1,1,ntguessig),lat2,lon2, &
+     call genqsat(qsatg,ges_tsen(:,:,:,ntguessig),ges_prsl(:,:,:,ntguessig),lat2,lon2, &
               nsig,ice,iderivative)
 
 !   Now load over nfldsig bins for limq (when nobs_bins /= zero)
     iderivative = 0
     do ii=1,nfldsig
-      call genqsat(ges_qsat(1,1,1,ii),ges_tsen(1,1,1,ii),ges_prsl(1,1,1,ii),lat2,lon2, &
+      call genqsat(ges_qsat(:,:,:,ii),ges_tsen(:,:,:,ii),ges_prsl(:,:,:,ii),lat2,lon2, &
              nsig,ice,iderivative)
     end do
   endif
