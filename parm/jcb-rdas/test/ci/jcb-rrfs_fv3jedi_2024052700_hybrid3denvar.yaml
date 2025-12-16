@@ -147,7 +147,7 @@ lat_start: -14.726005
 lat_end: 14.726005
 lon_start: -25.076254
 lon_end: 25.076254
-north_pole_lat: 51.499998
+north_pole_lat: 51.499999
 north_pole_lon: 82.500018
 gsi_bands: 10
 
