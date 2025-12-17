@@ -19,8 +19,8 @@ components:
         function space: StructuredColumns
         custom grid matching gsi:
           type: rotated_lonlat
-          lats: {{atmosphere_npy_ges}}
-          lons: {{atmosphere_npx_ges}}
+          lats: {{gsibec_lats}}
+          lons: {{gsibec_lons}}
           lat_start: {{lat_start}}
           lat_end: {{lat_end}}
           lon_start: {{lon_start}}
@@ -41,6 +41,8 @@ components:
       - water_vapor_mixing_ratio_wrt_moist_air
       - air_pressure_at_surface
       - air_pressure_thickness
+      - geopotential_height_times_gravity_at_surface
+      - ozone_mass_mixing_ratio
     linear variable change:
       linear variable change name: Control2Analysis
       input variables:
