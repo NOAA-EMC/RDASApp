@@ -104,7 +104,7 @@ components:
         active variables: {{analysis_variables}}
         read:
           io:
-            files prefix: {{atmosphere_fv3jedi_files_path}}/bump_401km_0p04sigma_mpi160/bumploc_401km0p04sigma
+            files prefix: {{atmosphere_fv3jedi_files_path}}/{{bumploc_path}}/{{bumploc_prefix}}
           drivers:
              multivariate strategy: duplicated
              read local nicas: true

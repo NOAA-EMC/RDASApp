@@ -150,6 +150,8 @@ lon_end: 25.076254
 north_pole_lat: 51.499999
 north_pole_lon: 82.500018
 gsi_bands: 10
+bumploc_path: bump_401km_0p04sigma_mpi160
+bumploc_prefix: bumploc_401km0p04sigma
 
 # Forecasting
 atmosphere_forecast_length: PT6H
