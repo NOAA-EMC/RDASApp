@@ -172,8 +172,8 @@ observations:
 #- adpupa_winds_232
 
 - aircar_airTemperature_133
-#- aircar_specificHumidity_133
-#- aircar_winds_233
+- aircar_specificHumidity_133
+- aircar_winds_233
 
 #- aircft_airTemperature_130
 #- aircft_airTemperature_131
