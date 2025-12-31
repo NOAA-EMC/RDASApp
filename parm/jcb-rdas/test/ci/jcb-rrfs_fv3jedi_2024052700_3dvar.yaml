@@ -4,7 +4,7 @@ algorithm: 3dvar
 # Search path for model and obs for JCB (relative for the submodule, or can be absolute)
 # --------------------------------------------------------------------------------------
 app_path_algorithm: rdas/algorithm/atmosphere
-app_path_model: rdas/model/atmosphere
+app_path_model: rdas/model/fv3/atmosphere
 app_path_observations: rdas/observations/atmosphere
 app_path_observation_chronicle: rdas/observation_chronicle/atmosphere
 
@@ -172,8 +172,8 @@ observations:
 #- adpupa_winds_232
 
 - aircar_airTemperature_133
-- aircar_specificHumidity_133
-- aircar_winds_233
+#- aircar_specificHumidity_133
+#- aircar_winds_233
 
 #- aircft_airTemperature_130
 #- aircft_airTemperature_131
