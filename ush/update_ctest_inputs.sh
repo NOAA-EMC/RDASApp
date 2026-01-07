@@ -28,6 +28,7 @@ rrfs_mpasjedi_tests=(
     "rrfs_mpasjedi_2024052700_getkf_observer"
     "rrfs_mpasjedi_2024052700_getkf_solver"
     "rrfs_mpasjedi_2024052700_bumploc"
+    "rrfs_mpasjedi_2024052700_3dvar"
 )
 
 # Select tests based on DYCORE
@@ -65,6 +66,14 @@ for ctest_yaml in "${rrfs_fv3jedi_tests[@]}"; do
   jcb_config="jcb-${ctest_yaml}"
   cp "${RDASApp}/parm/jcb-rdas/test/ci/${jcb_config}" .
   python run_jcb_ctest.py 2024052700 "${jcb_config}" "${ctest_yaml}"
+done
+for ctest_yaml in "${rrfs_mpasjedi_tests[@]}"; do
+  if [[ $ctest_yaml == "rrfs_mpasjedi_2024052700_3dvar" ]]; then # Remove if-condition after switching more mpasjedi ctests to jcb
+  ctest_yaml="${ctest_yaml}.yaml"
+  jcb_config="jcb-${ctest_yaml}"
+  cp "${RDASApp}/parm/jcb-rdas/test/ci/${jcb_config}" .
+  python run_jcb_ctest.py 2024052700 "${jcb_config}" "${ctest_yaml}"
+  fi
 done
 cd ${currdir}
 
