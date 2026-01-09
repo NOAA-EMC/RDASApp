@@ -34,31 +34,11 @@ components:
         local interpolator type: oops unstructured grid interpolator
       inverse interpolator:
         local interpolator type: oops unstructured grid interpolator
-      state variables to inverse:
-      - eastward_wind
-      - northward_wind
-      - air_temperature
-      - water_vapor_mixing_ratio_wrt_moist_air
-      - air_pressure_at_surface
-      - air_pressure_thickness
-      - geopotential_height_times_gravity_at_surface
-      - ozone_mass_mixing_ratio
+      state variables to inverse: {{state_variables_to_inverse}}
     linear variable change:
       linear variable change name: Control2Analysis
-      input variables:
-      - eastward_wind
-      - northward_wind
-      - virtual_temperature
-      - water_vapor_mixing_ratio_wrt_moist_air
-      - air_pressure_at_surface
-      - ozone_mass_mixing_ratio
-      output variables:
-      - eastward_wind
-      - northward_wind
-      - air_temperature
-      - water_vapor_mixing_ratio_wrt_moist_air
-      - air_pressure_at_surface
-      - ozone_mass_mixing_ratio
+      input variables: {{control_variables}}
+      output variables: {{analysis_variables}}
   weight:
     value: 0.15
 
@@ -88,9 +68,11 @@ components:
           snow_water: {{snow_water}}
           graupel: {{graupel}}
           upward_air_velocity: {{upward_air_velocity}}
+          equivalent_reflectivity_factor: {{equivalent_reflectivity_factor}}
         datapath: {{ atmosphere_background_ensemble_path }}
         filename_core: {{atmosphere_background_time_prefix}}{{filename_core}}
         filename_trcr: {{atmosphere_background_time_prefix}}{{filename_trcr}}
+        filename_phys: {{atmosphere_background_time_prefix}}{{filename_phys}}
         filename_sfcd: {{atmosphere_background_time_prefix}}{{filename_sfcd}}
         filename_sfcw: {{atmosphere_background_time_prefix}}{{filename_sfcw}}
         filename_cplr: {{atmosphere_background_time_prefix}}{{filename_cplr}}
