@@ -8,7 +8,7 @@
 #   ps  in inc_jedi.sfc_data.nc : ps(Time,yaxis_1,xaxis_1) [Pa]
 #   bk  in fv3_akbk             : bk(Time,66)
 #   delp in inc_jedi.fv_core.res.nc will be created as:
-#        delp(Time,zaxis_1,yaxis_2,xaxis_1)  (float, like other core vars)
+#        delp(Time,zaxis_1,yaxis_1,xaxis_1)  (float, like other core vars)
 #
 # Requirements: netCDF4, numpy
 
@@ -66,13 +66,13 @@ def main() -> int:
     mode = "r" if args.dry_run else "r+"
     with Dataset(args.core_inc, mode) as core:
         # Confirm required dims exist and match expectations
-        for d in ("Time", "zaxis_1", "yaxis_2", "xaxis_1"):
+        for d in ("Time", "zaxis_1", "yaxis_1", "xaxis_1"):
             if d not in core.dimensions:
                 raise KeyError(f"Core file missing dimension '{d}'. Dims: {list(core.dimensions.keys())}")
 
         nt = len(core.dimensions["Time"])
         nz = len(core.dimensions["zaxis_1"])
-        ny = len(core.dimensions["yaxis_2"])
+        ny = len(core.dimensions["yaxis_1"])
         nx = len(core.dimensions["xaxis_1"])
 
         if nz != 65:
@@ -88,7 +88,7 @@ def main() -> int:
         # stats
         print(f"ps:   {args.sfc_inc}:{args.ps_var} shape={ps.shape} units={ps_units}")
         print(f"bk:   {args.akbk}:{args.bk_var} len={bk.size} -> dbk len={dbk.size}")
-        print(f"core: {args.core_inc} expects delp dims (Time,zaxis_1,yaxis_2,xaxis_1)=({ps.shape[0]},{nz},{ny},{nx})")
+        print(f"core: {args.core_inc} expects delp dims (Time,zaxis_1,yaxis_1,xaxis_1)=({ps.shape[0]},{nz},{ny},{nx})")
         print(f"delp_inc stats: min={float(np.nanmin(delp_inc)):.6g} "
               f"max={float(np.nanmax(delp_inc)):.6g} mean={float(np.nanmean(delp_inc)):.6g}")
 
@@ -99,12 +99,12 @@ def main() -> int:
         if args.delp_var in core.variables:
             v = core.variables[args.delp_var]
             # Must match dims
-            if v.dimensions != ("Time", "zaxis_1", "yaxis_2", "xaxis_1"):
+            if v.dimensions != ("Time", "zaxis_1", "yaxis_1", "xaxis_1"):
                 raise ValueError(f"Existing {args.delp_var} dims are {v.dimensions}, expected "
-                                 f"('Time','zaxis_1','yaxis_2','xaxis_1').")
+                                 f"('Time','zaxis_1','yaxis_1','xaxis_1').")
         else:
             # match file's float usage (your core vars are float)
-            v = core.createVariable(args.delp_var, "f4", ("Time", "zaxis_1", "yaxis_2", "xaxis_1"))
+            v = core.createVariable(args.delp_var, "f4", ("Time", "zaxis_1", "yaxis_1", "xaxis_1"))
             v.long_name = "air_pressure_thickness"
             v.units = "Pa"
 
