@@ -35,8 +35,8 @@ analysis_variables:
 - northward_wind
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
-- air_pressure_at_surface
 - ozone_mass_mixing_ratio
+#- air_pressure_thickness
 #- cloud_liquid_water
 #- cloud_liquid_ice
 #- rain_water
@@ -44,13 +44,13 @@ analysis_variables:
 #- graupel
 #- upward_air_velocity
 #- equivalent_reflectivity_factor
+- air_pressure_at_surface
 
 control_variables:
 - eastward_wind
 - northward_wind
 - virtual_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
-- air_pressure_at_surface
 - ozone_mass_mixing_ratio
 #- cloud_liquid_water
 #- cloud_liquid_ice
@@ -59,16 +59,17 @@ control_variables:
 #- graupel
 #- upward_air_velocity
 #- equivalent_reflectivity_factor
+- air_pressure_at_surface
 
 state_variables_to_inverse:
 - eastward_wind
 - northward_wind
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
-- air_pressure_at_surface
-- air_pressure_thickness
-- geopotential_height_times_gravity_at_surface
 - ozone_mass_mixing_ratio
+- geopotential_height_times_gravity_at_surface
+- air_pressure_thickness
+- air_pressure_at_surface
 
 # Testing
 # -------

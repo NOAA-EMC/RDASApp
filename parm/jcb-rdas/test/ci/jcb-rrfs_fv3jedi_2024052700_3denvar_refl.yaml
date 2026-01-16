@@ -35,8 +35,8 @@ analysis_variables:
 - northward_wind
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
-- air_pressure_at_surface
 - ozone_mass_mixing_ratio
+#- air_pressure_thickness
 - cloud_liquid_water
 - cloud_liquid_ice
 - rain_water
@@ -44,6 +44,7 @@ analysis_variables:
 - graupel
 - upward_air_velocity
 - equivalent_reflectivity_factor
+- air_pressure_at_surface
 
 # Testing
 # -------
@@ -190,7 +191,7 @@ observations:
 #- aircar_airTemperature_133
 #- aircar_specificHumidity_133
 #- aircar_winds_233
-#
+
 #- aircft_airTemperature_130
 #- aircft_airTemperature_131
 #- aircft_airTemperature_134
