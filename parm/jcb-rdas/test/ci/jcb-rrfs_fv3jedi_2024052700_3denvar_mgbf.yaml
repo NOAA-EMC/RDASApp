@@ -36,7 +36,7 @@ analysis_variables:
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - ozone_mass_mixing_ratio
-- air_pressure_thickness
+#- air_pressure_thickness
 #- cloud_liquid_water
 #- cloud_liquid_ice
 #- rain_water
