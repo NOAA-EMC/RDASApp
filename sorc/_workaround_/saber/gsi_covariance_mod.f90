@@ -988,6 +988,7 @@ end subroutine multiply
 !
    real(kind=kind_real), allocatable :: t_pt(:,:,:)
    real(kind=kind_real), pointer ::    tv(:,:,:)=>NULL()
+   real(kind=kind_real), pointer ::     t(:,:,:)=>NULL()
    real(kind=kind_real), pointer :: tv_pt(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::     q(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::  q_pt(:,:,:)=>NULL()
@@ -1002,6 +1003,7 @@ end subroutine multiply
       ! from first guess ...
       call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'q' ,q ,ier)
       call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'tv',tv,ier)
+      call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'tsen',t,ier)
       ! from GSI cv ...
       call gsi_bundlegetpointer(gsicv%step(ii),'q' ,q_pt ,ier)
       call gsi_bundlegetpointer(gsicv%step(ii),'tv',tv_pt,ier)
@@ -1020,7 +1022,7 @@ end subroutine multiply
       endif
       ! retrieve missing field
       if(which=='tlm') then
-        call gsi_tv_to_t_tl(tv,tv_pt,q,q_pt,t_pt)
+        call gsi_tv_to_t_tl(tv,tv_pt,q,q_pt,t_pt,t)
         ! pass it back to JEDI ...
         allocate(aux1(size(rank2,2)))
         if (vflip) then
@@ -1040,7 +1042,7 @@ end subroutine multiply
         endwhere
       endif
       if(which=='adm') then
-        call gsi_tv_to_t_ad(tv,tv_pt,q,q_pt,t_pt)
+        call gsi_tv_to_t_ad(tv,tv_pt,q,q_pt,t_pt,t)
         where(need=='tv')
            need='filled-'//need
         endwhere
@@ -1101,6 +1103,7 @@ end subroutine multiply
 !
    real(kind=kind_real), allocatable :: t_pt(:,:,:)
    real(kind=kind_real), pointer ::       tv(:,:,:)=>NULL()
+   real(kind=kind_real), pointer ::        t(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::    tv_pt(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::        q(:,:,:)=>NULL()
    real(kind=kind_real), pointer ::     q_pt(:,:,:)=>NULL()
@@ -1129,6 +1132,7 @@ end subroutine multiply
       ! from first guess ...
       call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'q' ,q ,ier)
       call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'tv',tv,ier)
+      call gsi_bundlegetpointer(gsi_metguess_bundle(ii),'tsen',t,ier)
       ! from GSI cv ...
       call gsi_bundlegetpointer(gsisv(ii),'q' ,q_pt ,ier)
       call gsi_bundlegetpointer(gsisv(ii),'tv',tv_pt,ier)
@@ -1147,7 +1151,7 @@ end subroutine multiply
       endif
       ! retrieve missing field
       if(which=='tlm') then
-        call gsi_tv_to_t_tl(tv,tv_pt,q,q_pt,t_pt)
+        call gsi_tv_to_t_tl(tv,tv_pt,q,q_pt,t_pt,t)
         where(need=='tv')
            need='filled-'//need
         endwhere
@@ -1167,7 +1171,7 @@ end subroutine multiply
         deallocate(aux1)
       endif
       if(which=='adm') then
-        call gsi_tv_to_t_ad(tv,tv_pt,q,q_pt,t_pt)
+        call gsi_tv_to_t_ad(tv,tv_pt,q,q_pt,t_pt,t)
         where(need=='tv')
            need='filled-'//need
         endwhere
