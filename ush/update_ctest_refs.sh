@@ -28,6 +28,7 @@ rrfs_mpasjedi_tests=(
     "rrfs_mpasjedi_2024052700_getkf_observer"
     "rrfs_mpasjedi_2024052700_getkf_solver"
     "rrfs_mpasjedi_2024052700_bumploc"
+    "rrfs_mpasjedi_2024052700_3dvar"
 )
 
 echo "Use test data from rrfs-test-data repository"
