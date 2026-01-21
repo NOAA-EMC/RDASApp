@@ -292,6 +292,7 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
 
   # Workaround for reading reflectivity from phy_data.nc file
   # PR: https://github.com/JCSDA-internal/fv3-jedi/pull/1442
+  # PR is merged AND included in below fv3-jedi-io changes
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
 
   # Workaround for parallel IO developed by Dan Kokron at GDIT
@@ -305,6 +306,10 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/fv3jedi_io_fms2_mod.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_mpi_arrange.f90  ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_mpi_arrange.f90
+
+  # Workaround for halo obs distribution to work with empty obs spaces
+  # No PR yet
+  cp ../sorc/_workaround_/ioda/Halo.cc ../sorc/ioda/src/distribution
 
 fi
 
