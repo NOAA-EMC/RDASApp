@@ -294,6 +294,18 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # PR: https://github.com/JCSDA-internal/fv3-jedi/pull/1442
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
 
+  # Workaround for parallel IO developed by Dan Kokron at GDIT
+  cp ../sorc/_workaround_/fv3-jedi-io/CMakeLists.txt                        ../sorc/fv3-jedi/src/fv3jedi/CMakeLists.txt
+  cp ../sorc/_workaround_/fv3-jedi-io/FieldMetadata/FieldsMetadataDefault.h ../sorc/fv3-jedi/src/fv3jedi/FieldMetadata/FieldsMetadataDefault.h
+  cp ../sorc/_workaround_/fv3-jedi-io/Fields/fv3jedi_field_mod.f90          ../sorc/fv3-jedi/src/fv3jedi/Fields/fv3jedi_field_mod.f90
+  cp ../sorc/_workaround_/fv3-jedi-io/Geometry/fv3jedi_geom_mod.f90         ../sorc/fv3-jedi/src/fv3jedi/Geometry/fv3jedi_geom_mod.f90
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.cc                ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.cc
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.interface.F90     ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.interface.F90
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.interface.h       ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.interface.h
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/fv3jedi_io_fms2_mod.f90
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_mpi_arrange.f90  ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_mpi_arrange.f90
+
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)
