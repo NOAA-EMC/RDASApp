@@ -55,7 +55,6 @@ type :: fv3jedi_geom
   integer :: iterator_dimension                                                     !iterator dimension
   integer :: EWindex, NSindex                                                       !column and row index into the global MPI grid
   integer, allocatable :: ibegin(:), iend(:), jbegin(:), jend(:)                    !store all subdomain coordinates
-  integer, allocatable :: LevelToProcMap(:)                                         !allow all ranks to know the subdomain of all other ranks
   integer, allocatable :: NumColsPerRank(:), NumRowsPerRank(:)
   integer, allocatable :: MyRowGlobal(:), MyColGlobal(:)
   integer, allocatable :: MyRankInRowComm(:), MyRankInColComm(:)
@@ -194,11 +193,9 @@ character(len=:), allocatable :: str
 real(kind=kind_real) :: sf, t_lon, t_lat
 logical :: do_write_geom = .false.
 integer :: iterator_dimension = 2
-real(kind=8) :: tb1,te1,tb2,te2,times(2),walltime(2)
 
 type(fv3jedi_fmsnamelist) :: fmsnamelist
 
-tb1 = MPI_Wtime()
 ! Add the communicator to the geometry
 ! ------------------------------------
 self%f_comm = comm
@@ -317,7 +314,6 @@ allocate(self%rsin2 (self%isd:self%ied  ,self%jsd:self%jed  ))
 allocate(self%dxa   (self%isd:self%ied  ,self%jsd:self%jed  ))
 allocate(self%dya   (self%isd:self%ied  ,self%jsd:self%jed  ))
 
-tb2 = MPI_Wtime()
 ! Tell everyone what my subdomain coordinates are
 allocate(self%ibegin(0:self%layout(1)-1), self%iend(0:self%layout(1)-1))
 allocate(self%jbegin(0:self%layout(2)-1), self%jend(0:self%layout(2)-1))
@@ -333,47 +329,6 @@ call MPI_AllGather(self%iec,1,MPI_integer,self%iend(0:)  ,1,MPI_integer, self%co
 call MPI_AllGather(self%jsc,1,MPI_integer,self%jbegin(0:),1,MPI_integer, self%rowComm, ierr)
 call MPI_AllGather(self%jec,1,MPI_integer,self%jend(0:)  ,1,MPI_integer, self%rowComm, ierr)
 
-!write(6,'("Geom::create: subdomain extents ",6I6)') self%EWindex,self%NSindex,self%ibegin(self%NSindex), &
-!          self%iend(self%NSindex),self%jbegin(self%EWindex),self%jend(self%EWindex)
-
-  ! Evenly distribute levels among the available MPI ranks
-  ! ------------------------------------------------------
-  ! Map levels to MPI ranks. LevelToProcMap(level) gives Proc.
-  ! Each rank can be assigned more than one level, although that would be unusual
-  allocate(self%LevelToProcMap(npz))
-  self%LevelToProcMap(:) = -999
-
-  ! One level per rank evenly spread across all ranks
-  !call distribute_levels(nsig, npes, LevelToProcMap)
-
-  ! One level per rank, unless the second arg is less than nsig
-  ! in which case a given rank will be assigend more than one level
-  ! In the event there are fewer scatter ranks than levels
-  ! Ranks assigned scatter duty are assigned consecutively (ranks 0->12 are asssigned levels)
-  ! The levels assigned to a rank are assigned consecutively (rank 0 manages levels 1->5, rank 1 manages levels 6->10)
-  call distribute_levels(npz, mpp_npes(), self%LevelToProcMap) ! Same performance as distribute_levels2()
-
-  ! Not sure  what this one does.  See BinDistribution.f90
-  !call DistributeLevels(nsig, npes, LevelToProcMap)
-
-  ! Fewer scatter ranks than levels so each rank will have more than one level to scatter.
-  ! Ranks assigned scatter duty are assigned consecutively (ranks 0->12 are asssigned levels)
-  ! The levels assigned to a rank are assigned round-robin (0 is assigned levels 1, 14, 28, ...)
-  !call distribute_levels2(nsig, 13, npes, LevelToProcMap) ! Same performance as distribute_levels()
-
-  ! Fewer scatter ranks than levels so each rank will have more than one level to scatter.
-  ! Ranks that have levels to scatter are spread out as evenly as possible among the npes ranks.
-  ! The levels assigned to a rank are consecutive (rank 0 manages levels 1->5, rank 80 manages levels 6->10)
-  !call distribute_levels_to_bins(nsig, 13, npes, LevelToProcMap) ! Slower than either distribute_levels() or distribute_levels2()
-
-  !if (any(self%LevelToProcMap(:) == -999)) then
-  !  write(6,'("fv3jedi_geom::create: Some sigma level were not assigned")')
-  !  call MPI_Abort(MPI_COMM_WORLD,10,ierr)
-  !endif
-
-  self%k=count(self%LevelToProcMap(:) == mpp_pe())
-  !write(6,'("fv3jedi_geom::create: Rank ",I6,A,I6,A)') mpp_pe(),' is assigned ',self%k,' levels'
-
   ! Initialize commonly used items
   ! ------------------------------
 
@@ -382,18 +337,6 @@ call MPI_AllGather(self%jec,1,MPI_integer,self%jend(0:)  ,1,MPI_integer, self%ro
   self%MyRowGlobal=-999; self%MyColGlobal=-999
   call MPI_AllGather(self%NSindex,1,MPI_Integer,self%MyRowGlobal,1,MPI_Integer, MPI_COMM_WORLD, ierr)
   call MPI_AllGather(self%EWindex,1,MPI_Integer,self%MyColGlobal,1,MPI_Integer, MPI_COMM_WORLD, ierr)
-  !if (any(self%MyRowGlobal(:) == -999)) then
-  !  write(6,'("fv3jedi_geom::create: some MyRowGlobal not assigned")')
-  !  call MPI_Abort(MPI_COMM_WORLD,10,ierr)
-  !endif
-  !if (any(self%MyColGlobal(:) == -999)) then
-  !  write(6,'("fv3jedi_geom::create: some MyColGlobal not assigned")')
-  !  call MPI_Abort(MPI_COMM_WORLD,10,ierr)
-  !endif
-  !if(mpp_pe()==0) then
-  !  write(*,'("fv3jedi_geom::create: MyRowGlobal ",600I6)') self%MyRowGlobal
-  !  write(*,'("fv3jedi_geom::create: MyColGlobal ",600I6)') self%MyColGlobal
-  !endif
 
   ! Let other ranks know my rank in the row and column communicators
   call MPI_Comm_rank(self%rowComm, self%rowrank, ierr)
@@ -402,18 +345,6 @@ call MPI_AllGather(self%jec,1,MPI_integer,self%jend(0:)  ,1,MPI_integer, self%ro
   self%MyRankInRowComm=-999; self%MyRankInColComm=-999
   call MPI_AllGather(self%rowrank,1,MPI_Integer,self%MyRankInRowComm,1,MPI_Integer, MPI_COMM_WORLD, ierr)
   call MPI_AllGather(self%colrank,1,MPI_Integer,self%MyRankInColComm,1,MPI_Integer, MPI_COMM_WORLD, ierr)
-  !if (any(self%MyRankInRowComm(:) == -999)) then
-  !  write(6,'("fv3jedi_geom::create: some MyRankInRowComm not assigned")')
-  !  call MPI_Abort(MPI_COMM_WORLD,10,ierr)
-  !endif
-  !if (any(self%MyRankInColComm(:) == -999)) then
-  !  write(6,'("fv3jedi_geom::create: some MyRankInColComm not assigned")')
-  !  call MPI_Abort(MPI_COMM_WORLD,10,ierr)
-  !endif
-  !if(mpp_pe()==0) then
-  !  write(*,'("fv3jedi_geom::create: MyRankInRowComm ",600I6)') self%MyRankInRowComm
-  !  write(*,'("fv3jedi_geom::create: MyRankInColComm ",600I6)') self%MyRankInColComm
-  !endif
 
   ! Let other ranks in my row and column know how many rows and columns I have in my subdomain
   allocate(self%NumColsPerRank(0:self%layout(2)-1), self%NumRowsPerRank(0:self%layout(1)-1))
@@ -430,34 +361,18 @@ call MPI_AllGather(self%jec,1,MPI_integer,self%jend(0:)  ,1,MPI_integer, self%ro
   endif
   call MPI_Bcast(self%NumColsPerRank,size(self%NumColsPerRank),MPI_Integer,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(self%NumRowsPerRank,size(self%NumRowsPerRank),MPI_Integer,0,MPI_COMM_WORLD,ierr)
-  !if (any(self%NumColsPerRank(:) == -999)) then
-  !  write(6,'("fv3jedi_geom::create: some NumColsPerRank not assigned")')
-  !  call MPI_Abort(MPI_COMM_WORLD,10,ierr)
-  !endif
-  !if (any(self%NumRowsPerRank(:) == -999)) then
-  !  write(6,'("fv3jedi_geom::create: some NumRowsPerRank not assigned")')
-  !  call MPI_Abort(MPI_COMM_WORLD,10,ierr)
-  !endif
-  !if(mpp_pe()==0) then
-  !  write(*,'("fv3jedi_geom::create: NumColsPerRank ",20I6)') self%NumColsPerRank
-  !  write(*,'("fv3jedi_geom::create: NumRowsPerRank ",30I6)') self%NumRowsPerRank
-  !endif
 
   ! Create a sub-communicator to handle reads
   self%color=0
   if (self%k>0) self%color=1
-  !write(6,'("Rank ID in nodeComm ",2I6)') rank, color
 
   call MPI_Comm_split(mpi_comm_world, self%color, mpp_pe(), self%IOComm, ierr)
   call MPI_Comm_rank(self%IOComm,self%IORank,ierr)
   call MPI_Comm_size(self%IOComm,self%IOCommSize,ierr)
-  !write(6,'("IOComm size ",I6)') IOCommSize
 
   ! Horizontal dimensions of ensemble input files
   self%globalsizes(1) = self%npx-1
   self%globalsizes(2) = self%npy-1
-  te2 = MPI_Wtime()
-  times(2) = te2-tb2
 
 
 ! ak and bk hybrid coordinate coefficients
@@ -599,10 +514,6 @@ endif
 ! Revert the fms namelist
 ! -----------------------
 call fmsnamelist%revert_namelist
-te1 = MPI_Wtime()
-times(1)=te1-tb1
-call MPI_Reduce(times, walltime, 2, MPI_DOUBLE_PRECISION, MPI_MAX, 0, mpi_comm_world, ierr)
-if (mpp_pe() == 0) write(*,'(A,3F12.6)') 'Walltime for Geom::create: ', walltime(1), walltime(2), walltime(1)+walltime(2)
 
 end subroutine create
 
@@ -805,19 +716,6 @@ deallocate(self%jbegin, self%jend)
 deallocate(self%MyRankInRowComm, self%MyRankInColComm)
 deallocate(self%NumColsPerRank, self%NumRowsPerRank)
 deallocate(self%MyRowGlobal, self%MyColGlobal)
-deallocate(self%LevelToProcMap)
-!do r=0,mpp_npes()-1
-!  if (allocated(self%Scatter(r)%senddispls_col)) deallocate(self%Scatter(r)%senddispls_col)
-!  if (allocated(self%Scatter(r)%sendcounts_col)) deallocate(self%Scatter(r)%sendcounts_col)
-!  if (allocated(self%Scatter(r)%senddispls_row)) deallocate(self%Scatter(r)%senddispls_row)
-!  if (allocated(self%Scatter(r)%sendcounts_row)) deallocate(self%Scatter(r)%sendcounts_row)
-!  !if (mpp_pe() == 0) write(6,'("fv3jedi_geom::delete: About to free localvec "I6)') r
-!  !call flush(6)
-!  !iret = COMMITQQ(6)
-!  !if (nlev(r) > 0) call MPI_Type_free(Scatter(r)%localvec, ierror)
-!  !if (nlev(r) > 0) call MPI_Type_free(Scatter(r)%vec, ierror)
-!enddo
-!deallocate(self%Scatter)
 
 end subroutine delete
 
@@ -2034,84 +1932,5 @@ subroutine fv3_nodes_to_atlas_nodes_i(self, fv3_data, atlas_data)
 end subroutine fv3_nodes_to_atlas_nodes_i
 
 ! --------------------------------------------------------------------------------------------------
-
-  !---------------------------------------------------------------------
-  ! SUBROUTINE: distribute_levels
-  ! Description: Calculates the bin indices (0 to M-1) for N levels
-  !              to achieve maximum uniform spacing.
-  ! Arguments:
-  !   N (Integer, Intent(In)): The number of levels to distribute.
-  !   M (Integer, Intent(In)): The number of available bins (numbered 0 to M-1).
-  !   bin_indices (Integer, Intent(Out), Dimension(:)): An array to store
-  !                                                    the bin index for each level.
-  !---------------------------------------------------------------------
-  SUBROUTINE distribute_levels(N, M, bin_indices)
-    ! Code from Google Gemini.
-    IMPLICIT NONE
-
-    INTEGER, INTENT(IN) :: N, M
-    INTEGER, INTENT(OUT), DIMENSION(:) :: bin_indices
-
-    ! Local variables
-    REAL :: spacing_step
-    INTEGER :: i
-
-    ! Check for valid input
-    IF (N <= 0 .OR. M <= 0) THEN
-       WRITE(*,*) 'Error: N and M must be positive integers.'
-       RETURN
-    END IF
-
-    ! The number of "positions" that can be used for spacing is M - 1.
-    ! The number of "gaps" to distribute N items is N - 1.
-    ! The optimal spacing step is calculated as (M - 1) / (N - 1).
-    !
-    ! We treat the bins as a continuous range [0, M-1] and place the
-    ! levels at evenly spaced points: 0, spacing_step, 2*spacing_step, ...
-    ! and then round to the nearest integer bin index.
-
-    IF (N == 1) THEN
-       ! If only one level, place it in the middle bin for best 'spacing'
-       ! (even though there's only one item).
-       bin_indices(1) = NINT(REAL(M - 1) / 2.0)
-    ELSE IF (N >= M) THEN ! ranks >= levels
-       ! If N >= M, a simple, uniform distribution is to assign levels
-       ! proportionally to the bin index, from 0 to M-1.
-       ! spacing_step is M / N, but we use the formula for a more robust
-       ! and evenly spread distribution that handles both cases well.
-       !
-       ! The total span for the bins is M (0 to M-1).
-       ! The spacing_step ensures the levels are placed as evenly as possible.
-       ! For N > M, this means some bins will be repeated.
-       spacing_step = REAL(M) / REAL(N) ! This gives the minimum index step
-
-       DO i = 1, N
-          ! The current level's ideal position is (i - 1) * spacing_step
-          ! We use MIN(M-1, ...) to ensure the bin index never exceeds M-1.
-          ! For N > M, this ensures proportional assignment.
-          bin_indices(i) = MIN(M - 1, INT(REAL(i - 1) * spacing_step))
-       END DO
-
-       ! For the case where the problem implies assigning levels *one-to-one* ! as much as possible with *maximum space* between *chosen* bins,
-       ! the general formula below for N < M is more typical.
-       ! However, if the goal is to *bin* N items into M bins when N > M,
-       ! the above simple proportional assignment is often used.
-
-    ELSE ! ranks > levels (Maximum Spacing Case)
-
-       ! N levels create N-1 gaps. The M bins provide M-1 spaces between them.
-       ! The spacing step is (M-1) / (N-1).
-       spacing_step = REAL(M - 1) / REAL(N - 1)
-
-       DO i = 1, N
-          ! The ideal position for level i is calculated based on its index (i-1).
-          ! The index is 1-based, so use (i - 1) * spacing_step.
-          ! NINT (Nearest Integer) is used to assign the level to the closest bin.
-          bin_indices(i) = NINT(REAL(i - 1) * spacing_step)
-       END DO
-
-    END IF
-
-  END SUBROUTINE distribute_levels
 
 end module fv3jedi_geom_mod

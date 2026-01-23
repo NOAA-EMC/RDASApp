@@ -44,9 +44,6 @@ type :: fv3jedi_field
  logical :: lalloc = .false.
  character(len=field_clen) :: long_name                       ! Field long name
  character(len=field_clen) :: model_name                      ! Name of field in model space
- character(len=field_clen) :: found_in_file                   ! Name of file where the field was found
- integer :: ncid                                              ! Netcdf ID of file where the field was found
- integer, allocatable :: dimids(:)                            ! Netcdf dimension ids foir this field
  character(len=field_clen) :: units                           ! Field units
  character(len=field_clen) :: kind                            ! Data kind, real, integer etc (always allocate real data)
  logical                   :: tracer                          ! Whether field is tracer or not
@@ -55,11 +52,11 @@ type :: fv3jedi_field
 
  class(*), allocatable :: array_file(:,:,:)                   ! Memory for NetCDF read buffer (whole level)
                                                               ! Type is determined by the type held in the file
- ! In cases where the type of a variable in a NetCDF file is "smaller"
- ! than the type the application expects (r4 < r8), we read and scatter
- ! NetCDF typed data then convert to the application type.  Thus, we
- ! need someplace to put the scattered data before converting
- class(*), allocatable :: array_file_scatter(:,:,:)
+
+ class(*), allocatable :: array_file_scatter(:,:,:)           ! In cases where the variable type in a NetCDF file is "smaller"
+                                                              ! than the type the application expects (r4 < r8), we read and scatter
+                                                              ! smaller type then convert to the application type.  Thus, we
+                                                              ! need someplace to put the scattered data before converting
 
  real(kind=kind_real), allocatable :: array(:,:,:)
  type(fckit_mpi_comm) :: comm                       ! Communicator
