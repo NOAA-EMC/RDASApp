@@ -41,7 +41,7 @@ set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
 #  set (fv3-jedi_data_testinput_tier_1_local "$ENV{FV3_JEDI_TESTFILES}/fv3-jedi-data/testinput_tier_1")
 
 # Add some general job settings here
-set(MPI_ARGS "${MPI_ARGS} --time=00:45:00 --exclusive")
+set(MPI_ARGS "${MPI_ARGS} --time=00:30:00 --exclusive")
 set(RESTORE_MPI_ARGS ${MPI_ARGS})
 
 if(FV3_DYCORE)

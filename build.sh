@@ -276,9 +276,10 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/saber/gsi_covariance_mod.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
   cp ../sorc/_workaround_/saber/gsi_grid_mod.f90       ../sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90
   cp ../sorc/_workaround_/saber/Geometry.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
-  # No PR for gsibec yet
+  # No PR for full gsibec changes
+  # gsibec PR #88 for qoption2: https://github.com/GEOS-ESM/GSIbec/pull/88
   cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
-  # No PR for fv3jedi yet
+  # fv3-jedi PR #1447: https://github.com/JCSDA-internal/fv3-jedi/pull/1447
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_linvarcha_c2a_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/LinearVariableChange/Control2Analysis/
 
   # Workaround for adding MGBF

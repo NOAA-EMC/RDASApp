@@ -181,6 +181,7 @@ call etim(mg_interface_fldset_time)
 !call flush(6)
 call f_self%multiply(f_fieldset,index_member_in)
 call etim(mg_interface_multiply_time)
+call f_fieldset%final()
 
 end subroutine mgbf_covariance_multiply_cpp
 
