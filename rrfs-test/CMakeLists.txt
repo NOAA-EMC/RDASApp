@@ -29,6 +29,7 @@ add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3denvar"        "mpasjedi_variational.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_observer" "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_solver"   "mpasjedi_enkf.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3dvar"          "mpasjedi_variational.x")
 
 message(STATUS "Use test data from rrfs-test-data repository")
 set (rrfs-test_data_local "${CMAKE_SOURCE_DIR}/rrfs-test-data/")

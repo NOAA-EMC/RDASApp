@@ -34,6 +34,7 @@ cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_3denvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_observer.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf_solver.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_bumploc.yaml ./bumploc.yaml
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_3dvar.yaml .
 if [[ "${exprname}" == "atl_2024052700" ]]; then
   sed -i -e "s/conus12km_mpas.graph/atl12km.graph/" ./namelist.atmosphere
   sed -i -e "s/conus12km-401km11levels/atl12km-401km11levels/" ./rrfs_mpasjedi_2024052700_3denvar.yaml
