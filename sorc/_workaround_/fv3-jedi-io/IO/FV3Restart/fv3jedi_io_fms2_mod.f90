@@ -685,10 +685,11 @@ endif
 ! If the Geometry changes, reallocate Scatter structure and rescan input files
 ! Do this only for the first ensemble member to save significant time
 ! ----------------------------------------------------------------------------
-if( ((geom%globalsizes(1) .ne. globalsizes(1)) .or. (geom%globalsizes(2) .ne. globalsizes(2))) .or. fields_changed) then
+if( (fields_changed) .or. &
+    (geom%globalsizes(1) .ne. globalsizes(1)) .or. &
+    (geom%globalsizes(2) .ne. globalsizes(2)) ) then
   tb1 = MPI_Wtime()
   globalsizes = geom%globalsizes
-
   need_to_reallocate_ps = .false.
   if(.not. first_pass) then
     do r=0,mpp_npes()-1
@@ -696,7 +697,6 @@ if( ((geom%globalsizes(1) .ne. globalsizes(1)) .or. (geom%globalsizes(2) .ne. gl
       if (allocated(Scatter(r)%sendcounts_col)) deallocate(Scatter(r)%sendcounts_col)
       if (allocated(Scatter(r)%senddispls_row)) deallocate(Scatter(r)%senddispls_row)
       if (allocated(Scatter(r)%sendcounts_row)) deallocate(Scatter(r)%sendcounts_row)
-      !if (mpp_pe() == 0) write(6,'("fv3jedi_geom::delete: About to free localvec "I6)') r
       if (allocated(nlev)) then
         if (nlev(r) > 0) call MPI_Type_free(Scatter(r)%localvec, ierr)
         if (nlev(r) > 0) call MPI_Type_free(Scatter(r)%vec, ierr)
@@ -706,9 +706,9 @@ if( ((geom%globalsizes(1) .ne. globalsizes(1)) .or. (geom%globalsizes(2) .ne. gl
   endif
   allocate(Scatter(0:npes-1))
 
-!  do var = 1,size(fields)
-!    if(rank==0) write(6,'("read_restart_fields_newest: Variables to process ",L,I4,2A)') first_pass, var,' ',trim(fields(var)%long_name)
-!  enddo
+  !do var = 1,size(fields)
+  !  if(rank==0) write(6,'("read_restart_fields_newest: Variables to process ",L,I4,2A)') first_pass, var,' ',trim(fields(var)%long_name)
+  !enddo
 
   ! Loop over fields to identify their restart file
   ! Only enter here if its the first time fv3jedi_io_fms::read() is called.
@@ -736,10 +736,10 @@ if( ((geom%globalsizes(1) .ne. globalsizes(1)) .or. (geom%globalsizes(2) .ne. gl
         fields(indexof_ps)%npz = self%npz
         ! Create io name lookup.  Reuse name from config file
         if ( field_io_names%get("air_pressure_thickness", str) ) then
-          write(6,'("read_restart_fields_newest: Using string from config ",A)') trim(str)
+          !write(6,'("read_restart_fields_newest: Using string from config ",A)') trim(str)
           call field_io_names_local%set("air_pressure_thickness", trim(str))
         else
-          write(6,'("read_restart_fields_newest: Taking a WAG as to name of delp in the input files",A)')
+          !write(6,'("read_restart_fields_newest: Taking a WAG as to name of delp in the input files",A)')
           call field_io_names_local%set("air_pressure_thickness", "delp")
         endif
       endif ! SKD NEW EDIT
@@ -966,10 +966,10 @@ if (need_to_reallocate_ps) then
         fields(indexof_ps)%npz = self%npz
         ! Create io name lookup.  Reuse name from config file
         if ( field_io_names%get("air_pressure_thickness", str) ) then
-          write(6,'("read_restart_fields_newest: Using string from config ",A)') trim(str)
+          !write(6,'("read_restart_fields_newest: Using string from config ",A)') trim(str)
           call field_io_names_local%set("air_pressure_thickness", trim(str))
         else
-          write(6,'("read_restart_fields_newest: Taking a WAG as to name of delp in the input files",A)')
+          !write(6,'("read_restart_fields_newest: Taking a WAG as to name of delp in the input files",A)')
           call field_io_names_local%set("air_pressure_thickness", "delp")
         endif
       endif
@@ -1934,6 +1934,7 @@ if (trim(field%long_name) == 'smois') io_file = 'surface'
 
 ! Reflectivity is in phy_data
 if (trim(field%long_name) == 'equivalent_reflectivity_factor') io_file = 'physics'
+
 
 ! Set the filename index
 ! ----------------------
