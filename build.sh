@@ -298,7 +298,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
 
   # Workaround for parallel IO developed by Dan Kokron at GDIT
   cp ../sorc/_workaround_/fv3-jedi-io/CMakeLists.txt                        ../sorc/fv3-jedi/src/fv3jedi/CMakeLists.txt
-  cp ../sorc/_workaround_/fv3-jedi-io/FieldMetadata/FieldsMetadataDefault.h ../sorc/fv3-jedi/src/fv3jedi/FieldMetadata/FieldsMetadataDefault.h
   cp ../sorc/_workaround_/fv3-jedi-io/Fields/fv3jedi_field_mod.f90          ../sorc/fv3-jedi/src/fv3jedi/Fields/fv3jedi_field_mod.f90
   cp ../sorc/_workaround_/fv3-jedi-io/Geometry/fv3jedi_geom_mod.f90         ../sorc/fv3-jedi/src/fv3jedi/Geometry/fv3jedi_geom_mod.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.cc                ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.cc
@@ -311,6 +310,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Workaround for halo obs distribution to work with empty obs spaces
   # No PR yet
   cp ../sorc/_workaround_/ioda/Halo.cc ../sorc/ioda/src/distribution
+
+  # Workaround for using top layer of tslb and smois for CRTM calculations
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_vc_model2geovals_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/VariableChange/Model2GeoVaLs
 
 fi
 
