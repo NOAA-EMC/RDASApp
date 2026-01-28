@@ -29,6 +29,7 @@ add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3denvar"        "mpasjedi_variational.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_observer" "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_solver"   "mpasjedi_enkf.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3dvar"          "mpasjedi_variational.x")
 
 message(STATUS "Use test data from rrfs-test-data repository")
 set (rrfs-test_data_local "${CMAKE_SOURCE_DIR}/rrfs-test-data/")
@@ -41,7 +42,7 @@ set (src_yaml "${CMAKE_SOURCE_DIR}/rrfs-test/testinput")
 #  set (fv3-jedi_data_testinput_tier_1_local "$ENV{FV3_JEDI_TESTFILES}/fv3-jedi-data/testinput_tier_1")
 
 # Add some general job settings here
-set(MPI_ARGS "${MPI_ARGS} --time=00:45:00 --exclusive")
+set(MPI_ARGS "${MPI_ARGS} --time=00:30:00 --exclusive")
 set(RESTORE_MPI_ARGS ${MPI_ARGS})
 
 if(FV3_DYCORE)
