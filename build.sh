@@ -230,6 +230,7 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
 #    rrfs_mpasjedi_2024052700_3denvar.yaml
 #    rrfs_mpasjedi_2024052700_getkf_observer.yaml
 #    rrfs_mpasjedi_2024052700_getkf_solver.yaml
+    rrfs_mpasjedi_2024052700_3dvar.yaml
 
     # Observation ctests (fv3jedi & 3dvar only)
     rrfs_fv3jedi_2024052700_3dvar_conv_surface.yaml
@@ -291,11 +292,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/saber/mgbf/CMakeLists.txt   ../sorc/saber/src/saber/CMakeLists.txt
   cp ../sorc/_workaround_/saber/mgbf/compiler_flags_Intel_Fortran.cmake  ../sorc/saber/cmake/compiler_flags_Intel_Fortran.cmake
 
-  # Workaround for reading reflectivity from phy_data.nc file
-  # PR: https://github.com/JCSDA-internal/fv3-jedi/pull/1442
-  # PR is merged AND included in below fv3-jedi-io changes
-  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
-
   # Workaround for parallel IO developed by Dan Kokron at GDIT
   cp ../sorc/_workaround_/fv3-jedi-io/CMakeLists.txt                        ../sorc/fv3-jedi/src/fv3jedi/CMakeLists.txt
   cp ../sorc/_workaround_/fv3-jedi-io/Fields/fv3jedi_field_mod.f90          ../sorc/fv3-jedi/src/fv3jedi/Fields/fv3jedi_field_mod.f90
@@ -306,10 +302,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/fv3jedi_io_fms2_mod.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_mpi_arrange.f90  ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_mpi_arrange.f90
-
-  # Workaround for halo obs distribution to work with empty obs spaces
-  # No PR yet
-  cp ../sorc/_workaround_/ioda/Halo.cc ../sorc/ioda/src/distribution
 
   # Workaround for using top layer of tslb and smois for CRTM calculations
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_vc_model2geovals_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/VariableChange/Model2GeoVaLs
