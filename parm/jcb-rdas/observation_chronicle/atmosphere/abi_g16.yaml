@@ -1,0 +1,27 @@
+# Instrument metadata
+# -------------------
+commissioned: 2017-01-23T00:00:00
+observer_type: satellite  # Type of chronicle to use
+
+# Instrument initial configuration
+# --------------------------------
+channel_variables:
+  simulated: min
+  active: min
+  biascorrtd: min
+  error: max
+  error_cld: max
+  ermax: max
+
+channel_values:
+#       sim  act bcd  err    errcld  ermax
+  7:   [  1, -1, -1,  2.200, -2.00,  2.00 ]
+  8:   [  1,  1, -1,  1.756, -2.00,  2.00 ]
+  9:   [  1,  1, -1,  1.587, -2.00,  2.00 ]
+  10:  [  1,  1, -1,  1.185, -2.00,  2.00 ]
+  11:  [  1, -1, -1,  2.200, -2.00,  2.00 ]
+  12:  [  1, -1, -1,  2.200, -2.00,  2.00 ]
+  13:  [  1, -1, -1,  2.200, -2.00,  2.00 ]
+  14:  [  1, -1, -1,  2.200, -2.00,  2.00 ]
+  15:  [  1, -1, -1,  2.200, -2.00,  2.00 ]
+  16:  [  1, -1, -1,  2.200, -2.00,  2.00 ]
