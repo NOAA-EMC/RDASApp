@@ -297,6 +297,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Merged so this can be removed during the next submodule update
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart
 
+  # Workaround for using top layer of tslb and smois for CRTM calculations
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_vc_model2geovals_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/VariableChange/Model2GeoVaLs
+
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)
