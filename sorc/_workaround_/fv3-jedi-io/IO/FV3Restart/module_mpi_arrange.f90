@@ -2,15 +2,15 @@ module module_mpi_arrange
 !
 !   PRGMMR: Ming Hu          ORG: GSL        DATE: 2022-03-08
 !
-! ABSTRACT: 
+! ABSTRACT:
 !     This module figure out the piece of fv3lam file each core to read
-! 
+!
 ! PROGRAM HISTORY LOG:
 !
 !   variable list
 !
 ! USAGE:
-!   INPUT FILES: 
+!   INPUT FILES:
 !   OUTPUT FILES:
 !
 ! REMARKS:
@@ -54,7 +54,7 @@ contains
 
   subroutine init(this,ntotalcore)
 !                .      .    .                                       .
-! subprogram: 
+! subprogram:
 !   prgmmr:
 !
 ! abstract:
@@ -100,7 +100,7 @@ contains
 
   subroutine arrange(this,ncfs_all)
 !                .      .    .                                       .
-! subprogram: 
+! subprogram:
 !   prgmmr:
 !
 ! abstract:
@@ -189,7 +189,7 @@ contains
       allocate(nlvl3d_list(nlvl3d))
       nlvlcore=(ntotalcore-nlvl2d-nlvl3d_small)/nlvl3d
       nlvl3d_list=nlvlcore
-      nlvlcore=(ntotalcore-nlvl2d-nlvl3d_small) - nlvl3d*nlvlcore 
+      nlvlcore=(ntotalcore-nlvl2d-nlvl3d_small) - nlvl3d*nlvlcore
       if(nlvlcore > 0 ) then
           do k=1,nlvlcore
             nlvl3d_list(k)=nlvl3d_list(k)+1
@@ -200,7 +200,7 @@ contains
 !
 !  decide boundary for fileid
 !
-    allocate(ib(ncfs_all%numfiles),ie(ncfs_all%numfiles))    
+    allocate(ib(ncfs_all%numfiles),ie(ncfs_all%numfiles))
     ib=0
     ie=0
     ib(1)=1
@@ -275,12 +275,6 @@ contains
     ! Need all ranks to know the global dimensions.  Assume all variables have the soam horizontal dimensions
     where(nx(:)==0) nx=nx(1)
     where(ny(:)==0) ny=ny(1)
-
-!    write(6,'(2a5,2x,a10,10a10)') "core","fid","varname","vartype","nx","ny","lvlbegin","lvlend"
-!    do k=1,ntotalcore
-!       write(6,'(2I5,2x,a10,10I10)') k,fileid(k),trim(varname(k)),vartype(k),nx(k),ny(k),lvlbegin(k),lvlend(k) 
-!    enddo
-!    write(6,*) "======================================================================="
 !
 !  save results
 !

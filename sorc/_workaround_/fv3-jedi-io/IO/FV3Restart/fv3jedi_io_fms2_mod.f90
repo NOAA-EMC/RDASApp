@@ -56,7 +56,7 @@ type(scatter_t), allocatable :: Scatter(:)  ! Holding place for counts, displace
 type :: file_t
   logical :: lopened = .false.
   character(len=NF90_MAX_NAME) :: FileName
-  integer(kind=4) :: VariableIndecies(50) = -999  ! Store JEDI domain field/variable indecies found in each file 
+  integer(kind=4) :: VariableIndecies(50) = -999  ! Store JEDI domain field/variable indecies found in each file
 endtype file_t
 
 ! sub communicator

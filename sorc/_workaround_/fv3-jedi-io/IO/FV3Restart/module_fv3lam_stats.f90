@@ -2,15 +2,15 @@ module module_ncfile_stat
 !
 !   PRGMMR: Ming Hu          ORG: GSL        DATE: 2022-03-08
 !
-! ABSTRACT: 
+! ABSTRACT:
 !     This module read fv3lam fields and figure out dimension of each fields
-! 
+!
 ! PROGRAM HISTORY LOG:
 !
 !   variable list
 !
 ! USAGE:
-!   INPUT FILES: 
+!   INPUT FILES:
 !   OUTPUT FILES:
 !
 ! REMARKS:
@@ -27,7 +27,7 @@ module module_ncfile_stat
 !
 ! Rset default to private
 !
-  
+
   private
 
   public :: ncfile_stat
@@ -58,7 +58,7 @@ contains
 
   subroutine init(this,numfiles,filein,numvar,varlist)
 !                .      .    .                                       .
-! subprogram: 
+! subprogram:
 !   prgmmr:
 !
 ! abstract:
@@ -170,16 +170,16 @@ contains
 
     lb=1
     do n=1,this%numfiles
-       if(this%numvarfile(n) <=0) cycle 
-     
+       if(this%numvarfile(n) <=0) cycle
+
        inquire(file=trim(this%filename(n)),exist=ifexist )
        if(.not.ifexist) then
          write(6,*) 'file does not exist ',trim(this%filename(n))
-         cycle 
+         cycle
        else
          write(6,*) ' find dimensions for file ',trim(this%filename(n))
        endif
-!    
+!
        iret=nf90_open(this%filename(n),nf90_nowrite,ncid)
 
        iret=nf90_inquire(ncid,ndimensions,nvariables,nattributes,unlimiteddimid)
@@ -198,7 +198,7 @@ contains
           if(iret /= nf90_noerr) then
             write(*,'("fill_dims: Variable ",3A)') trim(name),' not found in file ',trim(this%filename(n))
             write(6,*) nf90_strerror(iret)
-          endif          
+          endif
           iret=nf90_inquire_variable(ncid,VarId,ndims=ndim)
 
           if(allocated(dim_id    )) deallocate(dim_id    )
@@ -235,7 +235,7 @@ contains
              write(6,*) 'something wrong with dimension size, ',trim(name),ndim
              stop 123
           endif
-          
+
           iret = nf90_inquire_variable(ncid, VarId, xtype = xtype)
           this%vartype(k)=xtype
        enddo   ! end of loop for var list in a file
@@ -245,16 +245,10 @@ contains
 
     enddo  ! end of file loop
 
-    this%num_totalvl=0 
-    !write(6,'(a20,10a10)') "variable_name","file_id","nx","ny","nz","data_type"
-!    write(6,'(a20,10a10)') "variable_name","num_dim","nx","ny","nz","data_type"
+    this%num_totalvl=0
     do k=1,this%numvar
        this%num_totalvl=this%num_totalvl+this%dim_3(k)
-!       write(6,'(a20,10I10)') trim(this%list_varname(k)),this%num_dim(k),this%dim_1(k), &
-!                     this%dim_2(k),this%dim_3(k),this%vartype(k)
     enddo
-!    write(6,*) 'Total levels=',this%num_totalvl
-!    write(6,*) "===================================================================="
 
   end subroutine fill_dims
 
