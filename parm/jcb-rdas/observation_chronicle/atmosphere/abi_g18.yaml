@@ -14,7 +14,7 @@ channel_variables:
   ermax: max
 
 channel_values:
-#       sim  act bcd  err    errcld  ermax    
+#       sim  act bcd  err    errcld  ermax
   7:   [  1, -1, -1,  2.200, -2.00,  2.00 ]
   8:   [  1,  1, -1,  1.756, -2.00,  2.00 ]
   9:   [  1,  1, -1,  1.587, -2.00,  2.00 ]
