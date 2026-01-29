@@ -15,7 +15,7 @@
              obsfile: jdiag_amsua_metop-b.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
-         channels: &amsua_metop-b_channels {{amsua_simulated_channels}}
+         channels: &amsua_metop-b_channels {{ get_satellite_variable(observation_from_jcb, "simulated") }}
        obs operator:
          name: CRTM
          Absorbers: [H2O,O3,CO2]
@@ -177,7 +177,7 @@
            channels: *amsua_metop-b_channels
            options:
              channels: *amsua_metop-b_channels
-             obserr_clearsky: &amsua_metop-b_error {{amsua_obs_error}}
+             obserr_clearsky: &amsua_metop-b_error [{{ get_satellite_variable(observation_from_jcb, "error") }}]
              clwret_function:
                name: ObsFunction/CLWRetMW
                options:
@@ -381,7 +381,7 @@
                  err1:  [20.000, 18.000, 12.000,  3.000,  0.500,
                           0.300,  0.230,  0.250,  0.250,  0.350,
                           0.400,  0.550,  0.800,  3.000, 18.000]
-             obserr_bound_max: {{amsua_obserr_bound_max}}
+             obserr_bound_max: [{{ get_satellite_variable(observation_from_jcb, "ermax") }}]
          action:
            name: reject
        #  Inter-channel check
@@ -395,7 +395,7 @@
            options:
              channels: *amsua_metop-b_channels
              sensor: amsua_metop-b
-             use_flag: &amsua_metop-b_use_flag {{amsua_metop_b_use_flag}}
+             use_flag: &amsua_metop-b_use_flag  [{{ get_satellite_variable(observation_from_jcb, "active") }}]
          maxvalue: 1.0e-12
          action:
            name: reject
