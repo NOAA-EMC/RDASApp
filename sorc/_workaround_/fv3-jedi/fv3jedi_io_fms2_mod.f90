@@ -940,9 +940,11 @@ if (index(trim(field%long_name), 'fraction_of_land') /= 0) io_file = 'orography'
 ! Cold start variables if name contains cold
 if (index(trim(field%long_name), 'cold') /= 0) io_file = 'cold'
 
-! 4 level soils go in surface
+! Multi-level soils go in surface
 if (trim(field%long_name) == 'stc') io_file = 'surface'
 if (trim(field%long_name) == 'soilMoistureVolumetric') io_file = 'surface'
+if (trim(field%long_name) == 'tslb') io_file = 'surface'
+if (trim(field%long_name) == 'smois') io_file = 'surface'
 
 ! Reflectivity is in phy_data
 if (trim(field%long_name) == 'equivalent_reflectivity_factor') io_file = 'physics'

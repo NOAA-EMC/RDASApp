@@ -4,7 +4,6 @@ geometry:
    field table filename: DataFix/field_table
  namelist filename: DataFix/input_lam_C775_NP16X10.nml
  akbk: DataFix/fix/akbk66.nc
- field metadata override: data/fieldmetadata/tlei-gfs-restart.yaml
  # input.nml
  npz: 65
  layout: [16,10]
