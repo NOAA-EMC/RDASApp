@@ -1115,7 +1115,6 @@ end subroutine final_
     call die(myname_,'pointer to '//trim(vname)//" not found",ier)
   endif
 
-
   if(mype == 0) then
     !$omp parallel do default(shared) private(i)
     do i = 1, size(var,2)
@@ -1185,8 +1184,6 @@ end subroutine final_
     enddo
     !$omp end parallel do
   endif
-
-
   ptr=var
   if ( trim(vname) == 'ps' ) ptr=kPa_per_Pa*ptr ! RT_TBD: is this the best place for this?
   if ( trim(vname) == 'z'  ) ptr=ptr/grav       ! RT_TBD: is this the best place for this?
@@ -1207,7 +1204,6 @@ end subroutine final_
     call die(myname_,'pointer to '//trim(vname)//" not found",ier)
   endif
 
-
   if(mype == 0) then
     !$omp parallel do default(shared) private(i)
     do i = 1, size(var,2)
@@ -1277,7 +1273,6 @@ end subroutine final_
     enddo
     !$omp end parallel do
   endif
-
   ptr=var
   if ( trim(vname) == 'oz' ) then
       call gsi_metguess_get ( 'usrvar::o3ppmv', uvar, ier )
@@ -1287,7 +1282,6 @@ end subroutine final_
   endif
 
   end subroutine guess_basics3_
-
 !--------------------------------------------------------
  subroutine put_data_1d(x)
  implicit none
@@ -1393,5 +1387,4 @@ end subroutine final_
 
  end subroutine put_data_2d_rev
 !--------------------------------------------------------
-
 end module guess_grids
