@@ -39,7 +39,7 @@ subroutine compute_qvar3d
   use berror, only: dssv
   use derivsmod, only: qsatg,qgues
   use control_vectors, only: cvars3d
-  use gridmod, only: lat2,lon2,nsig
+  use gridmod, only: lat2,lon2,nsig,regional
   use constants, only: zero,one,fv,r100,qmin
   use guess_grids, only: fact_tv,ntguessig,nfldsig,ges_tsen,ges_prsl,ges_qsat
   use mpeu_util, only: getindex
@@ -78,6 +78,7 @@ subroutine compute_qvar3d
   real(r_kind),pointer,dimension(:,:,:):: ges_q =>NULL()
   integer(i_kind):: maxvarq1
 
+  real(r_kind), parameter :: rmiss_th = -1.0e30
 
   nrf3_q=getindex(cvars3d,'q')
   nrf3_cw=getindex(cvars3d,'cw')
@@ -138,6 +139,9 @@ subroutine compute_qvar3d
         do j=1,lon2
            do i=1,lat2
               rhgues(i,j,k)=qgues(i,j,k)/qsatg(i,j,k)
+              if(regional .and. ges_tsen(i,j,k,ntguessig) < rmiss_th) then
+                rhgues(i,j,k)=0.5
+              endif
            end do
         end do
      end do
