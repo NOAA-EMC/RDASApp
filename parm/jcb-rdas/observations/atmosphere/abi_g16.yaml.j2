@@ -12,11 +12,12 @@
              missing file action: "warn"
          obsdataout:
            empty obs space action: "{{empty_obs_space_action}}"
+           write multiple files: {{write_multiple_files | default(false) }}
            engine:
              type: H5File
              obsfile: jdiag_abi_g16.nc4
          io pool:
-           max pool size: 1
+           max pool size: {{ max_pool_size | default(1) }}
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: &abi_g16_channels {{ get_satellite_variable(observation_from_jcb, "simulated") }}

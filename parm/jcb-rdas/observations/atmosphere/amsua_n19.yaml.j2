@@ -10,9 +10,12 @@
              missing file action: "warn"
          obsdataout:
            empty obs space action: "{{empty_obs_space_action}}"
+           write multiple files: {{write_multiple_files | default(false) }}
            engine:
              type: H5File
              obsfile: jdiag_amsua_n19.nc
+         io pool:
+           max pool size: {{ max_pool_size | default(1) }}
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: &amsua_n19_channels {{ get_satellite_variable(observation_from_jcb, "simulated") }}
