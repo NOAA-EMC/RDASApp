@@ -14,12 +14,13 @@
              sort order: "descending"
          obsdataout:
            empty obs space action: "{{empty_obs_space_action}}"
+           write multiple files: {{write_multiple_files | default(false) }}
            engine:
              type: H5File
              obsfile: jdiag_adpsfc_winds_284.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: {{ max_pool_size | default(1) }}
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
