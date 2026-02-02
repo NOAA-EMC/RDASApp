@@ -43,12 +43,12 @@ members from template:
       northward_wind_at_surface: v_srf
       equivalent_reflectivity_factor: ref_f3d
     datapath: {{ atmosphere_background_ensemble_path }}
-    filename_core: 20240527.000000.fv_core.res.tile1.nc
-    filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
-    filename_phys: 20240527.000000.phy_data_prepdbz.nc
-    filename_sfcd: 20240527.000000.sfc_data.nc
-    filename_sfcw: 20240527.000000.fv_srf_wnd.res.tile1.nc
-    filename_cplr: 20240527.000000.coupler.res
+    filename_core: {{filename_core}}
+    filename_trcr: {{filename_trcr}}
+    filename_phys: {{filename_phys}}
+    filename_sfcd: {{filename_sfcd}}
+    filename_sfcw: {{filename_sfcw}}
+    filename_cplr: {{filename_cplr}}
   pattern: "{{ atmosphere_ensemble_pattern | default("%mem%", true) }}"
   nmembers: {{ atmosphere_number_ensemble_members }}
   zero padding: 3
