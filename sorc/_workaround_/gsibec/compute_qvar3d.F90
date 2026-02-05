@@ -134,13 +134,17 @@ subroutine compute_qvar3d
 
   if (qoption==2) then
      allocate(rhgues(lat2,lon2,nsig))
-
      do k=1,nsig
         do j=1,lon2
            do i=1,lat2
               rhgues(i,j,k)=qgues(i,j,k)/qsatg(i,j,k)
-              if(regional .and. ges_tsen(i,j,k,ntguessig) < rmiss_th) then
+              !if(regional .and. ges_tsen(i,j,k,ntguessig) < rmiss_th) then
+              if(regional .and. abs(ges_tsen(i,j,k,ntguessig)) > 1.0e30) then
                 rhgues(i,j,k)=0.5
+              endif
+              if(.not.abs(rhgues(i,j,k))<1000.) then
+                write(6,*)"Error: rhgues setting", rhgues(i,j,k)
+                call stop2(540)
               endif
            end do
         end do
@@ -256,4 +260,5 @@ subroutine compute_qvar3d
 #endif /* USE_ALL_ORIGINAL */
 
 end subroutine compute_qvar3d
+
 
