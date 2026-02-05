@@ -178,4 +178,3 @@ subroutine normal_rh_to_q_ad(rhnorm,t,p,q)
    return
  
 end subroutine normal_rh_to_q_ad
-
