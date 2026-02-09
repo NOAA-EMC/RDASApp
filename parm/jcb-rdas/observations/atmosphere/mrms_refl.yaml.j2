@@ -2,7 +2,7 @@
          name: refl10cm
          distribution:
            name: "{{distribution}}"
-           halo size: 500e3
+           halo size: {{ halo_size_radardbz | default(500e3) }}
          obsdatain:
            engine:
              type: H5File
@@ -31,7 +31,7 @@
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 200e3 # orig
+           lengthscale: {{ lengthscale_radardbz | default (200e3) }}
 
        obs filters:
          # ------------------
