@@ -2,7 +2,7 @@
          name: msonet_airTemperature_188
          distribution:
            name: "{{distribution}}"
-           halo size: 500e3
+           halo size: {{ halo_size | default(500e3) }}
          obsdatain:
            engine:
              type: H5File
@@ -41,7 +41,7 @@
 
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
-           lengthscale: 200e3 # orig
+           lengthscale: {{ lengthscale | default (200e3) }}
 
        obs filters:
          # ------------------
