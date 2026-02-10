@@ -703,9 +703,9 @@
      if (mype==0) write(6,*)'GSIMOD:  tendencies and derivatives are on'
   endif
 
-  if (regional) then
-     call convert_fv3_regional
-  endif
+!  if (regional) then
+!     call convert_fv3_regional
+!  endif
 
 ! Initialize variables, create/initialize arrays
   lendian_in = -1

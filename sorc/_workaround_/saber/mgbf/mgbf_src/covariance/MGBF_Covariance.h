@@ -83,7 +83,7 @@ MGBF_Covariance(const oops::GeometryData & geometryData,
   void iterativeCalibrationUpdate(const oops::FieldSet3D &) override{};
   void iterativeCalibrationFinal() override{};
 
-  void dualResolutionSetup(const oops::GeometryData &) override{};
+//  void dualResolutionSetup(const oops::GeometryData &) override{};
 
   void write() const override {};
   std::vector<std::pair<eckit::LocalConfiguration, oops::FieldSet3D>> fieldsToWrite() const
