@@ -379,6 +379,15 @@ obs_distribution_localizations:
   obs_localizations:
   - localization method: Horizontal Gaspari-Cohn
     lengthscale: 200e3
+override_obs_distribution_localizations:
+  override: true
+  refl10cm: # not used in getkf ctests, but leaving as an example
+    obs_distribution:
+      name: RoundRobin
+      halo size: 100e3
+    obs_localizations:
+    - localization method: Horizontal Gaspari-Cohn
+      lengthscale: 15e3
 
 # Driver
 driver_update_obs_config_with_geometry_info: false
