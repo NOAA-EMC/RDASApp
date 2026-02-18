@@ -36,6 +36,13 @@ tic1 = tic()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--obs', type=str, help='ioda observation file', required=True)
+parser.add_argument('--patch-timeoffset', action='store_true',
+                    help='Patch MetaData/timeOffset for soundings (ObsType 120/220)')
+parser.add_argument('--to-min', type=float, default=-5400.0)
+parser.add_argument('--to-max', type=float, default=5400.0)
+parser.add_argument('--to-set', type=float, default=3600.0,
+                    help='Magnitude to set timeOffset to (sign preserved)')
+
 args = parser.parse_args()
 
 # Assign filenames
@@ -83,7 +90,7 @@ for group in groups:
             g.createVariable(var, vartype, 'Location', fill_value=fill)
         except (AttributeError, KeyError):  # String variables
             g.createVariable(var, 'str', 'Location')
-        #
+
         if qc_group and vartype == "int32":
             np_invar = np.array(invar)
             np_invar[(np_invar < 0) | (np_invar > 15)] = 15
@@ -93,6 +100,7 @@ for group in groups:
                 g.variables[var][:] = invar[:][:].data
             else:
                 g.variables[var][:] = invar[:][:]
+
         # Copy attributes for this variable
         for attr in invar.ncattrs():
             if '_FillValue' in attr:
@@ -124,6 +132,58 @@ if 'expectedError' in metadata_group.variables:
     if var not in metadata_group.variables:
         metadata_group.createVariable(f"{var}", 'f4', 'Location', fill_value=fill)
     metadata_group.variables[f"{var}"][:] = data
+
+# patch MetaData/timeOffset for soundings only (ObsType 120 or 220), hard-coded
+if args.patch_timeoffset:
+    md = fout.groups.get("MetaData", None)
+    ot = fout.groups.get("ObsType", None)
+
+    if md is None or ot is None:
+        print("patch-timeoffset requested but MetaData or ObsType group missing; skipping")
+    elif "timeOffset" not in md.variables:
+        print("patch-timeoffset requested but MetaData/timeOffset missing; skipping")
+    else:
+        to_var = md.variables["timeOffset"]
+        to = to_var[:].astype(np.float64)
+
+        # Save original for debugging
+        if "origTimeOffset" not in md.variables:
+            md.createVariable("origTimeOffset", "f4", "Location", fill_value=np.float32(3.402823e38))
+            md.variables["origTimeOffset"].long_name = "Original timeOffset before offline patch"
+            md.variables["origTimeOffset"].units = getattr(to_var, "units", "s")
+        md.variables["origTimeOffset"][:] = to.astype(np.float32)
+
+        # Build sounding mask: true if ANY ObsType/* is 120 or 220 at that Location
+        sounding = np.zeros(to.shape, dtype=bool)
+        for vname in ot.variables:
+            v = ot.variables[vname]
+            if getattr(v, "dimensions", ()) != ("Location",):
+                continue
+            otv = v[:]
+
+            # Exclude fill values if present
+            try:
+                fv = v.getncattr("_FillValue")
+                good = (otv != fv)
+            except Exception:
+                good = np.ones(otv.shape, dtype=bool)
+
+            sounding |= (good & ((otv == 120) | (otv == 220)))
+
+        # Outside bounds?
+        mask_lo = sounding & (to < float(args.to_min))
+        mask_hi = sounding & (to > float(args.to_max))
+
+        # Patch: preserve sign, set magnitude to to_set
+        to[mask_lo] = -abs(float(args.to_set))
+        to[mask_hi] =  abs(float(args.to_set))
+
+        to_var[:] = to.astype(to_var.dtype)
+
+        n_type = int(np.count_nonzero(np.ma.filled(sounding, False)))
+        n_adj  = int(np.count_nonzero(np.ma.filled(mask_lo, False)) + np.count_nonzero(np.ma.filled(mask_hi, False)))
+
+        print(f"Patched MetaData/timeOffset for soundings: matched={n_type}, adjusted={n_adj}")
 
 # Close the datasets
 obs_ds.close()
