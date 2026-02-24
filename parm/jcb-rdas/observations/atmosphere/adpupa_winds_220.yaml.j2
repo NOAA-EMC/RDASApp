@@ -194,9 +194,6 @@
                name: ObsFunction/ObsErrorFactorConventional
                options:
                  inflate variables: [windEastward]
-                 test QCflag: QualityMarker
-                 test QCthreshold: 3
-                 distance threshold: 0
                  pressure: MetaData/pressure
 
          # Error inflation (windNorthward) based on errormod (qcmod.f90)
@@ -213,9 +210,6 @@
                name: ObsFunction/ObsErrorFactorConventional
                options:
                  inflate variables: [windNorthward]
-                 test QCflag: QualityMarker
-                 test QCthreshold: 3
-                 distance threshold: 0
                  pressure: MetaData/pressure
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
