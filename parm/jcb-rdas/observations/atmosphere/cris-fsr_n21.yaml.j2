@@ -3,14 +3,14 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_crisf4_n20.nc
+             obsfile: data/obs/ioda_crisf4_n21.nc
              missing file action: "warn"
          obsdataout:
            empty obs space action: "{{empty_obs_space_action}}"
            write multiple files: {{write_multiple_files | default(false) }}
            engine:
              type: H5File
-             obsfile: jdiag_cris-fsr_n21.nc
+             obsfile: jdiag_cris-fsr_n21.nc4
          io pool:
            max pool size: {{ max_pool_size | default(1) }}
          observed variables: [radiance]
