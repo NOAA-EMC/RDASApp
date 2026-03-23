@@ -13,7 +13,7 @@
                   io_type="pnetcdf,cdf5"
                   input_interval="initial_only" />
 
-<immutable_stream name="da_state"
+<stream name="da_state"
                   type="output"
                   precision="single"
                   io_type="pnetcdf,cdf5"
