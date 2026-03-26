@@ -43,14 +43,12 @@ subroutine normal_rh_to_q(rhnorm,t,p,q)
   real(r_kind),intent(in   ) :: p(lat2,lon2,nsig+1)  
   real(r_kind),intent(  out) :: q(lat2,lon2,nsig)
  
-  real(r_kind), parameter :: rmiss_th = -1.0e30
   integer(i_kind) i,j,k
 
 ! Convert normalized rh to q
    do k=1,nsig
       do j=1,lon2
          do i=1,lat2
-            !if(regional .and. ges_tsen(i,j,k,ntguessig) < rmiss_th) then
             if(regional .and. abs(ges_tsen(i,j,k,ntguessig)) > 1.0e30) then
               q(i,j,k) = zero
               cycle
@@ -116,8 +114,6 @@ subroutine normal_rh_to_q_ad(rhnorm,t,p,q)
   real(r_kind),intent(inout) :: p(lat2,lon2,nsig+1)
   real(r_kind),intent(inout) :: q(lat2,lon2,nsig)
 
-  real(r_kind), parameter :: rmiss_th = -1.0e30
-
 ! local variables:
   integer(i_kind) i,j,k
   
@@ -125,7 +121,6 @@ subroutine normal_rh_to_q_ad(rhnorm,t,p,q)
    do k=1,nsig
       do j=1,lon2
          do i=1,lat2
-            !if(regional .and. ges_tsen(i,j,k,ntguessig) < rmiss_th) then
             if(regional .and. abs(ges_tsen(i,j,k,ntguessig)) > 1.0e30) then
               rhnorm(i,j,k) = zero
               if ( qoption == 2 ) then
@@ -135,7 +130,6 @@ subroutine normal_rh_to_q_ad(rhnorm,t,p,q)
               endif
               q(i,j,k) = zero
               cycle
-            !else if(regional .and. ges_tsen(i,j,k,ntguessig) >= rmiss_th .and. .not.abs(ges_tsen(i,j,k,ntguessig))<1000.) then
             else if(regional .and. .not.abs(ges_tsen(i,j,k,ntguessig))<1000.) then
               write(6,*)"Error: not abs(ges_tsen(i,j,k,ntguessig)) < 1000.",ges_tsen(i,j,k,ntguessig)
               call stop2(541)
