@@ -52,15 +52,15 @@ type(fv3jedi_geom),   intent(in)    :: geom
 ! Locals
 integer :: f, i, j, k
 integer :: ksurf
-real(kind=kind_real) :: pe1, pe2
+!real(kind=kind_real) :: pe1, pe2
 logical :: found_neg
 type(fv3jedi_field), pointer :: state
 type(fv3jedi_field), pointer :: t2m_state, t_inc
 type(fv3jedi_field), pointer :: q2m_state, q_inc
 type(fv3jedi_field), pointer :: u10m_state, u_inc
 type(fv3jedi_field), pointer :: v10m_state, v_inc
-type(fv3jedi_field), pointer :: ps_state, ps_inc
-type(fv3jedi_field), pointer :: delp_state, p_state
+!type(fv3jedi_field), pointer :: ps_state, ps_inc
+!type(fv3jedi_field), pointer :: delp_state, p_state
 
 ! Loop over the increment fields and add them to the state
 do f = 1, size(increment_fields)
@@ -193,54 +193,54 @@ endif
 ! Workaround: update air_pressure_thickness from surface pressure increment
 ! Only do this when air_pressure_thickness is not itself an analysis increment
 ! ----------------------------------------------------------------------
-
-if (hasfield(self%fields, 'air_pressure_thickness') .and. &
-    hasfield(increment_fields, 'air_pressure_at_surface') .and. &
-    .not. hasfield(increment_fields, 'air_pressure_thickness')) then
-
-  call self%get_field('air_pressure_thickness', delp_state)
-  call get_field(increment_fields, 'air_pressure_at_surface', ps_inc)
-
-  do k = 1, self%npz
-    do j = delp_state%jsc, delp_state%jec
-      do i = delp_state%isc, delp_state%iec
-        delp_state%array(i,j,k) = delp_state%array(i,j,k) + &
-          (geom%bk(k+1) - geom%bk(k)) * ps_inc%array(i,j,1)
-      enddo
-    enddo
-  enddo
-
-  nullify(delp_state)
-  nullify(ps_inc)
-
-endif
+!
+!if (hasfield(self%fields, 'air_pressure_thickness') .and. &
+!    hasfield(increment_fields, 'air_pressure_at_surface') .and. &
+!    .not. hasfield(increment_fields, 'air_pressure_thickness')) then
+!
+!  call self%get_field('air_pressure_thickness', delp_state)
+!  call get_field(increment_fields, 'air_pressure_at_surface', ps_inc)
+!
+!  do k = 1, self%npz
+!    do j = delp_state%jsc, delp_state%jec
+!      do i = delp_state%isc, delp_state%iec
+!        delp_state%array(i,j,k) = delp_state%array(i,j,k) + &
+!          (geom%bk(k+1) - geom%bk(k)) * ps_inc%array(i,j,1)
+!      enddo
+!    enddo
+!  enddo
+!
+!  nullify(delp_state)
+!  nullify(ps_inc)
+!
+!endif
 
 ! ----------------------------------------------------------------------
 ! Workaround: recompute 3D pressure from updated surface pressure
 ! Only do this when air_pressure is not itself an analysis increment
 ! ----------------------------------------------------------------------
-
-if (hasfield(self%fields, 'air_pressure') .and. &
-    hasfield(self%fields, 'air_pressure_at_surface') .and. &
-    .not. hasfield(increment_fields, 'air_pressure')) then
-
-  call self%get_field('air_pressure', p_state)
-  call self%get_field('air_pressure_at_surface', ps_state)
-
-  do k = 1, self%npz
-    do j = p_state%jsc, p_state%jec
-      do i = p_state%isc, p_state%iec
-        pe1 = geom%ak(k)   + geom%bk(k)   * ps_state%array(i,j,1)
-        pe2 = geom%ak(k+1) + geom%bk(k+1) * ps_state%array(i,j,1)
-        p_state%array(i,j,k) = 0.5_kind_real * (pe1 + pe2)
-      enddo
-    enddo
-  enddo
-
-  nullify(p_state)
-  nullify(ps_state)
-
-endif
+!
+!if (hasfield(self%fields, 'air_pressure') .and. &
+!    hasfield(self%fields, 'air_pressure_at_surface') .and. &
+!    .not. hasfield(increment_fields, 'air_pressure')) then
+!
+!  call self%get_field('air_pressure', p_state)
+!  call self%get_field('air_pressure_at_surface', ps_state)
+!
+!  do k = 1, self%npz
+!    do j = p_state%jsc, p_state%jec
+!      do i = p_state%isc, p_state%iec
+!        pe1 = geom%ak(k)   + geom%bk(k)   * ps_state%array(i,j,1)
+!        pe2 = geom%ak(k+1) + geom%bk(k+1) * ps_state%array(i,j,1)
+!        p_state%array(i,j,k) = 0.5_kind_real * (pe1 + pe2)
+!      enddo
+!    enddo
+!  enddo
+!
+!  nullify(p_state)
+!  nullify(ps_state)
+!
+!endif
 
 end subroutine add_increment
 
