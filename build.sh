@@ -302,6 +302,23 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # PR opened: https://github.com/JCSDA-internal/fv3-jedi/pull/1454
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_vc_model2geovals_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/VariableChange/Model2GeoVaLs
 
+  # Workaround for gsl sfcCorrected observation operator
+    # T
+  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc   ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc
+  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceTemperature.h    ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.h
+  cp ../sorc/_workaround_/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h ../sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h
+    # q
+  cp ../sorc/_workaround_/ufo/operators/sfccorrected/CMakeLists.txt         ../sorc/ufo/src/ufo/operators/sfccorrected/CMakeLists.txt
+  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceHumidity.cc ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceHumidity.cc
+  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceHumidity.h  ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceHumidity.h
+    # uv
+  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceWind.cc ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceWind.cc
+  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceWind.h  ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceWind.h
+  cp ../sorc/_workaround_/ufo/operators/sfccorrected/ObsSfcCorrected.cc ../sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrected.cc
+    # fv3-jedi things
+  cp ../sorc/_workaround_/fv3-jedi/FieldsMetadataDefault.h ../sorc/fv3-jedi/src/fv3jedi/FieldMetadata/FieldsMetadataDefault.h
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_state_mod.F90   ../sorc/fv3-jedi/src/fv3jedi/State/fv3jedi_state_mod.F90
+
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)
