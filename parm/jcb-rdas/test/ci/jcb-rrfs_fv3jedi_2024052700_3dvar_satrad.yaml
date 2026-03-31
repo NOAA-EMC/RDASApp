@@ -27,6 +27,10 @@ bound_to_include: begin
 minimizer: DRPCG
 final_diagnostics_departures: oman
 number_of_outer_loops: 2
+ninner: 50
+gradient_norm_reduction: 1e-3
+#write_increment_outer_loop_1: true
+#write_increment_outer_loop_2: true
 distribution: RoundRobin
 empty_obs_space_action: create output
 
@@ -96,8 +100,6 @@ atmosphere_fv3jedi_files_path: DataFix
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
 atmosphere_io_layout_y: 1
-gradient_norm_reduction: 1e-3
-ninner: 50
 
 # Background
 atmosphere_background_path: "./"
@@ -131,8 +133,6 @@ state_variables:
 - vfrac
 - tslb
 - smois
-- eastward_wind_at_surface
-- northward_wind_at_surface
 - air_pressure_at_surface
 - rain_water
 - snow_water
@@ -141,6 +141,10 @@ state_variables:
 - cloud_ice_number_concentration
 - rain_number_concentration
 - upward_air_velocity
+- air_temperature_at_2m
+- water_vapor_mixing_ratio_wrt_moist_air_at_2m
+- eastward_wind_at_surface
+- northward_wind_at_surface
 
 eastward_wind: ua
 northward_wind: va
@@ -155,8 +159,6 @@ geopotential_height_times_gravity_at_surface: phis
 skin_temperature_at_surface: tsfc
 tslb: tslb
 smois: smois
-eastward_wind_at_surface: u_srf
-northward_wind_at_surface: v_srf
 rain_water: rainwat
 snow_water: snowwat
 graupel: graupel
@@ -165,6 +167,10 @@ cloud_ice_number_concentration: ice_nc
 rain_number_concentration: rain_nc
 upward_air_velocity: W
 equivalent_reflectivity_factor: ref_f3d
+air_temperature_at_2m: t2m
+water_vapor_mixing_ratio_wrt_moist_air_at_2m: q2m
+eastward_wind_at_surface: u_srf
+northward_wind_at_surface: v_srf
 
 abi_simulated_channels: 7-16
 abi_active_channels: [-1, 1, 1, 1, -1, -1, -1, -1, -1, -1]
