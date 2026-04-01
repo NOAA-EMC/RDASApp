@@ -3612,10 +3612,10 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
   use netcdf, only: nf90_nowrite,nf90_inquire,nf90_inquire_dimension
   use netcdf, only: nf90_inquire_variable
   use m_mpimod, only: mype
-  use mod_fv3_lola, only: m_generate_anl_grid
+  use mod_fv3_lola, only: m_generate_anl_grid, m_generate_anl_grid_without_fv3gridspec
   use gridmod,  only:nsig,regional_time,regional_fhr,regional_fmin,aeta1_ll,aeta2_ll
   use gridmod,  only:nlon_regional,nlat_regional,eta1_ll,eta2_ll
-  use gridmod,  only:grid_type_fv3_regional,mpas_regional
+  use gridmod,  only:grid_type_fv3_regional,fv3_regional,mpas_regional,use_fv3_grid_spec
   use m_kinds, only: i_kind,r_kind
   use constants, only: half,zero
   use m_mpimod, only: gsi_mpi_comm_world,mpi_itype,mpi_rtype
@@ -3641,6 +3641,8 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
   integer(i_kind) :: ios
   real(r_kind) :: pmpas
 
+  if(fv3_regional) then
+
     coupler_res_filenam='coupler.res'
     grid_spec='fv3_grid_spec'
     ak_bk='fv3_akbk'
@@ -3661,84 +3663,85 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
     regional_fhr=zero          ! forecast hour set zero for now
     regional_fmin=zero          ! forecast min set zero for now
 
+    if(use_fv3_grid_spec) then
 !!!!!!!!!!    grid_spec  !!!!!!!!!!!!!!!
-    ierr=0
-    iret=nf90_open(trim(grid_spec),nf90_nowrite,gfile_grid_spec)
-    if(iret/=nf90_noerr) then
-       write(6,*)' gsi_rfv3io_get_grid_specs: problem opening ',trim(grid_spec),', Status = ',iret
-       ierr=1
-       return
-    endif
+      ierr=0
+      iret=nf90_open(trim(grid_spec),nf90_nowrite,gfile_grid_spec)
+      if(iret/=nf90_noerr) then
+         write(6,*)' gsi_rfv3io_get_grid_specs: problem opening ',trim(grid_spec),', Status = ',iret
+         ierr=1
+         return
+      endif
 
-    iret=nf90_inquire(gfile_grid_spec,ndimensions,nvariables,nattributes,unlimiteddimid)
-    gfile_loc=gfile_grid_spec
-    do k=1,ndimensions
-       iret=nf90_inquire_dimension(gfile_loc,k,name,len)
-       if(trim(name)=='grid_xt') nx=len
-       if(trim(name)=='grid_yt') ny=len
-    enddo
-    nlon_regional=nx
-    nlat_regional=ny
+      iret=nf90_inquire(gfile_grid_spec,ndimensions,nvariables,nattributes,unlimiteddimid)
+      gfile_loc=gfile_grid_spec
+      do k=1,ndimensions
+         iret=nf90_inquire_dimension(gfile_loc,k,name,len)
+         if(trim(name)=='grid_xt') nx=len
+         if(trim(name)=='grid_yt') ny=len
+      enddo
+      nlon_regional=nx
+      nlat_regional=ny
 
-    if(.not.allocated(ny_layout_len)) allocate(ny_layout_len(0:fv3_io_layout_y-1))
-    if(.not.allocated(ny_layout_b)) allocate(ny_layout_b(0:fv3_io_layout_y-1))
-    if(.not.allocated(ny_layout_e)) allocate(ny_layout_e(0:fv3_io_layout_y-1))
-    ny_layout_len=ny
-    ny_layout_b=0
-    ny_layout_e=0
-    if(fv3_io_layout_y > 1) then
-       if(.not.allocated(gfile_loc_layout)) allocate(gfile_loc_layout(0:fv3_io_layout_y-1))
-       do nio=0,fv3_io_layout_y-1
-          write(filename_layout,'(a,a,I4.4)') trim(grid_spec),'.',nio
-          iret=nf90_open(filename_layout,nf90_nowrite,gfile_loc_layout(nio))
-          if(iret/=nf90_noerr) then
-             write(6,*)' problem opening ',trim(filename_layout),', Status =',iret
-             ierr=1
-             return
-          endif
-          iret=nf90_inquire(gfile_loc_layout(nio),ndimensions,nvariables,nattributes,unlimiteddimid)
-          do k=1,ndimensions
-              iret=nf90_inquire_dimension(gfile_loc_layout(nio),k,name,len)
-              if(trim(name)=='grid_yt') ny_layout_len(nio)=len
-          enddo
-          iret=nf90_close(gfile_loc_layout(nio))
-       enddo
-       deallocate(gfile_loc_layout)
+      if(.not.allocated(ny_layout_len)) allocate(ny_layout_len(0:fv3_io_layout_y-1))
+      if(.not.allocated(ny_layout_b)) allocate(ny_layout_b(0:fv3_io_layout_y-1))
+      if(.not.allocated(ny_layout_e)) allocate(ny_layout_e(0:fv3_io_layout_y-1))
+      ny_layout_len=ny
+      ny_layout_b=0
+      ny_layout_e=0
+      if(fv3_io_layout_y > 1) then
+         if(.not.allocated(gfile_loc_layout)) allocate(gfile_loc_layout(0:fv3_io_layout_y-1))
+         do nio=0,fv3_io_layout_y-1
+            write(filename_layout,'(a,a,I4.4)') trim(grid_spec),'.',nio
+            iret=nf90_open(filename_layout,nf90_nowrite,gfile_loc_layout(nio))
+            if(iret/=nf90_noerr) then
+               write(6,*)' problem opening ',trim(filename_layout),', Status =',iret
+               ierr=1
+               return
+            endif
+            iret=nf90_inquire(gfile_loc_layout(nio),ndimensions,nvariables,nattributes,unlimiteddimid)
+            do k=1,ndimensions
+                iret=nf90_inquire_dimension(gfile_loc_layout(nio),k,name,len)
+                if(trim(name)=='grid_yt') ny_layout_len(nio)=len
+            enddo
+            iret=nf90_close(gfile_loc_layout(nio))
+         enddo
+         deallocate(gfile_loc_layout)
 ! figure out begin and end of each subdomain restart file
-       nylen=0
-       do nio=0,fv3_io_layout_y-1
-          ny_layout_b(nio)=nylen + 1
-          nylen=nylen+ny_layout_len(nio)
-          ny_layout_e(nio)=nylen
-       enddo
-    endif
-   ! if(mype==0)write(6,*),'nx,ny=',nx,ny
-   ! if(mype==0)write(6,*),'ny_layout_len=',ny_layout_len
-   ! if(mype==0)write(6,*),'ny_layout_b=',ny_layout_b
-   ! if(mype==0)write(6,*),'ny_layout_e=',ny_layout_e
+         nylen=0
+         do nio=0,fv3_io_layout_y-1
+            ny_layout_b(nio)=nylen + 1
+            nylen=nylen+ny_layout_len(nio)
+            ny_layout_e(nio)=nylen
+         enddo
+      endif
+     ! if(mype==0)write(6,*),'nx,ny=',nx,ny
+     ! if(mype==0)write(6,*),'ny_layout_len=',ny_layout_len
+     ! if(mype==0)write(6,*),'ny_layout_b=',ny_layout_b
+     ! if(mype==0)write(6,*),'ny_layout_e=',ny_layout_e
 
 !!!    get nx,ny,grid_lon,grid_lont,grid_lat,grid_latt,nz,ak,bk
 
-    if(.not.allocated(grid_lat)) allocate(grid_lat(nx+1,ny+1))
-    if(.not.allocated(grid_lon)) allocate(grid_lon(nx+1,ny+1))
-    if(.not.allocated(grid_latt)) allocate(grid_latt(nx,ny))
-    if(.not.allocated(grid_lont)) allocate(grid_lont(nx,ny))
+      if(.not.allocated(grid_lat)) allocate(grid_lat(nx+1,ny+1))
+      if(.not.allocated(grid_lon)) allocate(grid_lon(nx+1,ny+1))
+      if(.not.allocated(grid_latt)) allocate(grid_latt(nx,ny))
+      if(.not.allocated(grid_lont)) allocate(grid_lont(nx,ny))
 
-    do k=ndimensions+1,nvariables
-       iret=nf90_inquire_variable(gfile_loc,k,name,len)
-       if(trim(name)=='grid_lat') then
-          iret=nf90_get_var(gfile_loc,k,grid_lat)
-       endif
-       if(trim(name)=='grid_lon') then
-          iret=nf90_get_var(gfile_loc,k,grid_lon)
-       endif
-       if(trim(name)=='grid_latt') then
-          iret=nf90_get_var(gfile_loc,k,grid_latt)
-       endif
-       if(trim(name)=='grid_lont') then
-          iret=nf90_get_var(gfile_loc,k,grid_lont)
-       endif
-    enddo
+      do k=ndimensions+1,nvariables
+         iret=nf90_inquire_variable(gfile_loc,k,name,len)
+         if(trim(name)=='grid_lat') then
+            iret=nf90_get_var(gfile_loc,k,grid_lat)
+         endif
+         if(trim(name)=='grid_lon') then
+            iret=nf90_get_var(gfile_loc,k,grid_lon)
+         endif
+         if(trim(name)=='grid_latt') then
+            iret=nf90_get_var(gfile_loc,k,grid_latt)
+         endif
+         if(trim(name)=='grid_lont') then
+            iret=nf90_get_var(gfile_loc,k,grid_lont)
+         endif
+      enddo
 !
 !  need to decide the grid orientation of the FV regional model    
 !
@@ -3747,36 +3750,37 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
 !                            1 : input is E-W N-S grid
 !                            2 : input is W-E S-N grid
 !
-    if(grid_type_fv3_regional == 0) then
-        imiddle=nx/2
-        jmiddle=ny/2
-        if( (grid_latt(imiddle,1) < grid_latt(imiddle,ny)) .and. &
-            (grid_lont(1,jmiddle) < grid_lont(nx,jmiddle)) ) then 
-            grid_type_fv3_regional = 2
-        else
-            grid_type_fv3_regional = 1
-        endif
-    endif
+      if(grid_type_fv3_regional == 0) then
+          imiddle=nx/2
+          jmiddle=ny/2
+          if( (grid_latt(imiddle,1) < grid_latt(imiddle,ny)) .and. &
+              (grid_lont(1,jmiddle) < grid_lont(nx,jmiddle)) ) then 
+              grid_type_fv3_regional = 2
+          else
+              grid_type_fv3_regional = 1
+          endif
+      endif
 ! check the grid type
-    if( grid_type_fv3_regional == 1 ) then
-       !if(mype==0) write(6,*) 'FV3 regional input grid is  E-W N-S grid'
-       grid_reverse_flag=.true.    ! grid is revered comparing to usual map view
-    else if(grid_type_fv3_regional == 2) then
-       !if(mype==0) write(6,*) 'FV3 regional input grid is  W-E S-N grid'
-       grid_reverse_flag=.false.   ! grid orientated just like we see on map view    
-    else
-       write(6,*) 'Error: FV3 regional input grid is unknown grid'
-       call stop2(678)
-    endif
-!
-    if(grid_type_fv3_regional == 2) then
-       call reverse_grid_r(grid_lont,nx,ny,1)
-       call reverse_grid_r(grid_latt,nx,ny,1)
-       call reverse_grid_r(grid_lon,nx+1,ny+1,1)
-       call reverse_grid_r(grid_lat,nx+1,ny+1,1)
-    endif
+      if( grid_type_fv3_regional == 1 ) then
+         !if(mype==0) write(6,*) 'FV3 regional input grid is  E-W N-S grid'
+         grid_reverse_flag=.true.    ! grid is revered comparing to usual map view
+      else if(grid_type_fv3_regional == 2) then
+         !if(mype==0) write(6,*) 'FV3 regional input grid is  W-E S-N grid'
+         grid_reverse_flag=.false.   ! grid orientated just like we see on map view    
+      else
+         write(6,*) 'Error: FV3 regional input grid is unknown grid'
+         call stop2(678)
+      endif
 
-    iret=nf90_close(gfile_loc)
+      if(grid_type_fv3_regional == 2) then
+         call reverse_grid_r(grid_lont,nx,ny,1)
+         call reverse_grid_r(grid_latt,nx,ny,1)
+         call reverse_grid_r(grid_lon,nx+1,ny+1,1)
+         call reverse_grid_r(grid_lat,nx+1,ny+1,1)
+      endif
+
+      iret=nf90_close(gfile_loc)
+    endif
 
     iret=nf90_open(ak_bk,nf90_nowrite,gfile_loc)
     if(iret/=nf90_noerr) then
@@ -3792,16 +3796,6 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
     !if(mype==0)write(6,'(" nz=",i5)') nz
 
     nsig=nz-1
-    if(mpas_regional) then
-      nsig=0
-      open(11,file='mpas_pave.txt')
-      do
-        read(11,*,iostat=ios) pmpas
-        if(ios /= 0) exit
-        nsig = nsig + 1
-      enddo
-      close(11)
-    endif
 
 !!!    get ak,bk
 
@@ -3845,15 +3839,29 @@ subroutine m_gsi_rfv3io_get_grid_specs(gsi_lats,gsi_lons,ierr)
     !   enddo
     !endif
 
+  endif
+
+  if(mpas_regional) then
+    nsig=0
+    open(11,file='mpas_pave.txt')
+    do
+      read(11,*,iostat=ios) pmpas
+      if(ios /= 0) exit
+      nsig = nsig + 1
+    enddo
+    close(11)
+  endif
+
 !!!!!!! setup A grid and interpolation/rotation coeff.
+  if(fv3_regional .and. use_fv3_grid_spec) then
     call m_generate_anl_grid(nx,ny,grid_lon,grid_lont,grid_lat,grid_latt,gsi_lats,gsi_lons)
-
     deallocate (grid_lon,grid_lat,grid_lont,grid_latt)
-    !deallocate (ak,bk,abk_fv3)
-
     deallocate(ny_layout_len,ny_layout_b,ny_layout_e)
-    !deallocate(aeta1_ll,aeta2_ll)
-    !deallocate(eta1_ll,eta2_ll)
+  endif
+
+  if(.not.use_fv3_grid_spec) then
+    call m_generate_anl_grid_without_fv3gridspec(gsi_lats,gsi_lons)
+  endif
 
     return
 end subroutine m_gsi_rfv3io_get_grid_specs
