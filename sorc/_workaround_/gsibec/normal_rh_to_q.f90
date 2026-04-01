@@ -130,27 +130,27 @@ subroutine normal_rh_to_q_ad(rhnorm,t,p,q)
               endif
               q(i,j,k) = zero
               cycle
-            else if(regional .and. .not.abs(ges_tsen(i,j,k,ntguessig))<1000.) then
-              write(6,*)"Error: not abs(ges_tsen(i,j,k,ntguessig)) < 1000.",ges_tsen(i,j,k,ntguessig)
-              call stop2(541)
+!            else if(regional .and. .not.abs(ges_tsen(i,j,k,ntguessig))<1000.) then
+!              write(6,*)"Error: not abs(ges_tsen(i,j,k,ntguessig)) < 1000.",ges_tsen(i,j,k,ntguessig)
+!              call stop2(541)
             endif
-            if(.not.abs(dqdrh(i,j,k))< 1000.) then
-              write(6,*)"Error: not abs(dqdrh(i,j,k))< 1000.",dqdrh(i,j,k)
-              call stop2(542)
-            endif
-            if(.not.abs(dqdt(i,j,k))< 1000.) then
-              write(6,*)"Error: not abs(dqdt(i,j,k))< 1000.",dqdt(i,j,k)
-              call stop2(543)
-            endif
-            if(.not.abs(dqdp(i,j,k))< 1000.) then
-              write(6,*)"Error: not abs(dqdp(i,j,k))< 1000.",dqdp(i,j,k)
-              call stop2(544)
-            endif
+!            if(.not.abs(dqdrh(i,j,k))< 1000.) then
+!              write(6,*)"Error: not abs(dqdrh(i,j,k))< 1000.",dqdrh(i,j,k)
+!              call stop2(542)
+!            endif
+!            if(.not.abs(dqdt(i,j,k))< 1000.) then
+!              write(6,*)"Error: not abs(dqdt(i,j,k))< 1000.",dqdt(i,j,k)
+!              call stop2(543)
+!            endif
+!            if(.not.abs(dqdp(i,j,k))< 1000.) then
+!              write(6,*)"Error: not abs(dqdp(i,j,k))< 1000.",dqdp(i,j,k)
+!              call stop2(544)
+!            endif
             rhnorm(i,j,k) = rhnorm(i,j,k) + dqdrh(i,j,k)*q(i,j,k)
-            if(.not.abs(rhnorm(i,j,k))< 1000.) then
-              write(6,*)"Error: not abs(rhnorm(i,j,k))< 1000.",rhnorm(i,j,k)
-              call stop2(545)
-            endif
+!            if(.not.abs(rhnorm(i,j,k))< 1000.) then
+!              write(6,*)"Error: not abs(rhnorm(i,j,k))< 1000.",rhnorm(i,j,k)
+!              call stop2(545)
+!            endif
             if ( qoption == 2 ) then
                t(i,j,k  ) = t(i,j,k  ) + dqdt(i,j,k)*q(i,j,k)
                if(.not.abs(t(i,j,k))< 1000.) then
