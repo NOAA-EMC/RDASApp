@@ -303,20 +303,26 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_vc_model2geovals_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/VariableChange/Model2GeoVaLs
 
   # Workaround for gsl sfcCorrected observation operator
-    # T
+    # T merged (but not done): ufo PR https://github.com/JCSDA-internal/ufo/pull/3622
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc   ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceTemperature.h    ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.h
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h ../sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h
-    # q
+    # q: ufo PR planned by GSL
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/CMakeLists.txt         ../sorc/ufo/src/ufo/operators/sfccorrected/CMakeLists.txt
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceHumidity.cc ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceHumidity.cc
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceHumidity.h  ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceHumidity.h
-    # uv
+    # uv: ufo PR planned by GSL
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceWind.cc ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceWind.cc
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceWind.h  ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceWind.h
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/ObsSfcCorrected.cc ../sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrected.cc
-    # fv3-jedi things
+    # fv3-jedi metadata: PR planned by EMC
   cp ../sorc/_workaround_/fv3-jedi/FieldsMetadataDefault.h ../sorc/fv3-jedi/src/fv3jedi/FieldMetadata/FieldsMetadataDefault.h
+
+  # Workaround for updating fields between outerloops (needed for sfc operator).
+    # surface fields:
+    #   - PR planned by EMC
+    # delp:
+    #   - fv3-jedi PR opened: https://github.com/JCSDA-internal/fv3-jedi/pull/1381
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_state_mod.F90   ../sorc/fv3-jedi/src/fv3jedi/State/fv3jedi_state_mod.F90
 
 fi
