@@ -2,15 +2,15 @@ CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 1.7109300271492430e+04, nob
 CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 1.1576104621804132e+03, nobs = 3846, Jo/n = 3.0099075979729933e-01, err = 1.8463121163155125e-03
 CostJo   : Nonlinear Jo(aircar_winds_233) = 4.5918477878981983e+04, nobs = 57216, Jo/n = 8.0254610386923209e-01, err = 2.6503185933157209e+00
 CostFunction: Nonlinear J = 6.4185388612654824e+04
-DRPCGMinimizer: reduction in residual norm = 9.2740671236151188e-04
+DRPCGMinimizer: reduction in residual norm = 9.2738445419687939e-04
 CostFunction::addIncrement: Analysis: 
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 28 | cube sphere face size: C420
-eastward_wind                                | Min:-2.7018117710952342e+01 Max:+5.3272011659570673e+01 RMS:+1.3325060588955319e+01
-northward_wind                               | Min:-4.3506414630740267e+01 Max:+3.9032123304224065e+01 RMS:+6.5157721868944982e+00
-air_temperature                              | Min:+1.9401739527302192e+02 Max:+3.1455207569137582e+02 RMS:+2.5830110086110795e+02
+State print | number of fields = 30 | cube sphere face size: C420
+eastward_wind                                | Min:-2.7018117560232767e+01 Max:+5.3272016147325076e+01 RMS:+1.3325057758419470e+01
+northward_wind                               | Min:-4.3506296272556433e+01 Max:+3.9032192008082710e+01 RMS:+6.5157656126191608e+00
+air_temperature                              | Min:+1.9401739267717318e+02 Max:+3.1455207635562641e+02 RMS:+2.5830110211338263e+02
 air_pressure_thickness                       | Min:+1.4039907836914062e+02 Max:+3.3267851562500000e+03 RMS:+1.7747128794076111e+03
-water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.4708425150991985e-02 RMS:+5.5565385809912106e-03
+water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.4708422986068561e-02 RMS:+5.5565091240326707e-03
 cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+3.5491219023242593e-04 RMS:+2.6466693180263379e-06
 cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+1.4309773687273264e-03 RMS:+1.9256935244694531e-05
 ozone_mass_mixing_ratio                      | Min:+4.4753472039360531e-09 Max:+1.6040661648730747e-05 RMS:+4.4486309455750947e-06
@@ -24,9 +24,7 @@ stype                                        | Min:+0.0000000000000000e+00 Max:+
 vfrac                                        | Min:+0.0000000000000000e+00 Max:+9.9000000953674316e-01 RMS:+4.4064937959870992e-01
 tslb                                         | Min:+2.6350683593750000e+02 Max:+3.2296466064453125e+02 RMS:+2.9078003979359028e+02
 smois                                        | Min:+1.4970073476433754e-02 Max:+1.0000000000000000e+00 RMS:+6.4129001953741271e-01
-eastward_wind_at_surface                     | Min:-1.2974018096923828e+01 Max:+1.2164360046386719e+01 RMS:+3.6171520010516645e+00
-northward_wind_at_surface                    | Min:-1.3966897010803223e+01 Max:+1.2346966743469238e+01 RMS:+3.7014659136589292e+00
-air_pressure_at_surface                      | Min:+6.6010822042265543e+04 Max:+1.0240433414154482e+05 RMS:+9.6260137726897621e+04
+air_pressure_at_surface                      | Min:+6.6010821978586362e+04 Max:+1.0240433367269840e+05 RMS:+9.6260137730994989e+04
 rain_water                                   | Min:+0.0000000000000000e+00 Max:+1.7932932823896408e-03 RMS:+1.6047798774338737e-05
 snow_water                                   | Min:+0.0000000000000000e+00 Max:+5.0736027769744396e-03 RMS:+4.4287745731177579e-05
 graupel                                      | Min:+0.0000000000000000e+00 Max:+6.5326219191774726e-04 RMS:+3.0288534886145319e-06
@@ -34,20 +32,24 @@ cloud_droplet_number_concentration           | Min:+0.0000000000000000e+00 Max:+
 cloud_ice_number_concentration               | Min:+0.0000000000000000e+00 Max:+5.0166070000000000e+06 RMS:+2.8482317076120715e+04
 rain_number_concentration                    | Min:+0.0000000000000000e+00 Max:+8.6749025000000000e+05 RMS:+2.1760084842806414e+03
 upward_air_velocity                          | Min:-9.9441605806350708e-01 Max:+2.9850695133209229e+00 RMS:+5.5847735613424890e-02
+air_temperature_at_2m                        | Min:+2.7109399053747825e+02 Max:+3.1508625604312641e+02 RMS:+2.9399205806616033e+02
+water_vapor_mixing_ratio_wrt_moist_air_at_2m | Min:+1.1626136867472334e-03 Max:+2.5223759156861141e-02 RMS:+1.1378071402513975e-02
+eastward_wind_at_surface                     | Min:-1.7099622135236999e+01 Max:+1.2297151242111680e+01 RMS:+3.5573325222353360e+00
+northward_wind_at_surface                    | Min:-1.4333609391727956e+01 Max:+9.9412894605945894e+00 RMS:+3.6785938191928014e+00
 ----------------------------------------------------------------------------------------------------
-CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 8203.142841830901, nobs = 26912, Jo/n = 0.3048135717089366, err = 0.9070335331040665
-CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 784.5180169093361, nobs = 3846, Jo/n = 0.2039828437101758, err = 0.001846312116315512
-CostJo   : Nonlinear Jo(aircar_winds_233) = 24639.68267793624, nobs = 57216, Jo/n = 0.4306432235377559, err = 2.650318593315721
-CostFunction: Nonlinear J = 33627.34353667648
-DRPCGMinimizer: reduction in residual norm = 0.0009160809948862243
+CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 8203.186524285065, nobs = 26912, Jo/n = 0.3048151948679052, err = 0.9070335331040665
+CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 784.5164727876924, nobs = 3846, Jo/n = 0.2039824422224889, err = 0.001846312116315512
+CostJo   : Nonlinear Jo(aircar_winds_233) = 24639.63034812159, nobs = 57216, Jo/n = 0.4306423089366889, err = 2.650318593315721
+CostFunction: Nonlinear J = 33627.33334519435
+DRPCGMinimizer: reduction in residual norm = 0.000918904493770453
 CostFunction::addIncrement: Analysis: 
 ----------------------------------------------------------------------------------------------------
-State print | number of fields = 28 | cube sphere face size: C420
-eastward_wind                                | Min:-2.7018117210859973e+01 Max:+5.3272377095532832e+01 RMS:+1.3325075171286967e+01
-northward_wind                               | Min:-4.3507297903292667e+01 Max:+3.9028195459584772e+01 RMS:+6.5156926032894509e+00
-air_temperature                              | Min:+1.9401737982121600e+02 Max:+3.1455201793385208e+02 RMS:+2.5830108652426566e+02
+State print | number of fields = 30 | cube sphere face size: C420
+eastward_wind                                | Min:-2.7018117083816403e+01 Max:+5.3272359664396163e+01 RMS:+1.3325070806438173e+01
+northward_wind                               | Min:-4.3507110317947323e+01 Max:+3.9028199835348744e+01 RMS:+6.5156827921065545e+00
+air_temperature                              | Min:+1.9401737740506013e+02 Max:+3.1455201799086086e+02 RMS:+2.5830108691327985e+02
 air_pressure_thickness                       | Min:+1.4039907836914062e+02 Max:+3.3267851562500000e+03 RMS:+1.7747128794076111e+03
-water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.4707253158413645e-02 RMS:+5.5564362691367533e-03
+water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.4707253673206305e-02 RMS:+5.5564068188281206e-03
 cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+3.5491219023242593e-04 RMS:+2.6466693180263379e-06
 cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+1.4309773687273264e-03 RMS:+1.9256935244694531e-05
 ozone_mass_mixing_ratio                      | Min:+4.4753472039360531e-09 Max:+1.6040661648730747e-05 RMS:+4.4486309455750947e-06
@@ -61,9 +63,7 @@ stype                                        | Min:+0.0000000000000000e+00 Max:+
 vfrac                                        | Min:+0.0000000000000000e+00 Max:+9.9000000953674316e-01 RMS:+4.4064937959870992e-01
 tslb                                         | Min:+2.6350683593750000e+02 Max:+3.2296466064453125e+02 RMS:+2.9078003979359028e+02
 smois                                        | Min:+1.4970073476433754e-02 Max:+1.0000000000000000e+00 RMS:+6.4129001953741271e-01
-eastward_wind_at_surface                     | Min:-1.2974018096923828e+01 Max:+1.2164360046386719e+01 RMS:+3.6171520010516645e+00
-northward_wind_at_surface                    | Min:-1.3966897010803223e+01 Max:+1.2346966743469238e+01 RMS:+3.7014659136589292e+00
-air_pressure_at_surface                      | Min:+6.6010857977297230e+04 Max:+1.0240432823361827e+05 RMS:+9.6260139031426676e+04
+air_pressure_at_surface                      | Min:+6.6010857991586570e+04 Max:+1.0240432778204541e+05 RMS:+9.6260139043217467e+04
 rain_water                                   | Min:+0.0000000000000000e+00 Max:+1.7932932823896408e-03 RMS:+1.6047798774338737e-05
 snow_water                                   | Min:+0.0000000000000000e+00 Max:+5.0736027769744396e-03 RMS:+4.4287745731177579e-05
 graupel                                      | Min:+0.0000000000000000e+00 Max:+6.5326219191774726e-04 RMS:+3.0288534886145319e-06
@@ -71,8 +71,12 @@ cloud_droplet_number_concentration           | Min:+0.0000000000000000e+00 Max:+
 cloud_ice_number_concentration               | Min:+0.0000000000000000e+00 Max:+5.0166070000000000e+06 RMS:+2.8482317076120715e+04
 rain_number_concentration                    | Min:+0.0000000000000000e+00 Max:+8.6749025000000000e+05 RMS:+2.1760084842806414e+03
 upward_air_velocity                          | Min:-9.9441605806350708e-01 Max:+2.9850695133209229e+00 RMS:+5.5847735613424890e-02
+air_temperature_at_2m                        | Min:+2.7109321400852718e+02 Max:+3.1508619767836086e+02 RMS:+2.9399205075864052e+02
+water_vapor_mixing_ratio_wrt_moist_air_at_2m | Min:+1.1613550776698859e-03 Max:+2.5222589843998885e-02 RMS:+1.1377986436704658e-02
+eastward_wind_at_surface                     | Min:-1.7098481329792854e+01 Max:+1.2297041412336650e+01 RMS:+3.5574299945666765e+00
+northward_wind_at_surface                    | Min:-1.4333134747955697e+01 Max:+9.9389875713057840e+00 RMS:+3.6786745671773837e+00
 ----------------------------------------------------------------------------------------------------
-CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 8203.151678209584, nobs = 26912, Jo/n = 0.3048139000523775, err = 0.9070335331040665
-CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 784.5750233216431, nobs = 3846, Jo/n = 0.203997665970266, err = 0.001846312116315512
-CostJo   : Nonlinear Jo(aircar_winds_233) = 24639.50591120429, nobs = 57216, Jo/n = 0.4306401340744598, err = 2.650318593315721
-CostFunction: Nonlinear J = 33627.23261273552
+CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 8203.226907863205, nobs = 26912, Jo/n = 0.30481669544676, err = 0.9070335331040665
+CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 784.5750119503442, nobs = 3846, Jo/n = 0.2039976630136101, err = 0.001846312116315512
+CostJo   : Nonlinear Jo(aircar_winds_233) = 24639.50538674236, nobs = 57216, Jo/n = 0.4306401249081089, err = 2.650318593315721
+CostFunction: Nonlinear J = 33627.30730655591
