@@ -191,7 +191,7 @@ endif
 ! ----------------------------------------------------------------------
 ! Workaround: update air_pressure_thickness from surface pressure increment
 ! Only do this when air_pressure_thickness is not itself an analysis increment
-! Once delp is updatee, air_pressure_levels and air_pressure will be updated
+! Once delp is updated, air_pressure_levels and air_pressure will be updated
 ! via VADER pathway: delp -> air_pressuree_levels -> air_pressure
 ! ----------------------------------------------------------------------
 
