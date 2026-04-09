@@ -25,7 +25,6 @@
            name: SfcCorrected
            correction scheme to use: GSL
            gsl parameters:
-             #temperature lapse rate option: NoAdjustment
              temperature lapse rate option: Local
              temperature local lapse rate level: 5
              temperature lapse rate threshold: true
@@ -111,7 +110,6 @@
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
              name: MetaData/stationIdentification
-             #name: MetaData/longitude_latitude_pressure
            where:
            - variable: ObsType/airTemperature
              is_in: 187
