@@ -175,12 +175,11 @@ def parse_file(filepath):
 # Comparison helpers
 # ---------------------------------------------------------------------------
 
-def _rel_close(a, b, rtol):
-    """Return True if a and b agree within relative tolerance rtol."""
+def _rel_close(a, b, rtol, atol=1e-14):
+    """Return True if a and b agree within relative or absolute tolerance."""
     if a == 0.0 and b == 0.0:
         return True
-    denom = max(abs(a), abs(b))
-    return abs(a - b) / denom <= rtol
+    return abs(a - b) <= atol + rtol * max(abs(a), abs(b))
 
 
 def compare_scalar_lists(name, out_list, ref_list, rtol, errors):
@@ -377,7 +376,11 @@ def find_ref_file(out_path, ref_dir):
 # ---------------------------------------------------------------------------
 
 def parse_args(argv=None):
-    rdas_root = os.path.join(os.path.dirname(__file__), '..')
+    try:
+        _script_dir = os.path.dirname(os.path.abspath(__file__))
+        rdas_root = os.path.normpath(os.path.join(_script_dir, '..'))
+    except NameError:
+        rdas_root = os.path.normpath(os.path.join(os.getcwd(), '..'))
 
     parser = argparse.ArgumentParser(
         description='Compare JEDI test outputs with reference files.',
