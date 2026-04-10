@@ -4,15 +4,15 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 file(GLOB jbfiles mgbf_lib/*.f90)
-#   message(STATUS "thinkdeb-2  "  ${jbfiles}  )
+   message(STATUS "thinkdeb-2  "  ${jbfiles}  )
 set (jbfilenames "")
 foreach ( _fname ${jbfiles} ) 
    get_filename_component( basefilename ${_fname} NAME )
    list ( APPEND jbfilenames  mgbf_lib/${basefilename} )
-#   message(STATUS "thinkdeb-1  " ${basefilename})
-#   message(STATUS "thinkdeb0  " ${jbfilenames})
+   message(STATUS "thinkdeb-1  " ${basefilename})
+   message(STATUS "thinkdeb0  " ${jbfilenames})
 endforeach ()
-#message(STATUS "thinkdeb  " ${jbfilenames})
+message(STATUS "thinkdeb  " ${jbfilenames})
 #set (jbfilenames "mgbf_lib/jp_pbfil.f90" )
 set (build_saber_mgbf 1)
 if( build_saber_mgbf )
@@ -46,7 +46,7 @@ if( build_saber_mgbf )
     )
 endif()
 #clt find_package(mgbf_lib  REQUIRED )
-#message (STATUS "thinkdeb1 " ${mgbf_src_files_list} )
+message (STATUS "thinkdeb1 " ${mgbf_src_files_list} )
 
 set( mgbf_src_files
 
@@ -55,4 +55,4 @@ ${jbfilenames}
 
 PARENT_SCOPE
 )
-# message (STATUS "thinkdeb2.4"   ${mgbf_src_files} )
+ message (STATUS "thinkdeb2.4"   ${mgbf_src_files} )
