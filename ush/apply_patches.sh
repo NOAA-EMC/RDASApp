@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+GIT_NAME="workaround"
+GIT_EMAIL="workaround@noaa.gov"
+
 dir_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )"
 patch_root="${dir_root}/patches"
 
@@ -10,7 +13,7 @@ usage() {
 Usage: $0 [--check] [--abort-on-fail] [--submodule NAME]
 
 Options:
-  --check           Only check whether patches would apply cleanly
+  --check           Only check whether the full patch stack would apply cleanly
   --abort-on-fail   Abort any in-progress git am session on failure
   --submodule NAME  Apply patches only for one submodule (e.g. fv3-jedi, ufo, saber)
   -h, --help        Show this help
@@ -97,26 +100,6 @@ check_no_in_progress_am() {
   fi
 }
 
-apply_patch_series() {
-  local name="$1"
-  local repo_rel="$2"
-  local repo_dir="${dir_root}/${repo_rel}"
-  local patch_dir="${patch_root}/${name}"
-
-  if [[ -n "${ONLY_SUBMODULE}" && "${ONLY_SUBMODULE}" != "${name}" ]]; then
-    return 0
-  fi
-
-  if [[ ! -d "${patch_dir}" ]]; then
-    echo "INFO: No patch directory for ${name}, skipping"
-    return 0
-  fi
-
-  if ! have_patches "${patch_dir}"; then
-    echo "INFO: No patch files found for ${name}, skipping"
-    return 0
-  fi
-
 patch_subject() {
   local patch_file="$1"
   sed -n 's/^Subject: \[PATCH[^]]*\] //p' "${patch_file}" | head -n 1
@@ -181,6 +164,26 @@ check_patch_series() {
   fi
 }
 
+apply_patch_series() {
+  local name="$1"
+  local repo_rel="$2"
+  local repo_dir="${dir_root}/${repo_rel}"
+  local patch_dir="${patch_root}/${name}"
+
+  if [[ -n "${ONLY_SUBMODULE}" && "${ONLY_SUBMODULE}" != "${name}" ]]; then
+    return 0
+  fi
+
+  if [[ ! -d "${patch_dir}" ]]; then
+    echo "INFO: No patch directory for ${name}, skipping"
+    return 0
+  fi
+
+  if ! have_patches "${patch_dir}"; then
+    echo "INFO: No patch files found for ${name}, skipping"
+    return 0
+  fi
+
   echo
   echo "============================================================"
   echo "Processing patches for ${name}"
@@ -202,10 +205,13 @@ check_patch_series() {
   fi
 
   echo "Applying patch series for ${name} ..."
-  if git -C "${repo_dir}" am "${patch_files[@]}"; then
+  if git -C "${repo_dir}" \
+     -c user.name="${GIT_NAME}" \
+     -c user.email="${GIT_EMAIL}" \
+     am "${patch_files[@]}"; then
     echo "Applied patches successfully for ${name}"
   else
-    patch_count=${#patch_files[@]}
+    local patch_count=${#patch_files[@]}
     echo "ERROR: Failed while applying patches for ${name}"
     echo "       Resolve conflicts in ${repo_dir}, then run:"
     echo "         git -C ${repo_dir} am --continue"
@@ -221,8 +227,6 @@ check_patch_series() {
     echo "         git -C ${repo_dir} clean -fd"
 
     if [[ "${ABORT_ON_FAIL}" == "YES" ]]; then
-      echo `pwd`
-      exit
       echo "Aborting in-progress git am session for ${name} ..."
       git -C "${repo_dir}" am --abort || true
     fi
