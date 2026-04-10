@@ -5,6 +5,11 @@ Accounts for differences in the ordering of state variable entries between
 .out files (which may be sorted alphabetically by a recent fv3-jedi update)
 and .ref files (which may preserve the original unsorted order).
 
+Tolerance defaults match JEDI's built-in comparison tools:
+    test_float_relative_tolerance: 0.02
+    test_float_absolute_tolerance: 1.0e-6
+    test_integer_tolerance:        3
+
 Usage:
     python compare_test_output.py [options]
 
@@ -52,6 +57,7 @@ _MPAS_HEADER_RE = re.compile(r'^\s+Resolution: nCellsGlobal = \d+')
 #   "CostJo   : Nonlinear Jo(obs) = val, nobs = N, Jo/n = val, err = val"
 _COSTJO_RE = re.compile(
     r'^CostJo\s+:\s+Nonlinear Jo\(([^)]+)\)\s*=\s*([+-]?[\d.]+(?:[eE][+-]?\d+)?)'
+    r'(?:,\s*nobs\s*=\s*(\d+))?'
 )
 
 # CostFunction line:
@@ -84,7 +90,7 @@ def parse_file(filepath):
     """Parse a test output or reference file.
 
     Returns a dict with keys:
-        'costjo'       : list of (obs_name, jo_value)
+        'costjo'       : list of (obs_name, jo_value, nobs_or_None)
         'costfunc'     : list of float (J values)
         'drpcg'        : list of float (residual norms)
         'norms'        : list of (param_name, norm_value)
@@ -144,7 +150,8 @@ def parse_file(filepath):
 
             m = _COSTJO_RE.match(line)
             if m:
-                costjo.append((m.group(1), float(m.group(2))))
+                nobs = int(m.group(3)) if m.group(3) is not None else None
+                costjo.append((m.group(1), float(m.group(2)), nobs))
                 continue
 
             m = _COSTFUNC_RE.match(line)
@@ -175,14 +182,19 @@ def parse_file(filepath):
 # Comparison helpers
 # ---------------------------------------------------------------------------
 
-def _rel_close(a, b, rtol, atol=1e-14):
-    """Return True if a and b agree within relative or absolute tolerance."""
+def _float_close(a, b, rtol, atol):
+    """Return True if floats a and b agree within relative or absolute tolerance."""
     if a == 0.0 and b == 0.0:
         return True
     return abs(a - b) <= atol + rtol * max(abs(a), abs(b))
 
 
-def compare_scalar_lists(name, out_list, ref_list, rtol, errors):
+def _int_close(a, b, itol):
+    """Return True if integers a and b agree within integer tolerance."""
+    return abs(a - b) <= itol
+
+
+def compare_scalar_lists(name, out_list, ref_list, rtol, atol, errors):
     """Compare two ordered lists of scalar floats."""
     if len(out_list) != len(ref_list):
         errors.append(
@@ -195,23 +207,23 @@ def compare_scalar_lists(name, out_list, ref_list, rtol, errors):
         n = len(out_list)
 
     for i in range(n):
-        if not _rel_close(out_list[i], ref_list[i], rtol):
+        if not _float_close(out_list[i], ref_list[i], rtol, atol):
             errors.append(
                 f"  {name}[{i}]: out={out_list[i]:.15e}  "
                 f"ref={ref_list[i]:.15e}"
             )
 
 
-def compare_costjo(out_entries, ref_entries, rtol, errors):
+def compare_costjo(out_entries, ref_entries, rtol, atol, itol, errors):
     """Compare CostJo entries, grouped by obs name."""
     # Build ordered lists per obs name so multiple iterations are preserved
     from collections import defaultdict
     out_by_obs = defaultdict(list)
     ref_by_obs = defaultdict(list)
-    for obs, val in out_entries:
-        out_by_obs[obs].append(val)
-    for obs, val in ref_entries:
-        ref_by_obs[obs].append(val)
+    for obs, val, nobs in out_entries:
+        out_by_obs[obs].append((val, nobs))
+    for obs, val, nobs in ref_entries:
+        ref_by_obs[obs].append((val, nobs))
 
     all_obs = sorted(set(list(out_by_obs.keys()) + list(ref_by_obs.keys())))
     for obs in all_obs:
@@ -221,16 +233,29 @@ def compare_costjo(out_entries, ref_entries, rtol, errors):
         if obs not in out_by_obs:
             errors.append(f"  CostJo({obs}): present in ref but not in out")
             continue
-        compare_scalar_lists(
-            f"CostJo({obs})",
-            out_by_obs[obs],
-            ref_by_obs[obs],
-            rtol,
-            errors,
-        )
+        out_vals = out_by_obs[obs]
+        ref_vals = ref_by_obs[obs]
+        if len(out_vals) != len(ref_vals):
+            errors.append(
+                f"  CostJo({obs}): count mismatch – out has {len(out_vals)}, "
+                f"ref has {len(ref_vals)}"
+            )
+        for i, ((o_jo, o_nobs), (r_jo, r_nobs)) in enumerate(
+                zip(out_vals, ref_vals)):
+            if not _float_close(o_jo, r_jo, rtol, atol):
+                errors.append(
+                    f"  CostJo({obs})[{i}]: "
+                    f"out={o_jo:.15e}  ref={r_jo:.15e}"
+                )
+            if o_nobs is not None and r_nobs is not None:
+                if not _int_close(o_nobs, r_nobs, itol):
+                    errors.append(
+                        f"  CostJo({obs})[{i}] nobs: "
+                        f"out={o_nobs}  ref={r_nobs}"
+                    )
 
 
-def compare_norms(out_norms, ref_norms, rtol, errors):
+def compare_norms(out_norms, ref_norms, rtol, atol, errors):
     """Compare norm entries by parameter name."""
     from collections import defaultdict
     out_by_param = defaultdict(list)
@@ -253,11 +278,12 @@ def compare_norms(out_norms, ref_norms, rtol, errors):
             out_by_param[param],
             ref_by_param[param],
             rtol,
+            atol,
             errors,
         )
 
 
-def compare_state_block(block_idx, out_block, ref_block, rtol, errors):
+def compare_state_block(block_idx, out_block, ref_block, rtol, atol, errors):
     """Compare two state variable blocks (order-agnostic)."""
     out_vars = set(out_block.keys())
     ref_vars = set(ref_block.keys())
@@ -275,15 +301,15 @@ def compare_state_block(block_idx, out_block, ref_block, rtol, errors):
         out_min, out_max, out_rms = out_block[var]
         ref_min, ref_max, ref_rms = ref_block[var]
         mismatches = []
-        if not _rel_close(out_min, ref_min, rtol):
+        if not _float_close(out_min, ref_min, rtol, atol):
             mismatches.append(
                 f"Min out={out_min:.15e} ref={ref_min:.15e}"
             )
-        if not _rel_close(out_max, ref_max, rtol):
+        if not _float_close(out_max, ref_max, rtol, atol):
             mismatches.append(
                 f"Max out={out_max:.15e} ref={ref_max:.15e}"
             )
-        if not _rel_close(out_rms, ref_rms, rtol):
+        if not _float_close(out_rms, ref_rms, rtol, atol):
             mismatches.append(
                 f"RMS out={out_rms:.15e} ref={ref_rms:.15e}"
             )
@@ -298,7 +324,7 @@ def compare_state_block(block_idx, out_block, ref_block, rtol, errors):
 # High-level comparison
 # ---------------------------------------------------------------------------
 
-def compare_files(out_path, ref_path, rtol):
+def compare_files(out_path, ref_path, rtol, atol, itol):
     """Compare a single output file against its reference.
 
     Returns (passed: bool, messages: list[str]).
@@ -309,7 +335,7 @@ def compare_files(out_path, ref_path, rtol):
     ref_data = parse_file(ref_path)
 
     # CostJo
-    compare_costjo(out_data['costjo'], ref_data['costjo'], rtol, errors)
+    compare_costjo(out_data['costjo'], ref_data['costjo'], rtol, atol, itol, errors)
 
     # CostFunction J values
     compare_scalar_lists(
@@ -317,6 +343,7 @@ def compare_files(out_path, ref_path, rtol):
         out_data['costfunc'],
         ref_data['costfunc'],
         rtol,
+        atol,
         errors,
     )
 
@@ -326,11 +353,12 @@ def compare_files(out_path, ref_path, rtol):
         out_data['drpcg'],
         ref_data['drpcg'],
         rtol,
+        atol,
         errors,
     )
 
     # Norm lines (MPAS bump)
-    compare_norms(out_data['norms'], ref_data['norms'], rtol, errors)
+    compare_norms(out_data['norms'], ref_data['norms'], rtol, atol, errors)
 
     # State variable blocks
     n_out = len(out_data['state_blocks'])
@@ -346,6 +374,7 @@ def compare_files(out_path, ref_path, rtol):
             out_data['state_blocks'][i],
             ref_data['state_blocks'][i],
             rtol,
+            atol,
             errors,
         )
 
@@ -397,10 +426,22 @@ def parse_args(argv=None):
         help='Directory containing .ref reference files',
     )
     parser.add_argument(
-        '--tolerance',
+        '--float-relative-tolerance',
         type=float,
-        default=1e-6,
+        default=0.02,
         help='Relative tolerance for floating-point comparisons',
+    )
+    parser.add_argument(
+        '--float-absolute-tolerance',
+        type=float,
+        default=1.0e-6,
+        help='Absolute tolerance for floating-point comparisons',
+    )
+    parser.add_argument(
+        '--integer-tolerance',
+        type=int,
+        default=3,
+        help='Tolerance for integer comparisons (e.g. nobs)',
     )
     parser.add_argument(
         '--out-files',
@@ -439,7 +480,12 @@ def main(argv=None):
             n_skip += 1
             continue
 
-        passed, errors = compare_files(out_path, ref_path, args.tolerance)
+        passed, errors = compare_files(
+            out_path, ref_path,
+            args.float_relative_tolerance,
+            args.float_absolute_tolerance,
+            args.integer_tolerance,
+        )
 
         label = os.path.basename(out_path)
         if passed:
