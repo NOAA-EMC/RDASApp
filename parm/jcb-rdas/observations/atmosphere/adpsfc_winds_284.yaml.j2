@@ -22,17 +22,14 @@
          simulated variables: [windEastward, windNorthward]
 
        obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
+           name: SfcCorrected
+           correction scheme to use: GSL
            variables:
            - name: windEastward
            - name: windNorthward
 
        linear obs operator:
-         name: VertInterp
+         name: Identity
 
        obs error:
          covariance model: diagonal
@@ -111,7 +108,7 @@
            tolerance: PT0H
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
-             name: MetaData/longitude_latitude_pressure
+             name: MetaData/stationIdentification
            where:
            - variable: ObsType/windEastward
              is_in: 284
@@ -146,7 +143,7 @@
                  xvar:
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
-                 errors: [1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079]
+                 errors: [1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874] 
 
          # Error inflation (windEastward) based on pressure check (setupw.f90)
          - filter: Perform Action
