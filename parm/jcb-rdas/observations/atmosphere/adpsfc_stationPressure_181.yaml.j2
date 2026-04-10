@@ -26,6 +26,9 @@
          correction scheme to use: GSL
          geovar_sfc_geomz: geopotential_height_at_surface
          geovar_geomz: geopotential_height
+         variables:
+         - name: stationPressure
+
        linear obs operator:
          name: Identity
 
@@ -102,7 +105,7 @@
            tolerance: PT0H
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
-             name: MetaData/longitude_latitude_pressure
+             name: MetaData/stationIdentification
            where:
            - variable: ObsType/stationPressure
              is_in: 181
@@ -151,7 +154,8 @@
                name: ObsFunction/ObsErrorFactorSfcPressure
                options:
                  geovar_geomz: geopotential_height
-                 geovar_sfc_geomz: geopotential_height_at_surface
+                 #geovar_sfc_geomz: geopotential_height_at_surface
+                 station_altitude: height
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
