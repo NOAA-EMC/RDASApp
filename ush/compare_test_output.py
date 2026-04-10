@@ -387,8 +387,13 @@ def compare_files(out_path, ref_path, rtol, atol, itol):
 # ---------------------------------------------------------------------------
 
 def find_output_files(build_dir):
-    """Return a list of .out file paths found under build_dir/rrfs-test/rundir-*/."""
-    pattern = os.path.join(build_dir, 'rrfs-test', 'rundir-*', '*.out')
+    """Return rrfs-*.out file paths found under build_dir/rrfs-test/rundir-*/.
+
+    Only files whose basename starts with 'rrfs-' are returned so that
+    ancillary logs (e.g. warnfile.*.out, logfile.*.out,
+    log.atmosphere.*.out) are automatically excluded.
+    """
+    pattern = os.path.join(build_dir, 'rrfs-test', 'rundir-*', 'rrfs-*.out')
     return sorted(glob.glob(pattern))
 
 
