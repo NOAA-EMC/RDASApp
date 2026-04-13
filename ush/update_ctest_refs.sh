@@ -4,7 +4,7 @@
 # Running this will update the input files (data, yamls, etc.) for each ctest
 # Note that the ctest configurations (test names, mpi_args) are not updated here
 
-DYCORE="FV3JEDI" # [FV3JEDI, MPASJEDI, BOTH]
+DYCORE="BOTH" # [FV3JEDI, MPASJEDI, BOTH]
 
 # FV3-JEDI tests
 rrfs_fv3jedi_tests=(
