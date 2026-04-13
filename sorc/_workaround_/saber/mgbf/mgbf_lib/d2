@@ -1,8 +1,0 @@
-!clt assuming 2d variables are suface variable
-        do k=1,km2
-          lev1=lev2+1
-          lev2=lev1
-          call this%rbetaT(1,hy,1,jm,paspy(lm_f,i,1:jm,2),ssy(lm_f,i,1:jm,2),HALL(lev1:lev2,i,:))
-          lev1=lev1+1
-          lev2=lev2+1
-        enddo

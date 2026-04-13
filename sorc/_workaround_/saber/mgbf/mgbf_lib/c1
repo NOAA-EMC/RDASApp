@@ -1,6 +1,0 @@
-        do k=1,km3
-           lev1=(k-1)*km3+1
-           lev2=k*km3
-        
-          call this%rbetaT(lm_f,hx,1,im,paspx(k,1:im,j,1),ssy(k,1:im,j,1),ALL(lev1:lev2,:,j))
-        enddo

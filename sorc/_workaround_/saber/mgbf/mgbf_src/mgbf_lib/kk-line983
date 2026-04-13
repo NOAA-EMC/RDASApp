@@ -1,2 +1,0 @@
-        open(newunit=myunit,file="mgbf_vert_aspt_profile.txt",status='old',iostat=ierr)
-        if(ierr /= 0) error stop "wrong with open file mgbf_vert_aspt_profile.txt ,stop"

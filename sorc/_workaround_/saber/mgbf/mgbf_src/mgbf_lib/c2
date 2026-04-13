@@ -1,8 +1,0 @@
-        do k=1,km2
-          lev1=lev2+1
-          lev2=lev1
-          call this%rbetaT(1,hx,1,im,paspx(lm_f,1:im,j,1),ssy(lm_f,1:im,j,1),ALL(lev1:lev2,:,j))
-))
-          lev1=lev1+1
-          lev2=lev2+1
-        enddo

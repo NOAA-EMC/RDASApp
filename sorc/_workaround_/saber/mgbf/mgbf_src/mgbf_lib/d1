@@ -1,2 +1,0 @@
-integer(i_kind),optional,intent(in)::n_owned_anl
-real(r_kind),optional,intent(in)::lonlat1d_anl(:,:)
