@@ -275,8 +275,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # No PR for full gsibec changes
   # gsibec PR #88 for qoption2: https://github.com/GEOS-ESM/GSIbec/pull/88
   cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
-  # fv3-jedi PR #1447: https://github.com/JCSDA-internal/fv3-jedi/pull/1447
-  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_linvarcha_c2a_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/LinearVariableChange/Control2Analysis/
 
   # Workaround for adding MGBF
   # No PR yet
