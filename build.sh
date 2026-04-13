@@ -265,6 +265,10 @@ fi
 # Copy workaround codes (remove these as soon as PRs are merged)
 if [[ $BUILD_WORKAROUND == 'YES' ]]; then
 
+  # Apply workaround patches (git commit-base workaround method)
+  # Need to convert all the copy-based workaround methods to commit-based method
+  $dir_root/ush/apply_patches.sh
+
   # Workaround for regional GSIBEC
   # Saber PR #1088: https://github.com/JCSDA-internal/saber/pull/1088
   cp ../sorc/_workaround_/saber/GSIParameters.h        ../sorc/saber/src/saber/gsi/utils/GSIParameters.h
@@ -297,28 +301,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_mpi_arrange.f90  ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_mpi_arrange.f90
 
-  # Workaround for gsl sfcCorrected observation operator
-    # T merged (but not done): ufo PR https://github.com/JCSDA-internal/ufo/pull/3622
-  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc   ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc
-  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceTemperature.h    ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.h
-  cp ../sorc/_workaround_/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h ../sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrectedParameters.h
-    # q: ufo PR planned by GSL
-  cp ../sorc/_workaround_/ufo/operators/sfccorrected/CMakeLists.txt         ../sorc/ufo/src/ufo/operators/sfccorrected/CMakeLists.txt
-  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceHumidity.cc ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceHumidity.cc
-  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceHumidity.h  ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceHumidity.h
-    # uv: ufo PR planned by GSL
-  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceWind.cc ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceWind.cc
-  cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceWind.h  ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceWind.h
-  cp ../sorc/_workaround_/ufo/operators/sfccorrected/ObsSfcCorrected.cc ../sorc/ufo/src/ufo/operators/sfccorrected/ObsSfcCorrected.cc
-    # fv3-jedi metadata: PR planned by EMC
-  cp ../sorc/_workaround_/fv3-jedi/FieldsMetadataDefault.h ../sorc/fv3-jedi/src/fv3jedi/FieldMetadata/FieldsMetadataDefault.h
-
-  # Workaround for updating fields between outerloops (needed for sfc operator).
-    # surface fields:
-    #   - PR planned by EMC
-    # delp:
-    #   - fv3-jedi PR opened: https://github.com/JCSDA-internal/fv3-jedi/pull/1381
-  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_state_mod.F90   ../sorc/fv3-jedi/src/fv3jedi/State/fv3jedi_state_mod.F90
+  # Workaround for using top layer of tslb and smois for CRTM calculations
+  # PR opened: https://github.com/JCSDA-internal/fv3-jedi/pull/1454
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_vc_model2geovals_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/VariableChange/Model2GeoVaLs
 
 fi
 
