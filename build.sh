@@ -297,10 +297,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_mpi_arrange.f90  ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_mpi_arrange.f90
 
-  # Workaround for using top layer of tslb and smois for CRTM calculations
-  # PR opened: https://github.com/JCSDA-internal/fv3-jedi/pull/1454
-  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_vc_model2geovals_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/VariableChange/Model2GeoVaLs
-
   # Workaround for gsl sfcCorrected observation operator
     # T merged (but not done): ufo PR https://github.com/JCSDA-internal/ufo/pull/3622
   cp ../sorc/_workaround_/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc   ../sorc/ufo/src/ufo/operators/sfccorrected/EvalSurfaceTemperature.cc
