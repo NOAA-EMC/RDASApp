@@ -1,2 +1,0 @@
-                allocate(vargrp_work_mgbf(nlev_vargrp(ivargrp),nxloc,nyloc))
-                allocate(vargrp_work_mgbf2(nlev_vargrp(ivargrp),nxloc,nyloc))
