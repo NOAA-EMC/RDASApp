@@ -24,6 +24,7 @@ namespace saber {
     extern "C" {
       void mgbf_covariance_create_f90(CovarianceKey &, const eckit::mpi::Comm &,
                                      const eckit::Configuration &,
+                                     const atlas::functionspace::FunctionSpaceImpl *,
                                      const atlas::field::FieldSetImpl *,
                                      const atlas::field::FieldSetImpl *);
 

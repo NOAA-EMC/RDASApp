@@ -83,7 +83,6 @@ MGBF_Covariance(const oops::GeometryData & geometryData,
   void iterativeCalibrationUpdate(const oops::FieldSet3D &) override{};
   void iterativeCalibrationFinal() override{};
 
-//  void dualResolutionSetup(const oops::GeometryData &) override{};
 
   void write() const override {};
   std::vector<std::pair<eckit::LocalConfiguration, oops::FieldSet3D>> fieldsToWrite() const
@@ -104,7 +103,6 @@ MGBF_Covariance(const oops::GeometryData & geometryData,
   std::vector<std::string> variables_;
   // Function space
   atlas::FunctionSpace mgbfGridFuncSpace_;
-  oops::Variables activeVars_;
   const eckit::mpi::Comm * comm_;
 };
 
@@ -117,24 +115,17 @@ MGBF_Covariance::MGBF_Covariance(const oops::GeometryData & geometryData,
         const Parameters_ & params,
         const oops::FieldSet3D & xb,
         const oops::FieldSet3D & fg)
-  :  SaberCentralBlockBase(params, xb.validTime()),
+  :  SaberCentralBlockBase(params, xb.validTime(),geometryData, centralVars),
      params_(params), variables_(params.activeVars.value().get_value_or(centralVars).variables()),
      mgbfGridFuncSpace_(geometryData.functionSpace()), comm_(&geometryData.comm())   
 {
   oops::Log::trace() << classname() << "MGBF::Covariance starting" << std::endl;
-  // Get active variables
-  activeVars_ = getActiveVars(params, centralVars);
 
   util::Timer timer(classname(), "Covariance");
-//  std::cout<<"thinkdebconfig0 ifhas -1 "<<std::endl;
   eckit::LocalConfiguration mgbf_config = params.toConfiguration();
-//  std::cout<<"thinkdebconfig0 ifhas "<<mgbf_config<<std::endl;
   if (params.doCalibration()) {
 throw eckit::UserError("doCalibration=.true. is not implemented ", Here());
   }
-//  std::cout<<"thinkdebconfig0 ifhas "<<mgbf_config.has("background error")<<std::endl;
-//  std::cout<<"thinkdebconfig0 ifhas "<<mgbf_config.has("test")<<std::endl;
-//  std::cout<<"thinkdebconfig "<<mgbf_config.getString("test")<<std::endl;
   
   
   
@@ -150,7 +141,7 @@ throw eckit::UserError("doCalibration=.true. is not implemented ", Here());
   // Create covariance module
 //cltwhy not working  mgbf_covariance_create_f90(keySelf_, *comm_, params_.MGBFNML.value()->toConfiguration(),
   mgbf_covariance_create_f90(keySelf_, *comm_, mgbf_config,
-                            xb.get(), fg.get());
+                            mgbfGridFuncSpace_.get(), xb.get(), fg.get());
 
   oops::Log::trace() << classname() << "::Covariance done" << std::endl;
 }
@@ -211,8 +202,6 @@ void MGBF_Covariance::multiply(oops::FieldSet3D & fset) const {
      index_member=9999;
   }
   
-//  oops::Log::trace()<<"thinkdeb999 sdl multiply index_member "<<index_member<<std::endl;
-//  std::cout<<"thinkdeb999cout sdl multiply index_member "<<index_member<<std::endl;
   mgbf_covariance_multiply_f90(keySelf_, fset.get(),index_member);
     // Mark all fields as having dirty halos after modification
     for (const auto & fieldname : fset.field_names()) {

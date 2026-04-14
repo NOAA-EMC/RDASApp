@@ -174,6 +174,11 @@ integer(i_kind):: km_64
 
 real(r_kind):: lengthx,lengthy,xa0,ya0,xf0,yf0
 real(r_kind):: dxf,dyf,dxa,dya
+real(r_kind),allocatable,dimension (:,:):: dxfm,dyfm  ! actual filtering grid intervals in meters
+real(r_kind):: dxfmctrl=35000,dyfmctrl=35000  !the control filtering grid intervals corresponding to the contstant horizontal aspect tensor
+real(r_kind):: dx_a2f_ratio=1,dy_a2f_ratio=1  !ratio between analsysis grids to filtering grids in x and y
+                                             !it will be derived from other namelist parameters
+logical :: l_constant_aspt2 =.true. ! using constant horizontal aspect tensor : ampl02
 
 integer(i_kind):: npadx         ! x padding on analysis grid
 integer(i_kind):: mpady         ! y padding on analysis grid
@@ -244,12 +249,12 @@ contains
 !from jp_pbfil.f90
   generic :: cholaspect => cholaspect1,cholaspect2,cholaspect3,cholaspect4
   procedure,nopass :: cholaspect1,cholaspect2,cholaspect3,cholaspect4
-  generic :: getlinesum => getlinesum1,getlinesum2,getlinesum3
-  procedure :: getlinesum1,getlinesum2,getlinesum3
-  generic :: rbeta => rbeta1,rbeta2,rbeta3,rbeta4,vrbeta1,vrbeta2,vrbeta3,vrbeta4                 
-  procedure:: rbeta1,rbeta2,rbeta3,rbeta4,vrbeta1,vrbeta2,vrbeta3,vrbeta4                 
-  generic :: rbetaT => rbeta1t,rbeta2t,rbeta3t,rbeta4t,vrbeta1t,vrbeta2t,vrbeta3t,vrbeta4t
-  procedure:: rbeta1t,rbeta2t,rbeta3t,rbeta4t,vrbeta1t,vrbeta2t,vrbeta3t,vrbeta4t
+  generic :: getlinesum => getlinesum1,getlinesum1d,getlinesum2,getlinesum3
+  procedure :: getlinesum1,getlinesum1d,getlinesum2,getlinesum3
+  generic :: rbeta => rbeta1,rbeta3d_1,rbeta2,rbeta3,rbeta4,vrbeta1,vrbeta2,vrbeta3,vrbeta4                 
+  procedure:: rbeta1,rbeta3d_1,rbeta2,rbeta3,rbeta4,vrbeta1,vrbeta2,vrbeta3,vrbeta4                 
+  generic :: rbetaT => rbeta1t,rbeta3d_1t,rbeta2t,rbeta3t,rbeta4t,vrbeta1t,vrbeta2t,vrbeta3t,vrbeta4t
+  procedure:: rbeta1t,rbeta3d_1t,rbeta2t,rbeta3t,rbeta4t,vrbeta1t,vrbeta2t,vrbeta3t,vrbeta4t
 end type  mg_parameter_type
 
 interface
@@ -327,6 +332,13 @@ interface
      real(dp),dimension(1,1,Lx:Mx),intent(in   ):: el
      real(dp),dimension(    lx:mx),intent(  out):: ss
    end subroutine
+   module subroutine getlinesum1d(this,hx,lx,mx, el, ss)
+     use mgbf_kinds, only: dp=>r_kind
+     class(mg_parameter_type)::this
+     integer,                      intent(in   ):: hx,Lx,mx
+     real(dp),dimension(Lx:Mx),intent(in   ):: el
+     real(dp),dimension(    lx:mx),intent(  out):: ss
+   end subroutine
    module subroutine getlinesum2(this,hx,lx,mx, hy,ly,my, el, ss)
      use mgbf_kinds, only: dp=>r_kind
      class(mg_parameter_type)::this
@@ -355,6 +367,14 @@ interface
      real(dp),dimension(Lx:Mx),intent(in   ):: el
      real(dp),dimension(Lx:Mx),intent(in   ):: ss
      real(dp),dimension(lx-hx:mx+hx),intent(inout):: a
+   end subroutine
+   module subroutine rbeta3d_1(this,nz,hx,lx,mx, el,ss, a)
+     use mgbf_kinds, only: dp=>r_kind
+     class(mg_parameter_type)::this
+     integer,                  intent(in   )::nz, hx,Lx,mx
+     real(dp),dimension(nz,Lx:Mx),intent(in   ):: el
+     real(dp),dimension(nz,Lx:Mx),intent(in   ):: ss
+     real(dp),dimension(nz,lx-hx:mx+hx),intent(inout):: a
    end subroutine
    module subroutine rbeta2(this,hx,lx,mx, hy,ly,my, el,ss, a)
      use mgbf_kinds, only: dp=>r_kind
@@ -387,6 +407,14 @@ interface
      real(dp),dimension(1,1,Lx:Mx),intent(in   ):: el
      real(dp),dimension(    Lx:Mx),intent(in   ):: ss
      real(dp),dimension(lx-hx:mx+hx),intent(inout):: a
+   end subroutine
+   module subroutine rbeta3d_1T(this,nz,hx,lx,mx, el,ss, a)
+     use mgbf_kinds, only: dp=>r_kind
+     class(mg_parameter_type)::this
+     integer,                      intent(in   )::nz, hx,Lx,mx
+     real(dp),dimension(nz,Lx:Mx),intent(in   ):: el
+     real(dp),dimension(nz, Lx:Mx),intent(in   ):: ss
+     real(dp),dimension(nz,lx-hx:mx+hx),intent(inout):: a
    end subroutine
    module subroutine rbeta2T(this,hx,lx,mx, hy,ly,my, el,ss, a)
      use mgbf_kinds, only: dp=>r_kind
@@ -510,7 +538,10 @@ integer(i_kind):: lm            ! number of vertical layers in filter grids
 !clthhhreal(r_kind):: coef_normalization(lm_max)=1.0 !normalizaton coefficients
 real(r_kind):: coef_normalization(lm_max)=1 !normalizaton coefficients
 real(r_kind):: coef_normalization_const=-9999.0 ! constant, if set, this contant will be 
+real(r_kind):: dxfmctrl=35000,dyfmctrl=35000  !the control filtering grid intervals corresponding to the contstant horizontal aspect tensor
+logical :: l_constant_aspt2 =.true. ! using constant horizontal aspect tensor : ampl02
 character(len=256) ::file_coef_normalization="XXXX"
+character(len=256) ::dir_coef_normalization="XXXX"
 integer(i_kind):: km2           ! number of 2d variables for filtering
 integer(i_kind):: km3           ! number of 3d variables for filtering
 integer(i_kind):: n_ens=1         ! number of ensemble members
@@ -534,16 +565,20 @@ integer(i_kind):: hx,hy,hz
 integer(i_kind):: p
 logical:: l_mg_weig_readin=.false.
 integer(i_kind), parameter       :: nf=20! refinement factor for z grid,used in make_ssgrid
-integer(i_kind) :: myunit,i
+integer(i_kind) :: myunit,i,item,mype,ierr
+character*4 :: str_rank
+integer :: n_sample_levelsx4normalization
 logical :: l_exist
-
   namelist /parameters_mgbeta/ mg_ampl01,mg_ampl02,mg_ampl03            &
                               ,mg_weig1,mg_weig2,mg_weig3,mg_weig4      &
                               ,hx,hy,hz,p                               &
                               ,mgbf_line,mgbf_proc                      &
                               ,lm_a,lm,coef_normalization               & 
                               ,coef_normalization_const & 
+                              ,dir_coef_normalization  &
                               ,file_coef_normalization  &
+                              , dxfmctrl,dyfmctrl       & 
+                              , l_constant_aspt2        &
                               ,km2,km3                                  &
                               ,n_ens                                    &
                               ,l_loc                                    &
@@ -568,12 +603,12 @@ logical :: l_exist
 !
   allocate(this%zofis(lm))
   allocate(this%isofz(lm_a))
-  !write(6,*)"thinkdeb999 filgrid is ",l_vert_stretched_filtgrid
+  write(6,*)"thinkdeb999 filgrid is ",l_vert_stretched_filtgrid
   this%l_vert_stretched_filtgrid=l_vert_stretched_filtgrid 
 #if 1 
    
   if(lm_a .ne. lm ) then
-    !write(6,*)'thinkdeb999 l_vert_stretched_filtgrid ',this%l_vert_stretched_filtgrid 
+    write(6,*)'thinkdeb999 l_vert_stretched_filtgrid ',this%l_vert_stretched_filtgrid 
    call convert_vert_varied_aspt 
 !in which the mg_ampl01 will be re-defined
   endif
@@ -597,25 +632,48 @@ logical :: l_exist
   this%lm=lm
   if (coef_normalization_const >0 ) then  ! constant, if set, this contant will be
 
-    if(trim(file_coef_normalization)=="XXXX" ) then
+    if(trim(file_coef_normalization)=="XXXX" .and. trim(dir_coef_normalization)=="XXXX" ) then
       l_exist=.false.
       coef_normalization=coef_normalization_const
     else
-      inquire(file=trim(file_coef_normalization),exist=l_exist)
-      if(l_exist) then
-        write(6,*)'the normalization profile file is ',trim(file_coef_normalization)
-!clt in the ../covairance/mgbf_covariance_mod.f90 the fldset is reversed in the vertical direction
-        open(newunit=myunit,file=trim(file_coef_normalization),status='old',action='read')
-              read(myunit,*)(coef_normalization(i),i=lm_a,1,-1)
-             close (myunit)
-             coef_normalization(1:lm_a)=coef_normalization(1:lm_a)*coef_normalization_const  !re-calc
-       else
+      if (trim(dir_coef_normalization) /= "XXXX") then  
+         call MPI_COMM_RANK(MPI_COMM_WORLD,mype,ierr)
+         write(str_rank, '(I4.4)') mype
+         this%mype=mype  
+         file_coef_normalization=trim(dir_coef_normalization)//"/profile_subdomain_"//str_rank//".txt"
+      endif
+         write(6,*)'thinkdeb888 normalization file is ',trim(file_coef_normalization)
+         inquire(file=trim(file_coef_normalization),exist=l_exist)
+         if(l_exist) then
+           open(newunit=myunit,file=trim(file_coef_normalization),status='old',action='read')
+             if(trim(dir_coef_normalization) /= "XXXX") then 
+ ! to use file slike profiles_out/profile_subdomain_0475.txt
+               read(myunit,*)
+               read(myunit,*)i,n_sample_levelsx4normalization
+               read(myunit,*)
+               do i=1,n_sample_levelsx4normalization
+                read(myunit,*)
+               enddo
+                read(myunit,*)
+               do i=1,lm_a
+                read(myunit,*)item, coef_normalization(i) !notice, the data in the file is reversed already
+               enddo
+              close (myunit)
+             else
+              write(6,*)'the normalization profile file is ',trim(file_coef_normalization)
+   !clt in the ../covairance/mgbf_covariance_mod.f90 the fldset is reversed in the vertical direction
+              open(newunit=myunit,file=trim(file_coef_normalization),status='old',action='read')
+                 read(myunit,*)(coef_normalization(i),i=lm_a,1,-1)
+              close (myunit)
+             endif 
+              coef_normalization(1:lm_a)=coef_normalization(1:lm_a)*coef_normalization_const  !re-calc
+         else
 
-              write(6,*)'the normalization profile file does not exist ,stop ',trim(file_coef_normalization)
-              call flush(6)
-              stop
-       endif
-     endif
+                 write(6,*)'the normalization profile file does not exist ,stop ',trim(file_coef_normalization)
+                 call flush(6)
+                 stop
+          endif
+        endif
   else
      coef_normalization=1.0
 
@@ -626,6 +684,9 @@ logical :: l_exist
 
 
   this%coef_normalization=coef_normalization
+  this%dxfmctrl=dxfmctrl; this%dyfmctrl=dyfmctrl 
+  write(6,*)'thinkdeb999 readin l_constant_aspt2  ',l_constant_aspt2
+  this%l_constant_aspt2 = l_constant_aspt2
   this%km2=km2
   this%km3=km3
   this%n_ens=n_ens
@@ -771,8 +832,8 @@ logical :: l_exist
 !
   this%nm = this%nm0/this%nxm
   this%mm = this%mm0/this%nym
-  !write(6,*)'thinkdeb999 2 6 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  !call flush(6)
+  this%dx_a2f_ratio=this%nm/this%im_filt
+  this%dy_a2f_ratio=this%mm/this%jm_filt
   if(this%l_anal_sub_of_filt ) then
     if(this%im_filt.ne.this%nm.or.this%jm_filt.ne.this%mm) then
        write(6,*)'l_anal_sub_of_filter is true but the numbers of analysis/filtering grids are wrong, stop'
@@ -783,8 +844,6 @@ logical :: l_exist
        stop
     endif
   endif
-  !write(6,*)'thinkdeb999 2 7 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  !call flush(6)
 
 !***
 !***     Filter grid
@@ -883,8 +942,8 @@ logical :: l_exist
 ! Set number of processors at higher generations
 !
 
-  !write(6,*)'thinkdeb999 2 8 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  !call flush(6)
+  write(6,*)'thinkdeb999 2 8 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
+  call flush(6)
   allocate(this%ixm(this%gm))
   allocate(this%jym(this%gm))
   allocate(this%nxy(this%gm))
@@ -899,11 +958,13 @@ logical :: l_exist
   call def_ngens(this%ixm,this%gm,this%nxm)
   call def_ngens(this%jym,this%gm,this%nym)
 
-  !write(6,*)'thinkdeb999 2 9 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  !call flush(6)
+  write(6,*)'thinkdeb999 2 9 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
+  call flush(6)
+!$omp parallel do private(g) schedule(static)
   do g=1,this%gm
     this%nxy(g)=this%ixm(g)*this%jym(g)
   enddo
+!$omp end parallel do
 
     this%maxpe_fgen(0)= 0
   do g=1,this%gm
@@ -923,15 +984,19 @@ logical :: l_exist
     this%jm0(g)=this%jm0(g-1)/2
   enddo
 
+!$omp parallel do private(g) schedule(static)
   do g=1,this%gm
     this%Fimax(g)=this%im0(g)-this%im*(this%ixm(g)-1)
     this%Fjmax(g)=this%jm0(g)-this%jm*(this%jym(g)-1)
   enddo
+!$omp end parallel do
 
+!$omp parallel do private(g) schedule(static)
   do g=1,this%gm
     this%FimaxL(g)=this%Fimax(g)/2
     this%FjmaxL(g)=this%Fjmax(g)/2
   enddo
+!$omp end parallel do
 
 !***
 !*** Filter related parameters
@@ -944,10 +1009,12 @@ logical :: l_exist
 
   this%dxa =this%lengthx/this%nm
   this%dxf = this%lengthx/this%im
+  allocate(this%dxfm(this%im,this%jm))
   this%nb = 2*this%dxf/this%dxa
 
   this%dya = this%lengthy/this%mm
   this%dyf = this%lengthy/this%jm
+  allocate(this%dyfm(this%im,this%jm))
   this%mb = 2*this%dyf/this%dya
 
   this%xa0 = this%dxa*0.5
@@ -975,8 +1042,8 @@ logical :: l_exist
   this%rmom2_4=u1/sqrt(this%pee2+6)
 #if 1 
 
-  !write(6,*)'thinkdeb999 2 10 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  !call flush(6)
+  write(6,*)'thinkdeb999 2 10 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
+  call flush(6)
 contains
 
 subroutine convert_vert_varied_aspt
@@ -988,11 +1055,13 @@ subroutine convert_vert_varied_aspt
   integer(i_kind):: user_mpi_real
   real (r_kind) :: mg_ampl01_org
   
-  allocate(this%aspect_vert_profile_angrid(lm_a),this%aspect_vert_profile_filtgrid(lm))
+  if( .not. allocated(this%aspect_vert_profile_angrid )) then 
+           allocate(this%aspect_vert_profile_angrid(lm_a),this%aspect_vert_profile_filtgrid(lm))
+  endif
   allocate(sigofz(lm_a),sigofis(lm))
   call MPI_COMM_RANK(MPI_COMM_WORLD,mype,ierr)
-  !write(6,*)'thinkdeb999 2.0 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
-  !call flush(6)
+  write(6,*)'thinkdeb999 2.0 ',this%l_vert_stretched_filtgrid  ,' ',"l_use",this%l_vert_stretched_filtgrid
+  call flush(6)
   if(this%l_vert_stretched_filtgrid) then 
       if(mype.eq.0) then 
         open(newunit=myunit,file="mgbf_vert_aspt_profile.txt",status='old',iostat=ierr)
@@ -1024,8 +1093,8 @@ subroutine convert_vert_varied_aspt
          enddo
          endif
   else
-  !write(6,*)'thinkdeb999 2 0.1 ',this%l_vert_stretched_filtgrid  ,' '
-  !call flush(6)
+  write(6,*)'thinkdeb999 2 0.1 ',this%l_vert_stretched_filtgrid  ,' '
+  call flush(6)
       sigofz=sqrt(mg_ampl01)
       
   endif 
@@ -1042,19 +1111,11 @@ subroutine convert_vert_varied_aspt
 ! these scales sig to each of the new s-grid points:
 !clt    call logintgrid(nz,ns,zofis,sigofz,sigofis)
     call zsigtossig(lm_a-1,nf,lm-1,this%zofis,sigofz,sigofis)
-    print'('' list the profile coordinates of zofis,sigofis, for each is:'')'
-!    if(this%l_use_aspt_nml) then
-!j       sigofis=sqrt(mg_amp01)
-!    else
        mg_ampl01_org=mg_ampl01
        mg_ampl01=(sum(sigofis**2)/size(sigofis))
     if(.not.this%l_vert_stretched_filtgrid) then !the former could be only true when the latter is in effect
        write(6,*)' suggested and actual/original ampl01 is ',mg_ampl01,' ' ,mg_ampl01_org
        mg_ampl01=mg_ampl01_org
-!      if (abs(mg_ampl01_org-mg_ampl01)/mg_ampl01_org .gt.0.001) then
-!       write(6,*)'thinkdeb the new ampl01 is too much difference from the original one ,when this%l_use_aspt_nml'
-!       stop
-!      endif
     endif
        write(6,*)' the original and final  ampl01 is ',mg_ampl01_org,' ' ,mg_ampl01
       

@@ -279,8 +279,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # No PR for full gsibec changes
   # gsibec PR #88 for qoption2: https://github.com/GEOS-ESM/GSIbec/pull/88
   cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
-  # fv3-jedi PR #1447: https://github.com/JCSDA-internal/fv3-jedi/pull/1447
-  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_linvarcha_c2a_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/LinearVariableChange/Control2Analysis/
 
   # Workaround for adding MGBF
   # No PR yet
@@ -288,6 +286,7 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp -r ../sorc/_workaround_/saber/mgbf/mgbf_src/*    ../sorc/saber/src/saber/mgbf/
   cp ../sorc/_workaround_/saber/mgbf/Localization.h   ../sorc/saber/src/saber/oops/Localization.h
   cp ../sorc/_workaround_/saber/mgbf/Interpolation.cc ../sorc/saber/src/saber/interpolation/Interpolation.cc
+  cp ../sorc/_workaround_/saber/mgbf/Interpolation.h  ../sorc/saber/src/saber/interpolation/Interpolation.h
   cp ../sorc/_workaround_/saber/mgbf/CMakeLists.txt   ../sorc/saber/src/saber/CMakeLists.txt
   cp ../sorc/_workaround_/saber/mgbf/compiler_flags_Intel_Fortran.cmake  ../sorc/saber/cmake/compiler_flags_Intel_Fortran.cmake
 
