@@ -184,6 +184,14 @@ apply_patch_series() {
   echo "  patches: ${patch_dir}"
   echo "============================================================"
 
+  # Handle dirty repo safely
+  local stash_ref=""
+  if [[ -n "$(git -C "${repo_dir}" status --porcelain)" ]]; then
+    echo "WARNING: ${repo_dir} has local changes"
+    echo "Stashing them before applying patches..."
+    stash_ref=$(git -C "${repo_dir}" stash push -u -m "apply_patches.sh auto-stash" | awk '{print $1}')
+  fi
+
   ensure_clean_repo "${repo_dir}"
   check_no_in_progress_am "${repo_dir}"
 
