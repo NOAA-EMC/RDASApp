@@ -263,7 +263,7 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
 fi
 
 # Copy workaround codes (remove these as soon as PRs are merged)
-if [[ $BUILD_WORKAROUND == 'YES' ]]; then
+if [[ $BUILD_WORKAROUND == 'COPY_WORKAROUND' ]]; then
 
   # Apply workaround patches (git commit-base workaround method)
   # Need to convert all the copy-based workaround methods to commit-based method

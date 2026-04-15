@@ -15,7 +15,7 @@
 	ignore = all
 [submodule "sorc/fv3-jedi"]
 	path = sorc/fv3-jedi
-	url = https://github.com/jcsda/fv3-jedi
+	url = https://github.com/RRFSx/fv3-jedi
 	branch = develop
 	ignore = all
 [submodule "sorc/fv3-jedi-km"]
@@ -25,7 +25,7 @@
 	ignore = all
 [submodule "sorc/gsibec"]
 	path = sorc/gsibec
-	url = https://github.com/GEOS-ESM/GSIbec
+	url = https://github.com/RRFSx/GSIbec
 	branch = develop
 	ignore = all
 [submodule "sorc/ioda"]
@@ -50,12 +50,12 @@
 	ignore = all
 [submodule "sorc/saber"]
 	path = sorc/saber
-	url = https://github.com/jcsda/saber
+	url = https://github.com/RRFSx/saber
 	branch = develop
 	ignore = all
 [submodule "sorc/ufo"]
 	path = sorc/ufo
-	url = https://github.com/jcsda/ufo
+	url = https://github.com/RRFSx/ufo
 	branch = develop
 	ignore = all
 [submodule "sorc/vader"]
@@ -70,7 +70,7 @@
 	ignore = all
 [submodule "sorc/mpas-jedi"]
 	path = sorc/mpas-jedi
-	url = https://github.com/JCSDA/mpas-jedi
+	url = https://github.com/RRFSx/mpas-jedi
 	branch = develop
 	ignore = all
 [submodule "sorc/bufr-query"]
