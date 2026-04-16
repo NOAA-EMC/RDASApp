@@ -117,7 +117,7 @@ metadata_group = fout.groups['MetaData']
 var = "longitude_latitude_pressure"
 data = longitude_latitude_pressure
 if var not in metadata_group.variables:
-    metadata_group.createVariable(f"{var}", 'str', 'Location', fill_value=fill)
+    metadata_group.createVariable(f"{var}", 'str', 'Location')
 metadata_group.variables[f"{var}"][:] = data
 
 # Generate longitude_latitude location strings (for dup checking)
@@ -130,7 +130,7 @@ metadata_group = fout.groups['MetaData']
 var = "longitude_latitude"
 data = longitude_latitude
 if var not in metadata_group.variables:
-    metadata_group.createVariable(f"{var}", 'str', 'Location', fill_value=fill)
+    metadata_group.createVariable(f"{var}", 'str', 'Location')
 metadata_group.variables[f"{var}"][:] = data
 
 # Add the exp_err_norm to file (for goes-r amvs)
