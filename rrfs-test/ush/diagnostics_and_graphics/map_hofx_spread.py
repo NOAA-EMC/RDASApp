@@ -1,6 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import argparse
 import re
+
+HOFX_GROUP_PATTERN = re.compile(r"hofx0_(\d+)$")
 
 
 def to_nan(values, fill_value):
@@ -61,10 +63,9 @@ def read_hofx_ensemble(dataset, n_members):
     """
     import numpy as np
 
-    hofx_name_pattern = re.compile(r"hofx0_(\d+)$")
     hofx_groups = {}
     for group_name, group in dataset.groups.items():
-        match = hofx_name_pattern.match(group_name)
+        match = HOFX_GROUP_PATTERN.match(group_name)
         if match:
             hofx_groups[int(match.group(1))] = group
 
@@ -191,6 +192,7 @@ def main():
             f"MetaData coordinate size mismatch: latitude={latitudes.shape[0]}, "
             f"longitude={longitudes.shape[0]}, Location={location_size}."
         )
+    # Use sample standard deviation (N-1) for ensemble spread.
     spread = np.nanstd(hofx_members, axis=0, ddof=1)
     if spread.shape[0] != location_size:
         raise ValueError(
