@@ -2,18 +2,11 @@
 import argparse
 import re
 
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-import matplotlib
-import numpy as np
-from netCDF4 import Dataset
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-
 
 def to_nan(values, fill_value):
     """Convert fill values and non-finite entries to NaN."""
+    import numpy as np
+
     data = np.asarray(values, dtype=np.float64)
     if fill_value is not None:
         data = np.where(data == fill_value, np.nan, data)
@@ -23,6 +16,8 @@ def to_nan(values, fill_value):
 
 def read_metadata(dataset):
     """Read latitude/longitude from the MetaData group."""
+    import numpy as np
+
     if "MetaData" not in dataset.groups:
         raise ValueError("Missing MetaData group in input file.")
 
@@ -40,6 +35,8 @@ def read_metadata(dataset):
 
 def read_hofx_ensemble(dataset, n_members):
     """Read hofx for all ensemble members and return stacked member array."""
+    import numpy as np
+
     hofx_name_pattern = re.compile(r"hofx0_(\d+)$")
     hofx_groups = {}
     for group_name, group in dataset.groups.items():
@@ -83,6 +80,19 @@ def read_hofx_ensemble(dataset, n_members):
 
 def plot_spread(latitudes, longitudes, spread, obs_var_name, output_path):
     """Plot spread over CONUS and write to output file."""
+    import numpy as np
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    try:
+        import cartopy.crs as ccrs
+        import cartopy.feature as cfeature
+    except ModuleNotFoundError as exc:
+        raise ModuleNotFoundError(
+            "cartopy is required to plot the spread map (Basemap is not used)."
+        ) from exc
+
     valid = np.isfinite(spread) & np.isfinite(latitudes) & np.isfinite(longitudes)
     if not np.any(valid):
         raise ValueError("No valid spread values available to plot.")
@@ -132,6 +142,9 @@ def main():
     args = parser.parse_args()
     if args.members < 2:
         raise ValueError("Ensemble spread requires at least 2 members.")
+
+    import numpy as np
+    from netCDF4 import Dataset
 
     with Dataset(args.input_file, "r") as dataset:
         if "Location" not in dataset.dimensions:
