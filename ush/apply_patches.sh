@@ -100,56 +100,48 @@ check_no_in_progress_am() {
   fi
 }
 
-patch_subject() {
-  local patch_file="$1"
-  sed -n 's/^Subject: \[PATCH[^]]*\] //p' "${patch_file}" | head -n 1
-}
-
-top_commit_subjects_match_patches() {
-  local repo_dir="$1"
-  shift
-  local patch_files=("$@")
-  local patch_count="${#patch_files[@]}"
-
-  local i=0
-  local patch_subject_val commit_subject_val
-
-  while [[ $i -lt $patch_count ]]; do
-    patch_subject_val="$(patch_subject "${patch_files[$i]}")"
-    commit_subject_val="$(git -C "${repo_dir}" log -1 --format=%s HEAD~$((patch_count - i - 1)) 2>/dev/null || true)"
-    if [[ "${patch_subject_val}" != "${commit_subject_val}" ]]; then
-      return 1
-    fi
-    i=$((i + 1))
-  done
-
-  return 0
-}
-
 check_patch_series() {
   local name="$1"
   local repo_dir="$2"
-  shift 2
+  local base_file="$3"
+  shift 3
   local patch_files=("$@")
-  local patch_count="${#patch_files[@]}"
 
-  local start_ref="HEAD"
-  if [[ $patch_count -gt 0 ]] && top_commit_subjects_match_patches "${repo_dir}" "${patch_files[@]}"; then
-    start_ref="HEAD~${patch_count}"
+  local start_commit
+  if [[ -f "${base_file}" ]]; then
+    start_commit="$(head -n 1 "${base_file}")"
+    echo "Using base commit from ${base_file}: ${start_commit}"
+  else
+    start_commit="$(git -C "${repo_dir}" rev-parse HEAD)"
+    echo "Recording base commit to ${base_file}: ${start_commit}"
+    {
+      echo "${start_commit}"
+      echo "date=$(date)"
+      echo "repo=${name}"
+    } > "${base_file}"
+  fi
+
+  if ! git -C "${repo_dir}" cat-file -e "${start_commit}^{commit}" 2>/dev/null; then
+    echo "ERROR: Base commit ${start_commit} from ${base_file} does not exist in ${repo_dir}"
+    exit 1
   fi
 
   local tmpdir
   tmpdir="$(mktemp -d)"
 
-  echo "Checking full patch series for ${name} from ${start_ref} ..."
+  echo "Checking full patch series for ${name} from ${start_commit} ..."
 
   echo "  Patch stack:"
+  local patch
   for patch in "${patch_files[@]}"; do
     echo "    - $(basename "$patch")"
   done
 
-  git -C "${repo_dir}" worktree add --detach "${tmpdir}" "${start_ref}" >/dev/null
-  if git -C "${tmpdir}" am "${patch_files[@]}" >/dev/null 2>&1; then
+  git -C "${repo_dir}" worktree add --detach "${tmpdir}" "${start_commit}" >/dev/null
+  if git -C "${tmpdir}" \
+       -c user.name="${GIT_NAME}" \
+       -c user.email="${GIT_EMAIL}" \
+       am "${patch_files[@]}" >/dev/null 2>&1; then
     echo "Check passed for ${name}"
     git -C "${tmpdir}" am --abort >/dev/null 2>&1 || true
     git -C "${repo_dir}" worktree remove --force "${tmpdir}" >/dev/null
@@ -169,6 +161,7 @@ apply_patch_series() {
   local repo_rel="$2"
   local repo_dir="${dir_root}/${repo_rel}"
   local patch_dir="${patch_root}/${name}"
+  local base_file="${patch_dir}/.base_commit"
 
   if [[ -n "${ONLY_SUBMODULE}" && "${ONLY_SUBMODULE}" != "${name}" ]]; then
     return 0
@@ -191,6 +184,14 @@ apply_patch_series() {
   echo "  patches: ${patch_dir}"
   echo "============================================================"
 
+  # Handle dirty repo safely
+  local stash_ref=""
+  if [[ -n "$(git -C "${repo_dir}" status --porcelain)" ]]; then
+    echo "WARNING: ${repo_dir} has local changes"
+    echo "Stashing them before applying patches..."
+    stash_ref=$(git -C "${repo_dir}" stash push -u -m "apply_patches.sh auto-stash" | awk '{print $1}')
+  fi
+
   ensure_clean_repo "${repo_dir}"
   check_no_in_progress_am "${repo_dir}"
 
@@ -200,30 +201,48 @@ apply_patch_series() {
   done < <(find "${patch_dir}" -maxdepth 1 -type f -name '*.patch' -print0 | sort -z)
 
   if [[ "${CHECK_ONLY}" == "YES" ]]; then
-    check_patch_series "${name}" "${repo_dir}" "${patch_files[@]}"
+    check_patch_series "${name}" "${repo_dir}" "${base_file}" "${patch_files[@]}"
     return 0
   fi
 
+  local start_commit
+  if [[ -f "${base_file}" ]]; then
+    start_commit="$(head -n 1 "${base_file}")"
+    echo "Using base commit from ${base_file}: ${start_commit}"
+  else
+    start_commit="$(git -C "${repo_dir}" rev-parse HEAD)"
+    echo "Recording base commit to ${base_file}: ${start_commit}"
+    echo "${start_commit}" > "${base_file}"
+    echo "date=$(date)" >> "${base_file}"
+    echo "repo=${name}" >> "${base_file}"
+  fi
+
+  if ! git -C "${repo_dir}" cat-file -e "${start_commit}^{commit}" 2>/dev/null; then
+    echo "ERROR: Base commit ${start_commit} from ${base_file} does not exist in ${repo_dir}"
+    exit 1
+  fi
+
+  echo "Resetting ${repo_dir} to base commit ${start_commit} ..."
+  git -C "${repo_dir}" am --abort 2>/dev/null || true
+  git -C "${repo_dir}" reset --hard "${start_commit}"
+  git -C "${repo_dir}" clean -fd
+
   echo "Applying patch series for ${name} ..."
+  echo "  start commit: ${start_commit}"
   if git -C "${repo_dir}" \
      -c user.name="${GIT_NAME}" \
      -c user.email="${GIT_EMAIL}" \
      am "${patch_files[@]}"; then
     echo "Applied patches successfully for ${name}"
   else
-    local patch_count=${#patch_files[@]}
     echo "ERROR: Failed while applying patches for ${name}"
     echo "       Resolve conflicts in ${repo_dir}, then run:"
     echo "         git -C ${repo_dir} am --continue"
     echo "       or abort with:"
     echo "         git -C ${repo_dir} am --abort"
-    echo "       To return to a clean upstream state for this submodule, run:"
+    echo "       To return to the stored base commit for this patch set, run:"
     echo "         git -C ${repo_dir} am --abort 2>/dev/null || true"
-    if [[ ${patch_count} -gt 0 ]]; then
-      echo "         git -C ${repo_dir} reset --hard HEAD~${patch_count}"
-    else
-      echo "         (no patches to drop)"
-    fi
+    echo "         git -C ${repo_dir} reset --hard ${start_commit}"
     echo "         git -C ${repo_dir} clean -fd"
 
     if [[ "${ABORT_ON_FAIL}" == "YES" ]]; then

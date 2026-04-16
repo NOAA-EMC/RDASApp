@@ -178,3 +178,6 @@ rrfs-test/testinput/*jcb*
 rrfs-test/validated_yamls/templates/jedivar.yaml
 rrfs-test/validated_yamls/templates/getkf_observer.yaml
 rrfs-test/validated_yamls/templates/getkf_solver.yaml
+
+# Ignore patch base_commit files
+patches/*/.base_commit
