@@ -4,7 +4,15 @@ import re
 
 
 def to_nan(values, fill_value):
-    """Convert fill values and non-finite entries to NaN."""
+    """Convert fill values and non-finite entries to NaN.
+
+    Args:
+        values: Input array-like values.
+        fill_value: Fill value sentinel from the netCDF variable (or None).
+
+    Returns:
+        numpy.ndarray: Float64 array with fill/non-finite values converted to NaN.
+    """
     import numpy as np
 
     data = np.asarray(values, dtype=np.float64)
@@ -15,7 +23,14 @@ def to_nan(values, fill_value):
 
 
 def read_metadata(dataset):
-    """Read latitude/longitude from the MetaData group."""
+    """Read latitude/longitude from the MetaData group.
+
+    Args:
+        dataset: Open netCDF4 Dataset handle.
+
+    Returns:
+        tuple[numpy.ndarray, numpy.ndarray]: Latitude and longitude arrays.
+    """
     import numpy as np
 
     if "MetaData" not in dataset.groups:
@@ -34,7 +49,16 @@ def read_metadata(dataset):
 
 
 def read_hofx_ensemble(dataset, n_members):
-    """Read hofx for all ensemble members and return stacked member array."""
+    """Read hofx values for all ensemble members.
+
+    Args:
+        dataset: Open netCDF4 Dataset handle.
+        n_members: Number of expected members (hofx0_1..hofx0_n).
+
+    Returns:
+        tuple[str, numpy.ndarray]: Observation variable name and 2D array with shape
+        (members, Location).
+    """
     import numpy as np
 
     hofx_name_pattern = re.compile(r"hofx0_(\d+)$")
@@ -79,7 +103,15 @@ def read_hofx_ensemble(dataset, n_members):
 
 
 def plot_spread(latitudes, longitudes, spread, obs_var_name, output_path):
-    """Plot spread over CONUS and write to output file."""
+    """Plot spread over CONUS and write to output file.
+
+    Args:
+        latitudes: Latitude array by Location.
+        longitudes: Longitude array by Location.
+        spread: Spread array by Location.
+        obs_var_name: Name of the observed variable.
+        output_path: Output image path.
+    """
     import numpy as np
     import matplotlib
     matplotlib.use("Agg")
