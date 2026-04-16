@@ -174,7 +174,9 @@ def main():
     )
     args = parser.parse_args()
     if args.members < 2:
-        raise ValueError("Ensemble spread requires at least 2 members.")
+        raise ValueError(
+            f"Number of ensemble members must be at least 2 for spread calculation, got {args.members}."
+        )
 
     import numpy as np
     from netCDF4 import Dataset
@@ -194,6 +196,8 @@ def main():
         )
     # Use sample standard deviation (N-1) for ensemble spread.
     spread = np.nanstd(hofx_members, axis=0, ddof=1)
+    valid_member_count = np.sum(np.isfinite(hofx_members), axis=0)
+    spread[valid_member_count < 2] = np.nan
     if spread.shape[0] != location_size:
         raise ValueError(
             f"Location size mismatch: spread has {spread.shape[0]} values, "
