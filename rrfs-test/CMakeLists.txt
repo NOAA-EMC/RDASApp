@@ -107,7 +107,11 @@ if(FV3_DYCORE)
          file(CREATE_LINK ${src_casedir}/coupler.res ${casedir}/coupler.res SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/gsiparm_regional.anl ${casedir}/gsiparm_regional.anl SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/mgbf_p196_14x14.nml ${casedir}/mgbf_p196_14x14.nml SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/mgbf_13km_connus_norm_profile_bottom_up.txt  ${casedir}/mgbf_13km_connus_norm_profile_bottom_up.txt SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/mgbf_p196_14x14_dbz.nml ${casedir}/mgbf_p196_14x14_dbz.nml SYMBOLIC)
+
+
+
          file(CREATE_LINK ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput SYMBOLIC)
          file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir} )
          set(target_test ${case})
