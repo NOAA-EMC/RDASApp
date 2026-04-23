@@ -59,6 +59,7 @@ done
 # Right side: relative path to submodule repo
 PATCH_TARGETS=(
   "fv3-jedi:sorc/fv3-jedi"
+  "mpas-jedi:sorc/mpas-jedi"
   "ufo:sorc/ufo"
   "saber:sorc/saber"
   "gsibec:sorc/gsibec"
