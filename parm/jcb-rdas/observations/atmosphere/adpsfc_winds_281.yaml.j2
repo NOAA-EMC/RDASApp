@@ -22,17 +22,14 @@
          simulated variables: [windEastward, windNorthward]
 
        obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
+           name: SfcCorrected
+           correction scheme to use: GSL
            variables:
            - name: windEastward
            - name: windNorthward
 
        linear obs operator:
-         name: VertInterp
+         name: Identity
 
        obs error:
          covariance model: diagonal
@@ -111,7 +108,7 @@
            tolerance: PT0H
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
-             name: MetaData/longitude_latitude_pressure
+             name: MetaData/longitude_latitude
            where:
            - variable: ObsType/windEastward
              is_in: 281

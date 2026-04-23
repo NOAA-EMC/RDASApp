@@ -355,6 +355,7 @@ include "type_parameter_point2this.inc"
 ! g1 --> g2
 !
 
+!$omp parallel do private(n,js,is,ix_prox,jy_prox) schedule(static)
   do n=1,4
     js=(n-1)/2
     is= n-1 -js*2
@@ -363,6 +364,7 @@ include "type_parameter_point2this.inc"
     
       Fitargup_loc12(n)=nxm*(jy_prox-1)+ix_prox-1
   enddo
+!$omp end parallel do
 
 !  write(12,'(i5,a,4i5)') mype,' ---> ', Fitargup_loc12(1),Fitargup_loc12(2),Fitargup_loc12(3),Fitargup_loc12(4)
 
@@ -372,6 +374,7 @@ include "type_parameter_point2this.inc"
     il = (ix_0-1)/(nxm/2)
     jl = (jy_0-1)/(nym/2)
    
+!$omp parallel do private(n,js,is,ix_prox,jy_prox) schedule(static)
   do n=1,4
     js=(n-1)/2
     is= n-1-js*2
@@ -380,6 +383,7 @@ include "type_parameter_point2this.inc"
     
       Fitargup_loc23(n)=nxm*(jy_prox-1)+ix_prox-1
   enddo
+!$omp end parallel do
 
 !  write(23,'(i5,a,4i5)') mype,' ---> ', Fitargup_loc23(1),Fitargup_loc23(2),Fitargup_loc23(3),Fitargup_loc23(4)
 
@@ -389,6 +393,7 @@ include "type_parameter_point2this.inc"
     il = (ix_0-1)/(nxm/4)
     jl = (jy_0-1)/(nym/4)
    
+!$omp parallel do private(n,js,is,ix_prox,jy_prox) schedule(static)
   do n=1,4
     js=(n-1)/2
     is= n-1-js*2
@@ -397,6 +402,7 @@ include "type_parameter_point2this.inc"
 
       Fitargup_loc34(n)=nxm*(jy_prox-1)+ix_prox-1
    enddo
+!$omp end parallel do
 
 !  write(34,'(i5,a,4i5)') mype,' ---> ', 
 !Fitargup_loc34(1),Fitargup_loc34(2),Fitargup_loc34(3),Fitargup_loc34(4)

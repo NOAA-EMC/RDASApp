@@ -61,6 +61,7 @@ submodule(mg_parameter) jp_pbfil
 use mpi
 use mgbf_kinds, only: dp=>r_kind
 use jp_pietc, only: u1
+use, intrinsic :: iso_fortran_env, only: output_unit, error_unit
 implicit none
 
 contains
@@ -79,7 +80,9 @@ real(dp),dimension(1,1,lx:mx),intent(inout):: el
 !-----------------------------------------------------------------------------
 integer :: ix
 !=============================================================================
+!$omp parallel do private(ix) schedule(static)
 do ix=lx,mx; el(1,1,ix)=u1/sqrt(el(1,1,ix)); enddo
+!$omp end parallel do
 end subroutine cholaspect1
 !=============================================================================
 module subroutine cholaspect2(lx,mx, ly,my, el)                 ! [cholaspect]
@@ -176,6 +179,47 @@ do ix=Lx,Mx
 !clt   write(6,*)'thinkdebss is ',ss(ix)
 enddo
 end subroutine getlinesum1
+module subroutine getlinesum1d(this,hx,lx,mx, el, ss)            ! [getlinesum]
+!=============================================================================
+!clt from getlinesum1, just reduce e1 to a 1d array
+! Get inverse of the line-sum of the matrix representing the
+! unnormalized
+! beta function with aspect tensor pasp=(el*el^T)^(-1), and invert the
+! result 
+! so it can be used subsequently in the normalized version of this
+! filter.
+!=============================================================================
+class(mg_parameter_type)::this
+integer,                  intent(in   ):: hx,Lx,mx
+real(dp),dimension(Lx:Mx),intent(in   ):: el
+real(dp),dimension(lx:mx),intent(  out):: ss
+!-----------------------------------------------------------------------------
+real(dp),parameter:: eps=1.e-12
+real(dp)          :: s,rr,rrc,exx,x
+integer           :: ix,gxl,gxm,gx
+!=============================================================================
+!clt  write(6,*)'thinkdebss Lx,MX = ',Lx, ' ',Mx
+do ix=Lx,Mx
+   s=0
+   exx=el(ix)*this%rmom2_1
+   x=u1/exx
+   gxl=ceiling(-x+eps); gxm=floor( x-eps)
+   if(gxl<-hx.or.gxm>hx) then
+        write(error_unit,*) 'thinkdeb7777 exx =',exx,' ',this%rmom2_1,' ',hx,' ',el(ix)
+        call flush(error_unit)
+        write(error_unit,*) 'In getlinesum1dxx; filter reach fx becomes too large for hx'
+        call flush(error_unit)
+        stop 'In getlinesum1d; filter reach becomes too large for hy'
+   endif
+   do gx=gxl,gxm
+      x=gx
+      rr=(x*exx)**2; rrc=u1-rr
+      s=s+rrc**this%p
+   enddo
+   ss(ix)=u1/s
+!clt   write(6,*)'thinkdebss is ',ss(ix)
+enddo
+end subroutine getlinesum1d
 !=============================================================================
 module subroutine getlinesum2(this,hx,lx,mx, hy,ly,my, el, ss)  ! [getlinesum]
 !=============================================================================
@@ -368,6 +412,46 @@ do ix=Lx,Mx
 enddo
 a=b
 end subroutine rbeta1
+module subroutine rbeta3d_1(this,nz,hx,lx,mx, el,ss, a)                    ! [rbeta]
+!=============================================================================
+!clt modified from rbeta1 to treat files of vertical dimension nz
+! Perform a radial beta-function filter in 1D.
+! It averages the surrounding density values, and so preserves the value
+! (in its target region) when presented with a constant-density input
+! field.
+! The input data occupy the extended region:
+! Lx-hx <= jx <= mx+hx.
+! The output data occupy the central region
+! Lx <= ix <= Mx.
+!=============================================================================
+class(mg_parameter_type)::this
+integer,                        intent(in   ):: nz,hx,Lx,mx
+real(dp),dimension(nz, Lx:Mx),   intent(in   ):: el
+real(dp),dimension(nz, Lx:Mx),   intent(in   ):: ss
+real(dp),dimension(nz,lx-hx:mx+hx),intent(inout):: a
+!-----------------------------------------------------------------------------
+real(dp),parameter             :: eps=1.e-12
+real(dp),dimension(nz,lx-hx:mx+hx):: b
+real(dp)                       :: x,tb,s,rr,rrc,frow,exx
+integer                        :: ix,jx,gx,k
+!=============================================================================
+b=0
+do k=1,nz 
+do ix=Lx,Mx
+   tb=0; s=ss(k,ix)
+   exx=el(k,ix)*this%rmom2_1
+   x=u1/exx
+   do gx=ceiling(-x+eps),floor( x-eps)
+      jx=ix+gx;      x=gx
+      rr=(x*exx)**2; rrc=u1-rr
+      frow=s*rrc**this%p
+      tb=tb+frow*a(k,jx)
+   enddo
+   b(k,ix)=tb
+enddo
+enddo
+a=b
+end subroutine rbeta3d_1
 !=============================================================================
 module subroutine rbeta2(this,hx,lx,mx, hy,ly,my, el,ss, a)          ! [rbeta]
 !=============================================================================
@@ -637,6 +721,44 @@ do ix=Lx,Mx
 enddo
 a=b
 end subroutine rbeta1t
+module subroutine rbeta3d_1T(this,nz,hx,lx,mx, el,ss, a)                  ! [rbetat]
+!clt modified from rbeta1T to add a vertical dimension
+!=============================================================================
+! Perform an ADJOINT radial beta-function filter in 1D.
+! It conserves "masses" initially distributed only at the closure of 
+! the central domain, 
+! Lx <= ix <= Mx.
+! The output field of the redistributed masses occupies the
+! the extended domain, 
+! Lx-hx <= jx <= mx+hx.
+!=============================================================================
+class(mg_parameter_type)::this
+integer,                        intent(in   )::nz, hx,Lx,mx
+real(dp),dimension(nz,Lx:Mx),  intent(in   ):: el
+real(dp),dimension(nz,  Lx:Mx),    intent(in   ):: ss
+real(dp),dimension(nz,lx-hx:mx+hx),intent(inout):: a
+!-----------------------------------------------------------------------------
+real(dp),parameter             :: eps=1.e-12
+real(dp),dimension(nz,lx-hx:mx+hx):: b
+real(dp)                       :: ta,s,rr,rrc,frow,exx,x
+integer                        :: ix,jx,gx,k
+!=============================================================================
+b=0
+do k=1,nz
+do ix=Lx,Mx
+   ta=a(k,ix); s=ss(k,ix)
+   exx=el(k,ix)*this%rmom2_1
+   x=u1/exx
+   do gx=ceiling(-x+eps),floor( x-eps)
+      jx=ix+gx;      x=gx
+      rr=(x*exx)**2; rrc=u1-rr
+      frow=s*rrc**this%p
+      b(k,jx)=b(k,jx)+frow*ta
+   enddo
+enddo
+enddo
+a=b
+end subroutine rbeta3d_1t
 !=============================================================================
 module subroutine rbeta2T(this,hx,lx,mx, hy,ly,my, el,ss, a)        ! [rbetat]
 !=============================================================================
@@ -1118,4 +1240,3 @@ a=b
 end subroutine vrbeta3t
 
 end submodule jp_pbfil
-

@@ -22,16 +22,13 @@
          simulated variables: [specificHumidity]
 
        obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
+           name: SfcCorrected
+           correction scheme to use: GSL
            variables:
            - name: specificHumidity
 
        linear obs operator:
-         name: VertInterp
+         name: Identity
 
        obs error:
          covariance model: diagonal
@@ -106,7 +103,7 @@
            tolerance: PT0H
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
-             name: MetaData/longitude_latitude_pressure
+             name: MetaData/longitude_latitude
            where:
            - variable: ObsType/specificHumidity
              is_in: 183
@@ -135,13 +132,14 @@
              name: assign error
              error function:
                name: ObsFunction/ObsErrorModelStepwiseLinear
+               #name: ObsFunction/ObsErrorModelHumidity
                options:
                  xvar:
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912]
 
-         # Error inflation based on pressure check (setupq.f90)
+         # Error inflation based on pressure check (setupq.f90) -- if this is off, use ObsFunction/ObsErrorModelHumidity
          - filter: Perform Action
            udescriptor: "error_inflation_pressure_check"
            filter variables:

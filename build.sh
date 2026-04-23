@@ -265,6 +265,10 @@ fi
 # Copy workaround codes (remove these as soon as PRs are merged)
 if [[ $BUILD_WORKAROUND == 'YES' ]]; then
 
+  # Apply workaround patches (git commit-base workaround method)
+  # Need to convert all the copy-based workaround methods to commit-based method
+  $dir_root/ush/apply_patches.sh
+
   # Workaround for regional GSIBEC
   # Saber PR #1088: https://github.com/JCSDA-internal/saber/pull/1088
   cp ../sorc/_workaround_/saber/GSIParameters.h        ../sorc/saber/src/saber/gsi/utils/GSIParameters.h
@@ -275,8 +279,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # No PR for full gsibec changes
   # gsibec PR #88 for qoption2: https://github.com/GEOS-ESM/GSIbec/pull/88
   cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
-  # fv3-jedi PR #1447: https://github.com/JCSDA-internal/fv3-jedi/pull/1447
-  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_linvarcha_c2a_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/LinearVariableChange/Control2Analysis/
 
   # Workaround for adding MGBF
   # No PR yet
@@ -284,6 +286,7 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp -r ../sorc/_workaround_/saber/mgbf/mgbf_src/*    ../sorc/saber/src/saber/mgbf/
   cp ../sorc/_workaround_/saber/mgbf/Localization.h   ../sorc/saber/src/saber/oops/Localization.h
   cp ../sorc/_workaround_/saber/mgbf/Interpolation.cc ../sorc/saber/src/saber/interpolation/Interpolation.cc
+  cp ../sorc/_workaround_/saber/mgbf/Interpolation.h  ../sorc/saber/src/saber/interpolation/Interpolation.h
   cp ../sorc/_workaround_/saber/mgbf/CMakeLists.txt   ../sorc/saber/src/saber/CMakeLists.txt
   cp ../sorc/_workaround_/saber/mgbf/compiler_flags_Intel_Fortran.cmake  ../sorc/saber/cmake/compiler_flags_Intel_Fortran.cmake
 
@@ -297,10 +300,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/fv3jedi_io_fms2_mod.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_mpi_arrange.f90  ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_mpi_arrange.f90
-
-  # Workaround for using top layer of tslb and smois for CRTM calculations
-  # PR opened: https://github.com/JCSDA-internal/fv3-jedi/pull/1454
-  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_vc_model2geovals_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/VariableChange/Model2GeoVaLs
 
 fi
 

@@ -1,0 +1,83 @@
+From d268bf6f8521c72df12a42baa9900aaca9463241 Mon Sep 17 00:00:00 2001
+From: "Donald.E.Lippi" <donald.e.lippi@noaa.gov>
+Date: Thu, 9 Apr 2026 17:14:04 +0000
+Subject: [PATCH 2/3] Workaround: update delp in fv3_state_mod
+
+---
+ src/fv3jedi/State/fv3jedi_state_mod.F90 | 53 +++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+
+diff --git a/src/fv3jedi/State/fv3jedi_state_mod.F90 b/src/fv3jedi/State/fv3jedi_state_mod.F90
+index b3be96ef..891216b3 100644
+--- a/src/fv3jedi/State/fv3jedi_state_mod.F90
++++ b/src/fv3jedi/State/fv3jedi_state_mod.F90
+@@ -58,6 +58,7 @@ type(fv3jedi_field), pointer :: t2m_state, t_inc
+ type(fv3jedi_field), pointer :: q2m_state, q_inc
+ type(fv3jedi_field), pointer :: u10m_state, u_inc
+ type(fv3jedi_field), pointer :: v10m_state, v_inc
++type(fv3jedi_field), pointer :: delp_state, ps_inc
+ 
+ ! Loop over the increment fields and add them to the state
+ do f = 1, size(increment_fields)
+@@ -186,6 +187,58 @@ if (hasfield(self%fields, 'northward_wind_at_surface') .and. &
+ 
+ endif
+ 
++! ----------------------------------------------------------------------
++! Workaround: update air_pressure_thickness from surface pressure increment
++! Only do this when air_pressure_thickness is not itself an analysis increment
++! Once delp is updated, air_pressure_levels and air_pressure will be updated
++! via VADER pathway: delp -> air_pressuree_levels -> air_pressure
++! ----------------------------------------------------------------------
++
++if (hasfield(self%fields, 'air_pressure_thickness') .and. &
++    hasfield(increment_fields, 'air_pressure_at_surface') .and. &
++    .not. hasfield(increment_fields, 'air_pressure_thickness')) then
++
++  call self%get_field('air_pressure_thickness', delp_state)
++  call get_field(increment_fields, 'air_pressure_at_surface', ps_inc)
++
++!  DEBUG: delp update sanity check
++!  if (self%f_comm%rank() == 0) then
++!    write(6,'(A,ES16.8)') 'DELP sanity pre-update sample_bot = ', &
++!      delp_state%array(delp_state%isc, delp_state%jsc, self%npz)
++!    write(6,'(A,ES16.8)') 'DELP sanity pre-update sample_mid = ', &
++!      delp_state%array(delp_state%isc, delp_state%jsc, max(1,self%npz/2))
++!    write(6,'(A,ES16.8)') 'DELP sanity pre-update sample_top = ', &
++!      delp_state%array(delp_state%isc, delp_state%jsc, 1)
++!    write(6,'(A,ES16.8)') 'PS increment sample = ', &
++!      ps_inc%array(delp_state%isc, delp_state%jsc, 1)
++!  endif
++
++  do k = 1, self%npz
++    do j = delp_state%jsc, delp_state%jec
++      do i = delp_state%isc, delp_state%iec
++        delp_state%array(i,j,k) = delp_state%array(i,j,k) + &
++          (geom%bk(k+1) - geom%bk(k)) * ps_inc%array(i,j,1)
++      enddo
++    enddo
++  enddo
++
++!  DEBUG: delp update sanity check
++!  if (self%f_comm%rank() == 0) then
++!    write(6,'(A,ES16.8)') 'DELP sanity post-update sample_bot = ', &
++!      delp_state%array(delp_state%isc, delp_state%jsc, self%npz)
++!    write(6,'(A,ES16.8)') 'DELP sanity post-update sample_mid = ', &
++!      delp_state%array(delp_state%isc, delp_state%jsc, max(1,self%npz/2))
++!    write(6,'(A,ES16.8)') 'DELP sanity post-update sample_top = ', &
++!      delp_state%array(delp_state%isc, delp_state%jsc, 1)
++!    write(6,'(A,ES16.8)') 'PS increment sample = ', &
++!      ps_inc%array(delp_state%isc, delp_state%jsc, 1)
++!  endif
++
++  nullify(delp_state)
++  nullify(ps_inc)
++
++endif
++
+ end subroutine add_increment
+ 
+ ! --------------------------------------------------------------------------------------------------
+-- 
+2.43.7
+

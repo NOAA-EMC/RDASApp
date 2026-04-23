@@ -50,13 +50,14 @@ contains
 
 ! --------------------------------------------------------------------------------------------------
 
-subroutine mgbf_covariance_create_cpp(c_self, c_comm, c_conf, c_bg, c_fg) &
+subroutine mgbf_covariance_create_cpp(c_self, c_comm, c_conf, c_fs, c_bg, c_fg) &
            bind(c, name='mgbf_covariance_create_f90')
 
 ! Arguments
 integer(c_int),     intent(inout) :: c_self
 type(c_ptr), value, intent(in)    :: c_conf
 type(c_ptr), value, intent(in)    :: c_comm
+type(c_ptr), value, intent(in)    :: c_fs
 type(c_ptr), value, intent(in)    :: c_bg
 type(c_ptr), value, intent(in)    :: c_fg
 
@@ -64,6 +65,7 @@ type(c_ptr), value, intent(in)    :: c_fg
 type(mgbf_covariance), pointer :: f_self
 type(fckit_mpi_comm)          :: f_comm
 type(fckit_configuration)     :: f_conf
+type(atlas_functionspace)     :: f_fs
 type(atlas_fieldset)          :: f_bg
 type(atlas_fieldset)          :: f_fg
 
@@ -78,12 +80,15 @@ call mgbf_covariance_registry%get(c_self, f_self)
 ! ------------
 f_conf = fckit_configuration(c_conf)
 f_comm = fckit_mpi_comm(c_comm)
+f_fs = atlas_functionspace(c_fs)
 f_bg = atlas_fieldset(c_bg)
 f_fg = atlas_fieldset(c_fg)
 
 ! Call implementation
 ! -------------------
-call f_self%create(f_comm, f_conf, f_bg, f_fg)
+call f_self%create(f_comm, f_conf, f_fs, f_bg, f_fg)
+
+call f_fs%final()
 
 end subroutine mgbf_covariance_create_cpp
 
@@ -155,14 +160,8 @@ type(mgbf_covariance), pointer :: f_self
 type(atlas_fieldset)          :: f_fieldset
 integer                       :: index_member_in=0
 !cltthink type(fieldset_type)          :: f_fieldset
-!write(6,*)'thinkdeb 999 in inteface f90 star'
-!call flush(6)
 call btim(mg_interface_multiply_time)
-!write(6,*)'thinkdeb 999 in inteface f90 star0.5 c_index_member_in ',c_index_member_in
-!call flush(6)
 index_member_in=int(c_index_member_in,kind=kind(index_member_in))
-!write(6,*)'thinkdeb 999 in inteface f90 star1'
-!call flush(6)
 ! LinkedList
 ! ----------
 call btim(mg_interface_registry_get_time)
@@ -177,8 +176,6 @@ call etim(mg_interface_fldset_time)
 
 ! Call implementation
 ! -------------------
-!write(6,*)'thinkdeb 999 in inteface f90 star2'
-!call flush(6)
 call f_self%multiply(f_fieldset,index_member_in)
 call etim(mg_interface_multiply_time)
 call f_fieldset%final()

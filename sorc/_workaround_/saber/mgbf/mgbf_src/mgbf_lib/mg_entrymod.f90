@@ -34,7 +34,7 @@ contains
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 !&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-module subroutine mg_initialize(this,inputfilename,obj_parameter)
+module subroutine mg_initialize(this,n_owned_anl,anl_lonlat1d,inputfilename,obj_parameter)
 implicit none
 !**********************************************************************!
 !                                                                      !
@@ -42,7 +42,10 @@ implicit none
 !                                                     M. Rancic (2020) !
 !***********************************************************************
 class (mg_intstate_type):: this
+integer(i_kind),optional,intent(in)::n_owned_anl
+real(r_kind),optional,intent(in)::anl_lonlat1d(:,:)
 character*(*),optional,intent(in) :: inputfilename
+
 class(mg_parameter_type),optional,intent(in)::obj_parameter
 
 !---------------------------------------------------------------------------
@@ -61,6 +64,17 @@ elseif (present(obj_parameter)) then
    this%mg_parameter_type=obj_parameter
 endif
 
+ if (present(anl_lonlat1d)) then
+    if (size(anl_lonlat1d,2) /= 2 .or. size(anl_lonlat1d,1) <  n_owned_anl) then
+      write(6,*)'thinkdeb size(anl_lonlat1d,2) ',size(anl_lonlat1d,2)
+      write(6,*)'thinkdeb size(anl_lonlat1d,1) ',size(anl_lonlat1d,1)
+      write(6,*)'thinkdeb n_owned_anl ) ', n_owned_anl 
+      call flush(6)
+      error stop "anl_lonlat1d has wrong shape"
+    end if
+   
+ end if
+
 !****
 !**** Initialize MPI
 !****
@@ -69,11 +83,15 @@ if(this%nxm*this%nym>1) call this%init_mg_MPI
 !***
 !*** Initialize integration domain
 !***
+      write(6,*)'thinkdeb in mg_entry,  ', 3   
+      call flush(6)
 call this%init_mg_domain
 if(this%l_loc) then
    call this%init_domain_loc
 endif
 
+      write(6,*)'thinkdeb in mg_entry,  ', 4   
+      call flush(6)
 !---------------------------------------------------------------------------
 !
 !               All others are function of km2,km3,km,nm,mm,im,jm
@@ -91,20 +109,35 @@ endif
 !***
 
 call this%allocate_mg_intstate
+      write(6,*)'thinkdeb in mg_entry,  ', 5   
+      call flush(6)
 
 call this%def_offset_coef
-
+      write(6,*)'thinkdeb in mg_entry,  ', 6   
+      call flush(6)
+if(present(n_owned_anl).and.present(anl_lonlat1d)) then 
+call this%def_mg_weights(n_owned_anl=n_owned_anl,lonlat1d_anl=anl_lonlat1d)
+else
 call this%def_mg_weights
+endif
+      write(6,*)'thinkdeb in mg_entry,  ', 7   
+      call flush(6)
 
 if(this%mgbf_line) then
-   !write(6,*)'thinkdeb init_mg_line is called'
+   write(6,*)'thinkdeb init_mg_line is called'
    call this%init_mg_line
 endif
+      write(6,*)'thinkdeb in mg_entry,  ', 8   
+      call flush(6)
 
 call this%lsqr_mg_coef 
+      write(6,*)'thinkdeb in mg_entry,  ', 9   
+      call flush(6)
 
 call this%lwq_vertical_coef(this%lm_a,this%lm,this%cvf1,this%cvf2,this%cvf3,this%cvf4,this%lref)
 
+      write(6,*)'thinkdeb in mg_entry,  ', 10   
+      call flush(6)
 !***
 !*** Just for testing of standalone version. In GSI WORKA will be given
 !*** through a separate subroutine 

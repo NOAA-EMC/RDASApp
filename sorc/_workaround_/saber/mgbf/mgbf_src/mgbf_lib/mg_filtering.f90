@@ -867,7 +867,7 @@ include "type_intstat_point2this.inc"
 !***
 !*** Adjoint of beta filter in vertical direction
 !**wr*
-!write(6,*)'thinkdeb999 l_vertical_fitler ',l_vertical_filter
+write(6,*)'thinkdeb999 l_vertical_fitler ',l_vertical_filter
   if(l_vertical_filter) then
                                                  call btim(vfiltT_tim)
      call this%sup_vrbeta1T_bkg(km,km3,hx,hy,hz,im,jm,lm,pasp1,ss1,VALL)
@@ -964,7 +964,7 @@ module subroutine filtering_fast_bkg(this)
 !***********************************************************************
 implicit none
 class (mg_intstate_type),target::this
-integer(i_kind) L,i,j
+integer(i_kind) L,i,j,k,lev1,lev2
 include "type_parameter_locpointer.inc"
 include "type_intstat_locpointer.inc"
 include "type_parameter_point2this.inc"
@@ -988,26 +988,74 @@ include "type_intstat_point2this.inc"
 !*** Apply adjoint of Beta filter at all generations 
 !***
                                                  call btim(hfiltT_tim)
+!$omp parallel do private(i,k,lev1,lev2) schedule(static)
      do i=im,1,-1
-        call this%rbetaT(km,hy,1,jm,paspy,ssy,VALL(:,i,:))
+        do k=1,km3
+           lev1=(k-1)*lm+1
+           lev2=k*lm
+        
+          call this%rbetaT(lm,hy,1,jm,this%paspy4d(:,i,1:jm,1),this%ssy4d(:,i,1:jm,1),VALL(lev1:lev2,i,:))
+        enddo
+ !cltorg       call this%rbetaT(km,hy,1,jm,paspy(1,i,1:jm),ssy(1,i,1:jm),VALL(:,i,:))
+!clt assuming 2d variables are suface variable
+        do k=1,km2
+          lev1=lev2+1
+          lev2=lev1
+          call this%rbetaT(1,hy,1,jm,this%paspy4d(lm:lm,i,1:jm,1),this%ssy4d(lm:lm,i,1:jm,1),VALL(lev1:lev2,i,:))
+          lev1=lev1+1
+          lev2=lev2+1
+        enddo
      enddo
+!$omp end parallel do
                                                  call etim(hfiltT_tim)
                                                  call btim(bocoT_tim)
         call this%bocoTy(VALL,km,im,jm,hx,hy)
                                                  call etim(bocoT_tim)
                                                  call btim(hfiltT_tim)
+!$omp parallel do private(j,k,lev1,lev2) schedule(static)
      do j=jm,1,-1
-        call this%rbetaT(km,hx,1,im,paspx,ssx,VALL(:,:,j))
+        do k=1,km3
+           lev1=(k-1)*lm+1
+           lev2=k*lm
+        
+          call this%rbetaT(lm,hx,1,im,this%paspx4d(:,1:im,j,1),this%ssx4d(:,1:im,j,1),VALL(lev1:lev2,:,j))
+        enddo
+!cltorg        call this%rbetaT(km,hx,1,im,paspx(1,:,1:im,j),ssx(1,1:im,j),VALL(:,:,j))
+!clt assuming 2d variables are suface variable
+        do k=1,km2
+          lev1=lev2+1
+          lev2=lev1
+          call this%rbetaT(1,hx,1,im,this%paspx4d(lm:lm,1:im,j,1),this%ssx4d(lm:lm,1:im,j,1),VALL(lev1:lev2,:,j))
+          lev1=lev1+1
+          lev2=lev2+1
+        enddo
      enddo
+!$omp end parallel do
                                                  call etim(hfiltT_tim)
                                                  call btim(bocoT_tim)
         call this%bocoTx(VALL,km,im,jm,hx,hy)
                                                  call etim(bocoT_tim)
   if(l_hgen) then
                                                  call btim(hfiltT_tim)
+!$omp parallel do private(i,k,lev1,lev2) schedule(static)
      do i=im,1,-1
-        call this%rbetaT(km,hy,1,jm,paspy,ssy,HALL(:,i,:))
+        do k=1,km3
+           lev1=(k-1)*lm+1
+           lev2=k*lm
+        
+          call this%rbetaT(lm,hy,1,jm,this%paspy4d(:,i,1:jm,2),this%ssy4d(:,i,1:jm,2),HALL(lev1:lev2,i,:))
+        enddo
+!clt assuming 2d variables are suface variable
+        do k=1,km2
+          lev1=lev2+1
+          lev2=lev1
+          call this%rbetaT(1,hy,1,jm,this%paspy4d(lm:lm,i,1:jm,2),this%ssy4d(lm:lm,i,1:jm,2),HALL(lev1:lev2,i,:))
+          lev1=lev1+1
+          lev2=lev2+1
+        enddo
      enddo
+!$omp end parallel do
+
                                                  call etim(hfiltT_tim)
   endif
                                                  call btim(bocoT_tim)
@@ -1015,9 +1063,24 @@ include "type_intstat_point2this.inc"
                                                  call etim(bocoT_tim)
   if(l_hgen) then
                                                  call btim(hfiltT_tim)
+!$omp parallel do private(j,k,lev1,lev2) schedule(static)
      do j=jm,1,-1
-        call this%rbetaT(km,hx,1,im,paspx,ssx,HALL(:,:,j))
+        do k=1,km3
+           lev1=(k-1)*lm+1
+           lev2=k*lm
+        
+          call this%rbetaT(lm,hx,1,im,this%paspx4d(:,1:im,j,2),this%ssx4d(:,1:im,j,2),HALL(lev1:lev2,:,j))
+        enddo
+!cltorg        call this%rbetaT(km,hx,1,im,paspx(:,2),ssx(:,,HALL(:,:,j))
+        do k=1,km2
+          lev1=lev2+1
+          lev2=lev1
+          call this%rbetaT(1,hx,1,im,this%paspx4d(lm:lm,1:im,j,2),this%ssx4d(lm:lm,1:im,j,2),HALL(lev1:lev2,:,j))
+          lev1=lev1+1
+          lev2=lev2+1
+        enddo
      enddo
+!$omp end parallel do
                                                  call etim(hfiltT_tim)
   endif
                                                  call btim(bocoT_tim)
@@ -1036,26 +1099,72 @@ include "type_intstat_point2this.inc"
         call this%bocox(VALL,km,im,jm,hx,hy)
                                                  call etim(boco_tim)
                                                  call btim(hfilt_tim)
+!$omp parallel do private(j,k,lev1,lev2) schedule(static)
      do j=1,jm
-        call this%rbeta(km,hx,1,im,paspx,ssx,VALL(:,:,j))
+        do k=1,km3
+           lev1=(k-1)*lm+1
+           lev2=k*lm
+        
+          call this%rbeta(lm,hx,1,im,this%paspx4d(:,1:im,j,1),this%ssx4d(:,1:im,j,1),VALL(lev1:lev2,:,j))
+        enddo
+!cltorg        call this%rbeta(km,hx,1,im,paspx,ssx,VALL(:,:,j))
+        do k=1,km2
+          lev1=lev2+1
+          lev2=lev1
+          call this%rbeta(1,hx,1,im,this%paspx4d(lm:lm,1:im,j,1),this%ssx4d(lm:lm,1:im,j,1),VALL(lev1:lev2,:,j))
+          lev1=lev1+1
+          lev2=lev2+1
+        enddo
      enddo
+!$omp end parallel do
                                                  call etim(hfilt_tim)
                                                  call btim(boco_tim)
         call this%bocoy(VALL,km,im,jm,hx,hy)
                                                  call etim(boco_tim)
                                                  call btim(hfilt_tim)
+!$omp parallel do private(i,k,lev1,lev2) schedule(static)
      do i=1,im
-        call this%rbeta(km,hy,1,jm,paspy,ssy,VALL(:,i,:))
+        do k=1,km3
+           lev1=(k-1)*lm+1
+           lev2=k*lm
+        
+          call this%rbeta(lm,hy,1,jm,this%paspy4d(:,i,1:jm,1),this%ssy4d(:,i,1:jm,1),VALL(lev1:lev2,i,:))
+        enddo
+!cltorg        call this%rbeta(km,hy,1,jm,paspy,ssy,VALL(:,i,:))
+!clt assuming 2d variables are suface variable
+        do k=1,km2
+          lev1=lev2+1
+          lev2=lev1
+          call this%rbeta(1,hy,1,jm,this%paspy4d(lm:lm,i,1:jm,1),this%ssy4d(lm:lm,i,1:jm,1),VALL(lev1:lev2,i,:))
+          lev1=lev1+1
+          lev2=lev2+1
+        enddo
      enddo
+!$omp end parallel do
                                                  call etim(hfilt_tim)
                                                  call btim(boco_tim)
         call this%bocox(HALL,km,im,jm,hx,hy,Fimax,Fjmax,2,gm)
                                                  call etim(boco_tim)
   if(l_hgen)  then
                                                  call btim(hfilt_tim)
+!$omp parallel do private(j,k,lev1,lev2) schedule(static)
      do j=1,jm
-        call this%rbeta(km,hx,1,im,paspx,ssx,HALL(:,:,j))
+        do k=1,km3
+           lev1=(k-1)*lm+1
+           lev2=k*lm
+        
+          call this%rbeta(lm,hx,1,im,this%paspx4d(:,1:im,j,2),this%ssx4d(:,1:im,j,2),HALL(lev1:lev2,:,j))
+        enddo
+!cltorg        call this%rbeta(km,hx,1,im,paspx,ssx,HALL(:,:,j))
+        do k=1,km2
+          lev1=lev2+1
+          lev2=lev1
+          call this%rbeta(1,hx,1,im,this%paspx4d(lm:lm,1:im,j,2),this%ssx4d(lm:lm,1:im,j,2),HALL(lev1:lev2,:,j))
+          lev1=lev1+1
+          lev2=lev2+1
+        enddo
      enddo
+!$omp end parallel do
                                                  call etim(hfilt_tim)
   endif
                                                  call btim(boco_tim)
@@ -1063,9 +1172,25 @@ include "type_intstat_point2this.inc"
                                                  call etim(boco_tim)
   if(l_hgen)  then
                                                  call btim(hfilt_tim)
+!$omp parallel do private(i,k,lev1,lev2) schedule(static)
      do i=1,im
-        call this%rbeta(km,hy,1,jm,paspy,ssy,HALL(:,i,:))
+        do k=1,km3
+           lev1=(k-1)*lm+1
+           lev2=k*lm
+        
+          call this%rbeta(lm,hy,1,jm,this%paspy4d(:,i,1:jm,2),this%ssy4d(:,i,1:jm,2),HALL(lev1:lev2,i,:))
+        enddo
+!cltorg        call this%rbeta(km,hy,1,jm,paspy,ssy,HALL(:,i,:))
+!clt assuming 2d variables are suface variable
+        do k=1,km2
+          lev1=lev2+1
+          lev2=lev1
+          call this%rbeta(1,hy,1,jm,this%paspy4d(lm:lm,i,1:jm,2),this%ssy4d(lm:lm,i,1:jm,2),HALL(lev1:lev2,i,:))
+          lev1=lev1+1
+          lev2=lev2+1
+        enddo
      enddo
+!$omp end parallel do
                                                  call etim(hfilt_tim)
   endif
 !***

@@ -33,6 +33,9 @@ use mgbf_kinds, only: r_kind,i_kind
 use jp_pkind2, only: fpi
 use jp_pbfil3, only: inimomtab,t22_to_3,tritform,t33_to_6,hextform
 use mg_parameter,only: mg_parameter_type
+use mg_tools,only : interp_analysis_to_filter,mg_sphere_dist
+use tools_func, only:sphere_dist
+use  tools_const, only: req,deg2rad
 implicit none
 type,extends( mg_parameter_type):: mg_intstate_type
 real(r_kind), allocatable,dimension(:,:,:):: V
@@ -65,7 +68,9 @@ real(r_kind), allocatable,dimension(:,:):: p_sig
 real(r_kind), allocatable,dimension(:,:):: p_rho
 
 real(r_kind), allocatable,dimension(:,:,:):: paspx
+real(r_kind), allocatable,dimension(:,:,:,:):: paspx4d
 real(r_kind), allocatable,dimension(:,:,:):: paspy
+real(r_kind), allocatable,dimension(:,:,:,:):: paspy4d
 real(r_kind), allocatable,dimension(:,:,:):: pasp1
 real(r_kind), allocatable,dimension(:,:,:,:):: pasp2
 real(r_kind), allocatable,dimension(:,:,:,:,:):: pasp3
@@ -76,7 +81,9 @@ real(r_kind), allocatable,dimension(:,:,:,:):: vpasp3
 real(r_kind), allocatable,dimension(:,:,:,:):: hss3
 
 real(r_kind), allocatable,dimension(:):: ssx
+real(r_kind), allocatable,dimension(:,:,:,:):: ssx4d
 real(r_kind), allocatable,dimension(:):: ssy
+real(r_kind), allocatable,dimension(:,:,:,:):: ssy4d
 real(r_kind), allocatable,dimension(:):: ss1
 real(r_kind), allocatable,dimension(:,:):: ss2
 real(r_kind), allocatable,dimension(:,:,:):: ss3
@@ -651,13 +658,14 @@ interface
      real(r_kind),dimension(this%km,-1:this%imL+2,-1:this%jmL+2):: H_INT
    end subroutine
    module subroutine upsending_normalized &
-        (this,V,H)
+        (this,nz,V,H)
      implicit none
      class (mg_intstate_type),target:: this
-     real(r_kind),dimension(this%km,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy),intent(in):: V
-     real(r_kind),dimension(this%km,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy),intent(out):: H
-     real(r_kind),dimension(this%km,-1:this%imL+2,-1:this%jmL+2):: V_INT
-     real(r_kind),dimension(this%km,-1:this%imL+2,-1:this%jmL+2):: H_INT
+     integer (i_kind):: nz
+     real(r_kind),dimension(nz,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy),intent(in):: V
+     real(r_kind),dimension(nz,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy),intent(out):: H
+     real(r_kind),dimension(nz,-1:this%imL+2,-1:this%jmL+2):: V_INT
+     real(r_kind),dimension(nz,-1:this%imL+2,-1:this%jmL+2):: H_INT
    end subroutine
    module subroutine downsending &
         (this,H,V)
@@ -842,7 +850,7 @@ interface
      class (mg_intstate_type),target:: this
      integer(i_kind),intent(in):: g
      integer(i_kind),intent(in):: km_in
-     real(r_kind), dimension(km_in,0:this%im+1,0:this%jm+1), intent(in):: F
+     real(r_kind), dimension(km_in,1:this%im,1:this%jm), intent(in):: F
      real(r_kind), dimension(km_in,-1:this%imL+2,-1:this%jmL+2), intent(out):: W
    end subroutine
    module subroutine direct1 &
@@ -1078,8 +1086,10 @@ interface
      real (r_kind):: WORK(this%km_all,1:this%nm,1:this%mm)
    end subroutine
 !from mg_entrymod.f90
-   module subroutine mg_initialize(this,inputfilename,obj_parameter)
+   module subroutine mg_initialize(this,n_owned_anl,anl_lonlat1d,inputfilename,obj_parameter)
      class (mg_intstate_type):: this
+     integer(i_kind),optional,intent(in)::n_owned_anl
+     real(r_kind),optional,intent(in)::anl_lonlat1d(:,:)
      character*(*),optional,intent(in) :: inputfilename
      class(mg_parameter_type),optional,intent(in)::obj_parameter
    end subroutine
@@ -1103,6 +1113,9 @@ subroutine allocate_mg_intstate(this)
 implicit none
 class(mg_intstate_type),target::this
 
+
+
+
 if(this%l_loc) then
    allocate(this%w1_loc(this%km_all   ,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy)) ; this%w1_loc=0.
    allocate(this%w2_loc(this%km_all/4 ,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy)) ; this%w2_loc=0.
@@ -1111,7 +1124,6 @@ if(this%l_loc) then
 endif
 
 
-allocate(this%weig_var(this%km_all,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,this%gm))        ; this%weig_var=0.
 
 allocate(this%V(1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,this%lm))        ; this%V=0.
 allocate(this%VALL(this%km_all,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy)) ; this%VALL=0.
@@ -1128,7 +1140,9 @@ allocate(this%p_sig(1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy)) ; this
 allocate(this%p_rho(1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy)) ; this%p_rho=0.
 
 allocate(this%paspx(1,1,1:this%im)) ; this%paspx=0.
+allocate(this%paspx4d(this%lm,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,2)) ; this%paspx4d=0.
 allocate(this%paspy(1,1,1:this%jm)) ; this%paspy=0.
+allocate(this%paspy4d(this%lm,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,2)) ; this%paspy4d=0.
 
 allocate(this%pasp1(1,1,1:this%lm))                     ; this%pasp1=0.
 allocate(this%pasp2(2,2,1:this%im,1:this%jm))           ; this%pasp2=0.
@@ -1139,9 +1153,11 @@ allocate(this%hss2(1:this%im,1:this%jm,1:3))   ; this%hss2=0.
 
 allocate(this%vpasp3(1:6,1:this%im,1:this%jm,1:this%lm)) ; this%vpasp3=0.
 allocate(this%hss3(1:this%im,1:this%jm,1:this%lm,1:6))   ; this%hss3=0.
-
+!clt ssx and ssy are all 0 for filtering_fast_bkg, hence, they are not changed for the inhomogeneous case
 allocate(this%ssx(1:this%im))                     ; this%ssx=0.
+allocate(this%ssx4d(this%lm,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,2)) ; this%ssx=0.
 allocate(this%ssy(1:this%jm))                     ; this%ssy=0.
+allocate(this%ssy4d(this%lm,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,2)) ; this%ssy=0.
 allocate(this%ss1(1:this%lm))                     ; this%ss1=0.
 allocate(this%ss2(1:this%im,1:this%jm))           ; this%ss2=0.
 allocate(this%ss3(1:this%im,1:this%jm,1:this%lm)) ; this%ss3=0.
@@ -1232,13 +1248,15 @@ allocate(this%cvh4(1:this%lm)) ; this%cvh4=0.
 endsubroutine allocate_mg_intstate
 
 !&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-subroutine def_mg_weights(this)
+subroutine def_mg_weights(this,n_owned_anl,lonlat1d_anl)
 !***********************************************************************
 !                                                                      !
 ! Define weights and scales                                            !
 !                                                                      !
 implicit none
 class (mg_intstate_type),target::this
+integer(i_kind),optional,intent(in)::n_owned_anl
+real(r_kind),optional,intent(in)::lonlat1d_anl(:,:)
 !***********************************************************************
 integer(i_kind):: i,j,k,L
 
@@ -1247,19 +1265,49 @@ real(r_kind),allocatable, dimension(:,:,:,:):: weig_g
 real(r_kind),allocatable, dimension(:,:,:,:):: loc_a 
 real(r_kind),allocatable, dimension(:,:,:):: weigh_tmp 
 real(r_kind),allocatable, dimension(:):: par_weig_g 
+real(r_kind),allocatable :: lonlat2d_anl(:,:,:)
+real(r_kind),allocatable :: lonlat2d_filt(:,:,:)
+                         !
+! Allocate internal state variables                                    !
+!                                                                      !
+!*************************************************real(r_kind),allocatable :: lonlat2d_filt(:,:,:)
 integer :: rank, size, ierr, comm2d
 integer,allocatable,dimension(:) :: sendcounts, displs
 integer :: dims(2), periods(2), coords(2)
 integer(i_kind):: nxloc,nyloc,nz,nt,start_idx,end_idx
 integer(i_kind):: ig
 character*72  tmpfilename
+real (r_kind)::rtem1,rtem2
+real (r_kind) :: dist_rad
 !-----------------------------------------------------------------------
+allocate(this%weig_var(this%km_all,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,this%gm))        ; this%weig_var=0.
 start_idx=Lbound(this%weig_var,4)
 end_idx=Ubound(this%weig_var,4)
 if(start_idx /=1 ) then
  write(6,*)'the expected begin index of weig_var is 1, stop'
  stop
 endif
+
+ if (present(lonlat1d_anl)) then
+    if (size(lonlat1d_anl,2) /= 2 .or. size(lonlat1d_anl,1) < n_owned_anl) then
+      error stop "lonlat1d_anl has wrong shape"
+    end if
+  else
+    this%l_constant_aspt2=.true.
+   
+  end if
+ if (present(n_owned_anl)) then
+   if(this%nm*this%mm /= n_owned_anl) then 
+     error stop "the input grid number is not as expected , stop "
+   endif
+ else
+    this%l_constant_aspt2=.true.
+    
+ endif
+
+
+
+
 allocate(sendcounts(this%nxpe*this%nype), displs(this%nxpe*this%nype))
 allocate(weigh_tmp(this%km_all,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy))        ; this%weig_var=0.
 !clt first transform/upsend original mg_weigh_var to their correct locations
@@ -1317,7 +1365,7 @@ if(this%l_mgbf_inhomogeneous ) then
   !clt to convert data in weigt_var to their correct locations
      do ig=start_idx,end_idx
        weigh_tmp=this%weig_var(:,:,:,ig)
-       call this%upsending_normalized(weigh_tmp,this%weig_var(:,:,:,ig))
+       call this%upsending_normalized(this%km_all,weigh_tmp,this%weig_var(:,:,:,ig))
      enddo 
 
       deallocate(weig_g,weigh_tmp)
@@ -1325,9 +1373,8 @@ if(this%l_mgbf_inhomogeneous ) then
    allocate(par_weig_g(4))
    par_weig_g=(/this%mg_weig1,this%mg_weig2,this%mg_weig3,this%mg_weig4/)
    do ig=start_idx,end_idx
-   !write(6,*)'thinkdeb255 par_weig_g(ig) ',par_weig_g(ig)
    weigh_tmp=par_weig_g(ig)
-   call this%upsending_normalized(weigh_tmp,this%weig_var(:,:,:,ig))
+   call this%upsending_normalized(this%km_all,weigh_tmp,this%weig_var(:,:,:,ig))
   !clto call this%upsending(weigh_tmp,this%weig_var(:,:,:,ig))
    enddo 
 
@@ -1354,8 +1401,8 @@ endif
 !--------------------------------------------------------
 gen_fac=1.
 !cltorg this%a_diff_f(:,:,:)=this%mg_weig1 
-!write(tmpfilename, '("mgbf_tmpfile_", I0, ".txt")') this%mype
-!open(12,file=trim(tmpfilename),form="formatted")
+write(tmpfilename, '("mgbf_tmpfile_", I0, ".txt")') this%mype
+open(12,file=trim(tmpfilename),form="formatted")
 if(this%l_mgbf_inhomogeneous ) then
 this%a_diff_f(:,:,:)=this%weig_var(:,:,:,1) 
 !cltorg this%a_diff_h(:,:,:)=this%mg_weig1 
@@ -1367,15 +1414,11 @@ this%b_diff_h(:,:,:)=0.
 select case(this%my_hgen)
 case(2) 
 !cltorg   this%a_diff_h(:,:,:)=this%mg_weig2
-!write(12,*)'thinkdeb256 weigh2 ',this%mg_weig2,minval(this%weig_var(:,:,:,2)),(this%weig_var(:,:,:,2))
    this%a_diff_h(:,:,:)=this%weig_var(:,:,:,2)
 case(3) 
 !cltorg   this%a_diff_h(:,:,:)=this%mg_weig3 
-!write(12,*)'thinkdeb256 weigh3 ',this%mg_weig3,minval(this%weig_var(:,:,:,3)),(this%weig_var(:,:,:,3))
    this%a_diff_h(:,:,:)=this%weig_var(:,:,:,3)
-!write(6,*)'thinkdeb256 weigh3 1 ',this%weig_var(:,:,:,3)
 case default 
-!write(12,*)'thinkdeb256 weigh4 ',this%mg_weig1,minval(this%weig_var(:,:,:,4)),(this%weig_var(:,:,:,4))
 !cltorg   this%a_diff_h(:,:,:)=this%mg_weig4
    this%a_diff_h(:,:,:)=this%weig_var(:,:,:,4)
 end select
@@ -1400,13 +1443,94 @@ do L=1,this%lm
    this%pasp1(1,1,L)=this%pasp01
 enddo
 
-do i=1,this%im
-   this%paspx(1,1,i)=this%pasp02
-enddo
-do j=1,this%jm
-   this%paspy(1,1,j)=this%pasp02
-enddo
+!tothink
+!cltorg do i=1,this%im
+!cltorg   this%paspx(1,1,i)=this%pasp02
+!cltorg enddo
+if (this%l_constant_aspt2 ) then 
+     this%paspx=this%pasp02
+     this%paspy=this%pasp02
+     this%paspx4d(:,:,:,:)=this%pasp02  !for first generation
+!cltorg   this%paspy(1,1,j)=this%pasp02
+!cltorg enddo
+!lct   this%paspy(:,:,:,1)=this%pasp02  !for first generation
+     this%paspy4d(:,:,:,:)=this%pasp02  !for first generation
+ else  !clt inhomogeneous and anisotropic aspect tensors 
+  !to initialize halo points 
+  !to initialize halo points 
+     this%paspx=this%pasp02
+     this%paspy=this%pasp02  !paspx and paspy will be replaced by paspx4d/paspy4d when the x/y filter
+                             ! is used ( filtering_fast_bkg ) 
+#if 1 
+   allocate (lonlat2d_anl(this%nm,this%mm,2))
+   allocate (lonlat2d_filt(this%im,this%jm,2))
+   lonlat2d_anl(:,:,1)=reshape(lonlat1d_anl(:,1),[size(lonlat2d_anl,1),size(lonlat2d_anl,2)])
+   lonlat2d_anl(:,:,2)=reshape(lonlat1d_anl(:,2),[size(lonlat2d_anl,1),size(lonlat2d_anl,2)])
+   lonlat2d_anl=lonlat2d_anl*deg2rad
+   if(this%mype.eq.0) then 
+     open(13,file='latlon.txt',form="formatted")
+       write(13,*)"lon and lat "
+        do j = 1, this%mm
+           do i = 1, this%nm
+            write(13,'(2I5, 2ES20.10)') i, j, &
+                      lonlat2d_anl(i, j, 1), lonlat2d_anl(i, j, 2)
+            end do
+         end do
+!#       write(13,*)lonlat2d_anl(:,:,1)
+!       write(13,*)"lat "
+!       write(13,*)lonlat2d_anl(:,:,2)
+    close(13)
+   endif
+   call interp_analysis_to_filter(lonlat2d_anl(:,:,1),this%nm,this%mm,this%im,this%jm,lonlat2d_filt(:,:,1))
+   call interp_analysis_to_filter(lonlat2d_anl(:,:,2),this%nm,this%mm,this%im,this%jm,lonlat2d_filt(:,:,2))
+  
+   do j=1,this%jm
+    do i=1,this%im
+      if (i.le.this%im-1) then
+        call mg_sphere_dist(lonlat2d_filt(i,j,1), lonlat2d_filt(i,j,2), lonlat2d_filt(i+1,j,1),lonlat2d_filt(i+1,j,2), dist_rad)
+      else
+        call mg_sphere_dist(lonlat2d_filt(i-1,j,1), lonlat2d_filt(i-1,j,2), lonlat2d_filt(i,j,1),lonlat2d_filt(i,j,2), dist_rad)
+      endif
+      this%dxfm(i,j)=dist_rad*req
+      if (j.le.this%jm-1) then
+        call mg_sphere_dist(lonlat2d_filt(i,j,1), lonlat2d_filt(i,j,2), lonlat2d_filt(i,j+1,1),lonlat2d_filt(i,j+1,2), dist_rad)
+      else
+        call mg_sphere_dist(lonlat2d_filt(i,j-1,1), lonlat2d_filt(i,j-1,2), lonlat2d_filt(i,j,1),lonlat2d_filt(i,j,2), dist_rad)
+      endif
+      this%dyfm(i,j)=dist_rad*req
+    enddo
+   enddo
+      
+       
+      rtem1=this%pasp02  
+      rtem2=this%pasp02
+     
+      do i=1,this%im
+      do j=1,this%jm
+     this%paspx4d(1,i,j,1)=(rtem1/this%dxfmctrl*this%dxfm(i,j))  ! !cltthinkdeb9999
+     this%paspy4d(1,i,j,1)=(rtem1/this%dyfmctrl*this%dyfm(i,j))  !
+      enddo
+      enddo
+           
 
+
+     this%paspx4d(2:this%lm,:,:,1)=spread(this%paspx4d(1,:,:,1),dim=1,ncopies=this%lm-1)
+     this%paspy4d(2:this%lm,:,:,1)=spread(this%paspy4d(1,:,:,1),dim=1,ncopies=this%lm-1)
+   
+   
+
+
+   
+    
+   deallocate (lonlat2d_anl)
+   deallocate (lonlat2d_filt)
+#else
+     this%paspx4d(:,:,:,1)=this%pasp02
+     this%paspy4d(:,:,:,1)=this%pasp02
+#endif
+  
+endif
+!$omp parallel do private(i,j) schedule(static)
 do j=1,this%jm
 do i=1,this%im
    this%pasp2(1,1,i,j)=this%pasp02*(1.+this%p_del(i,j))
@@ -1415,7 +1539,9 @@ do i=1,this%im
    this%pasp2(2,1,i,j)=this%pasp02*this%p_eps(i,j)     
 end do
 end do
+!$omp end parallel do
 
+!$omp parallel do private(i,j,l) schedule(static)
 do L=1,this%lm
    do j=1,this%jm
    do i=1,this%im
@@ -1430,7 +1556,10 @@ do L=1,this%lm
       this%pasp3(3,1,i,j,l)=this%pasp03*this%p_rho(i,j)
    end do
    end do
+
+
 end do
+!$omp end parallel do
 
 
 !cltorg  if(.not.this%mgbf_line) then
@@ -1476,6 +1605,16 @@ end do
          call this%cholaspect(1,this%im,1,this%jm,1,this%lm,this%pasp3)
          call this%getlinesum(this%hx,1,this%im,this%paspx,this%ssx)
          call this%getlinesum(this%hy,1,this%jm,this%paspy,this%ssy)
+       do k=1,this%lm
+         do j=1,this%jm
+         call this%getlinesum(this%hx,1,this%im,this%paspx4d(k,1:this%im,j,1),this%ssx4d(k,1:this%im,j,1))
+         end do
+       enddo
+       do k=1,this%lm
+         do i=1,this%im
+         call this%getlinesum(this%hy,1,this%jm,this%paspy4d(k,i,1:this%jm,1),this%ssy4d(k,i,1:this%jm,1))
+         end do 
+       enddo
          call this%getlinesum(this%hz,1,this%lm,this%pasp1,this%ss1)
          call this%getlinesum(this%hx,1,this%im,this%hy,1,this%jm,this%pasp2,this%ss2)
          call this%getlinesum(this%hx,1,this%im,this%hy,1,this%jm,this%hz,1,this%lm,this%pasp3,this%ss3)
@@ -1502,6 +1641,22 @@ end do
       this%VALL(1,1-this%hx:this%imH+this%hx,1-this%hy:this%jmH+this%hy)=0.
    end if
 !cltorg  end if
+!cltthinkdeb10000
+   call this%boco_2d(this%paspx4d(1:this%lm,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,1),this%lm,this%im,this%jm,this%hx,this%hy)
+   call this%upsending_normalized(this%lm,this%paspx4d(:,:,:,1),this%paspx4d(:,:,:,2))
+
+   call this%boco_2d(this%paspy4d(1:this%lm,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,1),this%lm,this%im,this%jm,this%hx,this%hy)
+   call this%upsending_normalized(this%lm,this%paspy4d(:,:,:,1),this%paspy4d(:,:,:,2))
+
+   call this%boco_2d(this%ssx4d(1:this%lm,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,1),this%lm,this%im,this%jm,this%hx,this%hy)
+   call this%upsending_normalized(this%lm,this%ssx4d(:,:,:,1),this%ssx4d(:,:,:,2))
+   call this%boco_2d(this%ssy4d(1:this%lm,1-this%hx:this%im+this%hx,1-this%hy:this%jm+this%hy,1),this%lm,this%im,this%jm,this%hx,this%hy)
+   call this%upsending_normalized(this%lm,this%ssy4d(:,:,:,1),this%ssy4d(:,:,:,2))
+
+
+deallocate(this%weig_var) 
+
+
 !-----------------------------------------------------------------------
 endsubroutine def_mg_weights
 
@@ -1603,6 +1758,7 @@ if(this%l_loc) then
 endif
 if (allocated(this%aspect_vert_profile_angrid) ) deallocate( this%aspect_vert_profile_angrid)
 if (allocated(this%aspect_vert_profile_filtgrid) ) deallocate( this%aspect_vert_profile_filtgrid)
+deallocate(this%dxfm,this%dyfm)
 
 end subroutine deallocate_mg_intstate
 

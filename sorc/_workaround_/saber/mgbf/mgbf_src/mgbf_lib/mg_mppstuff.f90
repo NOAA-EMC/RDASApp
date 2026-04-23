@@ -59,16 +59,12 @@ include "type_parameter_point2this.inc"
 !***
       call MPI_COMM_RANK(MPI_COMM_WORLD,mype,ierr)
       call MPI_COMM_SIZE(MPI_COMM_WORLD,npes,ierr)
-      !write(6,*)'thinkdeb in mg_mppstuff npes,mype is ',npes,mype  
-      !call flush(6)
 !      call MPI_Barrier(MPI_COMM_WORLD, ierr)
 
       ! Create a new communicator with MPI_Comm_split
       color=1  ! just create an communicator now for the whole processes
       call MPI_Comm_split(MPI_COMM_WORLD, color, mype, mpi_comm_comp, ierr)
       call MPI_COMM_SIZE(mpi_comm_comp,npes,ierr)
-      !write(6,*)'thinkdeb in mg_mppstuff new npes, world is ',npes,' ',mpi_comm_comp  
-      !call flush(6)
 
       rTYPE = MPI_REAL
       dTYPE = MPI_DOUBLE
@@ -107,8 +103,6 @@ include "type_parameter_point2this.inc"
 !-----------------------------------------------------------------------
 !
       call MPI_BARRIER(mpi_comm_comp,ierr)
-      !write(6,*)'thinkdeb in mg_mppstuff 2 '
-      !call flush(6)
 !
 !-----------------------------------------------------------------------
 !***
@@ -118,14 +112,14 @@ include "type_parameter_point2this.inc"
 !  Associate a group with communicator this@mpi_comm_comp
 !
       call MPI_COMM_GROUP(mpi_comm_comp,group_world,ierr)
-      !write(6,*)'thinkdeb in mg_mppstuff 3, npes_filt ',npes_filt   
-      !call flush(6)
 !
 !  Create a new group out of exising group
 !
+!$omp parallel do private(nf) schedule(static)
      do nf = 1,npes_filt
        out_ranks(nf)=nf-1
      enddo 
+!$omp end parallel do
 
      call MPI_GROUP_INCL(group_world,npes_filt,out_ranks,group_work,ierr)
 !
@@ -195,4 +189,3 @@ endsubroutine finishMPI
 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 end submodule mg_mppstuff
-

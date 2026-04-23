@@ -22,16 +22,19 @@
          simulated variables: [airTemperature]
 
        obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
+           name: SfcCorrected
+           correction scheme to use: GSL
+           gsl parameters:
+             temperature lapse rate option: Local
+             temperature local lapse rate level: 5
+             temperature lapse rate threshold: true
+             min threshold: 0.5
+             max threshold: 10.0
            variables:
            - name: airTemperature
 
        linear obs operator:
-         name: VertInterp
+         name: Identity
 
        obs error:
          covariance model: diagonal
@@ -106,7 +109,7 @@
            tolerance: PT0H
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
-             name: MetaData/longitude_latitude_pressure
+             name: MetaData/longitude_latitude
            where:
            - variable: ObsType/airTemperature
              is_in: 187
@@ -141,31 +144,31 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585]
 
-#         # Reduce observation error and turn off ObsErrorFactorPressureCheck (l_gsd_terrain_match_surfTobs=.true., l_sfcobserror_ramp_t=.true.,)
-#         - filter: Perform Action
-#           filter variables:
-#           - name: airTemperature
-#           action:
-#             name: inflate error
-#             inflation factor: 0.5
-
-         # Error inflation based on pressure check (setupt.f90)
+         # Reduce observation error and turn off ObsErrorFactorPressureCheck (l_gsd_terrain_match_surfTobs=.true., l_sfcobserror_ramp_t=.true.,)
          - filter: Perform Action
-           udescriptor: "error_inflation_pressure_check"
            filter variables:
            - name: airTemperature
-           where:
-           - variable: ObsType/airTemperature
-             is_in: 187
            action:
              name: inflate error
-             inflation variable:
-               name: ObsFunction/ObsErrorFactorPressureCheck
-               options:
-                 variable: airTemperature
-                 surface observation error ramp: true
-                 max levels below surface: 15
-                 inflation factor: 8.0
+             inflation factor: 0.5
+
+#         # Error inflation based on pressure check (setupt.f90)
+#         - filter: Perform Action
+#           udescriptor: "error_inflation_pressure_check"
+#           filter variables:
+#           - name: airTemperature
+#           where:
+#           - variable: ObsType/airTemperature
+#             is_in: 187
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorPressureCheck
+#               options:
+#                 variable: airTemperature
+#                 surface observation error ramp: true
+#                 max levels below surface: 15
+#                 inflation factor: 8.0
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action

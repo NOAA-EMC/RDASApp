@@ -112,21 +112,29 @@ real(r_kind) y1_y,y2_y,y3_y
 ! Initialize
 !
  
+!$omp parallel do private(n) schedule(static)
    do n=1,this%nm
      xa(n)=this%xa0+this%dxa*(n-1)
    enddo
+!$omp end parallel do
 
+!$omp parallel do private(i) schedule(static)
    do i=1-this%ib,this%im+this%ib
      xf(i)=this%xf0+this%dxf*(i-1)
    enddo
+!$omp end parallel do
 
+!$omp parallel do private(m) schedule(static)
    do m=1,this%mm
      ya(m)=this%ya0+this%dya*(m-1)
    enddo
+!$omp end parallel do
 
+!$omp parallel do private(j) schedule(static)
    do j=1-this%jb,this%jm+this%jb
      yf(j)=this%yf0+this%dyf*(j-1)
    enddo
+!$omp end parallel do
 
 !
 ! Find iref and jref
@@ -153,6 +161,7 @@ real(r_kind) y1_y,y2_y,y3_y
      enddo
    enddo
 
+!$omp parallel do private(n,i,x1,x2,x3,x4,x,x1x,x2x,x3x,x4x,rx2x1,rx3x1,rx4x1,rx3x2,rx4x2,rx4x3,CFL1,CFL2,CFL3,CLL,CFR1,CFR2,CFR3,CRR) schedule(static)
    do n=1,this%nm
      i=this%iref(n)
      x1=xf(i)
@@ -183,7 +192,9 @@ real(r_kind) y1_y,y2_y,y3_y
        this%cx2(n)=CFL3*CLL+CFR2*CRR
        this%cx3(n)=CFR3*CRR
    enddo
+!$omp end parallel do
 
+!$omp parallel do private(m,j,y1,y2,y3,y4,y,y1y,y2y,y3y,y4y,ry2y1,ry3y1,ry4y1,ry3y2,ry4y2,ry4y3,CFL1,CFL2,CFL3,CLL,CFR1,CFR2,CFR3,CRR) schedule(static)
    do m=1,this%mm
      j=this%jref(m)
      y1=yf(j)
@@ -214,10 +225,12 @@ real(r_kind) y1_y,y2_y,y3_y
        this%cy2(m)=CFL3*CLL+CFR2*CRR
        this%cy3(m)=CFR3*CRR
    enddo
+!$omp end parallel do
 
 !
 ! Quadratic interpolations
 !
+!$omp parallel do private(n,i,x1,x2,x3,x,x1_x,x2_x,x3_x,rx2x1,rx3x1,rx3x2) schedule(static)
    do n=1,this%nm
      i=this%irefq(n)
      x1=xf(i)
@@ -234,7 +247,9 @@ real(r_kind) y1_y,y2_y,y3_y
        this%qx1(n) =-x1_x*x3_x*rx2x1*rx3x2
        this%qx2(n) = x1_x*x2_x*rx3x1*rx3x2
    enddo
+!$omp end parallel do
 
+!$omp parallel do private(m,i,y1,y2,y3,y,y1_y,y2_y,y3_y,ry2y1,ry3y1,ry3y2) schedule(static)
    do m=1,this%mm
      i=this%jrefq(m)
      y1=yf(i)
@@ -251,10 +266,12 @@ real(r_kind) y1_y,y2_y,y3_y
        this%qy1(m) =-y1_y*y3_y*ry2y1*ry3y2
        this%qy2(m) = y1_y*y2_y*ry3y1*ry3y2
    enddo
+!$omp end parallel do
  
 !
 ! Linear interpolations
 !
+!$omp parallel do private(n,i,x1,x2,x,x1_x,x2_x,rx2x1) schedule(static)
    do n=1,this%nm
      i=this%irefL(n)
      x1=xf(i)
@@ -266,7 +283,9 @@ real(r_kind) y1_y,y2_y,y3_y
        this%Lx0(n) = x2_x*rx2x1
        this%Lx1(n) =-x1_x*rx2x1
    enddo
+!$omp end parallel do
 
+!$omp parallel do private(m,j,y1,y2,y,y1_y,y2_y,ry2y1) schedule(static)
    do m=1,this%mm
      j=this%jrefL(m)
      y1=yf(j)
@@ -278,6 +297,7 @@ real(r_kind) y1_y,y2_y,y3_y
        this%Ly0(m) = y2_y*ry2y1
        this%Ly1(m) =-y1_y*ry2y1
    enddo
+!$omp end parallel do
 !-----------------------------------------------------------------------
 endsubroutine lsqr_mg_coef
 
@@ -308,16 +328,21 @@ real(r_kind):: dx13,dx23,dx24
 integer(i_kind):: i,n
 !-----------------------------------------------------------------------
 
+!$omp parallel do private(i) schedule(static)
    do i=0,im_in+1
      x(i)=(i-1)*1.
    enddo
+!$omp end parallel do
 
     dy = 1.*(im_in-1)/(nm_in-1)
+!$omp parallel do private(n) schedule(static)
   do n=1,nm_in
     y(n)=(n-1)*dy
   enddo
+!$omp end parallel do
     y(nm_in)=x(im_in)
  
+!$omp parallel do private(n,i,x1,x2,x3,x4,dx1,dx2,dx3,dx4,dx13,dx23,dx24) schedule(static)
   do n=2,nm_in-1
     i = y(n)+1
       x1 = x(i-1)
@@ -346,8 +371,9 @@ integer(i_kind):: i,n
       c4(n)=0.
     endif
   enddo
+!$omp end parallel do
      iref_out(1)=1; c1(1)=0.; c2(1)=1.; c3(1)=0.; c4(1)=0.
-     iref_out(nm_in)=im_in; c1(nm_in)=0.; c2(nm_in)=1.; c3(nm_in)=0.; c4(n)=0.
+     iref_out(nm_in)=im_in; c1(nm_in)=0.; c2(nm_in)=1.; c3(nm_in)=0.; c4(nm_in)=0.
 
 !-----------------------------------------------------------------------
 endsubroutine lwq_vertical_coef                            

@@ -85,9 +85,11 @@ integer(i_kind)               :: izf,nzf
 !=============================================================================
 nzf=nz*nf
 dzf=u1/nf
+!$omp parallel do private(izf) schedule(static)
 do izf=0,nzf
    zofzf(izf)=izf*dzf
 enddo
+!$omp end parallel do
 call logintgrid(nz,nzf,zofzf,u1/sigofz, sigiofzf)
 ! Integrate sigiofzf
 s=0; ssofzf(0)=s
@@ -145,6 +147,7 @@ real(r_kind)                   :: r,s,z,dzf
 integer(i_kind)               :: iz,izf,izfm,izfp,is,nzf
 !============================================================================
 ! Interpolate the log of the sigofz distribution to a finer grid:
+write(6,*)'thinkdeb555 nz.. ',nz,nf,ns
 dzf=u1/nf
 nzf=nz*nf
 call make_ssf(nz,nf,sigofz,ssf)
@@ -173,6 +176,7 @@ do is=1,ns-1
    izf=izfp-1
    r=(s-ssf(izf))/(ssf(izfp)-ssf(izf))
    zofs(is)=(izf+r)/nf
+  write(6,*)'thinkdeb555 zofs = ',is , ' ',zofs(is)
 enddo
 end subroutine make_ssgrid
 
@@ -597,7 +601,7 @@ real(r_kind)               :: z
 integer(i_kind)           :: i, j, k, s
 
 !------------------------------------------------------------------------------
-!write(6,*)'thinkdeb10000  zofs in interpolation zofs ',zofs
+write(6,*)'thinkdeb10000  zofs in interpolation zofs ',zofs
 do j = 1, ny
   do i = 1, nx
     do k = 0, nz
@@ -851,7 +855,7 @@ real(r_kind)               :: z
 integer(i_kind)           :: i, j, k, s
 
 !------------------------------------------------------------------------------
-!write(6,*)'intgrid_f2a_3d_ad 1 ',ny,nx,nz
+write(6,*)'intgrid_f2a_3d_ad 1 ',ny,nx,nz
 !clt todo some optimization could be done, when the interpolation coeff is homogeneous
 do j = 1, ny
   do i = 1, nx
@@ -877,8 +881,8 @@ do j = 1, ny
     end do
   end do
 end do
-!write(6,*)'intgrid_f2a_3d_ad 100'
-!call flush(6)
+write(6,*)'intgrid_f2a_3d_ad 100'
+call flush(6)
 
 end subroutine intgrid_f2a_3d_ad
 subroutine intgrid_f2a_3d_ad_top2bot(nz, ns, nx, ny, zofs, az, as)
@@ -942,4 +946,3 @@ end subroutine intgrid_f2a_3d_ad_top2bot
 
 end module phint1
 !#
-
