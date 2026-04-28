@@ -5,7 +5,7 @@
   mgbf_line=.true., mgbf_proc=5,
   lm_a=65,lm=32,km2=0,km3=13,
   coef_normalization_const=1.2236
-  file_coef_normalization="mgbf_dbz_13km_connus_norm_profile_bottom_up.txt",
+  file_coef_normalization="mgbf_dbz_13km_conus_norm_profile_bottom_up.txt",
   nxPE=14,nyPE=14,im_filt=16,jm_filt=16,
   nm0 = 224,
   mm0 = 224,
