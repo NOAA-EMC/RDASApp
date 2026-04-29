@@ -56,6 +56,26 @@ obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
 obs_lon = np.where(obs_lon < 0, obs_lon + 360, obs_lon)
 obs_prs = obs_ds.groups['MetaData'].variables['pressure'][:]
 
+# Build mesonet mask: only patch stationIdentification for ObsType 188/288
+mesonet_mask = np.zeros(len(obs_lat), dtype=bool)
+if 'ObsType' in obs_ds.groups:
+    ot = obs_ds.groups['ObsType']
+    for vname in ot.variables:
+        v = ot.variables[vname]
+        if getattr(v, "dimensions", ()) != ("Location",):
+            continue
+
+        vals = v[:]
+        try:
+            fv = v.getncattr("_FillValue")
+            good = (vals != fv)
+        except Exception:
+            good = np.ones(vals.shape, dtype=bool)
+
+        mesonet_mask |= (good & ((vals == 188) | (vals == 288)))
+
+print(f"Mesonet station ID cleanup mask: matched={np.count_nonzero(mesonet_mask)}")
+
 # Create a new NetCDF file to store the selected data using the more efficient method
 if '.nc' in obs_filename:
     outfile = obs_filename.replace('.nc', '_llp.nc')
@@ -95,6 +115,23 @@ for group in groups:
             np_invar = np.array(invar)
             np_invar[(np_invar < 0) | (np_invar > 15)] = 15
             g.variables[var][:] = np_invar.astype(invar.dtype)
+
+        elif group == "MetaData" and var == "stationIdentification":
+            data = np.array(invar[:], dtype=str)
+            patched = data.copy()
+
+            n_changed = 0
+            for i in range(len(patched)):
+                if mesonet_mask[i]:
+                    old = str(patched[i])
+                    new = old.split()[0] if old.split() else old
+                    if new != old:
+                        n_changed += 1
+                    patched[i] = new
+
+            g.variables[var][:] = patched
+            print(f"Patched mesonet MetaData/stationIdentification: changed={n_changed}")
+
         else:
             if var in ['latitude', 'longitude']:
                 g.variables[var][:] = invar[:][:].data

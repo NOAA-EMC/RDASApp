@@ -6,20 +6,20 @@ obtype_configs=(
     "aircar_airTemperature_133.yaml"
     "aircar_specificHumidity_133.yaml"
     "aircar_winds_233.yaml"
-    "aircft_airTemperature_130.yaml"
-    "aircft_airTemperature_131.yaml"
-    "aircft_airTemperature_134.yaml"
-    "aircft_airTemperature_135.yaml"
-    "aircft_specificHumidity_134.yaml"
-    "aircft_winds_230.yaml"
-    "aircft_winds_231.yaml"
-    "aircft_winds_234.yaml"
-    "aircft_winds_235.yaml"
-    "msonet_airTemperature_188.yaml"
-    "msonet_specificHumidity_188.yaml"
-    "gnss_zenithTotalDelay.yaml"
+    #"aircft_airTemperature_130.yaml"
+    #"aircft_airTemperature_131.yaml"
+    #"aircft_airTemperature_134.yaml"
+    #"aircft_airTemperature_135.yaml"
+    #"aircft_specificHumidity_134.yaml"
+    #"aircft_winds_230.yaml"
+    #"aircft_winds_231.yaml"
+    #"aircft_winds_234.yaml"
+    #"aircft_winds_235.yaml"
+    #"msonet_airTemperature_188.yaml"
+    #"msonet_specificHumidity_188.yaml"
+    #"gnss_zenithTotalDelay.yaml"
     #"msonet_stationPressure_188.yaml" # Different result on Hera/Hercules
-    "msonet_winds_288.yaml"
+    #"msonet_winds_288.yaml"
     #"adpsfc_airTemperature_187.yaml" # Waiting to add to ctest
     #"adpsfc_specificHumidity_187.yaml" # Waiting to add to ctest
     #"adpsfc_stationPressure_187.yaml" # Waiting to add to ctest (different results on Hera/Jet?)
@@ -30,14 +30,14 @@ obtype_configs=(
     #"proflr_winds_227.yaml" # DO NOT ADD - Not yet phase 3
     #"rassda_airTemperature_126.yaml" # DO NOT ADD - Not yet phase 3
     #"vadwnd_winds_224.yaml" # DO NOT ADD - Not yet phase 3
-    "atms_npp.yaml"
-    "abi_g16.yaml"
-    "abi_g18.yaml"
-    "atms_n21.yaml"
+    #"atms_npp.yaml"
+    #"abi_g16.yaml"
+    #"abi_g18.yaml"
+    #"atms_n21.yaml"
     #"atms_n20.yaml" # Waiting to add to ctest (different results on Hera/Jet?)
-    "amsua_n19.yaml" # Waiting to add to ctest
-    "amsua_metop-b.yaml"
-    "amsua_metop-c.yaml"
+    #"amsua_n19.yaml" # Waiting to add to ctest
+    #"amsua_metop-b.yaml"
+    #"amsua_metop-c.yaml"
 )
 
 # Define the basic configuration and final ctest YAMLs

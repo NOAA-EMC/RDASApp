@@ -26,6 +26,9 @@
          correction scheme to use: GSL
          geovar_sfc_geomz: geopotential_height_at_surface
          geovar_geomz: geopotential_height
+         variables:
+         - name: stationPressure
+
        linear obs operator:
          name: Identity
 
@@ -36,12 +39,71 @@
          # ------------------
          # stationPressure (188)
          # ------------------
+{% if mesonet_use_list_stationPressure | default(false) %}
+
+         # Mesonet provider/station use lists
+         - filter: RejectList  # initially reject all providers
+           udescriptor: "initial_reject_all_providers"
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 188
+
+{% if msonet_provider_accepts_allsprvs | default([]) %}
+         - filter: AcceptList
+           udescriptor: "accept_msonet_stationPressure_provider_allsprvs"
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 188
+           - variable: MetaData/dataProviderOrigin
+             is_in: {{ msonet_provider_accepts_allsprvs }}
+{% endif %}
+
+{% for item in msonet_provider_accepts_subproviders | default([]) %}
+         - filter: AcceptList
+           udescriptor: "accept_msonet_stationPressure_provider_{{ item.provider }}_{{ item.subprovider }}"
+           filter variables:
+           - name: stationPressure
+           where:
+           - variable: ObsType/stationPressure
+             is_in: 188
+           - variable: MetaData/dataProviderOrigin
+             is_in: ["{{ item.provider }}"]
+           - variable: MetaData/dataProviderSubOrigin
+             is_in: ["{{ item.subprovider }}"]
+{% endfor %}
+
+#{% if mesonet_station_accepts_stationPressure | default(false) %}
+#{% for item in msonet_station_accepts_stationPressure | default([]) %}
+#         - filter: AcceptList
+#           udescriptor: "accept_msonet_stationPressure_stations_{{ item.provider }}"
+#           filter variables:
+#           - name: stationPressure
+#           where:
+#           - variable: ObsType/stationPressure
+#             is_in: 188
+#           - variable: MetaData/dataProviderOrigin
+#             is_in: ["{{ item.provider }}"]
+#           - variable: MetaData/stationIdentification
+#             is_in: {{ item.stations }}
+#{% endfor %}
+{% endif %}
+
+{% endif %} # end of mesonet_use_list_stationPressure
+
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
            udescriptor: "iuse_check"
            filter variables:
            - name: stationPressure
            where:
+{% if mesonet_use_list_stationPressure | default(false) %}
+           - variable: QCflagsData/stationPressure
+             is_in: 0
+{% endif %}
            - variable: ObsType/stationPressure
              is_in: 188
            action:
@@ -102,7 +164,7 @@
            tolerance: PT0H
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
-             name: MetaData/longitude_latitude_pressure
+             name: MetaData/longitude_latitude
            where:
            - variable: ObsType/stationPressure
              is_in: 188
@@ -151,7 +213,8 @@
                name: ObsFunction/ObsErrorFactorSfcPressure
                options:
                  geovar_geomz: geopotential_height
-                 geovar_sfc_geomz: geopotential_height_at_surface
+                 #geovar_sfc_geomz: geopotential_height_at_surface
+                 station_altitude: height
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
