@@ -141,6 +141,7 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [2.4296, 2.4261, 2.3798, 2.3022, 2.2627, 2.2817, 2.2826, 2.1826, 2.0092, 1.8385, 1.7169, 1.6511, 1.6306, 1.6472, 1.7005, 1.7905, 1.9016, 1.9907, 2.0094, 1.9571, 1.8864, 1.86, 1.9104, 2.0392, 2.2324, 2.4605, 2.6741, 2.8318, 2.9263, 2.9735, 2.9931, 2.9985, 2.9924]
 
+{% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
          # Error inflation based on pressure check (setupt.f90)
          - filter: Perform Action
            udescriptor: "error_inflation_pressure_check"
@@ -202,6 +203,7 @@
              maxvalue: 10000.0
            - variable: ObsType/airTemperature
              is_in: 126
+{% endif %}  # END use_error_inflation
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
