@@ -69,6 +69,19 @@ npts_total = 0
 nsig_ref = None
 ptop_ref = None
 
+# Process delp in horizontal chunks instead of reading the full 3D field and
+# constructing full-domain interface-pressure arrays.
+#
+# This matters for large domains such as the North American 3 km grid. The rsig
+# calculation only needs domain-mean quantities:
+#
+#   1. sum of surface pressure over all horizontal points
+#   2. sum of layer-center pressure for each vertical level
+#   3. total number of horizontal points
+#
+# Therefore, there is no need to keep full-domain pint or prsl arrays in memory.
+Y_CHUNK = 64
+
 for fn in core_files:
     with Dataset(fn) as nc:
         # delp is required because it gives pressure thickness for each model
@@ -83,14 +96,16 @@ for fn in core_files:
         elif abs(ptop_pa - ptop_ref) > 1.0e-6:
             raise SystemExit(f"ptop mismatch: {fn} has {ptop_pa}, expected {ptop_ref}")
 
-        # Read the first time record of delp.
-        #
-        # Expected shape after indexing time:
-        #   delp(k, y, x), units Pa
-        #
-        # k is normally top-to-bottom in FV3 output.
-        delp = nc.variables["delp"][0, ...].astype(np.float64)  # (z,y,x), Pa
-        nsig, ny, nx = delp.shape
+        # Keep a handle to the NetCDF variable so we can read one horizontal
+        # slab at a time instead of loading the full 3D field.
+        delp_var = nc.variables["delp"]
+
+        # Expected shape:
+        #   delp(time, k, y, x), units Pa
+        if len(delp_var.shape) != 4:
+            raise SystemExit(f"{fn} delp has unexpected shape {delp_var.shape}")
+
+        _, nsig, ny, nx = delp_var.shape
 
         # All files must have the same number of vertical levels so they can be
         # averaged level by level.
@@ -99,43 +114,60 @@ for fn in core_files:
         elif nsig != nsig_ref:
             raise SystemExit(f"nsig mismatch: {fn} has {nsig}, expected {nsig_ref}")
 
-        # Pressure thickness must be positive. Non-positive values would break
-        # the cumulative pressure reconstruction and indicate a bad input file.
-        if np.any(delp <= 0.0):
-            raise SystemExit(f"{fn} contains non-positive delp values")
+        # Loop over y slabs. Smaller chunks reduce peak memory, which is the main
+        # concern for larger domains.
+        for y0 in range(0, ny, Y_CHUNK):
+            y1 = min(y0 + Y_CHUNK, ny)
 
-        # Reconstruct pressure at layer interfaces.
-        #
-        # pint has one more vertical level than delp:
-        #   pint[0]      = pressure at model top
-        #   pint[1]      = model top pressure + delp of top layer
-        #   ...
-        #   pint[-1]     = surface pressure
-        #
-        # Because delp is pressure thickness, cumulative sum from the top gives
-        # interface pressure moving downward through the atmosphere.
-        pint = np.empty((nsig + 1, ny, nx), dtype=np.float64)
-        pint[0, :, :] = ptop_pa
-        pint[1:, :, :] = ptop_pa + np.cumsum(delp, axis=0)
+            # Read only this horizontal slab from the first time record.
+            #
+            # Shape:
+            #   delp(k, y_chunk, x)
+            delp = delp_var[0, :, y0:y1, :].astype(np.float64)
 
-        # Surface pressure is the bottom interface.
-        ps = pint[-1, :, :]
+            # Pressure thickness must be positive. Non-positive values would
+            # break the cumulative pressure reconstruction and indicate a bad
+            # input file.
+            if np.any(delp <= 0.0):
+                raise SystemExit(f"{fn} contains non-positive delp values")
 
-        # Layer-center pressure is approximated as the midpoint between the
-        # upper and lower pressure interfaces for each layer.
-        prsl = 0.5 * (pint[:-1, :, :] + pint[1:, :, :])
+            # p_lower starts as the pressure at the bottom of each model layer:
+            #
+            #   p_lower[0] = ptop + delp[0]
+            #   p_lower[1] = ptop + delp[0] + delp[1]
+            #   ...
+            #
+            # This is one of the only large temporary arrays needed.
+            p_lower = ptop_pa + np.cumsum(delp, axis=0)
 
-        # Add this file's horizontal points to the global average.
-        npts = ps.size
-        sum_ps += ps.sum()
-        npts_total += npts
+            # Surface pressure is the bottom interface of the lowest model layer.
+            # Capture this before modifying p_lower below.
+            ps = p_lower[-1, :, :]
 
-        # Sum layer-center pressure over horizontal dimensions.
-        # This keeps one accumulated value per vertical level.
-        if sum_prsl is None:
-            sum_prsl = prsl.sum(axis=(1, 2))
-        else:
-            sum_prsl += prsl.sum(axis=(1, 2))
+            npts = ps.size
+            sum_ps += ps.sum()
+            npts_total += npts
+
+            # Convert p_lower in-place from bottom-interface pressure to
+            # layer-center pressure.
+            #
+            # Since:
+            #   p_upper = p_lower - delp
+            #
+            # layer center is:
+            #   prsl = 0.5 * (p_upper + p_lower)
+            #        = p_lower - 0.5 * delp
+            #
+            # Doing this in-place avoids allocating separate p_upper and prsl
+            # arrays.
+            p_lower -= 0.5 * delp
+
+            # Sum layer-center pressure over this slab's horizontal dimensions.
+            # This keeps one accumulated value per vertical level.
+            if sum_prsl is None:
+                sum_prsl = p_lower.sum(axis=(1, 2))
+            else:
+                sum_prsl += p_lower.sum(axis=(1, 2))
 
 # Average surface pressure across all files and horizontal grid points.
 psfcavg = sum_ps / npts_total
