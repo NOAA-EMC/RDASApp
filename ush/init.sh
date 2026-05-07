@@ -32,6 +32,9 @@ case ${MACHINE_ID} in
       echo "unsupported gaea cluster: ${MACHINE_ID}"
     fi
     ;;
+  hostgeneric)
+    exit 0
+    ;;
   *)
     echo "platform not supported: ${MACHINE_ID}"
     ;;

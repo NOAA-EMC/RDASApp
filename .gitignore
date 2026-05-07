@@ -160,6 +160,7 @@ install*/
 expr
 fix/INIT_DONE
 fix/.agent
+modulefiles/RDAS/hostgeneric.intel.lua
 
 # Ignore the rrfs-test ctest yamls since they are build with RDASApp
 rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar*.yaml

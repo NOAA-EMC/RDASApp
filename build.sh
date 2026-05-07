@@ -23,7 +23,7 @@ START=$(date +%s)
 dir_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 source $dir_root/ush/detect_machine.sh
-source $dir_root/ush/init.sh
+$dir_root/ush/init.sh
 
 # ==============================================================================
 usage() {
@@ -119,7 +119,7 @@ while getopts "p:c:m:j:t:b:r:w:hvfsxd" opt; do
 done
 
 case ${BUILD_TARGET} in
-  hera | orion | hercules | jet | gaeac? | wcoss2 | ursa | derecho)
+  hera | orion | hercules | jet | gaeac? | wcoss2 | ursa | derecho | hostgeneric)
     echo "Building RDASApp on $BUILD_TARGET"
     echo "  Build initiated `date`"
     if [[ "${BUILD_TARGET}" != *gaea* ]] &&  [[ "${BUILD_TARGET}" != *derecho* ]]; then

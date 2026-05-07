@@ -9,6 +9,10 @@
 # Thank you for your contribution
 
 # First detect w/ hostname
+if [[ "${MACHINE:-''}" == "hostgeneric" ]]; then
+  MACHINE_ID="hostgeneric"
+  return 0
+fi
 case $(hostname -f) in
 
   adecflow0[12].acorn.wcoss2.ncep.noaa.gov)  MACHINE_ID=acorn ;; ### acorn
