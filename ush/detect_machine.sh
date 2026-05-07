@@ -9,7 +9,7 @@
 # Thank you for your contribution
 
 # First detect w/ hostname
-if [[ "${MACHINE}" == "hostgeneric" ]]; then
+if [[ "${MACHINE:-''}" == "hostgeneric" ]]; then
   MACHINE_ID="hostgeneric"
   return 0
 fi
