@@ -148,6 +148,7 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [3.3133, 4.0029, 4.7167, 5.142, 5.1372, 4.8225, 4.3831, 3.9783, 3.733, 3.6483, 3.6557, 3.6653, 3.6168, 3.4788, 3.2246, 2.9305, 2.7079, 2.6026, 2.5883, 2.6008, 2.6158, 2.6346, 2.6564, 2.6754, 2.6882, 2.6953, 2.6985, 2.6995, 2.6999, 2.7001, 2.7005, 2.6998, 2.6931]
 
+{% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
          # Error inflation (windEastward) based on pressure check (setupw.f90)
          - filter: Perform Action
            udescriptor: "error_inflation_pressure_check"
@@ -241,6 +242,7 @@
              maxvalue: 5000.0
            - variable: ObsType/windEastward
              is_in: 232
+{% endif %}  # END use_error_inflation
 
          # Bounds Check (ObsError)
          - filter: Bounds Check

@@ -200,6 +200,7 @@ atmosphere_final_increment_prefix: "./anl/atminc."
 
 # Observation things
 # ------------------
+use_error_inflation: true
 mesonet_use_list_winds: true
 mesonet_use_list_airTemperature: true
 mesonet_use_list_specificHumidity: true
