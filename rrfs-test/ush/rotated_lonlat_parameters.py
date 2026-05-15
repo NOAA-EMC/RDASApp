@@ -17,6 +17,22 @@ import shapely.geometry
 import warnings
 from scipy.spatial.distance import cdist
 
+"""
+Compute rotated lon/lat parameters for GSIbec grids.
+This tool expects a FV3 grid file (fv3_grid_spec) in the current directory.
+
+Example
+-------
+python rotated_lonlat_parameters.py
+
+Expected output includes:
+nx : 3950, ny : 2700, grid_ratio_fv3_regional : 2.0
+nxa : 1976, nya : 1351
+north_pole_lat : 34.9999966097°, north_pole_lon : 67.4999923706°
+lat_start : -36.4147012390921°, lat_end : 36.4147012390921°
+lon_start : -59.7587096910596°, lon_end : 59.7587096910596°
+"""
+
 ############ USER INPUT ###################
 jgrid = f"./fv3_grid_spec"
 grid_ratio_fv3_regional = 2.0
