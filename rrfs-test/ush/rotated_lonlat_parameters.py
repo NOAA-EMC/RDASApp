@@ -11,7 +11,6 @@ import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import matplotlib.ticker as mticker
 import numpy as np
-#import colormap
 import time
 import sys, os
 import shapely.geometry
@@ -21,6 +20,7 @@ from scipy.spatial.distance import cdist
 ############ USER INPUT ###################
 jgrid = f"./fv3_grid_spec"
 grid_ratio_fv3_regional = 2.0
+do_plot = False
 ###########################################
 
 ############ Constants ####################
@@ -42,8 +42,6 @@ print(f"nx : {nx}, ny : {ny}, grid_ratio_fv3_regional : {grid_ratio_fv3_regional
 # Numbers of analysis grids
 nxa = 1 + int(np.floor((nx - one) /grid_ratio_fv3_regional + 0.5))
 nya = 1 + int(np.floor((ny - one) /grid_ratio_fv3_regional + 0.5))
-#nxa = nx
-#nya = ny
 
 print(f"nxa : {nxa}, nya : {nya}")
 
@@ -83,7 +81,6 @@ centlon = np.arctan2(ycent, xcent) * rad2deg
 north_pole_lat = 90.0 - centlat
 north_pole_lon = centlon + 180.0 
 
-#print(f"centlat : {centlat:.10f}°, centlon : {centlon:.10f}°")
 print(f"north_pole_lat : {north_pole_lat:.10f}°, north_pole_lon : {north_pole_lon:.10f}°")
 
 # compute new lats, lons in the rotated lon-lat
@@ -109,9 +106,6 @@ ztt = -xt * np.sin(rlat0_rad) + zt * np.cos(rlat0_rad)
 
 gcrlat = np.arcsin(ztt) * rad2deg
 gcrlon = np.arctan2(ytt, xtt) * rad2deg
-
-#print(f"gcrlat_min : {np.min(gcrlat):.13f}°, gcrlat_max : {np.max(gcrlat):.13f}°")
-#print(f"gcrlon_min : {np.min(gcrlon):.13f}°, gcrlon_max : {np.max(gcrlon):.13f}°")
 
 #####################################################
 ## compute analysis A-grid  lats, lons
@@ -152,6 +146,8 @@ lat_rotated = (I - nlath) * adlat - clat
 
 print(f"lat_start : {np.min(lat_rotated):.13f}°, lat_end : {np.max(lat_rotated):.13f}°")
 print(f"lon_start : {np.min(lon_rotated):.13f}°, lon_end : {np.max(lon_rotated):.13f}°")
+
+if not do_plot: sys.exit()
 
 # unroate
 lat_rad = lat_rotated * deg2rad  # shape (nx, ny)
@@ -198,13 +194,8 @@ top = cen_lat + half
 m1.set_extent([left, right, top, bot])
 
 # Add features to the subplots
-#m1.add_feature(cfeature.GSHHSFeature(scale='low'))
 m1.add_feature(cfeature.COASTLINE)
 m1.add_feature(cfeature.BORDERS)
-#m1.add_feature(cfeature.STATES)
-#m.add_feature(cfeature.OCEAN)
-#m.add_feature(cfeature.LAND)
-#m.add_feature(cfeature.LAKES)
 
 # Gridlines for the subplots
 gl1 = m1.gridlines(crs = ccrs.PlateCarree(), draw_labels = True, linewidth = 0.5, color = 'k', alpha = 0.25, linestyle = '-')
