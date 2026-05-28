@@ -50,8 +50,8 @@
 	ignore = all
 [submodule "sorc/saber"]
 	path = sorc/saber
-	url = https://github.com/jcsda/saber
-	branch = develop
+	url = https://github.com/TingLei-daprediction/saber-public
+	branch = feature/saber-mgbf
 	ignore = all
 [submodule "sorc/ufo"]
 	path = sorc/ufo
