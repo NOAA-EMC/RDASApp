@@ -38,7 +38,7 @@ use netcdf
 
 implicit none
 private
-public fv3jedi_io_fms
+public fv3jedi_io_fms, fv3jedi_register_field
 
 ! If adding a new file it is added here and object and config in setup
 integer, parameter :: numfiles = 9
@@ -478,6 +478,7 @@ logical :: havedelp
 integer :: indexof_ps, indexof_delp
 real(kind=kind_real), allocatable :: delp(:,:,:)
 type(fckit_configuration) :: field_io_names_local
+character(len=field_clen) :: io_name
 
 ! Register and read fields
 ! ------------------------
@@ -535,8 +536,9 @@ do var = 1,size(fields)
   end if
 
   ! Register restart field
-  call fv3jedi_register_field(fileobj(indexrst), trim(fields(var)%long_name), fields(var)%array, &
-                              center, trim(fields(var)%units), .true., field_io_names_local)
+  io_name = ioname(trim(fields(var)%long_name), field_io_names_local)
+  call fv3jedi_register_field(fileobj(indexrst), io_name, fields(var)%array, center, .true., &
+                              trim(fields(var)%long_name), trim(fields(var)%units))
 
   ! Scale field if necessary
   call ioscale(fields(var), field_io_scaling)
@@ -1302,14 +1304,16 @@ type(fckit_configuration), intent(in)    :: field_io_scaling
 
 integer                     :: var
 type(FmsNetcdfDomainFile_t) :: fileobj
+character(len=field_clen)   :: io_name
 
 ! Open file for reading
 if ( open_file(fileobj, trim(self%datapath)//'/'//trim(self%filename_nonrestart), 'read', self%domain) ) then
    ! Loop through fields
    do var = 1,size(fields)
       ! Register field
-      call fv3jedi_register_field(fileobj, trim(fields(var)%long_name), fields(var)%array, &
-                                  center, trim(fields(var)%units), .false., field_io_names)
+      io_name = ioname(trim(fields(var)%long_name), field_io_names)
+      call fv3jedi_register_field(fileobj, io_name, fields(var)%array, center, .false., &
+                                  trim(fields(var)%long_name), trim(fields(var)%units))
 
       ! Read field
       call read_data(fileobj, ioname(trim(fields(var)%long_name), field_io_names), &
@@ -1347,6 +1351,7 @@ type(FmsNetcdfDomainFile_t) :: fileobj(numfiles)
 character(len=64)  :: datefile
 character(len=8), allocatable :: dim_names(:)
 real(kind=kind_real) :: io_unscaling_factor
+character(len=field_clen) :: io_name
 
 
 ! Get datetime
@@ -1404,9 +1409,10 @@ do var = 1,size(fields)
   io_unscaling_factor = iounscale(fields(var)%long_name, field_io_scaling)
 
   ! Register restart field
-  call fv3jedi_register_field(fileobj(indexrst), trim(fields(var)%long_name), &
-                              fields(var)%array, &
-                              center, trim(fields(var)%units), .true., field_io_names)
+  io_name = ioname(trim(fields(var)%long_name), field_io_names)
+  call fv3jedi_register_field(fileobj(indexrst), io_name, fields(var)%array, center, .true., &
+                              trim(fields(var)%long_name), trim(fields(var)%units))
+
 enddo
 
 ! Loop over files and write fields
@@ -1665,6 +1671,7 @@ integer                     :: var, n
 type(FmsNetcdfDomainFile_t) :: fileobj
 logical                     :: write_field
 real(kind=kind_real)        :: io_unscaling_factor
+character(len=field_clen)   :: io_name
 
 ! Open file for overwriting
 if ( open_file(fileobj, trim(self%datapath)//'/'//trim(self%filename_nonrestart), 'overwrite', self%domain) ) then
@@ -1684,8 +1691,9 @@ if ( open_file(fileobj, trim(self%datapath)//'/'//trim(self%filename_nonrestart)
 
       if ( write_field ) then
          ! Register field
-         call fv3jedi_register_field(fileobj, trim(fields(var)%long_name), fields(var)%array, &
-                                     center, trim(fields(var)%units), .false., field_io_names)
+         io_name = ioname(trim(fields(var)%long_name), field_io_names)
+         call fv3jedi_register_field(fileobj, io_name, fields(var)%array, center, .false., &
+                                     trim(fields(var)%long_name), trim(fields(var)%units))
 
          ! Write field
          io_unscaling_factor = iounscale(fields(var)%long_name, field_io_scaling)
@@ -1706,16 +1714,15 @@ end subroutine write_nonrestart_all
 
 ! --------------------------------------------------------------------------------------------------
 
-subroutine fv3jedi_register_field(fileobj, long_name, array, position, units, is_restart, &
-                                  field_io_names)
+subroutine fv3jedi_register_field(fileobj, io_name_in, array, position, is_restart, long_name, units)
 
   type(FmsNetcdfDomainFile_t), intent(inout) :: fileobj
-  character(len=*), intent(in)               :: long_name
+  character(len=*), intent(in)               :: io_name_in
   real(kind=kind_real), intent(in)           :: array(:,:,:)
   integer, intent(in)                        :: position
-  character(len=*), optional, intent(in)     :: units
   logical, intent(in)                        :: is_restart
-  type(fckit_configuration), intent(in)      :: field_io_names
+  character(len=*), optional, intent(in)     :: long_name
+  character(len=*), optional, intent(in)     :: units
 
   logical :: is_open, is_registered
   integer :: ndims, idim, num_zaxes, nz_dim, nz_field, array_shape(3)
@@ -1723,9 +1730,7 @@ subroutine fv3jedi_register_field(fileobj, long_name, array, position, units, is
   character(len=8), dimension(:), allocatable :: dim_names
   character(len=field_clen) :: io_name
 
-  ! Get the potential io_name from the field_io_names
-  ! ------------------------------------------------
-  io_name = ioname(long_name, field_io_names)
+  io_name = trim(io_name_in)
 
   if ( fileobj%is_readonly ) then ! For read
      ! Get variable dimensions
@@ -1879,7 +1884,9 @@ subroutine fv3jedi_register_field(fileobj, long_name, array, position, units, is
      end if
 
      ! Set field attributes
-     call register_variable_attribute(fileobj, trim(io_name), 'long_name', trim(long_name), str_len=len(trim(long_name)))
+     if ( present(long_name) ) then
+        call register_variable_attribute(fileobj, trim(io_name), 'long_name', trim(long_name), str_len=len(trim(long_name)))
+     endif
      if ( present(units) ) then
         call register_variable_attribute(fileobj, trim(io_name), 'units', trim(units), str_len=len(trim(units)))
      end if
