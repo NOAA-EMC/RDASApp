@@ -448,6 +448,22 @@ def bufr_to_ioda(config, logger):
                 .write_attr('long_name', 'Northward Wind Component') \
                 .write_data(vob2)
 
+            # Placeholder ObsError values needed for later JEDI processing
+            uerr2 = ma.array(np.full_like(uob2, 999.0), mask=ma.getmaskarray(uob2))
+            verr2 = ma.array(np.full_like(vob2, 999.0), mask=ma.getmaskarray(vob2))
+
+            # Add bogus values for ObsError needed for L/GETKF
+            obsspace.create_var('ObsError/windEastward', dtype=uob2.dtype, fillval=wspd2.fill_value) \
+                .write_attr('units', 'm s-1') \
+                .write_attr('long_name', 'Error for Eastward Wind Component') \
+                .write_data(uerr2)
+
+            # Add bogus values for ObsError needed for L/GETKF
+            obsspace.create_var('ObsError/windNorthward', dtype=vob2.dtype, fillval=wspd2.fill_value) \
+                .write_attr('units', 'm s-1') \
+                .write_attr('long_name', 'Error for Northward Wind Component') \
+                .write_data(verr2)
+
             end_time = time.time()
             running_time = end_time - start_time
             total_ob_processed += len(satid2)
