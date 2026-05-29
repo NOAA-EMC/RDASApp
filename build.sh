@@ -269,27 +269,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Need to convert all the copy-based workaround methods to commit-based method
   $dir_root/ush/apply_patches.sh
 
-  # Workaround for regional GSIBEC
-  # Saber PR #1088: https://github.com/JCSDA-internal/saber/pull/1088
-  cp ../sorc/_workaround_/saber/GSIParameters.h        ../sorc/saber/src/saber/gsi/utils/GSIParameters.h
-  cp ../sorc/_workaround_/saber/GridCheckHelper.cc     ../sorc/saber/src/saber/gsi/utils/GridCheckHelper.cc
-  cp ../sorc/_workaround_/saber/gsi_covariance_mod.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
-  cp ../sorc/_workaround_/saber/gsi_grid_mod.f90       ../sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90
-  cp ../sorc/_workaround_/saber/Geometry.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
-  # No PR for full gsibec changes
-  # gsibec PR #88 for qoption2: https://github.com/GEOS-ESM/GSIbec/pull/88
-  cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
-
-  # Workaround for adding MGBF
-  # No PR yet
-  mkdir -p ../sorc/saber/src/saber/mgbf
-  cp -r ../sorc/_workaround_/saber/mgbf/mgbf_src/*    ../sorc/saber/src/saber/mgbf/
-  cp ../sorc/_workaround_/saber/mgbf/Localization.h   ../sorc/saber/src/saber/oops/Localization.h
-  cp ../sorc/_workaround_/saber/mgbf/Interpolation.cc ../sorc/saber/src/saber/interpolation/Interpolation.cc
-  cp ../sorc/_workaround_/saber/mgbf/Interpolation.h  ../sorc/saber/src/saber/interpolation/Interpolation.h
-  cp ../sorc/_workaround_/saber/mgbf/CMakeLists.txt   ../sorc/saber/src/saber/CMakeLists.txt
-  cp ../sorc/_workaround_/saber/mgbf/compiler_flags_Intel_Fortran.cmake  ../sorc/saber/cmake/compiler_flags_Intel_Fortran.cmake
-
   # Workaround for parallel IO developed by Dan Kokron at GDIT
   cp ../sorc/_workaround_/fv3-jedi-io/CMakeLists.txt                        ../sorc/fv3-jedi/src/fv3jedi/CMakeLists.txt
   cp ../sorc/_workaround_/fv3-jedi-io/Fields/fv3jedi_field_mod.f90          ../sorc/fv3-jedi/src/fv3jedi/Fields/fv3jedi_field_mod.f90
