@@ -225,6 +225,23 @@
            action:
              name: reject
 
+         # Reject obs with pressure < 125 mb
+         - filter: Bounds Check
+           udescriptor: "bounds_check_pressure"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/pressure
+           minvalue: 12500.
+           where:
+           - variable: ObsType/windEastward
+             is_in: 250
+           - variable: MetaData/satelliteIdentifier
+             is_in: 174
+           action:
+             name: reject
+
          # Reject when pressure is more than 50 mb above tropopause
          - filter: Difference Check
            udescriptor: "difference_check_tropopause_pressure"

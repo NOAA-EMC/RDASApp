@@ -225,6 +225,23 @@
            action:
              name: reject
 
+         # Reject obs with pressure < 125 mb
+         - filter: Bounds Check
+           udescriptor: "bounds_check_pressure"
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           test variables:
+           - name: MetaData/pressure
+           minvalue: 12500.
+           where:
+           - variable: ObsType/windEastward
+             is_in: 253
+           - variable: MetaData/satelliteIdentifier
+             is_in: 56
+           action:
+             name: reject
+
          # Reject data over non-water surface type where latitude > 20N
          - filter: Perform Action
            udescriptor: "bounds_check_reject_over_nonwater"
