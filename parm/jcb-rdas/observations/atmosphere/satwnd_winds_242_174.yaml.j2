@@ -1,16 +1,16 @@
      - obs space:
-         name: satwnd_winds_253_56
+         name: satwnd_winds_242_174
          obsdatain:
            engine:
              type: H5File
-             obsfile: "data/obs/ioda_satwnd.seviri_m9.nc"
+             obsfile: "data/obs/ioda_satwnd.ahi_h9.nc"
              missing file action: "warn"
          obsdataout:
            empty obs space action: "{{empty_obs_space_action}}"
            write multiple files: {{write_multiple_files | default(false) }}
            engine:
              type: H5File
-             obsfile: jdiag_satwnd_winds_253_56.nc
+             obsfile: jdiag_satwnd_winds_242_174.nc
              allow overwrite: true
          io pool:
            max pool size: {{ max_pool_size | default(1) }}
@@ -35,7 +35,7 @@
 
        obs filters:
          # ------------------
-         # wind (253)
+         # wind (242)
          # ------------------
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
@@ -45,11 +45,11 @@
            - name: windNorthward
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
-             name: {{iuse_satwnd_winds_253_56 | default("passivate", true)}} # accept, reject, passivate
+             name: {{iuse_satwnd_winds_242_174 | default("passivate", true)}} # accept, reject, passivate
 
          # Reject all obs not in type
          - filter: Perform Action
@@ -65,7 +65,7 @@
            udescriptor: "obs_kx_check"
            where:
            - variable: ObsType/windEastward
-             is_not_in: 253
+             is_not_in: 242
            action:
              name: reduce obs space
 
@@ -74,7 +74,7 @@
            udescriptor: "obs_subtype_check"
            where:
            - variable: MetaData/satelliteIdentifier
-             is_not_in: 56
+             is_not_in: 174
            action:
              name: reduce obs space
 
@@ -90,9 +90,9 @@
            maxvalue: 5400
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: reduce obs space
 
@@ -109,9 +109,9 @@
              name: MetaData/longitude_latitude_pressure
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: reduce obs space
 
@@ -123,9 +123,9 @@
            - name: windNorthward
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: assign error
              error function:
@@ -144,9 +144,9 @@
            - name: windEastward
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: inflate error
              inflation variable:
@@ -162,9 +162,9 @@
            - name: windNorthward
            where:
            - variable: ObsType/windNorthward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: inflate error
              inflation variable:
@@ -184,9 +184,9 @@
            maxvalue: 200
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: reduce obs space
 
@@ -202,9 +202,9 @@
            maxvalue: 100.
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: reject
 
@@ -219,9 +219,9 @@
            maxvalue: 68.
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: reject
 
@@ -236,27 +236,9 @@
            minvalue: 12500.
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
-           action:
-             name: reject
-
-         # Reject data over non-water surface type where latitude > 20N
-         - filter: Perform Action
-           udescriptor: "bounds_check_reject_over_nonwater"
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           where:
-           - variable: MetaData/latitude
-             minvalue: 20.
-           - variable: GeoVaLs/water_area_fraction
-             maxvalue: 0.99
-           - variable: ObsType/windEastward
-             is_in: 253
-           - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: reject
 
@@ -271,9 +253,9 @@
            minvalue: -5000.  # 50 hPa above tropopause level, negative p-diff
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: reject
 
@@ -288,13 +270,13 @@
            maxvalue: -10000.  # within 100 hPa above surface pressure, negative p-diff
            where:
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: reject
 
-         # Reject obs with pressure > 401 mb and < 801 mb.
+         # Reject obs with pressure < 700 mb.
          - filter: Perform Action
            udescriptor: "pressure_range_check"
            filter variables:
@@ -302,12 +284,11 @@
            - name: windNorthward
            where:
            - variable: MetaData/pressure
-             minvalue: 40101.
-             maxvalue: 80099.
+             maxvalue: 70000.
            - variable: ObsType/windEastward
-             is_in: 253
+             is_in: 242
            - variable: MetaData/satelliteIdentifier
-             is_in: 56
+             is_in: 174
            action:
              name: reject
 
@@ -320,7 +301,7 @@
            function absolute threshold:
            - name: ObsFunction/WindsSPDBCheck
              options:
-               wndtype:    [ 253 ]
+               wndtype:    [ 242 ]
                cgross:     [ 2.5 ]
                error_min:  [ 1.4 ]
                error_max:  [ 5.0 ]
@@ -338,7 +319,7 @@
            function absolute threshold:
            - name: ObsFunction/WindsSPDBCheck
              options:
-               wndtype:    [ 253 ]
+               wndtype:    [ 242 ]
                cgross:     [ 2.5 ]
                error_min:  [ 1.4 ]
                error_max:  [ 5.0 ]
