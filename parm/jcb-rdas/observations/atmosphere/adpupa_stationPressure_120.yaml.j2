@@ -137,6 +137,7 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [68.115, 68.115, 68.115, 71.307, 74.576, 77.845, 79.791, 81.737, 83.684, 92.441, 101.2, 108.99, 117.75, 128.44, 144.99, 158.58, 182.93, 247.16, 269.54, 315.28, 383.38, 489.46, 577.03, 577.03, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11, 1E11]
 
+{% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
          # Error inflation based on pressure check (setupps.f90)
          - filter: Perform Action
            udescriptor: "error_inflation_pressure_check"
@@ -195,6 +196,7 @@
              maxvalue: 10000.0
            - variable: ObsType/stationPressure
              is_in: 120
+{% endif %}  # END use_error_inflation
 
          # Bounds Check (ObsError)
          - filter: Bounds Check

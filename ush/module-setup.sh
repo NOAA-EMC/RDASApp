@@ -115,6 +115,9 @@ elif [[ $MACHINE_ID = discover* ]]; then
     export PATH=$PATH:$SPACK_ROOT/bin
     . $SPACK_ROOT/share/spack/setup-env.sh
 
+elif [[ $MACHINE_ID = hostgeneric ]]; then
+    :  # do nothing
+
 else
     echo WARNING: UNKNOWN PLATFORM 1>&2
 fi

@@ -1,0 +1,29 @@
+  filetype: fms restart
+  datapath: ./
+  prepend files with date: false
+  prefix: analysis_jedi_mean
+  frequency: {{atmosphere_forecast_timestep}}
+  field io names:
+    eastward_wind: {{eastward_wind}}
+    northward_wind: {{northward_wind}}
+    air_temperature: {{air_temperature}}
+    air_pressure_thickness: {{air_pressure_thickness}}
+    air_pressure_at_surface: {{air_pressure_at_surface}}
+    water_vapor_mixing_ratio_wrt_moist_air: {{water_vapor_mixing_ratio_wrt_moist_air}}
+    cloud_liquid_ice: {{cloud_liquid_ice}}
+    cloud_liquid_water: {{cloud_liquid_water}}
+    ozone_mass_mixing_ratio: {{ozone_mass_mixing_ratio}}
+    geopotential_height_times_gravity_at_surface: {{geopotential_height_times_gravity_at_surface}}
+    skin_temperature_at_surface: {{skin_temperature_at_surface}}
+    tslb: {{tslb}}
+    smois: {{smois}}
+    eastward_wind_at_surface: {{eastward_wind_at_surface}}
+    northward_wind_at_surface: {{northward_wind_at_surface}}
+    rain_water: {{rain_water}}
+    snow_water: {{snow_water}}
+    graupel: {{graupel}}
+    cloud_droplet_number_concentration: {{cloud_droplet_number_concentration}}
+    cloud_ice_number_concentration: {{cloud_ice_number_concentration}}
+    rain_number_concentration: {{rain_number_concentration}}
+    upward_air_velocity: {{upward_air_velocity}}
+    equivalent_reflectivity_factor: {{equivalent_reflectivity_factor}}

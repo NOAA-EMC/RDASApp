@@ -11,6 +11,7 @@
   "satellite_info"   : [
                           { "satellite_name": "GOES-16", "satellite_full_name": "Geostationary Operational Satellite - 16", "satellite_id": 270, "launch time": "20161119" },
                           { "satellite_name": "GOES-17", "satellite_full_name": "Geostationary Operational Satellite - 17", "satellite_id": 271, "launch time": "20180301" },
-                          { "satellite_name": "GOES-18", "satellite_full_name": "Geostationary Operational Satellite - 18", "satellite_id": 272, "launch time": "20220301" }
+                          { "satellite_name": "GOES-18", "satellite_full_name": "Geostationary Operational Satellite - 18", "satellite_id": 272, "launch time": "20220301" },
+                          { "satellite_name": "GOES-19", "satellite_full_name": "Geostationary Operational Satellite - 19", "satellite_id": 273, "launch time": "20240625" }
                        ]
 }

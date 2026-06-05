@@ -22,16 +22,19 @@
          simulated variables: [airTemperature]
 
        obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
+           name: SfcCorrected
+           correction scheme to use: GSL
+           gsl parameters:
+             temperature lapse rate option: NoAdjustment
+             temperature local lapse rate level: 5
+             temperature lapse rate threshold: true
+             min threshold: 0.5
+             max threshold: 10.0
            variables:
            - name: airTemperature
 
        linear obs operator:
-         name: VertInterp
+         name: Identity
 
        obs error:
          covariance model: diagonal
@@ -40,12 +43,69 @@
          # ------------------
          # airTemperature (188)
          # ------------------
+{% if mesonet_use_list_airTemperature | default(false) %}
+
+         # Mesonet provider/station use lists
+         - filter: RejectList  # initially reject all providers
+           udescriptor: "initial_reject_all_providers"
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
+
+{% if msonet_provider_accepts_allsprvs | default([]) %}
+         - filter: AcceptList
+           udescriptor: "accept_msonet_airTemperature_provider_allsprvs"
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
+           - variable: MetaData/dataProviderOrigin
+             is_in: {{ msonet_provider_accepts_allsprvs }}
+{% endif %}
+
+{% for item in msonet_provider_accepts_subproviders | default([]) %}
+         - filter: AcceptList
+           udescriptor: "accept_msonet_airTemperature_provider_{{ item.provider }}_{{ item.subprovider }}"
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
+           - variable: MetaData/dataProviderOrigin
+             is_in: ["{{ item.provider }}"]
+           - variable: MetaData/dataProviderSubOrigin
+             is_in: ["{{ item.subprovider }}"]
+{% endfor %}
+
+{% for item in msonet_station_accepts_airTemperature | default([]) %}
+         - filter: AcceptList
+           udescriptor: "accept_msonet_airTemperature_stations_{{ item.provider }}"
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 188
+           - variable: MetaData/dataProviderOrigin
+             is_in: ["{{ item.provider }}"]
+           - variable: MetaData/stationIdentification
+             is_in: {{ item.stations }}
+{% endfor %}
+
+{% endif %} # end of mesonet_use_list_airTemperature
+
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
            udescriptor: "iuse_check"
            filter variables:
            - name: airTemperature
            where:
+{% if mesonet_use_list_airTemperature | default(false) %}
+           - variable: QCflagsData/airTemperature
+             is_in: 0
+{% endif %}
            - variable: ObsType/airTemperature
              is_in: 188
            action:
@@ -106,7 +166,7 @@
            tolerance: PT0H
            seed_time: "{{atmosphere_background_time_iso}}"
            category_variable:
-             name: MetaData/longitude_latitude_pressure
+             name: MetaData/longitude_latitude
            where:
            - variable: ObsType/airTemperature
              is_in: 188
@@ -140,6 +200,15 @@
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0]
+
+{% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
+#         # Reduce observation error and turn off ObsErrorFactorPressureCheck (l_gsd_terrain_match_surfTobs=.true., l_sfcobserror_ramp_t=.true.,)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: airTemperature
+#           action:
+#             name: inflate error
+#             inflation factor: 0.5
 
          # Error inflation based on pressure check (setupt.f90)
          - filter: Perform Action
@@ -202,6 +271,7 @@
              maxvalue: 10000.0
            - variable: ObsType/airTemperature
              is_in: 188
+{% endif %}  # END use_error_inflation
 
          # Bounds Check (ObsError)
          - filter: Bounds Check

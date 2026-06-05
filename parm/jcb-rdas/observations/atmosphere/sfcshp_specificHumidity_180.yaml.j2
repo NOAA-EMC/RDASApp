@@ -131,14 +131,18 @@
            action:
              name: assign error
              error function:
+{% if use_error_inflation | default(true) %}
                name: ObsFunction/ObsErrorModelStepwiseLinear
-               #name: ObsFunction/ObsErrorModelHumidity
+{% else %}
+               name: ObsFunction/ObsErrorModelHumidity
+{% endif %}
                options:
                  xvar:
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912]
 
+{% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
          # Error inflation based on pressure check (setupq.f90) -- if this is off, use ObsFunction/ObsErrorModelHumidity
          - filter: Perform Action
            udescriptor: "error_inflation_pressure_check"
@@ -199,6 +203,7 @@
              maxvalue: 10000.0
            - variable: ObsType/specificHumidity
              is_in: 180
+{% endif %}  # END use_error_inflation
 
          # Bounds Check (ObsError)
          - filter: Bounds Check

@@ -8,72 +8,21 @@ app_path_model: rdas/model/fv3/atmosphere
 app_path_observations: rdas/observations/atmosphere
 app_path_observation_chronicle: rdas/observation_chronicle/atmosphere
 
-
 # Places where we deviate from the generic file name of a yaml
 # ------------------------------------------------------------
-final_increment_file: atmosphere_final_increment
-output_file: atmosphere_output
-output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
+output_mean_prior_file: atmosphere_output_mean_prior
+posterior_output_file: atmosphere_output_mean_posterior
+output_increment_file: atmosphere_output_mean_increments # not used in ctest
+output_ensemble_increments_file: atmosphere_output_ensemble_increments # not used in ctest
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
-background_error_file: atmosphere_background_error_3dvar_gsibec
 
 # Global analysis things
 # ----------------------
-# window_begin: '2024-05-26T22:30:00Z'
-# window_end: '2024-05-27T01:30:00Z'
 window_length: PT6H
 bound_to_include: begin
-minimizer: DRPCG
-final_diagnostics_departures: oman
-number_of_outer_loops: 2
-ninner: 50
-gradient_norm_reduction: 1e-3
-#write_increment_outer_loop_1: true
-#write_increment_outer_loop_2: true
-distribution: RoundRobin
 empty_obs_space_action: create output
-
-analysis_variables:
-- eastward_wind
-- northward_wind
-- air_temperature
-- water_vapor_mixing_ratio_wrt_moist_air
-- ozone_mass_mixing_ratio
-#- air_pressure_thickness
-#- cloud_liquid_water
-#- cloud_liquid_ice
-#- rain_water
-#- snow_water
-#- graupel
-#- upward_air_velocity
-#- equivalent_reflectivity_factor
-- air_pressure_at_surface
-
-control_variables:
-- eastward_wind
-- northward_wind
-- virtual_temperature
-- water_vapor_mixing_ratio_wrt_moist_air
-- ozone_mass_mixing_ratio
-#- cloud_liquid_water
-#- cloud_liquid_ice
-#- rain_water
-#- snow_water
-#- graupel
-#- upward_air_velocity
-#- equivalent_reflectivity_factor
-- air_pressure_at_surface
-
-state_variables_to_inverse:
-- eastward_wind
-- northward_wind
-- air_temperature
-- water_vapor_mixing_ratio_wrt_moist_air
-- ozone_mass_mixing_ratio
-- geopotential_height_times_gravity_at_surface
-- air_pressure_thickness
-- air_pressure_at_surface
+atmosphere_number_ensemble_members: 30
 
 # Testing
 # -------
@@ -83,6 +32,55 @@ test_output_filename: rrfs-fv3jedi-getkf-observer.out
 test_float_relative_tolerance: 0.02
 test_float_absolute_tolerance: 1.0e-6
 test_integer_tolerance: 3
+
+# Local Ensemble DA (LETKF)
+# -------------------------
+local_ensemble_da_solver: Deterministic GETKF
+
+increment_variables:
+- eastward_wind
+- northward_wind
+- air_temperature
+- air_pressure_thickness
+- water_vapor_mixing_ratio_wrt_moist_air
+- cloud_liquid_ice
+- cloud_liquid_water
+- ozone_mass_mixing_ratio
+
+# Veritcal localization for GETKF
+vl_fraction_of_retained_variance: 0.850
+vl_lengthscale: 0.50
+vl_lengthscale_units: logp
+inflation_rtps: 0.95
+inflation_rtpp: 0.0
+inflation_mult: 1.0
+
+# Horizontal localization for GETKF
+obs_distribution_localizations:
+  obs_distribution:
+    name: RoundRobin
+    halo size: 500e3
+  obs_localizations:
+  - localization method: Horizontal Gaspari-Cohn
+    lengthscale: 200e3
+override_obs_distribution_localizations:
+  override: true
+  refl10cm: # not used in getkf ctests, but leaving as an example
+    obs_distribution:
+      name: RoundRobin
+      halo size: 100e3
+    obs_localizations:
+    - localization method: Horizontal Gaspari-Cohn
+      lengthscale: 15e3
+
+# Driver
+driver_update_obs_config_with_geometry_info: false
+driver_run_as_observer_only: true
+driver_save_posterior_mean: true
+driver_save_posterior_ensemble: false
+driver_save_prior_mean: true
+driver_save_posterior_mean_increment: false
+driver_save_posterior_ensemble_increments: false
 
 # Model things
 # ------------
@@ -102,7 +100,6 @@ atmosphere_io_layout_y: 1
 # Background
 atmosphere_background_path: "./"
 atmosphere_background_ensemble_path: "data/inputs/mem%mem%"
-
 atmosphere_background_time_iso: '2024-05-27T00:00:00Z'
 atmosphere_background_time_prefix: ""
 filename_core: 20240527.000000.fv_core.res.tile1.nc
@@ -173,32 +170,14 @@ northward_wind_at_surface: v_srf
 
 abi_simulated_channels: 7-16
 
-# Background error
-atmosphere_bump_data_directory: DATA/berror
-atmosphere_gsibec_path: DATA/berror
-atmosphere_number_ensemble_members: 30
-atmosphere_layout_gsib_x: 16
-atmosphere_layout_gsib_y: 10
-gsibec_lats: 127
-gsibec_lons: 211
-lat_start: -14.726005
-lat_end: 14.726005
-lon_start: -25.076254
-lon_end: 25.076254
-north_pole_lat: 51.499999
-north_pole_lon: 82.500018
-gsi_bands: 10
-
 # Forecasting
 atmosphere_forecast_length: PT6H
 atmosphere_forecast_timestep: PT1H
 
-# Write final increment on Gaussian grid in variational
-atmosphere_final_increment_prefix: "./anl/atminc."
-
-
 # Observation things
 # ------------------
+use_error_inflation: true
+
 observations:
 # Upper-air conventional
 #- adpupa_airTemperature_120
@@ -354,58 +333,3 @@ atmosphere_obsbiasout_prefix: APREFIX
 atmosphere_obsbiasout_suffix: ".satbias.nc"
 atmosphere_obsbiascovout_prefix: APREFIX
 atmosphere_obsbiascovout_suffix: ".satbias_cov.nc"
-
-
-# Local Ensemble DA (LETKF)
-# -------------------------
-local_ensemble_da_solver: Deterministic GETKF
-
-increment_variables:
-- eastward_wind
-- northward_wind
-- air_temperature
-- air_pressure_thickness
-- water_vapor_mixing_ratio_wrt_moist_air
-- cloud_liquid_ice
-- cloud_liquid_water
-- ozone_mass_mixing_ratio
-
-# Veritcal localization for GETKF
-vl_fraction_of_retained_variance: 0.850
-vl_lengthscale: 0.50
-vl_lengthscale_units: logp
-inflation_rtps: 0.95
-inflation_rtpp: 0.0
-inflation_mult: 1.0
-
-# Horizontal localization for GETKF
-obs_distribution_localizations:
-  obs_distribution:
-    name: RoundRobin
-    halo size: 500e3
-  obs_localizations:
-  - localization method: Horizontal Gaspari-Cohn
-    lengthscale: 200e3
-override_obs_distribution_localizations:
-  override: true
-  refl10cm: # not used in getkf ctests, but leaving as an example
-    obs_distribution:
-      name: RoundRobin
-      halo size: 100e3
-    obs_localizations:
-    - localization method: Horizontal Gaspari-Cohn
-      lengthscale: 15e3
-
-# Driver
-driver_update_obs_config_with_geometry_info: false
-driver_run_as_observer_only: true
-driver_save_posterior_mean: true
-driver_save_posterior_ensemble: false
-driver_save_prior_mean: true
-driver_save_posterior_mean_increment: false
-driver_save_posterior_ensemble_increments: false
-
-
-# Diagnostics
-atmosphere_ensemble_increment_prefix: "./anl/mem%{member}%/atminc."
-atmosphere_posterior_output_gaussian: "./mem%{member}%/atmanl."
