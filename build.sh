@@ -281,6 +281,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90     ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/m_TwoPhaseScatterGather.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/m_TwoPhaseScatterGather.f90
 
+  # Workaround for GSL surface operator
+  cp ../sorc/_workaround_/ufo/* ../sorc/ufo/src/ufo/operators/sfccorrected/
+
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)
