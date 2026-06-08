@@ -266,7 +266,7 @@
            channels: *abi_g16_channels
          action:
            name: assign error
-           error parameter vector: *abi_g16_error
+           error parameter vector: &abi_g16_error  [{{ get_satellite_variable(observation_from_jcb, "error") }}]
 
        # --------------------------------------------------------
        # Step 8 : Creat surface flag assignment from Geovals
@@ -700,7 +700,7 @@
                channels: *abi_g16_channels
                options:
                  channels: *abi_g16_channels
-             obserr_bound_max: &abi_g16_obserr_bound_max  [{{ get_satellite_variable(observation_from_jcb, "ermax") }}]
+             obserr_bound_max: [{{ get_satellite_variable(observation_from_jcb, "ermax") }}]
              error parameter vector: *abi_g16_error
          actions:
            - name: set
