@@ -49,15 +49,6 @@ type :: fv3jedi_field
  logical                   :: tracer                          ! Whether field is tracer or not
  character(len=field_clen) :: space                           ! Vector, magnitude, direction
  integer :: isc, iec, jsc, jec, npz
-
- class(*), allocatable :: array_file(:,:,:)                   ! Memory for NetCDF read buffer (whole level)
-                                                              ! Type is determined by the type held in the file
-
- class(*), allocatable :: array_file_scatter(:,:,:)           ! In cases where the variable type in a NetCDF file is "smaller"
-                                                              ! than the type the application expects (r4 < r8), we read and scatter
-                                                              ! smaller type then convert to the application type.  Thus, we
-                                                              ! need someplace to put the scattered data before converting
-
  real(kind=kind_real), allocatable :: array(:,:,:)
  type(fckit_mpi_comm) :: comm                       ! Communicator
 endtype fv3jedi_field

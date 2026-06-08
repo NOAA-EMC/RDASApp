@@ -1354,6 +1354,7 @@ character(len=8), allocatable :: dim_names(:)
 real(kind=kind_real) :: io_unscaling_factor
 character(len=field_clen) :: io_name
 
+
 ! Get datetime
 ! ------------
 call datetime_to_ifs(vdate, idate, isecs)
@@ -1513,10 +1514,6 @@ integer :: file_idx, var_type_tmp
 logical :: write_field, file_exists(numfiles)
 character(len=72), save :: fields_str, res_str, action_str
 
-integer :: cached_nfields = -1
-logical :: fields_changed
-integer :: f, nz
-
 rank=mpp_pe()
 npes=mpp_npes()
 
@@ -1550,6 +1547,7 @@ endif
 ! ---------------------
 if (self%has_prefix) then
   do n = 1, numfiles
+    self%filenames(n) = trim(self%prefix)//"."//trim(datefile)//trim(self%filenames_conf(n))
     if (self%prepend_date) then
       self%filenames(n) = trim(self%prefix)//"."//trim(datefile)//trim(self%filenames_conf(n))
     else
@@ -1558,72 +1556,7 @@ if (self%has_prefix) then
   enddo
 endif
 
-! Check for field changes (order or size)
-! ---------------------------------------
-fields_changed = .false.
-! If cache not initialized, force rebuild
-if (cached_nfields < 0) then
-  fields_changed = .true.
-  if(rank==0) write(6,'("write_restart_all_reg: Init fields_changed")')
-elseif (cached_nfields /= size(fields)) then
-  fields_changed = .true.
-  if(rank==0) write(6,'("write_restart_all_reg: cached_nfields /= size(fields)",2I4)') cached_nfields,size(fields)
-elseif (.not. allocated(cached_field_names) .or. .not. allocated(cached_field_nz)) then
-  fields_changed = .true.
-  if(rank==0) write(6,'("write_restart_all_reg: cached_field_names or cached_field_nz not allocated cached_field_nz")')
-elseif (size(cached_field_names) /= size(fields) .or. size(cached_field_nz) /= size(fields)) then
-  fields_changed = .true.
-  if(rank==0) write(6,'("write_restart_all_reg: size of cached_field_names or cached_field_nz not right")')
-else
-  do f = 1, size(fields)
-    if (allocated(fields(f)%array)) then
-      nz = size(fields(f)%array, 3)
-    else
-      nz = -1
-    endif
-    if (trim(fields(f)%long_name) /= trim(cached_field_names(f))) then
-      fields_changed = .true.
-      if(rank==0) write(6,'("write_restart_all_reg: field name order is different",I4,5A)') f,' (', trim(fields(f)%model_name),') /= (', trim(cached_field_names(f)),')'
-      exit
-    endif
-    if (nz /= cached_field_nz(f)) then
-      fields_changed = .true.
-      if(rank==0) write(6,'("write_restart_all_reg: nz is different")')
-      exit
-    endif
-  enddo
-endif
-
-! If the Geometry changes, reallocate Scatter structure and rescan input files
-! Do this only for the first ensemble member to save significant time
-! ----------------------------------------------------------------------------
-if( (fields_changed) .or. &
-    (geom%globalsizes(1) .ne. cached_globalsizes(1)) .or. &
-    (geom%globalsizes(2) .ne. cached_globalsizes(2)) ) then
-
-  !tb1 = MPI_Wtime()
-
-  ! Update cached fields
-  cached_nfields = size(fields)
-  if (allocated(cached_field_names)) deallocate(cached_field_names)
-  if (allocated(cached_field_nz))    deallocate(cached_field_nz)
-  allocate(cached_field_names(cached_nfields))
-  allocate(cached_field_nz(cached_nfields))
-  do f = 1, cached_nfields
-    cached_field_names(f) = fields(f)%long_name
-    if (allocated(fields(f)%array)) then
-      cached_field_nz(f) = size(fields(f)%array, 3)
-    else
-      cached_field_nz(f) = -1
-    endif
-  enddo
-
-  cached_globalsizes = geom%globalsizes
-
-  if(.not. write_first_pass) then
-    call TwoPhaseGather_delete()
-  endif
-
+if (write_first_pass) then
   rstflag(:) = .false.
   file_exists(:) = .false.
   ncid(:)=-999
@@ -1681,9 +1614,7 @@ if( (fields_changed) .or. &
   if(allocated(FileNamesToProcess)) deallocate(FileNamesToProcess)
   allocate(FileNamesToProcess(totalnumfiles))
 
-  if(allocated(numvarfile)) deallocate(numvarfile)
   allocate(numvarfile(totalnumfiles))
-
   allocate(varlist(totalnumfiles))
   !te = MPI_Wtime()
   !times(1) = te-tb
@@ -2030,14 +1961,6 @@ if( (fields_changed) .or. &
   ! Allocate memory to hold the reconstructed array
   ! Assume the user wants to save variables in the application bit size (kind_real)
   if (MPI_COMM_NULL /= write_comm) then
-    if(allocated(write_buffers)) then
-      do jedi_var_idx= 1,size(write_buffers)
-        if(allocated(write_buffers(jedi_var_idx)%r4)) deallocate(write_buffers(jedi_var_idx)%r4)
-        if(allocated(write_buffers(jedi_var_idx)%r8)) deallocate(write_buffers(jedi_var_idx)%r8)
-      enddo
-      deallocate(write_buffers)
-    endif
-
     allocate(write_buffers(size(fields)))
     do file_var_idx = 1,sum(numvarfile)
       jedi_var_idx = VarToVarMap(file_var_idx)
@@ -2141,6 +2064,7 @@ do b_start = 1, ntotallev, batch_size
       ! Send the native application type (no downcast needed)
       call TwoPhaseGather_Phase1(geom, owner, rank, fields(jedi_var_idx)%array(:,:,LevelToLevelMap(level)), b_ind, reqs_p1(b_ind))
     endif
+
   end do
 
   call MPI_Waitall(n_in_batch, reqs_p1, MPI_STATUSES_IGNORE, ierr)
