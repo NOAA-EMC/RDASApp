@@ -176,16 +176,6 @@ call swap_name_member(conf, str)
 self%datapath = str
 deallocate(str)
 
-!if (conf%has("analysis variables")) then
-  !call conf%get_or_die("analysis variables",str)
-!if (conf%has("3dvars")) then
-!  call conf%get_or_die("3dvars",str)
-!  write(6,'("create: conf has analysis variables",A)') str
-!  deallocate(str)
-!else
-!  write(6,'("create: conf does NOT have analysis variables")')
-!endif
-
 ! Optionally the file name to be read is datetime templated
 ! ---------------------------------------------------------
 if (conf%has("filename is datetime templated")) then
