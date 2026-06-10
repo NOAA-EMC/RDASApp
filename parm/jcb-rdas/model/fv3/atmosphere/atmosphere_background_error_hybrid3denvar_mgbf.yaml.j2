@@ -35,6 +35,7 @@ components:
         local interpolator type: oops unstructured grid interpolator
       inverse interpolator:
         local interpolator type: oops unstructured grid interpolator
+        regional nn fill distance in km: 800
       state variables to inverse: {{state_variables_to_inverse}}
     linear variable change:
       linear variable change name: Control2Analysis
@@ -49,6 +50,7 @@ components:
       template:
         datetime: "{{ atmosphere_background_time_iso }}"
         filetype: fms restart
+        regional restart: true
         state variables: {{analysis_variables}}
         field io names:
           eastward_wind: {{eastward_wind}}
@@ -109,5 +111,6 @@ components:
            local interpolator type: oops unstructured grid interpolator
          inverse interpolator:
            local interpolator type: oops unstructured grid interpolator
+           regional nn fill distance in km: 800
   weight:
     value: 0.85

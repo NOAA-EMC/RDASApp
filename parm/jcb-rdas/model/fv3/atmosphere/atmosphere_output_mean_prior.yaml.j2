@@ -1,4 +1,8 @@
   filetype: fms restart
+  regional restart: true
+  lustre stripe size: {{lustre_stripe_size | default(4194304)}}
+  default output resolution: {{default_output_resolution | default("32bit")}}
+  write into existing files: {{write_into_existing_files | default(false)}}
   datapath: ./
   prepend files with date: false
   prefix: background_jedi_mean

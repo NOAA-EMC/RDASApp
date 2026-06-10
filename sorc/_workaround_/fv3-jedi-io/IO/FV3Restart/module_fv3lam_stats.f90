@@ -23,7 +23,7 @@ module module_ncfile_stat
 
   implicit none
 
-  integer,parameter :: max_varname_length=20
+  integer,parameter :: max_varname_length=72
 !
 ! Rset default to private
 !

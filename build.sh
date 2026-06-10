@@ -269,37 +269,20 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Need to convert all the copy-based workaround methods to commit-based method
   $dir_root/ush/apply_patches.sh
 
-  # Workaround for regional GSIBEC
-  # Saber PR #1088: https://github.com/JCSDA-internal/saber/pull/1088
-  cp ../sorc/_workaround_/saber/GSIParameters.h        ../sorc/saber/src/saber/gsi/utils/GSIParameters.h
-  cp ../sorc/_workaround_/saber/GridCheckHelper.cc     ../sorc/saber/src/saber/gsi/utils/GridCheckHelper.cc
-  cp ../sorc/_workaround_/saber/gsi_covariance_mod.f90 ../sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90
-  cp ../sorc/_workaround_/saber/gsi_grid_mod.f90       ../sorc/saber/src/saber/gsi/grid/gsi_grid_mod.f90
-  cp ../sorc/_workaround_/saber/Geometry.cc            ../sorc/saber/src/saber/interpolation/Geometry.cc
-  # No PR for full gsibec changes
-  # gsibec PR #88 for qoption2: https://github.com/GEOS-ESM/GSIbec/pull/88
-  cp ../sorc/_workaround_/gsibec/*                     ../sorc/gsibec/src/gsibec/gsi
-
-  # Workaround for adding MGBF
-  # No PR yet
-  mkdir -p ../sorc/saber/src/saber/mgbf
-  cp -r ../sorc/_workaround_/saber/mgbf/mgbf_src/*    ../sorc/saber/src/saber/mgbf/
-  cp ../sorc/_workaround_/saber/mgbf/Localization.h   ../sorc/saber/src/saber/oops/Localization.h
-  cp ../sorc/_workaround_/saber/mgbf/Interpolation.cc ../sorc/saber/src/saber/interpolation/Interpolation.cc
-  cp ../sorc/_workaround_/saber/mgbf/Interpolation.h  ../sorc/saber/src/saber/interpolation/Interpolation.h
-  cp ../sorc/_workaround_/saber/mgbf/CMakeLists.txt   ../sorc/saber/src/saber/CMakeLists.txt
-  cp ../sorc/_workaround_/saber/mgbf/compiler_flags_Intel_Fortran.cmake  ../sorc/saber/cmake/compiler_flags_Intel_Fortran.cmake
-
   # Workaround for parallel IO developed by Dan Kokron at GDIT
-  cp ../sorc/_workaround_/fv3-jedi-io/CMakeLists.txt                        ../sorc/fv3-jedi/src/fv3jedi/CMakeLists.txt
-  cp ../sorc/_workaround_/fv3-jedi-io/Fields/fv3jedi_field_mod.f90          ../sorc/fv3-jedi/src/fv3jedi/Fields/fv3jedi_field_mod.f90
-  cp ../sorc/_workaround_/fv3-jedi-io/Geometry/fv3jedi_geom_mod.f90         ../sorc/fv3-jedi/src/fv3jedi/Geometry/fv3jedi_geom_mod.f90
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.cc                ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.cc
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.interface.F90     ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.interface.F90
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.interface.h       ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.interface.h
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/fv3jedi_io_fms2_mod.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/fv3jedi_io_fms2_mod.f90
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_mpi_arrange.f90  ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_mpi_arrange.f90
+  cp ../sorc/_workaround_/fv3-jedi-io/CMakeLists.txt                            ../sorc/fv3-jedi/src/fv3jedi/CMakeLists.txt
+  cp ../sorc/_workaround_/fv3-jedi-io/Fields/fv3jedi_field_mod.f90              ../sorc/fv3-jedi/src/fv3jedi/Fields/fv3jedi_field_mod.f90
+  cp ../sorc/_workaround_/fv3-jedi-io/Geometry/fv3jedi_geom_mod.f90             ../sorc/fv3-jedi/src/fv3jedi/Geometry/fv3jedi_geom_mod.f90
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.h                     ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.h
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.cc                    ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.cc
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.interface.F90         ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.interface.F90
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.interface.h           ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.interface.h
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/fv3jedi_io_fms2_mod.f90     ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/fv3jedi_io_fms2_mod.f90
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90     ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
+  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/m_TwoPhaseScatterGather.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/m_TwoPhaseScatterGather.f90
+
+  # Workaround for GSL surface operator
+  cp ../sorc/_workaround_/ufo/* ../sorc/ufo/src/ufo/operators/sfccorrected/
 
 fi
 
@@ -319,7 +302,8 @@ else
   CMAKE_OPTS+=" -DBUILD_RDAS_TOOLS=OFF"
 fi
 
-CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST"
+CRTM_DATA=$dir_root/bundle/test-data-release/crtm/2.4.0
+CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST -DUFO_CRTM_TESTFILES_PATH=$CRTM_DATA"
 # Configure
 echo "Configuring ..."
 set -x

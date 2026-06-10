@@ -35,7 +35,7 @@ list( APPEND fv3jedi_src_files
   Increment/fv3jedi_increment_interface_mod.F90
   Increment/fv3jedi_increment_mod.F90
   IO/FV3Restart/module_fv3lam_stats.f90
-  IO/FV3Restart/module_mpi_arrange.f90
+  IO/FV3Restart/m_TwoPhaseScatterGather.f90
   IO/FV3Restart/fv3jedi_io_fms2_mod.f90
   IO/FV3Restart/IOFms.cc
   IO/FV3Restart/IOFms.h
@@ -99,6 +99,8 @@ list( APPEND fv3jedi_src_files
   Utilities/fv3jedi_kinds_mod.f90
   Utilities/fv3jedi_netcdf_utils_mod.F90
   Utilities/fv3jedi_tile_comms_mod.f90
+  Utilities/fv3jedi_vertical_remap.h
+  Utilities/fv3jedi_vertical_remap.cc
   VariableChange/VaderCookbook.h
   VariableChange/VariableChange.cc
   VariableChange/VariableChange.h
@@ -164,14 +166,14 @@ list(APPEND fv3_defs INTERNAL_FILE_NML)
 list(APPEND fv3_defs ENABLE_QUAD_PRECISION)
 set_source_files_properties(${fv3jedi_fv3_src_files} PROPERTIES COMPILE_DEFINITIONS "${fv3_defs}")
 
-# Add all the compiler flags to the fv3 files
-# -------------------------------------------
+# Add additional compiler flags to the fv3 files
+# ----------------------------------------------
 
 # Fortran‐preprocessor flag
 set_fortran_preprocessing_flag(FORTRAN_PREPROCESSOR_FLAG)
 
 # Compiler specific flags.
-if(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
+if(CMAKE_Fortran_COMPILER_ID MATCHES "Intel")  # Intel or IntelLLVM
   set(FV3_FLAGS "-r8")
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
   set(FV3_FLAGS "-fdefault-real-8 -fdefault-double-8 -ffree-line-length-none")
@@ -291,7 +293,7 @@ if( FV3_FORECAST_MODEL MATCHES "UFS" )
   target_link_libraries( fv3jedi PUBLIC NetCDF::NetCDF_C NetCDF::NetCDF_Fortran)
   target_link_libraries( fv3jedi PUBLIC nemsio::nemsio)
   target_link_libraries( fv3jedi PUBLIC w3emc::w3emc_d)
-  target_link_libraries( fv3jedi PUBLIC sp::sp_d)
+  target_link_libraries( fv3jedi PUBLIC ip::ip_d)
   target_link_libraries( fv3jedi PUBLIC bacio::bacio_4)
   target_link_libraries( fv3jedi PUBLIC FMS::fms_r8)
   target_link_libraries( fv3jedi PUBLIC ESMF)
