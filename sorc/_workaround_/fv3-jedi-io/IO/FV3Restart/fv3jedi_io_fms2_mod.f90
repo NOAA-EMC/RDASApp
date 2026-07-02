@@ -24,7 +24,7 @@ use mpp_domains_mod,              only: east, north, center, domain2D, mpp_get_n
 use mpp_mod,                      only: mpp_pe, mpp_root_pe, mpp_npes
 
 ! fv3jedi
-use fv3jedi_field_mod,            only: fv3jedi_field, hasfield, field_clen
+use fv3jedi_field_mod,            only: fv3jedi_field, hasfield, field_clen, get_field
 use fv3jedi_io_utils_mod,         only: vdate_to_datestring, replace_text, add_iteration, ioname, &
                                         ioscale, iounscale
 use fv3jedi_kinds_mod,            only: kind_real
@@ -35,6 +35,7 @@ use mpi, only : MPI_Wtime, MPI_comm_world, MPI_Barrier, MPI_Integer, MPI_REAL, M
                 MPI_SUM, MPI_ADDRESS_KIND, MPI_COMM_TYPE_SHARED, MPI_STATUSES_IGNORE, MPI_BOTTOM, &
                 MPI_REQUEST_NULL, MPI_STATUS_SIZE, MPI_ERR_IN_STATUS, MPI_ERROR, MPI_SUCCESS, MPI_MAX_ERROR_STRING
 use netcdf
+use wind_vt_mod,                  only: a_to_d
 use, intrinsic :: iso_c_binding
 
 ! --------------------------------------------------------------------------------------------------
@@ -117,6 +118,7 @@ type fv3jedi_io_fms
  integer :: calendar_type
  logical :: ignore_checksum
  logical :: write_into_existing_files
+ logical :: output_d_grid_winds
  character(len=16) :: default_output_resolution
  integer :: lustre_stripe_size
  !character(len=72), allocatable :: analysis_names(:)
@@ -284,6 +286,16 @@ if ( self%is_restart ) then
    endif
    if (self%write_into_existing_files .and. self%use_fms_lib) then
       call abor1_ftn('fv3jedi_io_fms: "write into existing files" only applies to writes not using the FMS path')
+   endif
+
+   ! Option to compute and output D-grid winds from A-grid winds during analysis restart write.
+   if (conf%has("output d-grid winds")) then
+      call conf%get_or_die("output d-grid winds", self%output_d_grid_winds)
+   else
+      self%output_d_grid_winds = .false.
+   endif
+   if (self%output_d_grid_winds .and. .not. self%is_restart) then
+      call abor1_ftn('fv3jedi_io_fms_mod.create: "output d-grid winds" only applies to restart output')
    endif
 
    ! Optional fields to write specified?
@@ -1514,8 +1526,25 @@ integer, save :: cached_nfields = -1
 logical :: fields_changed
 integer :: f, nz
 
+integer :: start_u(3), counts_u(3), start_v(3), counts_v(3)
+integer :: j_count_u, i_count_v
+real(kind=kind_real), allocatable :: ud_tmp(:,:,:), vd_tmp(:,:,:)
+real(kind=8) :: timer_start, timer_end, d_wind_total_start
+character(len=:), allocatable :: core_filename
+real(kind=kind_real), pointer :: ua_ana(:,:,:), va_ana(:,:,:)
+real(kind=kind_real), allocatable :: ud_out(:,:,:), vd_out(:,:,:)
+integer :: varid_u, varid_v
+integer :: ncid_core
+integer :: core_fileid
+logical :: update_d_wind_restart
+
 rank=mpp_pe()
 npes=mpp_npes()
+
+if (self%output_d_grid_winds .and. .not. self%write_into_existing_files) then
+   call abor1_ftn('fv3jedi_io_fms: "output d-grid winds" requires "write into existing files: true"' // &
+                  ' — use only for analysis restart output, not increment output')
+endif
 
 !times(:)=0.0
 !walltime(:)=0.0
@@ -2171,6 +2200,28 @@ end do ! Outer batch loop
 !te = MPI_Wtime()
 !times(7) = te-tb
 
+update_d_wind_restart = self%write_into_existing_files .and. self%output_d_grid_winds
+core_fileid = 0
+if (update_d_wind_restart) then
+  if (.not. hasfield(fields, 'eastward_wind') .or. .not. hasfield(fields, 'northward_wind')) then
+    call abor1_ftn('fv3jedi_io_fms_mod.write_restart_all_reg: "output d-grid winds" requires eastward_wind and northward_wind in fields')
+  endif
+  core_filename = trim(self%datapath)//'/'//trim(self%filenames(self%index_core))
+  core_fileid = 0
+  do i = 1, size(FileNamesToProcess)
+    if (trim(FileNamesToProcess(i)) == trim(core_filename)) core_fileid = i
+  enddo
+  if (core_fileid <= 0) then
+    call abor1_ftn('fv3jedi_io_fms_mod.write_restart_all_reg: fv_core file is not selected for D-wind restart output')
+  endif
+  call get_field(fields, 'eastward_wind', ua_ana)
+  call get_field(fields, 'northward_wind', va_ana)
+  if (allocated(ud_out)) deallocate(ud_out)
+  if (allocated(vd_out)) deallocate(vd_out)
+  allocate(ud_out(geom%isc:geom%iec,   geom%jsc:geom%jec+1, geom%npz))
+  allocate(vd_out(geom%isc:geom%iec+1, geom%jsc:geom%jec,   geom%npz))
+endif
+
 ! Create files using a single rank
 ! --------------------------------
 !tb = MPI_Wtime()
@@ -2437,6 +2488,78 @@ endif ! write_comm
 !times(9) = te-tb
 !call MPI_Reduce(times, walltime, size(walltime), MPI_DOUBLE_PRECISION, MPI_MAX, 0, geom%f_comm%communicator(), ierr)
 !if (rank == 0) write(*,'(A,10F12.4)') 'write_restart_all_reg: Walltimes ', walltime, sum(walltime)
+
+if (update_d_wind_restart) then
+  d_wind_total_start = MPI_Wtime()
+
+  timer_start = MPI_Wtime()
+  call a_to_d(geom, ua_ana, va_ana, ud_out, vd_out)
+
+  ! a_to_d computes edge faces as the sum of two neighbouring cell-centre v3
+  ! vectors. At the actual domain boundary there is no neighbour: mpp_update_domains
+  ! leaves the halo at zero, so each boundary face gets only half its correct value.
+  ! Multiply those faces by 2 to restore them — equivalent to the clamped
+  ! nearest-neighbour extrapolation used by rdas_ua2u.x (j1=min(j,ny)).
+  if (geom%bounded_domain) then
+    if (geom%jsc == 1) &
+      ud_out(geom%isc:geom%iec, geom%jsc,   :) = 2.0_kind_real * ud_out(geom%isc:geom%iec, geom%jsc,   :)
+    if (geom%jec+1 == geom%npy) &
+      ud_out(geom%isc:geom%iec, geom%jec+1, :) = 2.0_kind_real * ud_out(geom%isc:geom%iec, geom%jec+1, :)
+    if (geom%isc == 1) &
+      vd_out(geom%isc,   geom%jsc:geom%jec, :) = 2.0_kind_real * vd_out(geom%isc,   geom%jsc:geom%jec, :)
+    if (geom%iec+1 == geom%npx) &
+      vd_out(geom%iec+1, geom%jsc:geom%jec, :) = 2.0_kind_real * vd_out(geom%iec+1, geom%jsc:geom%jec, :)
+  endif
+  timer_end = MPI_Wtime()
+
+  if (rank == 0) then
+    write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind transform time = ', &
+                           timer_end - timer_start, ' s'
+  endif
+
+  if (geom%jec + 1 == geom%npy) then
+    j_count_u = geom%jec - geom%jsc + 2
+  else
+    j_count_u = geom%jec - geom%jsc + 1
+  endif
+  allocate(ud_tmp(geom%iec-geom%isc+1, j_count_u, geom%npz))
+  ud_tmp = ud_out(geom%isc:geom%iec, geom%jsc:geom%jsc+j_count_u-1, :)
+  start_u  = (/ geom%isc, geom%jsc, 1 /)
+  counts_u = (/ geom%iec-geom%isc+1, j_count_u, geom%npz /)
+
+  if (geom%iec + 1 == geom%npx) then
+    i_count_v = geom%iec - geom%isc + 2
+  else
+    i_count_v = geom%iec - geom%isc + 1
+  endif
+  allocate(vd_tmp(i_count_v, geom%jec-geom%jsc+1, geom%npz))
+  vd_tmp = vd_out(geom%isc:geom%isc+i_count_v-1, geom%jsc:geom%jec, :)
+  start_v  = (/ geom%isc, geom%jsc, 1 /)
+  counts_v = (/ i_count_v, geom%jec-geom%jsc+1, geom%npz /)
+
+  timer_start = MPI_Wtime()
+  call check(nf90_open(trim(core_filename), ior(NF90_WRITE, NF90_MPIIO), ncid_core, &
+             comm=geom%f_comm%communicator(), info=MPI_INFO_NULL))
+  call check( nf90_inq_varid(ncid_core, 'u', varid_u) )
+  call check( nf90_var_par_access(ncid_core, varid_u, nf90_collective) )
+  call check( nf90_put_var(ncid_core, varid_u, ud_tmp, start=start_u, count=counts_u) )
+  call check( nf90_inq_varid(ncid_core, 'v', varid_v) )
+  call check( nf90_var_par_access(ncid_core, varid_v, nf90_collective) )
+  call check( nf90_put_var(ncid_core, varid_v, vd_tmp, start=start_v, count=counts_v) )
+  deallocate(ud_tmp, vd_tmp)
+  call check(nf90_close(ncid_core))
+  timer_end = MPI_Wtime()
+  if (rank == 0) then
+    write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind write u/v time = ', &
+                           timer_end - timer_start, ' s'
+    write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind total update time = ', &
+                           MPI_Wtime() - d_wind_total_start, ' s'
+  endif
+endif
+
+if (allocated(ud_out)) deallocate(ud_out)
+if (allocated(vd_out)) deallocate(vd_out)
+nullify(ua_ana, va_ana)
 
 ! release memory
 deallocate(reqs_p1, reqs_p2)

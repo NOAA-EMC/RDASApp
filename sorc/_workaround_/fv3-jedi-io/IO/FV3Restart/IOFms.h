@@ -106,6 +106,13 @@ class IOFmsParameters : public IOParametersBase {
                                                   "true or false",
                                                   false, this};
 
+  // For analysis restart output only: compute and write D-grid (u,v) winds from the
+  // A-grid analysis increment. Requires "write into existing files: true". Do not set
+  // for increment output — the "write into existing files" requirement already enforces this.
+  oops::Parameter<bool> output_d_grid_winds{"output d-grid winds",
+                                             "compute and write D-grid winds during analysis restart output",
+                                             false, this};
+
   // Write analysis variables in specified bit depth
   // (currently used only in the regional restart write path)
   // "native, 32bit or 64bit"
