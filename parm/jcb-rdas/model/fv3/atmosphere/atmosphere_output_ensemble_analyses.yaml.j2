@@ -1,0 +1,49 @@
+  filetype: fms restart
+  use_fms_lib: false
+  lustre stripe size: {{lustre_stripe_size | default(4194304)}}
+  default output resolution: {{default_output_resolution | default("32bit")}}
+  write into existing files: {{write_into_existing_files | default(false)}}
+  output d-grid winds: {{output_dgrid_winds | default(false)}}
+  datapath: ./data/inputs/mem%{member}%
+  prepend files with date: false
+  filename_core: "fv_core.res.tile1.nc"
+  filename_trcr: "fv_tracer.res.tile1.nc"
+  filename_sfcw: "fv_srf_wnd.res.tile1.nc"
+  filename_phys: "phy_data_prepdbz.nc"
+  frequency: {{atmosphere_forecast_timestep}}
+  fields to write:
+    - eastward_wind
+    - northward_wind
+    - air_temperature
+    - air_pressure_thickness
+    - water_vapor_mixing_ratio_wrt_moist_air
+    - cloud_liquid_ice
+    - cloud_liquid_water
+    - rain_water
+    - snow_water
+    - graupel
+    - upward_air_velocity
+  field io names:
+    eastward_wind: {{eastward_wind}}
+    northward_wind: {{northward_wind}}
+    air_temperature: {{air_temperature}}
+    air_pressure_thickness: {{air_pressure_thickness}}
+    air_pressure_at_surface: {{air_pressure_at_surface}}
+    water_vapor_mixing_ratio_wrt_moist_air: {{water_vapor_mixing_ratio_wrt_moist_air}}
+    cloud_liquid_ice: {{cloud_liquid_ice}}
+    cloud_liquid_water: {{cloud_liquid_water}}
+    ozone_mass_mixing_ratio: {{ozone_mass_mixing_ratio}}
+    geopotential_height_times_gravity_at_surface: {{geopotential_height_times_gravity_at_surface}}
+    skin_temperature_at_surface: {{skin_temperature_at_surface}}
+    tslb: {{tslb}}
+    smois: {{smois}}
+    eastward_wind_at_surface: {{eastward_wind_at_surface}}
+    northward_wind_at_surface: {{northward_wind_at_surface}}
+    rain_water: {{rain_water}}
+    snow_water: {{snow_water}}
+    graupel: {{graupel}}
+    cloud_droplet_number_concentration: {{cloud_droplet_number_concentration}}
+    cloud_ice_number_concentration: {{cloud_ice_number_concentration}}
+    rain_number_concentration: {{rain_number_concentration}}
+    upward_air_velocity: {{upward_air_velocity}}
+    equivalent_reflectivity_factor: {{equivalent_reflectivity_factor}}
