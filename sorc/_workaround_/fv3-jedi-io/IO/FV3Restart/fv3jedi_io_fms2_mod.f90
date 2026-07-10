@@ -119,6 +119,7 @@ type fv3jedi_io_fms
  logical :: ignore_checksum
  logical :: write_into_existing_files
  logical :: output_d_grid_winds
+ character(len=32) :: d_grid_conv_method
  character(len=16) :: default_output_resolution
  integer :: lustre_stripe_size
  !character(len=72), allocatable :: analysis_names(:)
@@ -297,6 +298,20 @@ if ( self%is_restart ) then
    if (self%output_d_grid_winds .and. .not. self%is_restart) then
       call abor1_ftn('fv3jedi_io_fms_mod.create: "output d-grid winds" only applies to restart output')
    endif
+
+   ! Method for A->D-grid conversion
+   if (conf%has("d-grid conversion method")) then
+      call conf%get_or_die("d-grid conversion method", str)
+      self%d_grid_conv_method = trim(str)
+      deallocate(str)
+   else
+      self%d_grid_conv_method = 'analysis'
+   endif
+   select case (trim(self%d_grid_conv_method))
+     case ('analysis', 'increment')
+     case default
+       call abor1_ftn('fv3jedi_io_fms_mod.create: "d-grid conversion method" must be "analysis" or "increment"')
+   end select
 
    ! Optional fields to write specified?
    ! -----------------------------------
@@ -1537,6 +1552,13 @@ integer :: varid_u, varid_v
 integer :: ncid_core
 integer :: core_fileid
 logical :: update_d_wind_restart
+! Increment-method variables
+real(kind=kind_real), allocatable :: ua_bkg(:,:,:), va_bkg(:,:,:)
+real(kind=kind_real), allocatable :: dua(:,:,:), dva(:,:,:)
+real(kind=kind_real), allocatable :: u_bkg_read(:,:,:), v_bkg_read(:,:,:)
+integer :: ncid_bkg, varid_ua_bkg, varid_va_bkg
+integer :: start_ua(3), counts_ua(3)
+real(kind=8) :: bkg_read_start
 
 rank=mpp_pe()
 npes=mpp_npes()
@@ -2220,6 +2242,28 @@ if (update_d_wind_restart) then
   if (allocated(vd_out)) deallocate(vd_out)
   allocate(ud_out(geom%isc:geom%iec,   geom%jsc:geom%jec+1, geom%npz))
   allocate(vd_out(geom%isc:geom%iec+1, geom%jsc:geom%jec,   geom%npz))
+
+  ! Increment method: read ua_bkg and va_bkg NOW before the write loop overwrites them
+  if (trim(self%d_grid_conv_method) == 'increment') then
+    bkg_read_start = MPI_Wtime()
+    allocate(ua_bkg(geom%isc:geom%iec, geom%jsc:geom%jec, geom%npz))
+    allocate(va_bkg(geom%isc:geom%iec, geom%jsc:geom%jec, geom%npz))
+    start_ua  = (/ geom%isc, geom%jsc, 1 /)
+    counts_ua = (/ geom%iec-geom%isc+1, geom%jec-geom%jsc+1, geom%npz /)
+    call check(nf90_open(trim(core_filename), ior(NF90_NOWRITE, NF90_MPIIO), ncid_bkg, &
+               comm=geom%f_comm%communicator(), info=MPI_INFO_NULL))
+    call check(nf90_inq_varid(ncid_bkg, 'ua', varid_ua_bkg))
+    call check(nf90_var_par_access(ncid_bkg, varid_ua_bkg, nf90_collective))
+    call check(nf90_get_var(ncid_bkg, varid_ua_bkg, ua_bkg, start=start_ua, count=counts_ua))
+    call check(nf90_inq_varid(ncid_bkg, 'va', varid_va_bkg))
+    call check(nf90_var_par_access(ncid_bkg, varid_va_bkg, nf90_collective))
+    call check(nf90_get_var(ncid_bkg, varid_va_bkg, va_bkg, start=start_ua, count=counts_ua))
+    call check(nf90_close(ncid_bkg))
+    if (rank == 0) then
+      write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind read bkg ua/va time = ', &
+                             MPI_Wtime() - bkg_read_start, ' s'
+    endif
+  endif
 endif
 
 ! Create files using a single rank
@@ -2492,74 +2536,146 @@ endif ! write_comm
 if (update_d_wind_restart) then
   d_wind_total_start = MPI_Wtime()
 
-  timer_start = MPI_Wtime()
-  call a_to_d(geom, ua_ana, va_ana, ud_out, vd_out)
-
-  ! a_to_d computes edge faces as the sum of two neighbouring cell-centre v3
-  ! vectors. At the actual domain boundary there is no neighbour: mpp_update_domains
-  ! leaves the halo at zero, so each boundary face gets only half its correct value.
-  ! Multiply those faces by 2 to restore them — equivalent to the clamped
-  ! nearest-neighbour extrapolation used by rdas_ua2u.x (j1=min(j,ny)).
-  if (geom%bounded_domain) then
-    if (geom%jsc == 1) &
-      ud_out(geom%isc:geom%iec, geom%jsc,   :) = 2.0_kind_real * ud_out(geom%isc:geom%iec, geom%jsc,   :)
-    if (geom%jec+1 == geom%npy) &
-      ud_out(geom%isc:geom%iec, geom%jec+1, :) = 2.0_kind_real * ud_out(geom%isc:geom%iec, geom%jec+1, :)
-    if (geom%isc == 1) &
-      vd_out(geom%isc,   geom%jsc:geom%jec, :) = 2.0_kind_real * vd_out(geom%isc,   geom%jsc:geom%jec, :)
-    if (geom%iec+1 == geom%npx) &
-      vd_out(geom%iec+1, geom%jsc:geom%jec, :) = 2.0_kind_real * vd_out(geom%iec+1, geom%jsc:geom%jec, :)
-  endif
-  timer_end = MPI_Wtime()
-
-  if (rank == 0) then
-    write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind transform time = ', &
-                           timer_end - timer_start, ' s'
-  endif
-
-  if (geom%jec + 1 == geom%npy) then
-    j_count_u = geom%jec - geom%jsc + 2
-  else
-    j_count_u = geom%jec - geom%jsc + 1
-  endif
-  allocate(ud_tmp(geom%iec-geom%isc+1, j_count_u, geom%npz))
-  ud_tmp = ud_out(geom%isc:geom%iec, geom%jsc:geom%jsc+j_count_u-1, :)
+  ! Compute j_count_u / i_count_v and start/count arrays (shared by both methods)
+  if (geom%jec + 1 == geom%npy) then; j_count_u = geom%jec - geom%jsc + 2
+  else;                                j_count_u = geom%jec - geom%jsc + 1; endif
+  if (geom%iec + 1 == geom%npx) then; i_count_v = geom%iec - geom%isc + 2
+  else;                                i_count_v = geom%iec - geom%isc + 1; endif
   start_u  = (/ geom%isc, geom%jsc, 1 /)
   counts_u = (/ geom%iec-geom%isc+1, j_count_u, geom%npz /)
-
-  if (geom%iec + 1 == geom%npx) then
-    i_count_v = geom%iec - geom%isc + 2
-  else
-    i_count_v = geom%iec - geom%isc + 1
-  endif
-  allocate(vd_tmp(i_count_v, geom%jec-geom%jsc+1, geom%npz))
-  vd_tmp = vd_out(geom%isc:geom%isc+i_count_v-1, geom%jsc:geom%jec, :)
   start_v  = (/ geom%isc, geom%jsc, 1 /)
   counts_v = (/ i_count_v, geom%jec-geom%jsc+1, geom%npz /)
 
-  timer_start = MPI_Wtime()
-  call check(nf90_open(trim(core_filename), ior(NF90_WRITE, NF90_MPIIO), ncid_core, &
-             comm=geom%f_comm%communicator(), info=MPI_INFO_NULL))
-  call check( nf90_inq_varid(ncid_core, 'u', varid_u) )
-  call check( nf90_var_par_access(ncid_core, varid_u, nf90_collective) )
-  call check( nf90_put_var(ncid_core, varid_u, ud_tmp, start=start_u, count=counts_u) )
-  call check( nf90_inq_varid(ncid_core, 'v', varid_v) )
-  call check( nf90_var_par_access(ncid_core, varid_v, nf90_collective) )
-  call check( nf90_put_var(ncid_core, varid_v, vd_tmp, start=start_v, count=counts_v) )
-  deallocate(ud_tmp, vd_tmp)
-  call check(nf90_close(ncid_core))
-  timer_end = MPI_Wtime()
+  if (trim(self%d_grid_conv_method) == 'increment') then
+
+    ! -----------------------------------------------------------------------
+    ! Increment method: u_final = u_bkg + a_to_d(ua_analysis - ua_bkg)
+    ! Avoids injecting the a_to_d(ua_bkg) - u_bkg linearisation residual.
+    ! -----------------------------------------------------------------------
+    allocate(dua(geom%isc:geom%iec, geom%jsc:geom%jec, geom%npz))
+    allocate(dva(geom%isc:geom%iec, geom%jsc:geom%jec, geom%npz))
+    dua = ua_ana - ua_bkg
+    dva = va_ana - va_bkg
+    deallocate(ua_bkg, va_bkg)
+
+    timer_start = MPI_Wtime()
+    call a_to_d(geom, dua, dva, ud_out, vd_out)
+    deallocate(dua, dva)
+    if (geom%bounded_domain) then
+      if (geom%jsc == 1) &
+        ud_out(geom%isc:geom%iec, geom%jsc,   :) = 2.0_kind_real * ud_out(geom%isc:geom%iec, geom%jsc,   :)
+      if (geom%jec+1 == geom%npy) &
+        ud_out(geom%isc:geom%iec, geom%jec+1, :) = 2.0_kind_real * ud_out(geom%isc:geom%iec, geom%jec+1, :)
+      if (geom%isc == 1) &
+        vd_out(geom%isc,   geom%jsc:geom%jec, :) = 2.0_kind_real * vd_out(geom%isc,   geom%jsc:geom%jec, :)
+      if (geom%iec+1 == geom%npx) &
+        vd_out(geom%iec+1, geom%jsc:geom%jec, :) = 2.0_kind_real * vd_out(geom%iec+1, geom%jsc:geom%jec, :)
+    endif
+    timer_end = MPI_Wtime()
+    if (rank == 0) then
+      write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind transform (increment) time = ', &
+                             timer_end - timer_start, ' s'
+    endif
+
+    allocate(ud_tmp(geom%iec-geom%isc+1, j_count_u, geom%npz))
+    ud_tmp = ud_out(geom%isc:geom%iec, geom%jsc:geom%jsc+j_count_u-1, :)
+    allocate(vd_tmp(i_count_v, geom%jec-geom%jsc+1, geom%npz))
+    vd_tmp = vd_out(geom%isc:geom%isc+i_count_v-1, geom%jsc:geom%jec, :)
+
+    ! Read u_bkg and v_bkg from the pre-staged file (still background at this point),
+    ! add the D-grid increment, then write the result.
+    timer_start = MPI_Wtime()
+    allocate(u_bkg_read(geom%iec-geom%isc+1, j_count_u, geom%npz))
+    allocate(v_bkg_read(i_count_v, geom%jec-geom%jsc+1, geom%npz))
+    call check(nf90_open(trim(core_filename), ior(NF90_WRITE, NF90_MPIIO), ncid_core, &
+               comm=geom%f_comm%communicator(), info=MPI_INFO_NULL))
+    call check(nf90_inq_varid(ncid_core, 'u', varid_u))
+    call check(nf90_var_par_access(ncid_core, varid_u, nf90_collective))
+    call check(nf90_get_var(ncid_core, varid_u, u_bkg_read, start=start_u, count=counts_u))
+    ud_tmp = ud_tmp + u_bkg_read
+    deallocate(u_bkg_read)
+    call check(nf90_put_var(ncid_core, varid_u, ud_tmp, start=start_u, count=counts_u))
+    deallocate(ud_tmp)
+    call check(nf90_inq_varid(ncid_core, 'v', varid_v))
+    call check(nf90_var_par_access(ncid_core, varid_v, nf90_collective))
+    call check(nf90_get_var(ncid_core, varid_v, v_bkg_read, start=start_v, count=counts_v))
+    vd_tmp = vd_tmp + v_bkg_read
+    deallocate(v_bkg_read)
+    call check(nf90_put_var(ncid_core, varid_v, vd_tmp, start=start_v, count=counts_v))
+    deallocate(vd_tmp)
+    call check(nf90_close(ncid_core))
+    timer_end = MPI_Wtime()
+    if (rank == 0) then
+      write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind read bkg u/v + write (increment) time = ', &
+                             timer_end - timer_start, ' s'
+    endif
+
+  else
+
+    ! -----------------------------------------------------------------------
+    ! Analysis method: u_final = a_to_d(ua_analysis)  (original behaviour)
+    ! -----------------------------------------------------------------------
+    timer_start = MPI_Wtime()
+    call a_to_d(geom, ua_ana, va_ana, ud_out, vd_out)
+    ! a_to_d computes edge faces as the sum of two neighbouring cell-centre v3
+    ! vectors. At the actual domain boundary there is no neighbour: mpp_update_domains
+    ! leaves the halo at zero, so each boundary face gets only half its correct value.
+    ! Multiply those faces by 2 to restore them.
+    if (geom%bounded_domain) then
+      if (geom%jsc == 1) &
+        ud_out(geom%isc:geom%iec, geom%jsc,   :) = 2.0_kind_real * ud_out(geom%isc:geom%iec, geom%jsc,   :)
+      if (geom%jec+1 == geom%npy) &
+        ud_out(geom%isc:geom%iec, geom%jec+1, :) = 2.0_kind_real * ud_out(geom%isc:geom%iec, geom%jec+1, :)
+      if (geom%isc == 1) &
+        vd_out(geom%isc,   geom%jsc:geom%jec, :) = 2.0_kind_real * vd_out(geom%isc,   geom%jsc:geom%jec, :)
+      if (geom%iec+1 == geom%npx) &
+        vd_out(geom%iec+1, geom%jsc:geom%jec, :) = 2.0_kind_real * vd_out(geom%iec+1, geom%jsc:geom%jec, :)
+    endif
+    timer_end = MPI_Wtime()
+    if (rank == 0) then
+      write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind transform (analysis) time = ', &
+                             timer_end - timer_start, ' s'
+    endif
+
+    allocate(ud_tmp(geom%iec-geom%isc+1, j_count_u, geom%npz))
+    ud_tmp = ud_out(geom%isc:geom%iec, geom%jsc:geom%jsc+j_count_u-1, :)
+    allocate(vd_tmp(i_count_v, geom%jec-geom%jsc+1, geom%npz))
+    vd_tmp = vd_out(geom%isc:geom%isc+i_count_v-1, geom%jsc:geom%jec, :)
+
+    timer_start = MPI_Wtime()
+    call check(nf90_open(trim(core_filename), ior(NF90_WRITE, NF90_MPIIO), ncid_core, &
+               comm=geom%f_comm%communicator(), info=MPI_INFO_NULL))
+    call check(nf90_inq_varid(ncid_core, 'u', varid_u))
+    call check(nf90_var_par_access(ncid_core, varid_u, nf90_collective))
+    call check(nf90_put_var(ncid_core, varid_u, ud_tmp, start=start_u, count=counts_u))
+    deallocate(ud_tmp)
+    call check(nf90_inq_varid(ncid_core, 'v', varid_v))
+    call check(nf90_var_par_access(ncid_core, varid_v, nf90_collective))
+    call check(nf90_put_var(ncid_core, varid_v, vd_tmp, start=start_v, count=counts_v))
+    deallocate(vd_tmp)
+    call check(nf90_close(ncid_core))
+    timer_end = MPI_Wtime()
+    if (rank == 0) then
+      write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind write u/v (analysis) time = ', &
+                             timer_end - timer_start, ' s'
+    endif
+
+  endif ! d_grid_conv_method
+
   if (rank == 0) then
-    write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind write u/v time = ', &
-                           timer_end - timer_start, ' s'
-    write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind total update time = ', &
-                           MPI_Wtime() - d_wind_total_start, ' s'
+    write(*,'(A,A,A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind total update time (', &
+                               trim(self%d_grid_conv_method), ') = ', MPI_Wtime() - d_wind_total_start, ' s'
   endif
 endif
 
-if (allocated(ud_out)) deallocate(ud_out)
-if (allocated(vd_out)) deallocate(vd_out)
-nullify(ua_ana, va_ana)
+if (allocated(ud_out))   deallocate(ud_out)
+if (allocated(vd_out))   deallocate(vd_out)
+if (allocated(ua_bkg))   deallocate(ua_bkg)
+if (allocated(va_bkg))   deallocate(va_bkg)
+if (allocated(dua))      deallocate(dua)
+if (allocated(dva))      deallocate(dva)
+if (associated(ua_ana))  nullify(ua_ana)
+if (associated(va_ana))  nullify(va_ana)
 
 ! release memory
 deallocate(reqs_p1, reqs_p2)

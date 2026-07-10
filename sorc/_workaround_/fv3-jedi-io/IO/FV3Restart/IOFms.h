@@ -113,6 +113,14 @@ class IOFmsParameters : public IOParametersBase {
                                              "compute and write D-grid winds during analysis restart output",
                                              false, this};
 
+  // Method for the A->D-grid wind conversion. "analysis": apply a_to_d to the full analysis
+  // ua/va (original behaviour). "increment": read background ua/va and u/v from the pre-staged
+  // file, apply a_to_d to the analysis increment only, and add to the background D-grid winds.
+  // Default: "analysis". Only used when "output d-grid winds: true".
+  oops::Parameter<std::string> d_grid_conv_method{"d-grid conversion method",
+                                                   "analysis or increment",
+                                                   "analysis", this};
+
   // Write analysis variables in specified bit depth
   // (currently used only in the regional restart write path)
   // "native, 32bit or 64bit"
