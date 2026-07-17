@@ -114,12 +114,20 @@ class IOFmsParameters : public IOParametersBase {
                                              false, this};
 
   // Method for the A->D-grid wind conversion. "analysis": apply a_to_d to the full analysis
-  // ua/va (original behaviour). "increment": read background ua/va and u/v from the pre-staged
-  // file, apply a_to_d to the analysis increment only, and add to the background D-grid winds.
-  // Default: "analysis". Only used when "output d-grid winds: true".
+  // ua/va (original behaviour). "increment": apply a_to_d to the analysis increment only for
+  // the bottom d_grid_increment_levels model levels and add to background D-grid winds; use
+  // the analysis method for all other levels. Default: "analysis". Only used when
+  // "output d-grid winds: true".
   oops::Parameter<std::string> d_grid_conv_method{"d-grid conversion method",
                                                    "analysis or increment",
                                                    "analysis", this};
+
+  // Number of bottom model levels (k = npz-N+1 .. npz) for which the increment method
+  // is applied when d-grid conversion method is "increment". Level k=npz is the surface
+  // where the terrain residual a_to_d(ua_bkg)-u_bkg is largest. Default: 1 (surface only).
+  oops::Parameter<int> d_grid_increment_levels{"d-grid increment levels",
+                                               "bottom levels for D-grid increment correction",
+                                               1, this};
 
   // Write analysis variables in specified bit depth
   // (currently used only in the regional restart write path)

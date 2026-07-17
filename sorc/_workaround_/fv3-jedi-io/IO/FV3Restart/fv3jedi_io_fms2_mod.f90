@@ -120,6 +120,7 @@ type fv3jedi_io_fms
  logical :: write_into_existing_files
  logical :: output_d_grid_winds
  character(len=32) :: d_grid_conv_method
+ integer :: d_grid_increment_levels
  character(len=16) :: default_output_resolution
  integer :: lustre_stripe_size
  !character(len=72), allocatable :: analysis_names(:)
@@ -312,6 +313,17 @@ if ( self%is_restart ) then
      case default
        call abor1_ftn('fv3jedi_io_fms_mod.create: "d-grid conversion method" must be "analysis" or "increment"')
    end select
+
+   ! Number of bottom model levels to apply the increment correction to (level-selective mode).
+   ! k=npz is the surface; the terrain residual decays rapidly with height so the default of 1
+   ! (surface only) captures most of the benefit at minimal I/O cost.
+   if (conf%has("d-grid increment levels")) then
+      call conf%get_or_die("d-grid increment levels", self%d_grid_increment_levels)
+      if (self%d_grid_increment_levels < 1) &
+        call abor1_ftn('fv3jedi_io_fms_mod.create: "d-grid increment levels" must be >= 1')
+   else
+      self%d_grid_increment_levels = 1
+   endif
 
    ! Optional fields to write specified?
    ! -----------------------------------
@@ -1556,8 +1568,9 @@ logical :: update_d_wind_restart
 real(kind=kind_real), allocatable :: ua_bkg(:,:,:), va_bkg(:,:,:)
 real(kind=kind_real), allocatable :: dua(:,:,:), dva(:,:,:)
 real(kind=kind_real), allocatable :: u_bkg_read(:,:,:), v_bkg_read(:,:,:)
-integer :: ncid_bkg, varid_ua_bkg, varid_va_bkg
+integer :: ncid_bkg, varid_ua_bkg, varid_va_bkg, varid_u_pre, varid_v_pre
 integer :: start_ua(3), counts_ua(3)
+integer :: d_inc_levels, k_bottom
 real(kind=8) :: bkg_read_start
 
 rank=mpp_pe()
@@ -2243,13 +2256,27 @@ if (update_d_wind_restart) then
   allocate(ud_out(geom%isc:geom%iec,   geom%jsc:geom%jec+1, geom%npz))
   allocate(vd_out(geom%isc:geom%iec+1, geom%jsc:geom%jec,   geom%npz))
 
-  ! Increment method: read ua_bkg and va_bkg NOW before the write loop overwrites them
+  ! Increment method: read background ua/va (A-grid) and u/v (D-grid) BEFORE the write loop
+  ! overwrites ua/va. Only the bottom d_grid_increment_levels levels are read (level-selective
+  ! correction). All 4 variables are read in a single file open to minimise I/O overhead.
   if (trim(self%d_grid_conv_method) == 'increment') then
     bkg_read_start = MPI_Wtime()
-    allocate(ua_bkg(geom%isc:geom%iec, geom%jsc:geom%jec, geom%npz))
-    allocate(va_bkg(geom%isc:geom%iec, geom%jsc:geom%jec, geom%npz))
-    start_ua  = (/ geom%isc, geom%jsc, 1 /)
-    counts_ua = (/ geom%iec-geom%isc+1, geom%jec-geom%jsc+1, geom%npz /)
+    d_inc_levels = self%d_grid_increment_levels
+    k_bottom = geom%npz - d_inc_levels + 1  ! topmost corrected level (1-indexed, 1=model top)
+    ! j_count_u / i_count_v needed for D-grid u/v allocation
+    if (geom%jec + 1 == geom%npy) then; j_count_u = geom%jec - geom%jsc + 2
+    else;                                j_count_u = geom%jec - geom%jsc + 1; endif
+    if (geom%iec + 1 == geom%npx) then; i_count_v = geom%iec - geom%isc + 2
+    else;                                i_count_v = geom%iec - geom%isc + 1; endif
+    ! A-grid background (isc:iec, jsc:jec, d_inc_levels)
+    allocate(ua_bkg(geom%isc:geom%iec, geom%jsc:geom%jec, d_inc_levels))
+    allocate(va_bkg(geom%isc:geom%iec, geom%jsc:geom%jec, d_inc_levels))
+    ! D-grid background (same shape as the write output, but only d_inc_levels levels)
+    allocate(u_bkg_read(geom%iec-geom%isc+1, j_count_u, d_inc_levels))
+    allocate(v_bkg_read(i_count_v, geom%jec-geom%jsc+1, d_inc_levels))
+    ! All four variables read in one file open starting at level k_bottom
+    start_ua  = (/ geom%isc, geom%jsc, k_bottom /)
+    counts_ua = (/ geom%iec-geom%isc+1, geom%jec-geom%jsc+1, d_inc_levels /)
     call check(nf90_open(trim(core_filename), ior(NF90_NOWRITE, NF90_MPIIO), ncid_bkg, &
                comm=geom%f_comm%communicator(), info=MPI_INFO_NULL))
     call check(nf90_inq_varid(ncid_bkg, 'ua', varid_ua_bkg))
@@ -2258,10 +2285,21 @@ if (update_d_wind_restart) then
     call check(nf90_inq_varid(ncid_bkg, 'va', varid_va_bkg))
     call check(nf90_var_par_access(ncid_bkg, varid_va_bkg, nf90_collective))
     call check(nf90_get_var(ncid_bkg, varid_va_bkg, va_bkg, start=start_ua, count=counts_ua))
+    call check(nf90_inq_varid(ncid_bkg, 'u', varid_u_pre))
+    call check(nf90_var_par_access(ncid_bkg, varid_u_pre, nf90_collective))
+    call check(nf90_get_var(ncid_bkg, varid_u_pre, u_bkg_read, &
+               start=(/ geom%isc, geom%jsc, k_bottom /), &
+               count=(/ geom%iec-geom%isc+1, j_count_u, d_inc_levels /)))
+    call check(nf90_inq_varid(ncid_bkg, 'v', varid_v_pre))
+    call check(nf90_var_par_access(ncid_bkg, varid_v_pre, nf90_collective))
+    call check(nf90_get_var(ncid_bkg, varid_v_pre, v_bkg_read, &
+               start=(/ geom%isc, geom%jsc, k_bottom /), &
+               count=(/ i_count_v, geom%jec-geom%jsc+1, d_inc_levels /)))
     call check(nf90_close(ncid_bkg))
     if (rank == 0) then
-      write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind read bkg ua/va time = ', &
-                             MPI_Wtime() - bkg_read_start, ' s'
+      write(*,'(A,I0,A,F10.3,A)') &
+        'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind pre-read bkg (bottom ', &
+        d_inc_levels, ' levels) time = ', MPI_Wtime() - bkg_read_start, ' s'
     endif
   endif
 endif
@@ -2549,13 +2587,18 @@ if (update_d_wind_restart) then
   if (trim(self%d_grid_conv_method) == 'increment') then
 
     ! -----------------------------------------------------------------------
-    ! Increment method: u_final = u_bkg + a_to_d(ua_analysis - ua_bkg)
-    ! Avoids injecting the a_to_d(ua_bkg) - u_bkg linearisation residual.
+    ! Level-selective increment method:
+    !   u_final(k) = u_bkg(k) + a_to_d(ua_ana - ua_bkg)(k)  for k >= k_bottom
+    !   u_final(k) = a_to_d(ua_ana)(k)                       for k <  k_bottom
+    ! ua_bkg/va_bkg and u_bkg_read/v_bkg_read already in memory from the
+    ! pre-read block (bottom d_inc_levels levels only). No file reads here.
     ! -----------------------------------------------------------------------
     allocate(dua(geom%isc:geom%iec, geom%jsc:geom%jec, geom%npz))
     allocate(dva(geom%isc:geom%iec, geom%jsc:geom%jec, geom%npz))
-    dua = ua_ana - ua_bkg
-    dva = va_ana - va_bkg
+    dua = ua_ana
+    dva = va_ana
+    dua(:,:,k_bottom:geom%npz) = dua(:,:,k_bottom:geom%npz) - ua_bkg(:,:,:)
+    dva(:,:,k_bottom:geom%npz) = dva(:,:,k_bottom:geom%npz) - va_bkg(:,:,:)
     deallocate(ua_bkg, va_bkg)
 
     timer_start = MPI_Wtime()
@@ -2579,34 +2622,29 @@ if (update_d_wind_restart) then
 
     allocate(ud_tmp(geom%iec-geom%isc+1, j_count_u, geom%npz))
     ud_tmp = ud_out(geom%isc:geom%iec, geom%jsc:geom%jsc+j_count_u-1, :)
+    ud_tmp(:,:,k_bottom:geom%npz) = ud_tmp(:,:,k_bottom:geom%npz) + u_bkg_read(:,:,:)
+    deallocate(u_bkg_read)
     allocate(vd_tmp(i_count_v, geom%jec-geom%jsc+1, geom%npz))
     vd_tmp = vd_out(geom%isc:geom%isc+i_count_v-1, geom%jsc:geom%jec, :)
+    vd_tmp(:,:,k_bottom:geom%npz) = vd_tmp(:,:,k_bottom:geom%npz) + v_bkg_read(:,:,:)
+    deallocate(v_bkg_read)
 
-    ! Read u_bkg and v_bkg from the pre-staged file (still background at this point),
-    ! add the D-grid increment, then write the result.
+    ! Background already in memory — write-only, no reads needed in this block.
     timer_start = MPI_Wtime()
-    allocate(u_bkg_read(geom%iec-geom%isc+1, j_count_u, geom%npz))
-    allocate(v_bkg_read(i_count_v, geom%jec-geom%jsc+1, geom%npz))
     call check(nf90_open(trim(core_filename), ior(NF90_WRITE, NF90_MPIIO), ncid_core, &
                comm=geom%f_comm%communicator(), info=MPI_INFO_NULL))
     call check(nf90_inq_varid(ncid_core, 'u', varid_u))
     call check(nf90_var_par_access(ncid_core, varid_u, nf90_collective))
-    call check(nf90_get_var(ncid_core, varid_u, u_bkg_read, start=start_u, count=counts_u))
-    ud_tmp = ud_tmp + u_bkg_read
-    deallocate(u_bkg_read)
     call check(nf90_put_var(ncid_core, varid_u, ud_tmp, start=start_u, count=counts_u))
     deallocate(ud_tmp)
     call check(nf90_inq_varid(ncid_core, 'v', varid_v))
     call check(nf90_var_par_access(ncid_core, varid_v, nf90_collective))
-    call check(nf90_get_var(ncid_core, varid_v, v_bkg_read, start=start_v, count=counts_v))
-    vd_tmp = vd_tmp + v_bkg_read
-    deallocate(v_bkg_read)
     call check(nf90_put_var(ncid_core, varid_v, vd_tmp, start=start_v, count=counts_v))
     deallocate(vd_tmp)
     call check(nf90_close(ncid_core))
     timer_end = MPI_Wtime()
     if (rank == 0) then
-      write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind read bkg u/v + write (increment) time = ', &
+      write(*,'(A,F10.3,A)') 'fv3jedi_io_fms_mod.write_restart_all_reg: D-wind write u/v (increment) time = ', &
                              timer_end - timer_start, ' s'
     endif
 
