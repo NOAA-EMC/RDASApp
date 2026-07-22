@@ -1,10 +1,13 @@
 !========================================================================================
-  subroutine rdas_u_ua(u_ua, in_grid, in_file, out_file)
+  subroutine rdas_u_ua(u_ua, in_grid, in_file, out_file, in_bkg)
 
 !-----------------------------------------------------------------------------
 ! HAFS DA tool - u_ua
 ! authors and history:
 !      -- 202411, Yonghui Weng added this subroutine to update ua/va(u/v) with u/v(ua/va) values.
+!      -- 202607, added optional in_bkg to apply the computed u/v D-grid wind
+!                 increments directly to a background restart file, avoiding
+!                 the need for a separate NCO-based apply_jedi_incs.sh step.
 !
 !-----------------------------------------------------------------------------
 ! This subroutine updates ua/va(u/v) with u/v(ua/va) values.
@@ -13,6 +16,10 @@
 !          ua_update_u -- update u/v with ua/va values
 ! in_grid: domain grid file, grid_spec.nc or grid_mspec.nest02_2024_06_30_18.tile2.nc
 ! in_file: hafs restart file, usually is 20240630.180000.fv_core.res.tile1.nc or 20240630.180000.fv_core.res.nest02.tile2.nc
+! in_bkg:  (ua_update_u only) background restart file whose u/v fields the
+!          computed wind increments will be added to. Pass 'w' (or an empty
+!          string) to disable -- the tool then behaves exactly as before and
+!          writes raw increments.
 !-----------------------------------------------------------------------------
 
   use constants
@@ -21,7 +28,7 @@
   use var_type
 
   implicit none
-  character (len=*), intent(in)         :: u_ua, in_grid, in_file, out_file
+  character (len=*), intent(in)         :: u_ua, in_grid, in_file, out_file, in_bkg
 
   type(grid2d_info)                     :: grid
   real, allocatable, dimension(:,:)     :: cangu, sangu, cangv, sangv
@@ -30,13 +37,16 @@
   integer  :: yaxis_1id, yaxis_2id, xaxis_1id, xaxis_2id, uid, vid, zaxis_1id, timeid
   integer  :: yaxis_1iv, yaxis_2iv, xaxis_1iv, xaxis_2iv, zaxis_1iv, timeiv
   integer, dimension(nf90_max_var_dims) :: dims
-  real, allocatable, dimension(:,:,:,:) :: dat41, dat42, ua, va, u, v
+  real, allocatable, dimension(:,:,:,:) :: dat41, dat42, ua, va, u, v, bkg_u, bkg_v
   real, allocatable, dimension(:,:)     :: dat21, dat22
   real, allocatable, dimension(:)       :: dat11
   real*8, allocatable, dimension(:,:,:,:) :: ddat4
+  logical                                :: apply_to_bkg
 
   character (len=2500)                  :: nc_file
   character(len=nf90_max_name)          :: varname, dimname(4)
+
+  apply_to_bkg = ( trim(in_bkg) /= 'w' .and. len_trim(in_bkg) > 0 )
 
 !------------------------------------------------------------------------------
 ! 1 --- arg process and parameters
@@ -117,6 +127,26 @@
      enddo
      deallocate(ua, va, cangu, sangu, cangv, sangv)
 
+     if ( apply_to_bkg ) then
+        !---add the computed u/v increments to the background file's u/v, so
+        !   u/v holds analysis values instead of raw increments
+        write(*,'(a)')' --- adding u/v increments to background '//trim(in_bkg)
+        allocate(bkg_u(ix, iy+1, iz, 1), bkg_v(ix+1, iy, iz, 1))
+        call get_var_data(trim(in_bkg), 'u', ix, iy+1, iz, 1, bkg_u)
+        call get_var_data(trim(in_bkg), 'v', ix+1, iy, iz, 1, bkg_v)
+        u = u + bkg_u
+        v = v + bkg_v
+        deallocate(bkg_u, bkg_v)
+
+        !---write the analysis u/v back into the background file in place
+        !   (driver.f90 guarantees --out_file is not also set in this mode)
+        write(*,'(a)')' --- updating u/v in place in background '//trim(in_bkg)
+        call update_rdas_restart(trim(in_bkg), 'u', ix, iy+1, iz, 1, u)
+        call update_rdas_restart(trim(in_bkg), 'v', ix+1, iy, iz, 1, v)
+        deallocate(u, v)
+
+     else  !---original behavior: write raw u/v increments (no background applied)
+
      call nccheck(nf90_open(trim(in_file), nf90_nowrite, ncid), 'wrong in open '//trim(in_file), .true.)
      !---get ua xtype from input_file
      xtype=nf90_real
@@ -135,9 +165,9 @@
      else  !---generate a new file
         !---create file
         if ( trim(out_file) == 'w' .or. len_trim(out_file) < 1 ) then
-           i=index(in_file,'.nc')-1
-           if ( i<2 ) i=len_trim(in_file)
-           nc_file=in_file(1:i)//'.ua2u.nc'
+           write(*,'(a)')' !!!!! error: --in_file has no u/v to update in place, and neither --out_file nor --in_bkg was given'
+           write(*,'(a)')'             specify --out_file (to write raw increments) or --in_bkg (to apply increments to a background)'
+           stop
         else
            nc_file=trim(out_file)
         endif
@@ -248,6 +278,8 @@
         enddo do_input_var_loop
 
      endif
+
+     endif  !---apply_to_bkg
 
   endif
 
