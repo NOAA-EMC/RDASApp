@@ -20,7 +20,7 @@ use fms2_io_mod,                  only: register_variable_attribute, is_dimensio
 use fms2_io_mod,                  only: dimension_exists, get_dimension_size
 use fms2_io_mod,                  only: get_num_dimensions, get_dimension_names, dimension_exists
 use fms2_io_mod,                  only: get_variable_num_dimensions, get_variable_dimension_names
-use mpp_domains_mod,              only: east, north, center, domain2D, mpp_get_ntile_count
+use mpp_domains_mod,              only: east, north, center, domain2D, mpp_get_domain_tile_commid
 use mpp_mod,                      only: mpp_pe, mpp_root_pe, mpp_npes
 
 ! fv3jedi
@@ -93,7 +93,7 @@ integer, allocatable :: cached_field_nz(:)
 
 type fv3jedi_io_fms
  logical :: is_restart
- logical :: use_fms_lib
+ logical :: regional_restart
  logical :: input_is_date_templated
  character(len=128) :: datapath
  character(len=128) :: filename_nonrestart ! For non-restarts
@@ -146,7 +146,7 @@ type(fckit_configuration), intent(in)    :: conf
 type(domain2D), target,    intent(in)    :: domain
 integer,                   intent(in)    :: npz
 
-integer :: n,ntiles
+integer :: n
 character(len=:), allocatable :: str
 character(len=13) :: fileconf(numfiles)
 
@@ -158,13 +158,10 @@ else
   self%is_restart = .true.
 endif
 
-! See if we can use the new parallelized routines
-! -----------------------------------------------
-ntiles = mpp_get_ntile_count(domain)
-if (conf%has("use_fms_lib")) call conf%get_or_die("use_fms_lib", self%use_fms_lib)
-if ((ntiles .ne. 1) .and. (.not. self%use_fms_lib)) then
-  call abor1_ftn('fv3jedi_io_fms_mod.create: MUST use FMS I/O for multi-tile cases')
-endif
+! Check if files are regional restarts
+! If so, we can use new, parallelized routines
+! --------------------------------------------
+call conf%get_or_die("regional restart", self%regional_restart)
 
 ! Get path to files
 ! -----------------
@@ -282,8 +279,8 @@ if ( self%is_restart ) then
    if (conf%has("write into existing files")) then
       call conf%get_or_die("write into existing files", self%write_into_existing_files)
    endif
-   if (self%write_into_existing_files .and. self%use_fms_lib) then
-      call abor1_ftn('fv3jedi_io_fms: "write into existing files" only applies to writes not using the FMS path')
+   if (self%write_into_existing_files .and. .not. self%regional_restart) then
+      call abor1_ftn('fv3jedi_io_fms: "write into existing files" currently applies only to regional restart writes')
    endif
 
    ! Optional fields to write specified?
@@ -310,8 +307,7 @@ if ( self%is_restart ) then
      case ('native', '32bit', '64bit')
        ! These are valid configurations; proceed normally.
      case default
-       call abor1_ftn("fv3jedi_io_fms_mod.create: ERROR Unrecognized default_output_resolution. &
-                       Valid options are 'native', '32bit' or '64bit'")
+       call abor1_ftn("fv3jedi_io_fms_mod.create: ERROR Unrecognized default_output_resolution. Valid options are 'native', '32bit' or '64bit'")
    end select
 
    ! Option to for tuning on Lustre file systems
@@ -396,7 +392,7 @@ if ( self%is_restart ) then
 
    ! Read fields
    ! -----------
-   if (self%use_fms_lib) then
+   if (.not. self%regional_restart) then
       call read_restart_fields(self, geom, fields, field_io_names, field_io_scaling)
    else
       call read_restart_fields_reg(self, geom, fields, field_io_names, field_io_scaling)
@@ -428,7 +424,7 @@ call setup_date(self, vdate)
 if ( self%is_restart ) then
    ! Write metadata and fields
    ! -------------------------
-   if (self%use_fms_lib) then
+   if (.not. self%regional_restart) then
       call write_restart_all(self, geom, fields, vdate, field_io_names, field_io_scaling)
    else
       call write_restart_all_reg(self, geom, fields, vdate, field_io_names, field_io_scaling)
@@ -703,7 +699,7 @@ integer :: starts(4), counts(4)
 !real(kind=8) :: tb1,tb2,tb3, times(3), walltime(3)
 !real(kind=8) :: te1,te2,te3
 integer :: totalnumfiles
-integer, save :: cached_nfields = -1
+integer :: cached_nfields = -1
 logical :: fields_changed
 integer :: f, nz
 logical :: getdelp
@@ -761,8 +757,7 @@ else
     endif
     if (trim(fields(f)%long_name) /= trim(cached_field_names(f))) then
       fields_changed = .true.
-      if(rank==0) write(6,'("read_restart_fields_reg: field name order is different",I4,5A)') &
-                        f,' (', trim(fields(f)%model_name),') /= (', trim(cached_field_names(f)),')'
+      if(rank==0) write(6,'("read_restart_fields_reg: field name order is different",I4,5A)') f,' (', trim(fields(f)%model_name),') /= (', trim(cached_field_names(f)),')'
       exit
     endif
     if (nz /= cached_field_nz(f)) then
@@ -856,7 +851,7 @@ if( (fields_changed) .or. &
   if(allocated(nlev)) deallocate(nlev)
   allocate(nlev(0:npes-1))
 
-  totalnumfiles=count(rstflag(:) .eqv. .true.)
+  totalnumfiles=count(rstflag(:) .eq. .true.)
   if(allocated(FileNamesToProcess)) deallocate(FileNamesToProcess)
   allocate(FileNamesToProcess(totalnumfiles))
 
@@ -1138,8 +1133,7 @@ endif
     !iret=nf90_open(trim(FileNamesToProcess(mype_fileid)),ior(nf90_nowrite,nf90_mpiio),ncioid,comm=read_comm,info=MPI_INFO_NULL)
     iret=nf90_open(trim(FileNamesToProcess(mype_fileid)),ior(nf90_nowrite,nf90_mpiio),ncioid,comm=read_comm,info=info)
     if(iret/=nf90_noerr) then
-      write(6,'("read_restart_fields_reg: Error opening NetCDF file ",2A,I4,A,I4)') &
-                 trim(FileNamesToProcess(mype_fileid)),' fileid=',mype_fileid,', Status =',iret
+      write(6,'("read_restart_fields_reg: Error opening NetCDF file ",2A,I4,A,I4)') trim(FileNamesToProcess(mype_fileid)),' fileid=',mype_fileid,', Status =',iret
       write(6,*)  nf90_strerror(iret)
       stop 333
     endif
@@ -1235,8 +1229,7 @@ endif
         call TwoPhaseScatter_Phase2(geom, owner, rank, scatter_recv_cast_workspace_r4(:,:,b_ind), b_ind, reqs_p2(b_ind))
       else
         ! Scatter directly to strictly typed application array
-        call TwoPhaseScatter_Phase2(geom, owner, rank, fields(jedi_var_idx)%array(:,:,LevelToLevelMap(level)), &
-                                    b_ind, reqs_p2(b_ind))
+        call TwoPhaseScatter_Phase2(geom, owner, rank, fields(jedi_var_idx)%array(:,:,LevelToLevelMap(level)), b_ind, reqs_p2(b_ind))
       endif
     end do
 
@@ -1476,7 +1469,8 @@ type(ncfile_stat) :: ncfs_all
 integer :: color, key
 
 integer :: i, n, r, k, indexrst, file_var_idx, jedi_var_idx, date(6), sz
-integer :: rank, npes, varid, level, l, ierr, rc, b, e, position
+integer :: rank, npes, varid, level, l, ierr, rc, rc2, b, e, position
+integer :: newvar_dimids(4)
 integer :: idate, isecs
 integer :: b_start, b_end, n_in_batch, b_ind, owner
 
@@ -1510,7 +1504,7 @@ integer :: file_idx, var_type_tmp
 logical :: write_field, file_exists(numfiles)
 character(len=72), save :: fields_str, res_str, action_str
 
-integer, save :: cached_nfields = -1
+integer :: cached_nfields = -1
 logical :: fields_changed
 integer :: f, nz
 
@@ -1580,8 +1574,7 @@ else
     endif
     if (trim(fields(f)%long_name) /= trim(cached_field_names(f))) then
       fields_changed = .true.
-      if(rank==0) write(6,'("write_restart_all_reg: field name order is different",I4,5A)') &
-                        f,' (', trim(fields(f)%model_name),') /= (', trim(cached_field_names(f)),')'
+      if(rank==0) write(6,'("write_restart_all_reg: field name order is different",I4,5A)') f,' (', trim(fields(f)%model_name),') /= (', trim(cached_field_names(f)),')'
       exit
     endif
     if (nz /= cached_field_nz(f)) then
@@ -1632,8 +1625,11 @@ if( (fields_changed) .or. &
   ! ---------------------------------------------------------
   do jedi_var_idx = 1,size(fields)
     ! Skip writing air_pressure_at_surface into analysis files
-    if (trim(fields(jedi_var_idx)%long_name) == 'air_pressure_at_surface') then
-      cycle
+    if (self%regional_restart) then
+      if (trim(fields(jedi_var_idx)%long_name) == 'air_pressure_at_surface') then
+        if(rank==0) write(*,'("write_restart_all_reg: Skip air_pressure_at_surface ", L)') self%regional_restart
+        cycle
+      endif
     endif
 
     ! Check if the user specified a list of fields to write
@@ -1672,7 +1668,7 @@ if( (fields_changed) .or. &
     io_unscaling_factor = iounscale(fields(jedi_var_idx)%long_name, field_io_scaling)
   enddo
 
-  totalnumfiles=count(rstflag(:) .eqv. .true.)
+  totalnumfiles=count(rstflag(:) .eq. .true.)
   if(allocated(FileNamesToProcess)) deallocate(FileNamesToProcess)
   allocate(FileNamesToProcess(totalnumfiles))
 
@@ -1801,7 +1797,7 @@ if( (fields_changed) .or. &
 
   ! Scan the supplied output files to determine variable type, number of levels then
   ! distribute the load evenly among the available nodes/ranks
-  if(all(file_exists(1:totalnumfiles) .eqv. .true.)) then
+  if(all(file_exists(1:totalnumfiles) == .true.)) then
     !tb = MPI_Wtime()
     ! init on all ranks to avoid passing unallocated allocatable to MPI_Scatter
     allocate(out_fileid(npes), out_varname(npes), out_lvlbegin(npes), out_lvlend(npes))
@@ -2037,9 +2033,9 @@ if( (fields_changed) .or. &
     do file_var_idx = 1,sum(numvarfile)
       jedi_var_idx = VarToVarMap(file_var_idx)
       if (nc_vartype(file_var_idx) == NF90_FLOAT) then
-        allocate(real(kind=c_float)::write_buffers(jedi_var_idx)%r4(geom%globalsizes(1),geom%globalsizes(2),mype_lbegin:mype_lend))
+        allocate(real(kind=c_float) :: write_buffers(jedi_var_idx)%r4(geom%globalsizes(1), geom%globalsizes(2), mype_lbegin:mype_lend))
       else
-        allocate(real(kind=c_double)::write_buffers(jedi_var_idx)%r8(geom%globalsizes(1),geom%globalsizes(2),mype_lbegin:mype_lend))
+        allocate(real(kind=c_double) :: write_buffers(jedi_var_idx)%r8(geom%globalsizes(1), geom%globalsizes(2), mype_lbegin:mype_lend))
       endif
     enddo
   endif ! write_comm
@@ -2236,7 +2232,7 @@ if (write_comm /= MPI_COMM_NULL) then
 
   if (write_rank == 0) then
     if (self%write_into_existing_files) then
-      write(6,'("Write to existing file ",A)') trim(FileNamesToProcess(n))
+      write(6,'("Write to existing file "A)') trim(FileNamesToProcess(n))
       rc = nf90_open(trim(FileNamesToProcess(n)), ior(NF90_WRITE, NF90_MPIIO), ncid(n), comm=MPI_COMM_SELF, info=info)
       if(rc == nf90_noerr) then
         ! Just update the checksum
@@ -2253,7 +2249,50 @@ if (write_comm /= MPI_COMM_NULL) then
           chksum = ""
           write(chksum, "(Z16)") global_chksums(file_var_idx)
           !write(6,'("Checksum for jedi_var_idx "5A)') trim(fields(jedi_var_idx)%model_name),' ',trim(chksum),' ',trim(varnames(file_var_idx))
-          call check( nf90_inq_varid(ncid(n),trim(varnames(file_var_idx)),varid) )
+
+          ! Probe (not via check(), which would abort) so a variable that does not
+          ! yet exist in this pre-existing file can be added instead of aborting.
+          rc2 = nf90_inq_varid(ncid(n),trim(varnames(file_var_idx)),varid)
+          if (rc2 /= nf90_noerr) then
+            ! Variable not present in the existing file: define it now, reusing the
+            ! file's existing dimensions (never redefines/resizes a dimension, and
+            ! never touches any variable that is already present in the file).
+            if(rank==0) write(6,'("write_restart_all_reg: Adding new variable ",A," to existing file ",A)') &
+                        trim(varnames(file_var_idx)), trim(FileNamesToProcess(n))
+            call check( nf90_redef(ncid(n)) )
+            call check( nf90_set_fill(ncid(n), NF90_NOFILL, oldMode) )
+            call check( nf90_inq_dimid(ncid(n), 'xaxis_1', newvar_dimids(1)) )
+            call check( nf90_inq_dimid(ncid(n), 'yaxis_2', newvar_dimids(2)) )
+            call check( nf90_inq_dimid(ncid(n), 'Time', newvar_dimids(4)) )
+            if (allocated(chunksizes)) deallocate(chunksizes)
+            if (nlevpervar(file_var_idx) > 1) then
+              call check( nf90_inq_dimid(ncid(n), 'zaxis_1', newvar_dimids(3)) )
+              allocate(chunksizes(4))
+              chunksizes = [geom%globalsizes(1), geom%globalsizes(2), 1, 1]
+              if (nc_vartype(file_var_idx) == NF90_FLOAT) then
+                call check( nf90_def_var(ncid(n), trim(varnames(file_var_idx)), NF90_FLOAT, &
+                                         newvar_dimids, varid, chunksizes=chunksizes) )
+              else
+                call check( nf90_def_var(ncid(n), trim(varnames(file_var_idx)), NF90_DOUBLE, &
+                                         newvar_dimids, varid, chunksizes=chunksizes) )
+              endif
+            else
+              allocate(chunksizes(3))
+              chunksizes = [geom%globalsizes(1), geom%globalsizes(2), 1]
+              if (nc_vartype(file_var_idx) == NF90_FLOAT) then
+                call check( nf90_def_var(ncid(n), trim(varnames(file_var_idx)), NF90_FLOAT, &
+                                         (/ newvar_dimids(1), newvar_dimids(2), newvar_dimids(4) /), varid, &
+                                         chunksizes=chunksizes) )
+              else
+                call check( nf90_def_var(ncid(n), trim(varnames(file_var_idx)), NF90_DOUBLE, &
+                                         (/ newvar_dimids(1), newvar_dimids(2), newvar_dimids(4) /), varid, &
+                                         chunksizes=chunksizes) )
+              endif
+            endif
+            call check( nf90_put_att(ncid(n), varid, "long_name", trim(fields(jedi_var_idx)%long_name)) )
+            call check( nf90_put_att(ncid(n), varid, "units", trim(fields(jedi_var_idx)%units)) )
+            call check( nf90_enddef(ncid(n)) )
+          endif
           call check( nf90_put_att(ncid(n), varid, "checksum", trim(chksum)) )
         enddo ! var loop
       else
@@ -2263,9 +2302,8 @@ if (write_comm /= MPI_COMM_NULL) then
       endif
       call check( nf90_close(ncid(n)) )  ! Will be reopened below
     else
-      write(6,'("Create new file or overwrite an existing file ",A)') trim(FileNamesToProcess(n))
-      rc = nf90_create(trim(FileNamesToProcess(n)), ior(ior(NF90_CLOBBER,NF90_NETCDF4),NF90_MPIIO), &
-                       ncid(n), comm=MPI_COMM_SELF, info=info)
+      write(6,'("Create new file or overwrite an existing file "A)') trim(FileNamesToProcess(n))
+      rc = nf90_create(trim(FileNamesToProcess(n)), ior(ior(NF90_CLOBBER,NF90_NETCDF4),NF90_MPIIO), ncid(n), comm=MPI_COMM_SELF, info=info)
       if(rc == nf90_noerr) then
         dimids(:)=-999
 
@@ -2385,8 +2423,7 @@ endif ! write_comm
 if (write_comm /= MPI_COMM_NULL) then
 
   ! Only I/O ranks reopen the file
-  call check( nf90_open(trim(FileNamesToProcess(mype_fileid)), IOR(NF90_WRITE, NF90_MPIIO), &
-                        ncid(mype_fileid), comm=write_comm, info=info) )
+  call check( nf90_open(trim(FileNamesToProcess(mype_fileid)), IOR(NF90_WRITE, NF90_MPIIO), ncid(mype_fileid), comm=write_comm, info=info) )
 
   ! Determine the range of variables that belong in this specific file
   if(mype_fileid == 1) then
