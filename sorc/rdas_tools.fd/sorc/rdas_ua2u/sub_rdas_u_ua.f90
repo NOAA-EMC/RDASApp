@@ -1,5 +1,5 @@
 !========================================================================================
-  subroutine rdas_u_ua(u_ua, in_grid, in_file, out_file, in_bkg)
+  subroutine rdas_u_ua(u_ua, in_grid, in_file, out_file, in_bkg, in_anl, remove_anl_vars)
 
 !-----------------------------------------------------------------------------
 ! HAFS DA tool - u_ua
@@ -8,6 +8,10 @@
 !      -- 202607, added optional in_bkg to apply the computed u/v D-grid wind
 !                 increments directly to a background restart file, avoiding
 !                 the need for a separate NCO-based apply_jedi_incs.sh step.
+!      -- 202607, added optional in_anl: single-file analysis mode for when
+!                 JEDI wrote ua_anl/va_anl (analysis) alongside untouched
+!                 background ua/va/u/v in the same file (write-into-existing-files
+!                 with renamed fields), so no separate increment file is needed.
 !
 !-----------------------------------------------------------------------------
 ! This subroutine updates ua/va(u/v) with u/v(ua/va) values.
@@ -20,6 +24,12 @@
 !          computed wind increments will be added to. Pass 'w' (or an empty
 !          string) to disable -- the tool then behaves exactly as before and
 !          writes raw increments.
+! in_anl:  (ua_update_u only) single file containing both the JEDI analysis
+!          A-grid wind (ua_anl/va_anl) and the untouched background ua/va/u/v.
+!          Mutually exclusive with in_file/out_file/in_bkg. Pass 'w' (or an
+!          empty string) to disable.
+! remove_anl_vars: (in_anl only) delete ua_anl/va_anl from in_anl once the
+!          D-grid analysis has been computed and written, to save space.
 !-----------------------------------------------------------------------------
 
   use constants
@@ -28,7 +38,8 @@
   use var_type
 
   implicit none
-  character (len=*), intent(in)         :: u_ua, in_grid, in_file, out_file, in_bkg
+  character (len=*), intent(in)         :: u_ua, in_grid, in_file, out_file, in_bkg, in_anl
+  logical, intent(in)                   :: remove_anl_vars
 
   type(grid2d_info)                     :: grid
   real, allocatable, dimension(:,:)     :: cangu, sangu, cangv, sangv
@@ -37,16 +48,17 @@
   integer  :: yaxis_1id, yaxis_2id, xaxis_1id, xaxis_2id, uid, vid, zaxis_1id, timeid
   integer  :: yaxis_1iv, yaxis_2iv, xaxis_1iv, xaxis_2iv, zaxis_1iv, timeiv
   integer, dimension(nf90_max_var_dims) :: dims
-  real, allocatable, dimension(:,:,:,:) :: dat41, dat42, ua, va, u, v, bkg_u, bkg_v
+  real, allocatable, dimension(:,:,:,:) :: dat41, dat42, ua, va, u, v, bkg_u, bkg_v, anl_ua, anl_va
   real, allocatable, dimension(:,:)     :: dat21, dat22
   real, allocatable, dimension(:)       :: dat11
   real*8, allocatable, dimension(:,:,:,:) :: ddat4
-  logical                                :: apply_to_bkg
+  logical                                :: apply_to_bkg, apply_to_anl
 
   character (len=2500)                  :: nc_file
   character(len=nf90_max_name)          :: varname, dimname(4)
 
   apply_to_bkg = ( trim(in_bkg) /= 'w' .and. len_trim(in_bkg) > 0 )
+  apply_to_anl = ( trim(in_anl) /= 'w' .and. len_trim(in_anl) > 0 )
 
 !------------------------------------------------------------------------------
 ! 1 --- arg process and parameters
@@ -93,6 +105,75 @@
      call update_rdas_restart(trim(in_file), 'ua', ix, iy, iz, 1, ua)
      call update_rdas_restart(trim(in_file), 'va', ix, iy, iz, 1, va)
      deallocate(ua, va)
+
+  else if ( trim(u_ua) == 'ua_update_u' .and. apply_to_anl ) then
+     !---================================================================
+     !--- single-file analysis mode: in_anl holds BOTH the (renamed) JEDI
+     !    analysis A-grid wind (ua_anl/va_anl) and the untouched background
+     !    ua/va/u/v, all in the one file (produced by fv3-jedi's
+     !    write-into-existing-files + field-rename capability). Compute the
+     !    A-grid wind increment as (ua_anl-ua, va_anl-va), convert it to a
+     !    D-grid increment the same way the in_file-based mode does, add
+     !    that to the background u/v already in the file, and write the
+     !    result back in place -- so in_anl becomes the final analysis with
+     !    no separate increment/output file needed.
+     !---================================================================
+     call get_var_dim(trim(in_anl), 'ua', ndims, dims)
+     if ( ndims /= 4 ) then
+        write(*,'(a)')' !!!!! warning: please check ua dimensions in '//trim(in_anl)
+        write(*,*)ndims, dims
+        stop
+     endif
+     iz=dims(3)
+     write(*,'(a,i,a,i,a,i,a,i,a,i)')'u dimensions: ',ix,'=',dims(1),':',iy,'=',dims(2),':',iz
+
+     !---get background ua/va and analysis ua_anl/va_anl, then form the A-grid increment
+     allocate(dat41(ix, iy, iz, 1), dat42(ix, iy, iz, 1))
+     allocate(anl_ua(ix, iy, iz, 1), anl_va(ix, iy, iz, 1))
+     call get_var_data(trim(in_anl), 'ua', ix, iy, iz, 1, dat41)
+     call get_var_data(trim(in_anl), 'va', ix, iy, iz, 1, dat42)
+     call get_var_data(trim(in_anl), 'ua_anl', ix, iy, iz, 1, anl_ua)
+     call get_var_data(trim(in_anl), 'va_anl', ix, iy, iz, 1, anl_va)
+     dat41 = anl_ua - dat41
+     dat42 = anl_va - dat42
+     deallocate(anl_ua, anl_va)
+
+     !---stage the A-grid wind increment onto the C/D staggered grid
+     allocate(ua(ix, iy+1, iz, 1), va(ix+1, iy, iz, 1))
+     ua(:,1   ,:,1)=dat41(:,1,:,1)
+     ua(:,2:iy,:,1)=0.5*(dat41(:,1:iy-1,:,1)+dat41(:,2:iy,:,1))
+     ua(:,iy+1,:,1)=dat41(:,iy,:,1)
+     va(1   ,:,:,1)=dat42(1,:,:,1)
+     va(2:ix,:,:,1)=0.5*(dat42(1:ix-1,:,:,1)+dat42(2:ix,:,:,1))
+     va(ix+1,:,:,1)=dat42(ix,:,:,1)
+     deallocate(dat41, dat42)
+
+     !---convert the earth-relative wind increment to the fv3grid (D-grid) wind increment
+     allocate(u(ix, iy+1, iz,1), v(ix+1, iy, iz,1))
+     do k = 1, iz
+        call earthuv2fv3(ix, iy, ua(:,:,k,1), va(:,:,k,1), cangu, sangu, cangv, sangv, u(:,:,k,1), v(:,:,k,1))
+     enddo
+     deallocate(ua, va, cangu, sangu, cangv, sangv)
+
+     !---add the D-grid increment to the (untouched, background) u/v already in the file
+     write(*,'(a)')' --- adding u/v increments to background u/v in '//trim(in_anl)
+     allocate(bkg_u(ix, iy+1, iz, 1), bkg_v(ix+1, iy, iz, 1))
+     call get_var_data(trim(in_anl), 'u', ix, iy+1, iz, 1, bkg_u)
+     call get_var_data(trim(in_anl), 'v', ix+1, iy, iz, 1, bkg_v)
+     u = u + bkg_u
+     v = v + bkg_v
+     deallocate(bkg_u, bkg_v)
+
+     !---write the analysis u/v back into the file in place
+     write(*,'(a)')' --- updating u/v in place in '//trim(in_anl)
+     call update_rdas_restart(trim(in_anl), 'u', ix, iy+1, iz, 1, u)
+     call update_rdas_restart(trim(in_anl), 'v', ix+1, iy, iz, 1, v)
+     deallocate(u, v)
+
+     if ( remove_anl_vars ) then
+        write(*,'(a)')' --- removing ua_anl/va_anl from '//trim(in_anl)
+        call remove_nc_vars(trim(in_anl), 'ua_anl,va_anl')
+     endif
 
   else if ( trim(u_ua) == 'ua_update_u' ) then
      !---get ua dimensions
