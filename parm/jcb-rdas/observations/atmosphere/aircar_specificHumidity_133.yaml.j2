@@ -114,15 +114,22 @@
              name: reduce obs space
 
          # Duplicate Check
-         - filter: Temporal Thinning
+         - filter: DuplicateThinning
            udescriptor: "duplicate_check"
            filter variables:
            - name: specificHumidity
+           analysis_time: "{{ atmosphere_background_time_iso }}"
+           analysis_time_tolerance: PT0S
            min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "{{atmosphere_background_time_iso}}"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
+           equidistant_time_selection: after
+           variable names:
+           - MetaData/longitude
+           - MetaData/latitude
+           - MetaData/pressure
+           tolerance:
+           - 1.0e-6
+           - 1.0e-6
+           - 1.0e-6
            where:
            - variable: ObsType/specificHumidity
              is_in: 133

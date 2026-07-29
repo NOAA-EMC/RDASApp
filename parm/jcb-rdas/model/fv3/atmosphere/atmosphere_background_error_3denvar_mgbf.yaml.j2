@@ -3,6 +3,7 @@ members from template:
   template:
     datetime: "{{ atmosphere_background_time_iso }}"
     filetype: fms restart
+    regional restart: true
     state variables: {{analysis_variables}}
     field io names:
       eastward_wind: {{eastward_wind}}
@@ -61,4 +62,5 @@ localization:
      forward interpolator:
        local interpolator type: oops unstructured grid interpolator
      inverse interpolator:
-       local nterpolator type: oops unstructured grid interpolator
+       local interpolator type: oops unstructured grid interpolator
+       regional nn fill distance in km: 800
