@@ -38,6 +38,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--obs', type=str, help='ioda observation file', required=True)
 parser.add_argument('--patch-timeoffset', action='store_true',
                     help='Patch MetaData/timeOffset for soundings (ObsType 120/220)')
+parser.add_argument('--lonlatpres', action='store_true',
+                    help='Patch legacy MetaData/longitude_latitude and '
+                         'MetaData/longitude_latitude_pressure variables')
 parser.add_argument('--to-min', type=float, default=-5400.0)
 parser.add_argument('--to-max', type=float, default=5400.0)
 parser.add_argument('--to-set', type=float, default=3600.0,
@@ -144,31 +147,37 @@ for group in groups:
                 continue
             g.variables[var].setncattr(attr, invar.getncattr(attr))
 
-# Generate longitude_latitude_pressure location strings (for dup checking)
-longitude_latitude_pressure = [f"{lon}_{lat}_{pres}" for lon, lat, pres in zip(obs_lon, obs_lat, obs_prs)]
-longitude_latitude_pressure = np.array(longitude_latitude_pressure)
-
+# Keep the MetaData group available for both optional legacy fields and AMV processing
 metadata_group = fout.groups['MetaData']
 
-# Add the longitude_latitude_pressure variable to the file
-var = "longitude_latitude_pressure"
-data = longitude_latitude_pressure
-if var not in metadata_group.variables:
-    metadata_group.createVariable(f"{var}", 'str', 'Location')
-metadata_group.variables[f"{var}"][:] = data
+if args.lonlatpres:
+    # Generate longitude_latitude_pressure location strings (for dup checking)
+    longitude_latitude_pressure = [
+        f"{lon}_{lat}_{pres}"
+        for lon, lat, pres in zip(obs_lon, obs_lat, obs_prs)
+    ]
+    longitude_latitude_pressure = np.array(longitude_latitude_pressure)
 
-# Generate longitude_latitude location strings (for dup checking)
-longitude_latitude = [f"{lon}_{lat}" for lon, lat in zip(obs_lon, obs_lat)]
-longitude_latitude = np.array(longitude_latitude)
+    # Add the longitude_latitude_pressure variable to the file
+    var = "longitude_latitude_pressure"
+    data = longitude_latitude_pressure
+    if var not in metadata_group.variables:
+        metadata_group.createVariable(f"{var}", 'str', 'Location')
+    metadata_group.variables[f"{var}"][:] = data
 
-metadata_group = fout.groups['MetaData']
+    # Generate longitude_latitude location strings (for dup checking)
+    longitude_latitude = [
+        f"{lon}_{lat}"
+        for lon, lat in zip(obs_lon, obs_lat)
+    ]
+    longitude_latitude = np.array(longitude_latitude)
 
-# Add the longitude_latitude variable to the file
-var = "longitude_latitude"
-data = longitude_latitude
-if var not in metadata_group.variables:
-    metadata_group.createVariable(f"{var}", 'str', 'Location')
-metadata_group.variables[f"{var}"][:] = data
+    # Add the longitude_latitude variable to the file
+    var = "longitude_latitude"
+    data = longitude_latitude
+    if var not in metadata_group.variables:
+        metadata_group.createVariable(f"{var}", 'str', 'Location')
+    metadata_group.variables[f"{var}"][:] = data
 
 # Add the exp_err_norm to file (for goes-r amvs)
 if 'expectedError' in metadata_group.variables:
