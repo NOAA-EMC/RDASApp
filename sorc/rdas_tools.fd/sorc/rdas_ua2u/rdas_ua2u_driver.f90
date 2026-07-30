@@ -16,7 +16,7 @@
 ! command convention
 !  rdas_ua2u.x FUNCTION --in_grid=input_grids_file \
 !                       --in_file=input_file \
-!                       (--out_file=output_file | --in_bkg=background_file)
+!                       --out_file=output_file
 !
 !    3.6) u_update_ua and ua_update_u
 !       * rdas_ua2u.x u_update_ua --in_grid=fv3_grid_spec \
@@ -27,20 +27,12 @@
 !                                   --in_file=in_analysis_jedi.fv_core.res.nc
 !                                   --out_file=out_analysis_jedi.fv_core.res.nc
 !
-!    3.7) ua_update_u has three mutually exclusive input/output modes --
-!         specify exactly one of --out_file, --in_bkg, or --in_anl:
+!    3.7) ua_update_u has two mutually exclusive input/output modes --
+!         specify exactly one of --out_file or --in_anl:
 !         a) --out_file: write the raw computed u/v D-grid wind increments to
 !            out_file (original behavior).
-!         b) --in_bkg: add the computed u/v increments directly to the u/v
-!            fields of the background file and update that file in place --
-!            i.e. rdas_ua2u.x applies the wind increments to the background,
-!            replacing the NCO-based apply_jedi_incs.sh step for u/v. Only
-!            u/v are affected; all other variables are untouched.
-!       * rdas_ua2u.x ua_update_u --in_grid=fv3_grid_spec \
-!                                   --in_file=agrid_inc_jedi.fv_core.res.nc \
-!                                   --in_bkg=fv_core.res.tile1.nc
 !
-!         c) --in_anl: single-file mode. Used when JEDI wrote the analysis
+!         b) --in_anl: single-file mode. Used when JEDI wrote the analysis
 !            directly into the background file with write-into-existing-files,
 !            aliasing the analyzed A-grid wind to ua_anl/va_anl so the
 !            original background ua/va (and u/v) are left untouched in the
@@ -62,14 +54,14 @@
 
   implicit none
   integer :: i, j, n
-  character(len=2500) :: actions='w', arg, in_grid='w', in_file='w', out_file='w', in_bkg='w', in_anl='w'
+  character(len=2500) :: actions='w', arg, in_grid='w', in_file='w', out_file='w', in_anl='w'
   logical :: remove_anl_vars = .false.
 
   call parallel_start()
 
   if (iargc() < 2) then
      if (my_proc_id == 0) then
-       write(*,'(a)') 'Usage: rdas_ua2u.x <u_update_ua|ua_update_u> --in_grid=GRID.nc --in_file=RESTART.nc [--out_file=OUT.nc] [--in_bkg=BKG.nc]'
+       write(*,'(a)') 'Usage: rdas_ua2u.x <u_update_ua|ua_update_u> --in_grid=GRID.nc --in_file=RESTART.nc --out_file=OUT.nc'
        write(*,'(a)') '   or: rdas_ua2u.x ua_update_u --in_grid=GRID.nc --in_anl=ANALYSIS.nc [--remove_anl_winds]'
      endif
      call parallel_finish()
@@ -85,7 +77,6 @@
          case ('--in_grid');  in_grid  = arg(j+1:n)
          case ('--in_file','-i'); in_file = arg(j+1:n)
          case ('--out_file'); out_file = arg(j+1:n)
-         case ('--in_bkg');   in_bkg   = arg(j+1:n)
          case ('--in_anl');   in_anl   = arg(j+1:n)
        end select
      else if (trim(arg) == '--remove_anl_winds') then
@@ -112,8 +103,8 @@
         call parallel_finish()
         stop
      end if
-     if (trim(in_file) /= 'w' .or. trim(out_file) /= 'w' .or. trim(in_bkg) /= 'w') then
-        if (my_proc_id == 0) write(*,'(a)') 'ERROR: --in_anl cannot be combined with --in_file, --out_file, or --in_bkg'
+     if (trim(in_file) /= 'w' .or. trim(out_file) /= 'w') then
+        if (my_proc_id == 0) write(*,'(a)') 'ERROR: --in_anl cannot be combined with --in_file or --out_file'
         call parallel_finish()
         stop
      end if
@@ -128,22 +119,10 @@
         call parallel_finish()
         stop
      end if
-     if (trim(in_bkg) /= 'w' .and. trim(actions) /= 'ua_update_u') then
-        if (my_proc_id == 0) write(*,'(a)') 'ERROR: --in_bkg is only supported with ua_update_u'
+     if (trim(actions) == 'ua_update_u' .and. trim(out_file) == 'w') then
+        if (my_proc_id == 0) write(*,'(a)') 'ERROR: ua_update_u requires --out_file (write raw increments) or --in_anl (single-file analysis mode)'
         call parallel_finish()
         stop
-     end if
-     if (trim(actions) == 'ua_update_u') then
-        if (trim(out_file) /= 'w' .and. trim(in_bkg) /= 'w') then
-           if (my_proc_id == 0) write(*,'(a)') 'ERROR: specify exactly one of --out_file or --in_bkg, not both'
-           call parallel_finish()
-           stop
-        end if
-        if (trim(out_file) == 'w' .and. trim(in_bkg) == 'w') then
-           if (my_proc_id == 0) write(*,'(a)') 'ERROR: ua_update_u requires exactly one of --out_file (write raw increments), --in_bkg (apply increments to background), or --in_anl (single-file analysis mode)'
-           call parallel_finish()
-           stop
-        end if
      end if
   end if
 
@@ -152,9 +131,8 @@
         write(*,'(a)') '--- computing wind analysis in place from '//trim(in_anl)
      else
         write(*,'(a)') '--- u/a update on '//trim(in_file)
-        if (trim(in_bkg) /= 'w') write(*,'(a)') '--- applying u/v increments to background '//trim(in_bkg)
      end if
-     call rdas_u_ua(trim(actions), trim(in_grid), trim(in_file), trim(out_file), trim(in_bkg), trim(in_anl), remove_anl_vars)
+     call rdas_u_ua(trim(actions), trim(in_grid), trim(in_file), trim(out_file), trim(in_anl), remove_anl_vars)
   end if
 
   call parallel_finish()
