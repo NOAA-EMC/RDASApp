@@ -27,10 +27,10 @@
          observed variables: [zenithTotalDelay]
 
        obs operator:
-         name: GroundgnssMetOffice
+#        name: GroundgnssMetOffice
 # ------- the OMD FOV avaeraging operator --------
-#        name: GroundgnssOMD
-#        num_fov: 9
+         name: GroundgnssOMD
+         num_fov: 9        # number of sample grid points for FOV averaging
          observation alias file: obsop_name_map.yaml
 
        obs error:
@@ -41,7 +41,7 @@
            lengthscale: 200e3
 
        obs filters:
-         # Pre-online regional domain check (latitude/longitude)
+         # Pre-online regional domain check for NA (latitude/longitude)
          - filter: Domain Check
            where:
              - variable:
@@ -71,7 +71,7 @@
            - name: QualityMarker/zenithTotalDelay
            maxvalue: 10
 
-         # Initial error assignment
+         # Error assignment
          - filter: Perform Action
            filter variables:
            - name: zenithTotalDelay
