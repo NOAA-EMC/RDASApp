@@ -1465,6 +1465,8 @@ real(kind=8), target :: dummy_r8_3d(1,1,1)
 
 type(ncfile_stat) :: ncfs_all
 
+character(len=7) :: ydim_name
+
 ! sub communicator
 integer :: color, key
 
@@ -2265,16 +2267,22 @@ if (write_comm /= MPI_COMM_NULL) then
 
         call check( nf90_set_fill(ncid(n), NF90_FILL, oldMode) )
 
+        if (n == self%index_core) then
+          ydim_name = 'yaxis_2'
+        else
+          ydim_name = 'yaxis_1'
+        endif
+
         call check( nf90_def_dim(ncid(n), 'xaxis_1', geom%globalsizes(1), dimids(1)) )
-        call check( nf90_def_dim(ncid(n), 'yaxis_2', geom%globalsizes(2), dimids(2)) )
+        call check( nf90_def_dim(ncid(n), ydim_name, geom%globalsizes(2), dimids(2)) )
         call check( nf90_def_var(ncid(n), 'xaxis_1', NF90_DOUBLE, dimids(1), varid) )
         call check( nf90_put_att(ncid(n), varid, "cartesian_axis", "X") )
         call check( nf90_put_att(ncid(n), varid, "long_name", "xaxis_1") )
         call check( nf90_put_att(ncid(n), varid, "units", "none") )
 
-        call check( nf90_def_var(ncid(n), 'yaxis_2', NF90_DOUBLE, dimids(2), varid) )
+        call check( nf90_def_var(ncid(n), ydim_name, NF90_DOUBLE, dimids(2), varid) )
         call check( nf90_put_att(ncid(n), varid, "cartesian_axis", "Y") )
-        call check( nf90_put_att(ncid(n), varid, "long_name", "yaxis_2") )
+        call check( nf90_put_att(ncid(n), varid, "long_name", ydim_name) )
         call check( nf90_put_att(ncid(n), varid, "units", "none") )
 
         ! Create a zaxis_1 dimension if any of the variables assigned to this file have a third dimension greater than 1

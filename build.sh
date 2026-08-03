@@ -267,7 +267,7 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
 
   # Apply workaround patches (git commit-base workaround method)
   # Need to convert all the copy-based workaround methods to commit-based method
-  $dir_root/ush/apply_patches.sh
+  #$dir_root/ush/apply_patches.sh
 
   # Workaround for parallel IO developed by Dan Kokron at GDIT
   cp ../sorc/_workaround_/fv3-jedi-io/CMakeLists.txt                            ../sorc/fv3-jedi/src/fv3jedi/CMakeLists.txt
@@ -282,7 +282,16 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/m_TwoPhaseScatterGather.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/m_TwoPhaseScatterGather.f90
 
   # Workaround for GSL surface operator
-  cp ../sorc/_workaround_/ufo/* ../sorc/ufo/src/ufo/operators/sfccorrected/
+  cp ../sorc/_workaround_/ufo/CMakeLists.txt   ../sorc/ufo/src/ufo/operators/sfccorrected/.
+  cp ../sorc/_workaround_/ufo/EvalSurface*     ../sorc/ufo/src/ufo/operators/sfccorrected/.
+  cp ../sorc/_workaround_/ufo/ObsSfcCorrected* ../sorc/ufo/src/ufo/operators/sfccorrected/.
+
+  # Workaround for updating surface and delp states after outerloops (fv3-jedi PR1511)
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_state_mod.F90    ../sorc/fv3-jedi/src/fv3jedi/State/.
+  cp ../sorc/_workaround_/fv3-jedi/FieldsMetadataDefault.h  ../sorc/fv3-jedi/src/fv3jedi/FieldMetadata/.
+
+  # DuplicateThinning zero-obs space fix
+  cp ../sorc/_workaround_/ufo/DuplicateThinning.cc ../sorc/ufo/src/ufo/filters/.
 
 fi
 
