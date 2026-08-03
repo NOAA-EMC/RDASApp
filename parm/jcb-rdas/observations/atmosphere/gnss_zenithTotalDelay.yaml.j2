@@ -18,9 +18,12 @@
          observed variables: [zenithTotalDelay]
 
        obs operator:
-         name: GroundgnssMetOffice
-       linear obs operator:
-         name: GroundgnssMetOffice
+     # ------- the pointwisw UKMO operator
+     #   name: GroundgnssMetOffice
+     # ------- the OMD FOV avaeraging operator --------
+         name: GroundgnssOMD
+         num_fov: 9        # number of sample grid points for FOV averaging
+         
          observation alias file: obsop_name_map.yaml
 
        obs error:
@@ -78,7 +81,7 @@
            - name: zenithTotalDelay
            action:
              name: assign error
-             error parameter: 0.01
+             error parameter: 0.02
 
          # Terrain Height Discrepancy Check
          - filter: Difference Check
