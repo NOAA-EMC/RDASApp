@@ -33,9 +33,9 @@ class IOFmsParameters : public IOParametersBase {
                                    true, this};
 
   // Are these regional restart files (single tile)
-  oops::Parameter<bool> regional_restart{"regional restart",
-                                         "regional restart",
-                                         false, this};
+  oops::Parameter<bool> use_fms_lib{"use_fms_lib",
+                                    "use_fms_lib",
+                                    true, this};
 
   // Data path for files being read
   oops::Parameter<std::string> datapath{"datapath", "path to location of files to be read", "./",

@@ -212,7 +212,8 @@ contains
         TwoPhaseScatter(owner)%sendcounts_phase1(0) = geom%globalsizes(1) * geom%NumRowsPerRank(0)
         do row=1, geom%layout(2)-1
           TwoPhaseScatter(owner)%sendcounts_phase1(row) = geom%globalsizes(1) * geom%NumRowsPerRank(row)
-          TwoPhaseScatter(owner)%senddispls_phase1(row) = TwoPhaseScatter(owner)%senddispls_phase1(row-1) + TwoPhaseScatter(owner)%sendcounts_phase1(row-1)
+          TwoPhaseScatter(owner)%senddispls_phase1(row) = TwoPhaseScatter(owner)%senddispls_phase1(row-1) + &
+                                                          TwoPhaseScatter(owner)%sendcounts_phase1(row-1)
         enddo
       endif
       allocate(TwoPhaseScatter(owner)%sendcounts_phase2(0:geom%layout(1)-1))
@@ -221,7 +222,8 @@ contains
       TwoPhaseScatter(owner)%sendcounts_phase2(0) = geom%NumColsPerRank(0)
       do col = 1, geom%layout(1)-1
         TwoPhaseScatter(owner)%sendcounts_phase2(col) = geom%NumColsPerRank(col)
-        TwoPhaseScatter(owner)%senddispls_phase2(col) = TwoPhaseScatter(owner)%senddispls_phase2(col-1) + TwoPhaseScatter(owner)%sendcounts_phase2(col-1)
+        TwoPhaseScatter(owner)%senddispls_phase2(col) = TwoPhaseScatter(owner)%senddispls_phase2(col-1) + &
+                                                        TwoPhaseScatter(owner)%sendcounts_phase2(col-1)
       enddo
       TwoPhaseScatter(owner)%lalloc = .true.
     endif
@@ -281,7 +283,8 @@ contains
         TwoPhaseScatter(owner)%sendcounts_phase1(0) = geom%globalsizes(1) * geom%NumRowsPerRank(0)
         do row=1, geom%layout(2)-1
           TwoPhaseScatter(owner)%sendcounts_phase1(row) = geom%globalsizes(1) * geom%NumRowsPerRank(row)
-          TwoPhaseScatter(owner)%senddispls_phase1(row) = TwoPhaseScatter(owner)%senddispls_phase1(row-1) + TwoPhaseScatter(owner)%sendcounts_phase1(row-1)
+          TwoPhaseScatter(owner)%senddispls_phase1(row) = TwoPhaseScatter(owner)%senddispls_phase1(row-1) + &
+                                                          TwoPhaseScatter(owner)%sendcounts_phase1(row-1)
         enddo
       endif
 
@@ -291,7 +294,8 @@ contains
       TwoPhaseScatter(owner)%sendcounts_phase2(0) = geom%NumColsPerRank(0)
       do col = 1, geom%layout(1)-1
         TwoPhaseScatter(owner)%sendcounts_phase2(col) = geom%NumColsPerRank(col)
-        TwoPhaseScatter(owner)%senddispls_phase2(col) = TwoPhaseScatter(owner)%senddispls_phase2(col-1) + TwoPhaseScatter(owner)%sendcounts_phase2(col-1)
+        TwoPhaseScatter(owner)%senddispls_phase2(col) = TwoPhaseScatter(owner)%senddispls_phase2(col-1) + &
+                                                        TwoPhaseScatter(owner)%sendcounts_phase2(col-1)
       enddo
       TwoPhaseScatter(owner)%lalloc = .true.
     endif
@@ -403,7 +407,8 @@ contains
       TwoPhaseGather(owner)%recvcounts_phase1(0) = geom%NumColsPerRank(0)
       do col = 1, geom%layout(1)-1
         TwoPhaseGather(owner)%recvcounts_phase1(col) = geom%NumColsPerRank(col)
-        TwoPhaseGather(owner)%recvdispls_phase1(col) = TwoPhaseGather(owner)%recvdispls_phase1(col-1) + TwoPhaseGather(owner)%recvcounts_phase1(col-1)
+        TwoPhaseGather(owner)%recvdispls_phase1(col) = TwoPhaseGather(owner)%recvdispls_phase1(col-1) + &
+                                                       TwoPhaseGather(owner)%recvcounts_phase1(col-1)
       enddo
 
       if (mycol == geom%MyColGlobal(owner)) then
@@ -413,7 +418,8 @@ contains
         TwoPhaseGather(owner)%recvcounts_phase2(0) = geom%globalsizes(1) * geom%NumRowsPerRank(0)
         do row=1, geom%layout(2)-1
           TwoPhaseGather(owner)%recvcounts_phase2(row) = geom%globalsizes(1) * geom%NumRowsPerRank(row)
-          TwoPhaseGather(owner)%recvdispls_phase2(row) = TwoPhaseGather(owner)%recvdispls_phase2(row-1) + TwoPhaseGather(owner)%recvcounts_phase2(row-1)
+          TwoPhaseGather(owner)%recvdispls_phase2(row) = TwoPhaseGather(owner)%recvdispls_phase2(row-1) + &
+                                                         TwoPhaseGather(owner)%recvcounts_phase2(row-1)
         enddo
       endif
       TwoPhaseGather(owner)%lalloc = .true.
@@ -441,11 +447,13 @@ contains
     if (mycol == geom%MyColGlobal(owner)) then
       call MPI_Igatherv(sendbuf(1,1), TwoPhaseGather(owner)%recvcounts_phase1(mycol), localvec, &
                         gather_workspace_r4(1,1,b_ind), TwoPhaseGather(owner)%recvcounts_phase1, &
-                        TwoPhaseGather(owner)%recvdispls_phase1, vec, geom%MyRankInRowComm(owner), geom%rowComm, req_p1, ierr)
+                        TwoPhaseGather(owner)%recvdispls_phase1, vec, geom%MyRankInRowComm(owner), &
+                        geom%rowComm, req_p1, ierr)
     else
       call MPI_Igatherv(sendbuf(1,1), TwoPhaseGather(owner)%recvcounts_phase1(mycol), localvec, &
                         MPI_BOTTOM, TwoPhaseGather(owner)%recvcounts_phase1, &
-                        TwoPhaseGather(owner)%recvdispls_phase1, vec, geom%MyRankInRowComm(owner), geom%rowComm, req_p1, ierr)
+                        TwoPhaseGather(owner)%recvdispls_phase1, vec, geom%MyRankInRowComm(owner), &
+                        geom%rowComm, req_p1, ierr)
     endif
   end subroutine TwoPhaseGather_Phase1_r4
 
@@ -471,7 +479,8 @@ contains
       TwoPhaseGather(owner)%recvcounts_phase1(0) = geom%NumColsPerRank(0)
       do col = 1, geom%layout(1)-1
         TwoPhaseGather(owner)%recvcounts_phase1(col) = geom%NumColsPerRank(col)
-        TwoPhaseGather(owner)%recvdispls_phase1(col) = TwoPhaseGather(owner)%recvdispls_phase1(col-1) + TwoPhaseGather(owner)%recvcounts_phase1(col-1)
+        TwoPhaseGather(owner)%recvdispls_phase1(col) = TwoPhaseGather(owner)%recvdispls_phase1(col-1) + &
+                                                       TwoPhaseGather(owner)%recvcounts_phase1(col-1)
       enddo
 
       if (mycol == geom%MyColGlobal(owner)) then
@@ -481,7 +490,8 @@ contains
         TwoPhaseGather(owner)%recvcounts_phase2(0) = geom%globalsizes(1) * geom%NumRowsPerRank(0)
         do row=1, geom%layout(2)-1
           TwoPhaseGather(owner)%recvcounts_phase2(row) = geom%globalsizes(1) * geom%NumRowsPerRank(row)
-          TwoPhaseGather(owner)%recvdispls_phase2(row) = TwoPhaseGather(owner)%recvdispls_phase2(row-1) + TwoPhaseGather(owner)%recvcounts_phase2(row-1)
+          TwoPhaseGather(owner)%recvdispls_phase2(row) = TwoPhaseGather(owner)%recvdispls_phase2(row-1) + &
+                                                         TwoPhaseGather(owner)%recvcounts_phase2(row-1)
         enddo
       endif
       TwoPhaseGather(owner)%lalloc = .true.
@@ -509,11 +519,13 @@ contains
     if (mycol == geom%MyColGlobal(owner)) then
       call MPI_Igatherv(sendbuf(1,1), TwoPhaseGather(owner)%recvcounts_phase1(mycol), localvec, &
                         gather_workspace_r8(1,1,b_ind), TwoPhaseGather(owner)%recvcounts_phase1, &
-                        TwoPhaseGather(owner)%recvdispls_phase1, vec, geom%MyRankInRowComm(owner), geom%rowComm, req_p1, ierr)
+                        TwoPhaseGather(owner)%recvdispls_phase1, vec, geom%MyRankInRowComm(owner), &
+                        geom%rowComm, req_p1, ierr)
     else
       call MPI_Igatherv(sendbuf(1,1), TwoPhaseGather(owner)%recvcounts_phase1(mycol), localvec, &
                         MPI_BOTTOM, TwoPhaseGather(owner)%recvcounts_phase1, &
-                        TwoPhaseGather(owner)%recvdispls_phase1, vec, geom%MyRankInRowComm(owner), geom%rowComm, req_p1, ierr)
+                        TwoPhaseGather(owner)%recvdispls_phase1, vec, geom%MyRankInRowComm(owner), &
+                        geom%rowComm, req_p1, ierr)
     endif
   end subroutine TwoPhaseGather_Phase1_r8
 
@@ -535,11 +547,13 @@ contains
       if (rank == owner) then
         call MPI_Igatherv(gather_workspace_r4(1,1,b_ind), TwoPhaseGather(owner)%recvcounts_phase2(myrow), MPI_REAL, &
                           recvbuf(1,1), TwoPhaseGather(owner)%recvcounts_phase2, &
-                          TwoPhaseGather(owner)%recvdispls_phase2, MPI_REAL, geom%MyRankInColComm(owner), geom%colComm, req_p2, ierr)
+                          TwoPhaseGather(owner)%recvdispls_phase2, MPI_REAL, geom%MyRankInColComm(owner), &
+                          geom%colComm, req_p2, ierr)
       else
         call MPI_Igatherv(gather_workspace_r4(1,1,b_ind), TwoPhaseGather(owner)%recvcounts_phase2(myrow), MPI_REAL, &
                           MPI_BOTTOM, TwoPhaseGather(owner)%recvcounts_phase2, &
-                          TwoPhaseGather(owner)%recvdispls_phase2, MPI_REAL, geom%MyRankInColComm(owner), geom%colComm, req_p2, ierr)
+                          TwoPhaseGather(owner)%recvdispls_phase2, MPI_REAL, geom%MyRankInColComm(owner), &
+                          geom%colComm, req_p2, ierr)
       endif
     else
       req_p2 = MPI_REQUEST_NULL
@@ -564,11 +578,13 @@ contains
       if (rank == owner) then
         call MPI_Igatherv(gather_workspace_r8(1,1,b_ind), TwoPhaseGather(owner)%recvcounts_phase2(myrow), MPI_DOUBLE_PRECISION, &
                           recvbuf(1,1), TwoPhaseGather(owner)%recvcounts_phase2, &
-                          TwoPhaseGather(owner)%recvdispls_phase2, MPI_DOUBLE_PRECISION, geom%MyRankInColComm(owner), geom%colComm, req_p2, ierr)
+                          TwoPhaseGather(owner)%recvdispls_phase2, MPI_DOUBLE_PRECISION, geom%MyRankInColComm(owner), &
+                          geom%colComm, req_p2, ierr)
       else
         call MPI_Igatherv(gather_workspace_r8(1,1,b_ind), TwoPhaseGather(owner)%recvcounts_phase2(myrow), MPI_DOUBLE_PRECISION, &
                           MPI_BOTTOM, TwoPhaseGather(owner)%recvcounts_phase2, &
-                          TwoPhaseGather(owner)%recvdispls_phase2, MPI_DOUBLE_PRECISION, geom%MyRankInColComm(owner), geom%colComm, req_p2, ierr)
+                          TwoPhaseGather(owner)%recvdispls_phase2, MPI_DOUBLE_PRECISION, geom%MyRankInColComm(owner), &
+                          geom%colComm, req_p2, ierr)
       endif
     else
       req_p2 = MPI_REQUEST_NULL
