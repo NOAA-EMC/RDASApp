@@ -259,7 +259,7 @@ f_fileioscalingconf = fckit_configuration(c_fileioscalingconf)
 haveps = hasfield(f_increment%fields, 'air_pressure_at_surface', indexof_ps)
 havedelp = hasfield(f_increment%fields, 'air_pressure_thickness')
 
-convert_ps_to_delp = f_self%regional_restart .and. haveps .and. .not. havedelp
+convert_ps_to_delp = (.not. f_self%use_fms_lib) .and. haveps .and. .not. havedelp
 
 if (convert_ps_to_delp) then
 
