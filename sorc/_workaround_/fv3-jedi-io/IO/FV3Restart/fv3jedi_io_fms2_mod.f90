@@ -1635,11 +1635,6 @@ if( (fields_changed) .or. &
   ! Loop over fields to figure out where all the variables go
   ! ---------------------------------------------------------
   do jedi_var_idx = 1,size(fields)
-    ! Skip writing air_pressure_at_surface into analysis files
-    if (trim(fields(jedi_var_idx)%long_name) == 'air_pressure_at_surface') then
-      cycle
-    endif
-
     ! Check if the user specified a list of fields to write
     if ( trim(self%fields_to_write(1) ) == 'All') then
       !if(rank==0) write(*,'("write_restart_all_reg: Default writing all fields")')
