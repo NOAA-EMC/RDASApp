@@ -16,14 +16,11 @@ use fckit_configuration_module,      only: fckit_configuration
 ! fv3-jedi
 use fv3jedi_increment_mod,           only: fv3jedi_increment
 use fv3jedi_increment_interface_mod, only: fv3jedi_increment_registry
-use fv3jedi_field_mod,               only: field_clen, hasfield
 use fv3jedi_geom_mod,                only: fv3jedi_geom
 use fv3jedi_geom_interface_mod,      only: fv3jedi_geom_registry
 use fv3jedi_io_fms_mod,              only: fv3jedi_io_fms
-use fv3jedi_kinds_mod,               only: kind_real
 use fv3jedi_state_mod,               only: fv3jedi_state
 use fv3jedi_state_interface_mod,     only: fv3jedi_state_registry
-use pressure_vt_mod,                 only: ps_to_delp_tl
 
 implicit none
 private
@@ -228,15 +225,6 @@ type(fv3jedi_geom),       pointer :: f_geom
 type(fv3jedi_increment),  pointer :: f_increment
 type(fckit_configuration)         :: f_fileionamesconf
 type(fckit_configuration)         :: f_fileioscalingconf
-integer                           :: indexof_ps
-integer                           :: ps_npz
-logical                           :: haveps
-logical                           :: havedelp
-logical                           :: convert_ps_to_delp
-character(len=:), allocatable     :: delp_io_name
-character(len=field_clen)         :: ps_long_name
-character(len=field_clen)         :: ps_model_name
-real(kind=kind_real), allocatable :: ps_increment(:,:,:)
 
 ! Linked list
 ! -----------
@@ -249,77 +237,9 @@ call fv3jedi_increment_registry%get(c_key_increment, f_increment)
 f_fileionamesconf = fckit_configuration(c_fileionamesconf)
 f_fileioscalingconf = fckit_configuration(c_fileioscalingconf)
 
-! For regional FV3 restart output, convert the surface-pressure increment
-! into a pressure-thickness increment. This leaves ps as the control and
-! analysis variable while writing the DELP increment required by FV3.
-!
-! Do not perform this conversion if the Increment already contains DELP.
-! This is consistent with fv3jedi_state_mod.add_increment, which updates
-! state DELP from a ps increment only when DELP is not a direct increment.
-haveps = hasfield(f_increment%fields, 'air_pressure_at_surface', indexof_ps)
-havedelp = hasfield(f_increment%fields, 'air_pressure_thickness')
-
-convert_ps_to_delp = (.not. f_self%use_fms_lib) .and. haveps .and. .not. havedelp
-
-if (convert_ps_to_delp) then
-
-  ! Report the output-only conversion once rather than from every MPI rank.
-  if (f_geom%f_comm%rank() == 0) then
-    write(6,'(A)') 'c_fv3jedi_io_fms_write_increment: ' // &
-                   'converting ps increment to delp for regional restart output'
-  endif
-
-  ! Save the original field metadata.
-  ps_long_name = f_increment%fields(indexof_ps)%long_name
-  ps_model_name = f_increment%fields(indexof_ps)%model_name
-  ps_npz = f_increment%fields(indexof_ps)%npz
-
-  ! Temporarily move the ps increment out of the Increment.
-  call move_alloc(f_increment%fields(indexof_ps)%array, ps_increment)
-
-  ! Reuse the ps field position for the three-dimensional DELP increment.
-  allocate(f_increment%fields(indexof_ps)%array( &
-           f_increment%fields(indexof_ps)%isc: &
-           f_increment%fields(indexof_ps)%iec, &
-           f_increment%fields(indexof_ps)%jsc: &
-           f_increment%fields(indexof_ps)%jec, &
-           1:f_geom%npz))
-
-  ! Compute:
-  !
-  !   delp_inc(k) = (bk(k+1) - bk(k)) * ps_inc
-  !
-  ! The ak contribution cancels when forming an increment.
-  call ps_to_delp_tl(f_geom, ps_increment(:,:,1), f_increment%fields(indexof_ps)%array)
-
-  ! Present the temporary field to the restart writer as DELP.
-  f_increment%fields(indexof_ps)%long_name = 'air_pressure_thickness'
-  f_increment%fields(indexof_ps)%npz = f_geom%npz
-
-  if (f_fileionamesconf%get('air_pressure_thickness', delp_io_name)) then
-    f_increment%fields(indexof_ps)%model_name = trim(delp_io_name)
-  else
-    f_increment%fields(indexof_ps)%model_name = 'delp'
-  endif
-
-endif
-
 ! Call implementation
 ! -------------------
 call f_self%write(f_increment%time, f_geom, f_increment%fields, f_fileionamesconf, f_fileioscalingconf)
-
-! Restore the original ps increment so writing does not modify the
-! Increment held by OOPS.
-if (convert_ps_to_delp) then
-
-  deallocate(f_increment%fields(indexof_ps)%array)
-  call move_alloc(ps_increment, f_increment%fields(indexof_ps)%array)
-
-  f_increment%fields(indexof_ps)%long_name = ps_long_name
-  f_increment%fields(indexof_ps)%model_name = ps_model_name
-  f_increment%fields(indexof_ps)%npz = ps_npz
-
-endif
 
 end subroutine c_fv3jedi_io_fms_write_increment
 
