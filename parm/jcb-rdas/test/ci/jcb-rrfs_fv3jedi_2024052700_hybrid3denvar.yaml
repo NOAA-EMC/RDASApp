@@ -33,6 +33,7 @@ gradient_norm_reduction: 1e-3
 #write_increment_outer_loop_2: true
 distribution: RoundRobin
 empty_obs_space_action: create output
+write_into_existing_files: false
 
 analysis_variables:
 - eastward_wind
@@ -64,6 +65,14 @@ control_variables:
 #- upward_air_velocity
 #- equivalent_reflectivity_factor
 - air_pressure_at_surface
+
+fields_to_write:
+- eastward_wind
+- northward_wind
+- air_temperature
+- water_vapor_mixing_ratio_wrt_moist_air
+- ozone_mass_mixing_ratio
+- air_pressure_thickness
 
 state_variables_to_inverse:
 - eastward_wind
