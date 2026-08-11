@@ -22,6 +22,7 @@ initial_condition_file: atmosphere_background
 window_length: PT6H
 bound_to_include: begin
 empty_obs_space_action: create output
+write_into_existing_files: false
 atmosphere_number_ensemble_members: 30
 
 # Testing
