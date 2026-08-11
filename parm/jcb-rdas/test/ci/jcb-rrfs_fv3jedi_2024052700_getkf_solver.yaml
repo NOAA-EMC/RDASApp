@@ -47,6 +47,19 @@ increment_variables:
 - cloud_liquid_water
 - ozone_mass_mixing_ratio
 
+fields_to_write:
+- eastward_wind
+- northward_wind
+- air_temperature
+- air_pressure_thickness
+- water_vapor_mixing_ratio_wrt_moist_air
+- cloud_liquid_ice
+- cloud_liquid_water
+- rain_water
+- snow_water
+- graupel
+- upward_air_velocity
+
 # Veritcal localization for GETKF
 vl_fraction_of_retained_variance: 0.850
 vl_lengthscale: 0.50
