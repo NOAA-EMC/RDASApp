@@ -5,26 +5,24 @@
   write into existing files: {{write_into_existing_files | default(false)}}
   datapath: ./data/inputs/mem%{member}%
   prepend files with date: false
+  {% if write_into_existing_files %}
   filename_core: "fv_core.res.tile1.nc"
   filename_trcr: "fv_tracer.res.tile1.nc"
   filename_sfcw: "fv_srf_wnd.res.tile1.nc"
   filename_phys: "phy_data_prepdbz.nc"
+  {% else %}
+  prefix: analysis_jedi
+  {% endif %}
   frequency: {{atmosphere_forecast_timestep}}
-  fields to write:
-    - eastward_wind
-    - northward_wind
-    - air_temperature
-    - air_pressure_thickness
-    - water_vapor_mixing_ratio_wrt_moist_air
-    - cloud_liquid_ice
-    - cloud_liquid_water
-    - rain_water
-    - snow_water
-    - graupel
-    - upward_air_velocity
+  fields to write: {{fields_to_write}}
   field io names:
+  {% if write_into_existing_files %}
     eastward_wind: ua_anl
     northward_wind: va_anl
+  {% else %}
+  eastward_wind: {{eastward_wind}}
+  northward_wind: {{northward_wind}}
+  {% endif %}
     air_temperature: {{air_temperature}}
     air_pressure_thickness: {{air_pressure_thickness}}
     air_pressure_at_surface: {{air_pressure_at_surface}}
