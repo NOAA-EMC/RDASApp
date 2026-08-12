@@ -379,7 +379,7 @@ namespace fv3jedi {
     md.space = "magnitude";
     addFieldMetadata(fieldsmetadata, nlev, md);
 
-    md.longName = "geopotential_height_times_gravity_at_surface";
+    md.longName = "geopotential_at_surface";
     md.units = "m";
     md.kind = "double";
     md.tracer = "false";

@@ -134,7 +134,7 @@ state_variables:
 - cloud_liquid_ice
 - cloud_liquid_water
 - ozone_mass_mixing_ratio
-- geopotential_height_times_gravity_at_surface
+- geopotential_at_surface
 - f10m
 - slmsk
 - sheleg
@@ -167,7 +167,7 @@ water_vapor_mixing_ratio_wrt_moist_air: sphum
 cloud_liquid_ice: ice_wat
 cloud_liquid_water: liq_wat
 ozone_mass_mixing_ratio: o3mr
-geopotential_height_times_gravity_at_surface: phis
+geopotential_at_surface: phis
 skin_temperature_at_surface: tsfc
 tslb: tslb
 smois: smois

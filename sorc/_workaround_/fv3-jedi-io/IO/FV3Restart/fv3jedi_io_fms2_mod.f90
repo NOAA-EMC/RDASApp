@@ -2799,7 +2799,7 @@ if (field%npz == 1) io_file = 'surface'
 
 ! Surface fields in core
 if (trim(field%long_name) == 'air_pressure_at_surface') io_file = 'surface'
-if (trim(field%long_name) == 'geopotential_height_times_gravity_at_surface') io_file = 'core'
+if (trim(field%long_name) == 'geopotential_at_surface') io_file = 'core'
 
 ! Surface winds go in surface wind file
 if (trim(field%long_name) == 'eastward_wind_at_surface') io_file = 'surface_wind'
