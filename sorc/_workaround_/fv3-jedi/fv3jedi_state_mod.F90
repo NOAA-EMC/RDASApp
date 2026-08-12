@@ -314,7 +314,7 @@ call self%get_field('air_pressure',                                 p   )
 call self%get_field('water_vapor_mixing_ratio_wrt_moist_air',       q   )
 call self%get_field('cloud_liquid_ice',                             qi  )
 call self%get_field('cloud_liquid_water',                           ql  )
-call self%get_field('geopotential_height_times_gravity_at_surface', phis)
+call self%get_field('geopotential_at_surface', phis)
 call self%get_field('ozone_mass_mixing_ratio',                      o3  )
 call self%get_field('upward_air_velocity',                          w   )
 
