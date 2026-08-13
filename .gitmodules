@@ -98,3 +98,8 @@
 	url = https://github.com/NOAA-EMC/i-jedi.git
 	branch = develop
 	ignore = all
+[submodule "sorc/mist"]
+	path = sorc/mist
+	url = https://github.com/JCSDA-internal/mist.git
+	branch = feature/geom_iter
+	ignore = all
