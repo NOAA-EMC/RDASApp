@@ -93,3 +93,8 @@
 	url = https://github.com/NOAA-EMC/jcb.git
 	branch = develop
 	ignore = all
+[submodule "sorc/i-jedi"]
+	path = sorc/i-jedi
+	url = https://github.com/NOAA-EMC/i-jedi.git
+	branch = develop
+	ignore = all
