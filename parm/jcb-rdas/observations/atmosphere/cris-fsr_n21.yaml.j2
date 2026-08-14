@@ -306,23 +306,6 @@
        # Observation post Filters (steps 7-17)
        # ----------------------------------------
        obs post filters:
-       # ----------------------------------------------------------------------------------------
-       # Step 7: online geo-domain Check, rejecting observations outside of regional MPAS domain
-       # ----------------------------------------------------------------------------------------
-       - filter: Bounds Check
-         filter variables:
-         - name: brightnessTemperature
-           channels: *cris-fsr_n21_channels
-         test variables:
-         - name: GeoVaLs/observable_domain_mask
-           flag all filter variables if any test variable is out of bounds: true
-           minvalue: 0.0
-           maxvalue: 0.5
-         actions:
-         - name: set
-           flag: GeoDomainCheck
-         - name: reject
-
        # ------------------------------------------------------------------------------------------------------------------------------------------------------------
        # Step 8: wavenumber Check, remove observations with wavenumber > 2400 cm-1 if solarzenith angle > 88.999  and containing water fraction in the field of view
        # Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)

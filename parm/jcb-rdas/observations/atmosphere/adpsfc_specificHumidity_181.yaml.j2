@@ -115,16 +115,6 @@
            action:
              name: reduce obs space
 
-         # Online regional domain check
-         - filter: Bounds Check
-           udescriptor: "online_domain_check"
-           filter variables:
-           - name: specificHumidity
-           test variables:
-           - name:  GeoVaLs/observable_domain_mask
-           minvalue: 0.0
-           maxvalue: 0.5
-
          # Initial error assignment
          - filter: Perform Action
            udescriptor: "initial_error_assignment"
