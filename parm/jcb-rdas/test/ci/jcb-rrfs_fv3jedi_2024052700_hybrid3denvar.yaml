@@ -17,6 +17,7 @@ output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
 background_error_file: atmosphere_background_error_hybrid3denvar_bump
+vader_custom_cookbook_file: atmosphere_vader_custom_cookbook
 
 # Global analysis things
 # ----------------------
