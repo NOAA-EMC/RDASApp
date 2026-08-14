@@ -53,6 +53,15 @@
            action:
               name: reduce obs space
 
+         # Online regional domain check (domain mask)
+         - filter: Domain Check
+           udescriptor: "online_domain_check"
+           where:
+             - variable:
+                 name: GeoVaLs/observable_domain_mask
+               minvalue: 0.0
+               maxvalue: 0.5  # 0=interior, 1=outside of domain
+
          # Reject all obs with QualityMarker > 10
          - filter: Bounds Check
            udescriptor: "quality_marker_check"

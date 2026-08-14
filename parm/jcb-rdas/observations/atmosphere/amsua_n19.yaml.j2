@@ -83,6 +83,16 @@
            - name: set
              flag: Thinning
            - name: reject
+       # Regional domain check to remove data outside of model domain
+       - filter: Bounds Check
+         filter variables:
+         - name: brightnessTemperature
+           channels: *amsua_n19_channels
+         test variables:
+         - name: GeoVaLs/observable_domain_mask
+           flag all filter variables if any test variable is out of bounds: true
+           minvalue: 0.0
+           maxvalue: 0.5
         #Toss data if the hofx is missing or outside of range
        - filter: Domain Check
          filter variables:
