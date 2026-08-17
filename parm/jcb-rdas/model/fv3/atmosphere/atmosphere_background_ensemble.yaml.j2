@@ -3,7 +3,7 @@ members from template:
   template:
     datetime: '{{ atmosphere_background_time_iso }}'
     filetype: fms restart
-    regional restart: true
+    use_fms_lib: false
     state variables: {{state_variables}}
     field io names:
       eastward_wind: {{eastward_wind}}
@@ -15,7 +15,7 @@ members from template:
       cloud_liquid_ice: {{cloud_liquid_ice}}
       cloud_liquid_water: {{cloud_liquid_water}}
       ozone_mass_mixing_ratio: {{ozone_mass_mixing_ratio}}
-      geopotential_height_times_gravity_at_surface: {{geopotential_height_times_gravity_at_surface}}
+      geopotential_at_surface: {{geopotential_at_surface}}
       skin_temperature_at_surface: {{skin_temperature_at_surface}}
       tslb: {{tslb}}
       smois: {{smois}}

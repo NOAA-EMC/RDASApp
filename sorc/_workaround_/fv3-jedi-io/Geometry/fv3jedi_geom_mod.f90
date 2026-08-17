@@ -533,6 +533,7 @@ type(fv3jedi_geom), target, intent(in)    :: other
 type(fields_metadata),      intent(in)    :: fmd
 
 integer :: ierr
+integer :: rowSize, colSize
 
 allocate(self%ak(other%npz+1) )
 allocate(self%bk(other%npz+1) )
@@ -664,14 +665,20 @@ self%field_interp_methods = other%field_interp_methods
 self%EWindex = other%EWindex
 self%NSindex = other%NSindex
 call MPI_Comm_dup(other%colComm, self%colComm, ierr)
+self%colComm_created = .true.
 call MPI_Comm_dup(other%rowComm, self%rowComm, ierr)
+self%rowComm_created = .true.
 self%rowrank = other%rowrank
 self%colrank = other%colrank
 self%globalsizes = other%globalsizes
 self%localsizes = other%localsizes
 
-allocate(self%ibegin(0:self%layout(1)-1), self%iend(0:self%layout(1)-1))
-allocate(self%jbegin(0:self%layout(2)-1), self%jend(0:self%layout(2)-1))
+call MPI_Comm_size(self%rowComm, rowSize, ierr)
+call MPI_Comm_size(self%colComm, colSize, ierr)
+
+! Allocate based on actual comm sizes
+allocate(self%ibegin(0:rowSize-1), self%iend(0:rowSize-1))
+allocate(self%jbegin(0:colSize-1), self%jend(0:colSize-1))
 self%ibegin = other%ibegin
 self%iend   = other%iend
 self%jbegin = other%jbegin
@@ -685,7 +692,7 @@ allocate(self%MyRankInRowComm(0:mpp_npes()-1), self%MyRankInColComm(0:mpp_npes()
 self%MyRankInRowComm = other%MyRankInRowComm
 self%MyRankInColComm = other%MyRankInColComm
 
-allocate(self%NumColsPerRank(0:self%layout(2)-1), self%NumRowsPerRank(0:self%layout(1)-1))
+allocate(self%NumColsPerRank(0:rowSize-1), self%NumRowsPerRank(0:colSize-1))
 self%NumColsPerRank = other%NumColsPerRank
 self%NumRowsPerRank = other%NumRowsPerRank
 

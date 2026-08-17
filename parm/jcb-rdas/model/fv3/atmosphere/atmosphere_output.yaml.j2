@@ -1,16 +1,30 @@
 filetype: fms restart
-regional restart: true
+use_fms_lib: false
 lustre stripe size: {{lustre_stripe_size | default(4194304)}}
 default output resolution: {{default_output_resolution | default("32bit")}}
 write into existing files: {{write_into_existing_files | default(false)}}
 datapath: ./
+prepend files with date: false
+{% if write_into_existing_files %}
+filename_core: {{filename_core}}
+filename_trcr: {{filename_trcr}}
+filename_sfcd: {{filename_sfcd}}
+filename_sfcw: {{filename_sfcw}}
+{% else %}
 prefix: analysis_jedi
+{% endif %}
 frequency: {{atmosphere_forecast_timestep}}
 
 state variables: {{state_variables}}
+fields to write: {{fields_to_write}}
 field io names:
+{% if write_into_existing_files %}
+  eastward_wind: ua_anl
+  northward_wind: va_anl
+{% else %}
   eastward_wind: {{eastward_wind}}
   northward_wind: {{northward_wind}}
+{% endif %}
   air_temperature: {{air_temperature}}
   air_pressure_thickness: {{air_pressure_thickness}}
   air_pressure_at_surface: {{air_pressure_at_surface}}
@@ -18,7 +32,7 @@ field io names:
   cloud_liquid_ice: {{cloud_liquid_ice}}
   cloud_liquid_water: {{cloud_liquid_water}}
   ozone_mass_mixing_ratio: {{ozone_mass_mixing_ratio}}
-  geopotential_height_times_gravity_at_surface: {{geopotential_height_times_gravity_at_surface}}
+  geopotential_at_surface: {{geopotential_at_surface}}
   skin_temperature_at_surface: {{skin_temperature_at_surface}}
   tslb: {{tslb}}
   smois: {{smois}}

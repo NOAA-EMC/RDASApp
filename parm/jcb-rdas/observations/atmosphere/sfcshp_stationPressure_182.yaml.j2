@@ -39,6 +39,16 @@
          # ------------------
          # stationPressure (182)
          # ------------------
+         # Alias airTemperature to the At2M-suffixed name
+         # expected by SfcCorrected/GSL and ObsErrorFactorSfcPressure
+         - filter: Variable Assignment
+           udescriptor: "at2m_temperature_alias"
+           assignments:
+           - name: DerivedObsValue/airTemperatureAt2M
+             type: float
+             source variable:
+               name: ObsValue/airTemperature
+
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
            udescriptor: "iuse_check"

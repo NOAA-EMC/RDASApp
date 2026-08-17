@@ -707,6 +707,50 @@
   end subroutine write_nc_real_par
 
 !========================================================================================
+  subroutine remove_nc_vars(ncfile, varlist)
+
+! Removes the comma-separated variables named in varlist from ncfile, in
+! place. NetCDF has no API to shrink/remove a variable from an existing
+! file, so this writes a trimmed copy (preserving every other variable's
+! data, dimensions, types, chunking, and attributes exactly) via NCO's ncks
+! -- much less risky than hand-rolling a generic NetCDF file copy in
+! Fortran -- and then replaces the original file with it.
+!
+! Requires the `ncks` executable (from NCO) to be available in PATH, e.g.
+! via the `nco` module already loaded alongside the rest of the RDAS build
+! environment.
+
+  implicit none
+  character(len=*), intent(in) :: ncfile
+  character(len=*), intent(in) :: varlist   !---comma-separated variable names, e.g. 'ua_anl,va_anl'
+
+  character(len=2600) :: tmpfile, cmd
+  integer              :: cmdstat, exitstat
+
+  tmpfile = trim(ncfile)//'.tmp_remove_vars.nc'
+
+  write(cmd,'(a)') 'ncks -O -x -v '//trim(varlist)//' '//trim(ncfile)//' '//trim(tmpfile)
+  write(*,'(a)')' --- '//trim(cmd)
+  call execute_command_line(trim(cmd), exitstat=exitstat, cmdstat=cmdstat)
+  if ( cmdstat /= 0 .or. exitstat /= 0 ) then
+     write(*,'(a,i0,a,i0)')' !!!!! error: ncks failed removing '//trim(varlist)//' from '//trim(ncfile)// &
+                            '  cmdstat=',cmdstat,' exitstat=',exitstat
+     write(*,'(a)')'             is ncks (NCO) available in PATH?'
+     stop
+  endif
+
+  write(cmd,'(a)') 'mv '//trim(tmpfile)//' '//trim(ncfile)
+  call execute_command_line(trim(cmd), exitstat=exitstat, cmdstat=cmdstat)
+  if ( cmdstat /= 0 .or. exitstat /= 0 ) then
+     write(*,'(a,i0,a,i0)')' !!!!! error: mv failed replacing '//trim(ncfile)//' with the trimmed copy'// &
+                            '  cmdstat=',cmdstat,' exitstat=',exitstat
+     stop
+  endif
+
+  return
+  end subroutine remove_nc_vars
+
+!========================================================================================
   subroutine nccheck(status, states, ifstop)
 
   use netcdf
