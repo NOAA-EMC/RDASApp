@@ -590,7 +590,7 @@ CONTAINS
                 out_vr(obs_idx)    = REAL(thisvr_avg, 4)
                 out_err(obs_idx)   = REAL(thiserr, 4)
                 out_toff(obs_idx)  = REAL(bins(6, iloc, krad) * thiscount, 4)
-                out_datetime(obs_idx) = cycle_epoch + INT(out_toff(obs_idx), 8)
+                out_datetime(obs_idx) = cycle_epoch + NINT(REAL(out_toff(obs_idx), 8), KIND=8)
 
                 nsuper = nsuper + 1
             END DO ! iloc

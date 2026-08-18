@@ -7,8 +7,7 @@ PROGRAM NEXRAD_SO_MAIN
     INTEGER, PARAMETER :: path_len = 1024
     CHARACTER(len=path_len) :: bfrin_filename, grid_filename
     CHARACTER(len=path_len) :: ncso_filename, nml_filename
-    CHARACTER(len=120) :: clean_filtered_txt, bfrtbl_filename
-    CHARACTER(len=120) :: decoded_txt
+    CHARACTER(len=120) :: bfrtbl_filename
 
     INTEGER :: cmd_count, nml_unit, iost, debug_level, i
     CHARACTER(LEN=10) :: cycletime
@@ -56,7 +55,6 @@ PROGRAM NEXRAD_SO_MAIN
     CALL SYSTEM_CLOCK(COUNT=total_start)
 
     bfrtbl_filename    = "nexrad.tbl"
-    clean_filtered_txt = "superob_radar.txt"
     nml_unit           = 71
 
     WRITE(6,*) '========================================='

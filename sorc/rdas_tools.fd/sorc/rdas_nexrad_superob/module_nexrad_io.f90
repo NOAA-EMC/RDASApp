@@ -94,12 +94,12 @@ CONTAINS
         status = nf90_def_var(grp_meta, "stationLatitude", NF90_FLOAT, loc_dimid, v_stlat)
         status = nf90_put_att(grp_meta, v_stlat, "_FillValue", 3.402823e+38)
         status = nf90_put_att(grp_meta, v_stlat, "long_name", "Radar site latitude")
-        status = nf90_put_att(grp_meta, v_stlat, "units", "m")
+        status = nf90_put_att(grp_meta, v_stlat, "units", "degree_north")
 
         status = nf90_def_var(grp_meta, "stationLongitude", NF90_FLOAT, loc_dimid, v_stlon)
         status = nf90_put_att(grp_meta, v_stlon, "_FillValue", 3.402823e+38)
         status = nf90_put_att(grp_meta, v_stlon, "long_name", "Radar site longitude")
-        status = nf90_put_att(grp_meta, v_stlon, "units", "m")
+        status = nf90_put_att(grp_meta, v_stlon, "units", "degree_east")
 
         status = nf90_def_var(grp_meta, "stationElevation", NF90_FLOAT, loc_dimid, v_stel)
         status = nf90_put_att(grp_meta, v_stel, "_FillValue", 3.402823e+38)
@@ -127,7 +127,7 @@ CONTAINS
 
         status = nf90_def_var(grp_meta, "sinAzimuthCosTilt", NF90_FLOAT, loc_dimid, v_sin_cos)
         status = nf90_put_att(grp_meta, v_sin_cos, "_FillValue", 3.402823e+38)
-        status = nf90_put_att(grp_meta, v_sin_cos, "long_name", "sin tilt x cos azimuth")
+        status = nf90_put_att(grp_meta, v_sin_cos, "long_name", "sin azimuth x cost tilt")
 
         status = nf90_def_var(grp_meta, "sinTilt", NF90_FLOAT, loc_dimid, v_sint)
         status = nf90_put_att(grp_meta, v_sint, "_FillValue", 3.402823e+38)
