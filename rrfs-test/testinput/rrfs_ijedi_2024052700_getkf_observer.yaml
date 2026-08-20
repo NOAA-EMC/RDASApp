@@ -148,8 +148,6 @@ observations:
         - LandTypeIndexIgbp_A
         land_type_index_NPOESS:
         - LandTypeIndexNpoess_A
-        leaf_area_index:
-        - LeafAreaIndex_A
         ln_air_pressure:
         - LnAirPressure_A
         ln_air_pressure_at_interface:
@@ -176,6 +174,8 @@ observations:
         - SurfaceSnowAreaFraction_B
         surface_snow_thickness:
         - SurfaceSnowThickness_A
+        tropopause_pressure:
+        - TropopausePressure_A
         vegetation_area_fraction:
         - VegetationAreaFraction_A
         vegetation_type_index:
@@ -188,6 +188,8 @@ observations:
         - WaterAreaFraction_B
         water_vapor_mixing_ratio_wrt_dry_air:
         - WaterVaporMixingRatioWrtDryAir_C
+        wind_speed_at_surface:
+        - WindSpeedAt10m_B
       hydrometeor effective radii method: gsi
       mask over: land
       input variables:
@@ -231,7 +233,6 @@ observations:
       - geopotential_height
       - geopotential_height_at_surface
       - geopotential_height_levels
-      - gsi_snow_water_equivalent
       - height_above_mean_sea_level
       - height_above_mean_sea_level_at_surface
       - ice_area_fraction
