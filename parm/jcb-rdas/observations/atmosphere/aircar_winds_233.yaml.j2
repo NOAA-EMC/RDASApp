@@ -125,6 +125,7 @@
            action:
              name: reduce obs space
 
+{% if use_online_domain_check | default(true) %}
          # Online domain check
          - filter: Bounds Check
            udescriptor: "online_domain_check"
@@ -138,6 +139,7 @@
            where:
            - variable: ObsType/windEastward
              is_in: 233
+{% endif %}
 
          # Initial error assignment
          - filter: Perform Action
