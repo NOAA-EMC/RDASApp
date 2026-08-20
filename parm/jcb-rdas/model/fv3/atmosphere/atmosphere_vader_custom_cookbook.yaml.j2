@@ -1,0 +1,135 @@
+      variable change:
+        variable change name: Model2GeoVaLs
+        vader:
+          recipe parameters:
+          - recipe name: GeopotentialHeight_B
+            use empirical formula: false
+        vader custom cookbook:
+          air_potential_temperature:
+          - AirPotentialTemperature_B
+          air_pressure:
+          - AirPressure_A
+          air_pressure_at_surface:
+          - SurfaceAirPressure_A
+          air_pressure_levels:
+          - AirPressureAtInterface_B
+          air_pressure_thickness:
+          - AirPressureThickness_A
+          air_pressure_to_kappa:
+          - AirPressureToKappa_A
+          average_surface_temperature_within_field_of_view:
+          - AverageSurfaceTemperatureWithinFieldOfView_A
+          effective_radius_of_cloud_ice_particle:
+          - EffectiveRadiusOfCloudIceParticle_B
+          effective_radius_of_cloud_liquid_water_particle:
+          - EffectiveRadiusOfCloudLiquidWaterParticle_B
+          geopotential_height:
+          - GeopotentialHeight_B
+          geopotential_height_at_surface:
+          - GeopotentialHeightAtSurface_A
+          geopotential_height_levels:
+          - GeopotentialHeightLevels_B
+          #gsi_snow_water_equivalent:
+          #- GsiSnowWaterEquivalent_A
+          gsi_surface_type_index:
+          - GsiSurfaceTypeIndex_A
+          height_above_mean_sea_level:
+          - HeightAboveMeanSeaLevel_A
+          height_above_mean_sea_level_at_surface:
+          - HeightAboveMeanSeaLevelAtSurface_A
+          ice_area_fraction:
+          - IceAreaFraction_B
+          land_area_fraction:
+          - LandAreaFraction_B
+          land_type_index_IGBP:
+          - LandTypeIndexIgbp_A
+          land_type_index_NPOESS:
+          - LandTypeIndexNpoess_A
+          #leaf_area_index:
+          #- LeafAreaIndex_A
+          ln_air_pressure:
+          - LnAirPressure_A
+          ln_air_pressure_at_interface:
+          - LnAirPressureAtInterface_A
+          mass_content_of_cloud_ice_in_atmosphere_layer:
+          - MassContentOfCloudIceInAtmosphereLayer_B
+          mass_content_of_cloud_liquid_water_in_atmosphere_layer:
+          - MassContentOfCloudLiquidWaterInAtmosphereLayer_B
+          mole_fraction_of_ozone_in_air:
+          - MoleFractionOfOzoneInAir_A
+          skin_temperature_at_surface_where_ice:
+          - SkinTemperatureAtSurfaceWhereIce_A
+          skin_temperature_at_surface_where_land:
+          - SkinTemperatureAtSurfaceWhereLand_A
+          skin_temperature_at_surface_where_sea:
+          - SkinTemperatureAtSurfaceWhereSea_A
+          skin_temperature_at_surface_where_snow:
+          - SkinTemperatureAtSurfaceWhereSnow_A
+          soil_temperature:
+          - SoilTemperature_A
+          soil_type:
+          - SoilType_A
+          surface_snow_area_fraction:
+          - SurfaceSnowAreaFraction_B
+          surface_snow_thickness:
+          - SurfaceSnowThickness_A
+          tropopause_pressure:
+          - TropopausePressure_A
+          vegetation_area_fraction:
+          - VegetationAreaFraction_A
+          vegetation_type_index:
+          - VegetationTypeIndex_A
+          virtual_temperature:
+          - AirVirtualTemperature_A
+          volume_fraction_of_condensed_water_in_soil:
+          - VolumeFractionOfCondensedWaterInSoil_A
+          water_area_fraction:
+          - WaterAreaFraction_B
+          water_vapor_mixing_ratio_wrt_dry_air:
+          - WaterVaporMixingRatioWrtDryAir_C
+          #wind_speed_at_10m:
+          #- WindSpeedAt10m_B
+          wind_speed_at_surface:
+          - WindSpeedAt10m_B
+          #wind_to_direction_at_surface:
+          #- WindToDirectionAtSurface_A
+        hydrometeor effective radii method: gsi
+        mask over: land
+        input variables: {{state_variables}}
+        output variables:
+        - air_pressure
+        - air_pressure_levels
+        - average_surface_temperature_within_field_of_view
+        - effective_radius_of_cloud_ice_particle
+        - effective_radius_of_cloud_liquid_water_particle
+        - geopotential_height
+        - geopotential_height_at_surface
+        - geopotential_height_levels
+        #- gsi_snow_water_equivalent
+        - height_above_mean_sea_level
+        - height_above_mean_sea_level_at_surface
+        - ice_area_fraction
+        - land_area_fraction
+        - land_type_index_NPOESS
+        - leaf_area_index
+        - mass_content_of_cloud_ice_in_atmosphere_layer
+        - mass_content_of_cloud_liquid_water_in_atmosphere_layer
+        - mole_fraction_of_carbon_dioxide_in_air
+        - mole_fraction_of_ozone_in_air
+        - skin_temperature_at_surface_where_ice
+        - skin_temperature_at_surface_where_land
+        - skin_temperature_at_surface_where_sea
+        - skin_temperature_at_surface_where_snow
+        - soil_temperature
+        - soil_type
+        - surface_snow_area_fraction
+        - surface_snow_thickness
+        - tropopause_pressure
+        - vegetation_area_fraction
+        - vegetation_type_index
+        - virtual_temperature
+        - volume_fraction_of_condensed_water_in_soil
+        - water_area_fraction
+        - water_vapor_mixing_ratio_wrt_dry_air
+        - wind_from_direction_at_surface
+        - wind_speed_at_surface
