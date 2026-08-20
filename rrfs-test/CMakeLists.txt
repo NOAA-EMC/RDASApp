@@ -162,12 +162,11 @@ if(FV3_DYCORE AND BUILD_IJEDI)
 
 	 # I-JEDI dispatches applications through a single executable, e.g. `ijedi.x var <yaml>`
 	 if ("${MACHINE_ID}" STREQUAL "wcoss2")
-           # TODO(ijedi): wrapper_ctest_pbs.sh only forwards <exe> <yaml> to mpirun, so the
-           # required app argument (e.g. "var"/"letkf") is dropped on wcoss2 until the wrapper
-           # is updated.
+           # wrapper_ctest_pbs.sh takes an optional 6th field for the app name
+           # (e.g. "var"/"letkf") and inserts it before the yaml for ijedi.x.
            configure_file(${CMAKE_SOURCE_DIR}/rrfs-test/ush/wrapper_ctest_pbs.sh ${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh COPYONLY)
 	   set(COMMAND_NAME "${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh")
-           set(ARGS_NAME "${case} ijedi.x ${case}.yaml 40 4")
+           set(ARGS_NAME "${case} ijedi.x ${case}.yaml 40 4 ${app}")
 	   set(MPI_TASKS 0)
 	 else()
 	   set(COMMAND_NAME "ijedi.x")
