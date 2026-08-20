@@ -265,7 +265,7 @@ observations:
       obsdatain:
         engine:
           type: H5File
-          obsfile: data/obs/ioda_aircar.nc
+          obsfile: ../rundir-rrfs_ijedi_2024052700_getkf_observer/jdiag_aircar_airTemperature_133.nc
           missing file action: warn
         obsgrouping:
           group variables:
@@ -286,7 +286,7 @@ observations:
       simulated variables:
       - airTemperature
       distribution:
-        name: RoundRobin
+        name: Halo
         halo size: 500e3
     obs operator:
       name: VertInterp
@@ -615,7 +615,7 @@ observations:
       obsdatain:
         engine:
           type: H5File
-          obsfile: data/obs/ioda_aircar.nc
+          obsfile: ../rundir-rrfs_ijedi_2024052700_getkf_observer/jdiag_aircar_specificHumidity_133.nc
           missing file action: warn
         obsgrouping:
           group variables:
@@ -636,7 +636,7 @@ observations:
       simulated variables:
       - specificHumidity
       distribution:
-        name: RoundRobin
+        name: Halo
         halo size: 500e3
     obs operator:
       name: VertInterp
@@ -979,7 +979,7 @@ observations:
       obsdatain:
         engine:
           type: H5File
-          obsfile: data/obs/ioda_aircar.nc
+          obsfile: ../rundir-rrfs_ijedi_2024052700_getkf_observer/jdiag_aircar_winds_233.nc
           missing file action: warn
         obsgrouping:
           group variables:
@@ -1002,7 +1002,7 @@ observations:
       - windEastward
       - windNorthward
       distribution:
-        name: RoundRobin
+        name: Halo
         halo size: 500e3
     obs operator:
       name: VertInterp
@@ -1362,8 +1362,8 @@ local ensemble DA:
 driver:
   update obs config with geometry info: false
   do test prints: true
-  read HX from disk: false
-  run as observer only: true
+  read HX from disk: true
+  run as observer only: false
   save posterior mean: true
   save posterior ensemble: false
   save prior mean: true
@@ -1444,8 +1444,8 @@ output mean prior:
       upward_air_velocity: W
       equivalent_reflectivity_factor: ref_f3d
 test:
-  reference filename: testoutput/rrfs-ijedi-getkf-observer.ref
-  test output filename: rrfs-ijedi-getkf-observer.out
+  reference filename: testoutput/rrfs-ijedi-getkf-solver.ref
+  test output filename: rrfs-ijedi-getkf-solver.out
   float relative tolerance: 0.02
   float absolute tolerance: 1e-06
   integer tolerance: 3

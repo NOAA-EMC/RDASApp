@@ -24,11 +24,11 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_satrad"     
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar_refl"        "fv3jedi_var.x")
 
 # I-JEDI tests
-# Dictionary value is the ijedi.x app name (e.g. "var", "letkf"), since all i-jedi
-# tests share the single ijedi.x executable.
+# Dictionary value is the ijedi.x app name (e.g. "var", "letkf")
 set(rrfs_ijedi_tests)
 add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_3dvar"          "var")
 add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_getkf_observer" "letkf")
+add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_getkf_solver"   "letkf")
 
 # MPAS-JEDI tests
 set(rrfs_mpasjedi_tests)
@@ -199,11 +199,20 @@ if(FV3_DYCORE AND BUILD_IJEDI)
          file(CREATE_LINK ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput SYMBOLIC)
          file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir} )
          set(target_test ${case})
-         ecbuild_add_test( TARGET ${target_test}
-                      MPI      ${MPI_TASKS}
-	              WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                      ARGS     ${ARGS_NAME}
-                      COMMAND  ${COMMAND_NAME} )
+	 if ("${target_test}" STREQUAL "rrfs_ijedi_2024052700_getkf_solver")
+           ecbuild_add_test( TARGET ${target_test}
+                        MPI      ${MPI_TASKS}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                        ARGS     ${ARGS_NAME}
+			TEST_DEPENDS "rrfs_ijedi_2024052700_getkf_observer"
+                        COMMAND  ${COMMAND_NAME} )
+	 else()
+           ecbuild_add_test( TARGET ${target_test}
+                        MPI      ${MPI_TASKS}
+	                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                        ARGS     ${ARGS_NAME}
+                        COMMAND  ${COMMAND_NAME} )
+	 endif()
          set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
                       "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
          set(MPI_ARGS ${RESTORE_MPI_ARGS})

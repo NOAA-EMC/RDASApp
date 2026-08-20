@@ -25,7 +25,6 @@ cost function:
   - northward_wind
   - air_temperature
   - water_vapor_mixing_ratio_wrt_moist_air
-  - ozone_mass_mixing_ratio
   - air_pressure_at_surface
   background:
     date: '2024-05-27T00:00:00Z'
@@ -104,7 +103,6 @@ cost function:
       - northward_wind
       - virtual_temperature
       - water_vapor_mixing_ratio_wrt_moist_air
-      - mole_fraction_of_ozone_in_air
       - air_pressure_at_surface
       read:
         gsi akbk: fv3_akbk
@@ -142,7 +140,6 @@ cost function:
       - northward_wind
       - air_temperature
       - water_vapor_mixing_ratio_wrt_moist_air
-      - ozone_mass_mixing_ratio
       - geopotential_at_surface
       - air_pressure_thickness
       - air_pressure_at_surface
@@ -152,14 +149,12 @@ cost function:
       - northward_wind
       - virtual_temperature
       - water_vapor_mixing_ratio_wrt_moist_air
-      - mole_fraction_of_ozone_in_air
       - air_pressure_at_surface
       output variables:
       - eastward_wind
       - northward_wind
       - air_temperature
       - water_vapor_mixing_ratio_wrt_moist_air
-      - ozone_mass_mixing_ratio
       - air_pressure_at_surface
   observations:
     obs perturbations: false
@@ -1456,7 +1451,6 @@ final:
           - northward_wind
           - air_temperature
           - water_vapor_mixing_ratio_wrt_moist_air
-          - ozone_mass_mixing_ratio
           - air_pressure_at_surface
           field io names:
             eastward_wind: ua
@@ -1509,7 +1503,6 @@ output:
     - northward_wind
     - air_temperature
     - water_vapor_mixing_ratio_wrt_moist_air
-    - ozone_mass_mixing_ratio
     - air_pressure_thickness
     field io names:
       eastward_wind: ua
