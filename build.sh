@@ -224,6 +224,8 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     rrfs_fv3jedi_2024052700_3denvar_mgbf.yaml
     rrfs_fv3jedi_2024052700_getkf_observer.yaml
     rrfs_fv3jedi_2024052700_getkf_solver.yaml
+    rrfs_ijedi_2024052700_getkf_observer.yaml
+    rrfs_ijedi_2024052700_getkf_solver.yaml
     rrfs_fv3jedi_2024052700_hybrid3denvar.yaml
     rrfs_fv3jedi_2024052700_hybrid3denvar_mgbf.yaml
 #    rrfs_mpasjedi_2024052700_bumploc.yaml

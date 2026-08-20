@@ -26,7 +26,9 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar_refl"     
 # I-JEDI tests
 # Dictionary value is the ijedi.x app name (e.g. "var", "letkf")
 set(rrfs_ijedi_tests)
-add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_3dvar"          "var")
+# 3dvar is not working yet: the SABER GSI static-B linear variable change needs
+# virtual_temperature, which i-jedi has no Control2Analysis equivalent to supply.
+#add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_3dvar"          "var")
 add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_getkf_observer" "letkf")
 add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_getkf_solver"   "letkf")
 
@@ -152,6 +154,11 @@ if(FV3_DYCORE AND BUILD_IJEDI)
       foreach(case ${caselist})
 
          get_from_dictionary(rrfs_ijedi_tests case app)
+
+	 # Match the fv3-jedi solver layout so the two can be compared like for like
+         if ("${case}" STREQUAL "rrfs_ijedi_2024052700_getkf_solver")
+           set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=10")
+         endif()
 
 	 # I-JEDI dispatches applications through a single executable, e.g. `ijedi.x var <yaml>`
 	 if ("${MACHINE_ID}" STREQUAL "wcoss2")
