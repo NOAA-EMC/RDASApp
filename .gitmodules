@@ -101,5 +101,5 @@
 [submodule "sorc/mist"]
 	path = sorc/mist
 	url = https://github.com/JCSDA-internal/mist.git
-	branch = feature/geom_iter
+	branch = develop
 	ignore = all
