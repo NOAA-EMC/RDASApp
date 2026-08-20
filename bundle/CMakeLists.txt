@@ -80,16 +80,17 @@ if(BUILD_RDASBUNDLE)
 # Core JEDI repositories
   ecbuild_bundle( PROJECT oops SOURCE "../sorc/oops" )
   ecbuild_bundle( PROJECT vader SOURCE "../sorc/vader" )
-  ecbuild_bundle( PROJECT mist SOURCE "../sorc/mist" )
   ecbuild_bundle( PROJECT saber SOURCE "../sorc/saber" )
   option(ENABLE_IODA_DATA "Obtain ioda test data from ioda-data repository (vs tarball)" ON)
   ecbuild_bundle( PROJECT ioda SOURCE "../sorc/ioda" )
   option(ENABLE_UFO_DATA "Obtain ufo test data from ufo-data repository (vs tarball)" ON)
   ecbuild_bundle( PROJECT ufo SOURCE "../sorc/ufo" )
 
-# I-JEDI (interface to JEDI)
-  option(BUILD_IJEDI "Build I-JEDI" ON)
+# I-JEDI (interface to JEDI) and mist, which only i-jedi depends on.
+# Off by default so rrfs-workflow builds skip them until we switch over.
+  option(BUILD_IJEDI "Build I-JEDI" OFF)
   if(BUILD_IJEDI)
+    ecbuild_bundle( PROJECT mist  SOURCE "../sorc/mist" )
     ecbuild_bundle( PROJECT ijedi SOURCE "../sorc/i-jedi" )
   endif()
 
