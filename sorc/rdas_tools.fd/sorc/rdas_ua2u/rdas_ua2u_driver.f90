@@ -65,7 +65,7 @@
        write(*,'(a)') '   or: rdas_ua2u.x ua_update_u --in_grid=GRID.nc --in_anl=ANALYSIS.nc [--remove_anl_winds]'
      endif
      call parallel_finish()
-     stop
+     stop 1
   endif
 
   call getarg(1, actions)
@@ -87,12 +87,12 @@
   if (trim(actions) /= 'u_update_ua' .and. trim(actions) /= 'ua_update_u') then
      if (my_proc_id == 0) write(*,'(a)') 'ERROR: action must be u_update_ua or ua_update_u'
      call parallel_finish()
-     stop
+     stop 1
   end if
   if (trim(in_grid) == 'w') then
      if (my_proc_id == 0) write(*,'(a)') 'ERROR: --in_grid is required'
      call parallel_finish()
-     stop
+     stop 1
   end if
 
   if (trim(in_anl) /= 'w') then
@@ -101,28 +101,28 @@
      if (trim(actions) /= 'ua_update_u') then
         if (my_proc_id == 0) write(*,'(a)') 'ERROR: --in_anl is only supported with ua_update_u'
         call parallel_finish()
-        stop
+        stop 1
      end if
      if (trim(in_file) /= 'w' .or. trim(out_file) /= 'w') then
         if (my_proc_id == 0) write(*,'(a)') 'ERROR: --in_anl cannot be combined with --in_file or --out_file'
         call parallel_finish()
-        stop
+        stop 1
      end if
   else
      if (remove_anl_vars) then
         if (my_proc_id == 0) write(*,'(a)') 'ERROR: --remove_anl_winds is only supported with --in_anl'
         call parallel_finish()
-        stop
+        stop 1
      end if
      if (trim(in_file) == 'w') then
         if (my_proc_id == 0) write(*,'(a)') 'ERROR: --in_file is required unless --in_anl is given'
         call parallel_finish()
-        stop
+        stop 1
      end if
      if (trim(actions) == 'ua_update_u' .and. trim(out_file) == 'w') then
         if (my_proc_id == 0) write(*,'(a)') 'ERROR: ua_update_u requires --out_file (write raw increments) or --in_anl (single-file analysis mode)'
         call parallel_finish()
-        stop
+        stop 1
      end if
   end if
 
