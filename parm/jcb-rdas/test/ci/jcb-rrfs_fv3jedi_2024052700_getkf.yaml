@@ -43,9 +43,6 @@ test_integer_tolerance: 3
 # Local Ensemble DA (LETKF)
 # -------------------------
 local_ensemble_da_solver: Deterministic GETKF
-# Both split-mode observer/solver ctests render with algorithm "local_ensemble_da_observer"
-# (whose template defaults "use linear observer" to true) regardless of which job they are, so
-# match that explicitly here to keep the one-step H(x) computation identical to split-mode's.
 use_linear_observer: true
 
 increment_variables:
