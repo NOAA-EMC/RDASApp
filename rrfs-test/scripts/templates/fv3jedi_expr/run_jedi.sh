@@ -14,8 +14,7 @@
 RDASApp=@RDASApp@
 
 inputfile=./rrfs_fv3jedi_2024052700_Ens3Dvar.yaml # FOR EnVar
-#inputfile=./rrfs_fv3jedi_2024052700_getkf_observer.yaml # FOR GETKF
-#inputfile=./rrfs_fv3jedi_2024052700_getkf_solver.yaml # FOR GETKF
+#inputfile=./rrfs_fv3jedi_2024052700_getkf.yaml # FOR GETKF (one-step observer+solver)
 
 if [[ -s /apps/lmod/lmod/init/sh ]]; then
   . /apps/lmod/lmod/init/sh
