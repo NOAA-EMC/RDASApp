@@ -98,14 +98,7 @@ override_obs_distribution_localizations:
       lengthscale: 15e3
 
 # Driver
-# Keep this false to match the split-mode observer/solver ctests. Setting it true injects each
-# rank's patch center/radius into the Halo config, shrinking the halo from ioda's huge default
-# radius to patchRadius+halo size. That is tempting for efficiency, but ioda's Halo assigns an
-# entire *record* based only on its first location, and these obs are grouped by
-# stationIdentification (whole aircraft flight tracks spanning hundreds of km). A flight whose
-# first location lands outside the shrunken radius is then dropped wholesale from that rank even
-# when later locations sit inside the patch, silently reducing the obs assimilated.
-driver_update_obs_config_with_geometry_info: false
+driver_update_obs_config_with_geometry_info: true
 driver_run_as_observer_only: false
 driver_read_HX_from_disk: false
 driver_do_posterior_observer: false
