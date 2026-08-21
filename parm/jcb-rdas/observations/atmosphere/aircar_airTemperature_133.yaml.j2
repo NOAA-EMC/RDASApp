@@ -5,10 +5,11 @@
              type: H5File
              obsfile: "data/obs/ioda_aircar.nc"
              missing file action: "warn"
-           obsgrouping:
-             group variables: ["stationIdentification"]
-             sort variable: "pressure"
-             sort order: "descending"
+           # obsgrouping disabled: ioda's Halo assigns an entire record from its first location, which drops these horizontally-moving obs.
+           # obsgrouping:
+           #   group variables: ["stationIdentification"]
+           #   sort variable: "pressure"
+           #   sort order: "descending"
          obsdataout:
            empty obs space action: "{{empty_obs_space_action}}"
            write multiple files: {{write_multiple_files | default(false) }}
