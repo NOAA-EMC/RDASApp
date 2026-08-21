@@ -18,9 +18,13 @@
          simulated variables: [radialVelocity]
 
        obs operator:
-         name: RadarRadialVelocity
+         name: RadarDopplerWind
+         vertical coordinate for horizontal wind: height_above_mean_sea_level
+         vertical coordinate for vertical wind: height_above_mean_sea_level
        linear obs operator:
-         name: RadarRadialVelocity
+         name: RadarDopplerWind
+         vertical coordinate for horizontal wind: height_above_mean_sea_level
+         vertical coordinate for vertical wind: height_above_mean_sea_level
        obs error:
          covariance model: diagonal
 
@@ -116,58 +120,74 @@
            minvalue: 0.0
            maxvalue: 0.5
 
-         # Initial error assignment
-         - filter: Perform Action
-           udescriptor: "initial_error_assignment"
+         # Match GSI's hard-coded no-VAD superob spread check.
+         # This must run before ObsError is replaced with 5 m/s.
+         - filter: Bounds Check
+           udescriptor: "superob_spread_check"
            filter variables:
            - name: radialVelocity
+           test variables:
+           - name: ObsErrorData/radialVelocity
+           minvalue: 1.0e-6
+           maxvalue: 6.0
            where:
            - variable: ObsType/radialVelocity
              is_in: 999
            action:
-             name: assign error
-             error parameter: 5.0
+             name: reduce obs space
+
+         ## Initial error assignment
+         #- filter: Perform Action
+         #  udescriptor: "initial_error_assignment"
+         #  filter variables:
+         #  - name: radialVelocity
+         #  where:
+         #  - variable: ObsType/radialVelocity
+         #    is_in: 999
+         #  action:
+         #    name: assign error
+         #    error parameter: 5.0
 
 {% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
-         # Step a: get departure ObsMinusHofx = ObsValue -HofX
-         - filter: Variable Assignment
-           assignments:
-           - name: DerivedMetaData/ObsMinusHofx
-             type: float
-             function:
-               name: ObsFunction/Arithmetic
-               options:
-                 variables:
-                 - name: ObsValue/radialVelocity
-                 - name: HofX/radialVelocity
-                 coefs: [1., -1.]
-           defer to post: true
+         ## Step a: get departure ObsMinusHofx = ObsValue -HofX
+         #- filter: Variable Assignment
+         #  assignments:
+         #  - name: DerivedMetaData/ObsMinusHofx
+         #    type: float
+         #    function:
+         #      name: ObsFunction/Arithmetic
+         #      options:
+         #        variables:
+         #        - name: ObsValue/radialVelocity
+         #        - name: HofX/radialVelocity
+         #        coefs: [1., -1.]
+         #  defer to post: true
 
-         # Error inflation based on residual, max inflation if diff > 20
-         - filter: Perform Action
-           filter variables:
-           - name: radialVelocity
-           where:
-           - variable:
-               name: DerivedMetaData/ObsMinusHofx
-             minvalue: 20.0
-           action:
-             name: inflate error
-             inflation factor: 2.0
-           defer to post: true
+         ## Error inflation based on residual, max inflation if diff > 20
+         #- filter: Perform Action
+         #  filter variables:
+         #  - name: radialVelocity
+         #  where:
+         #  - variable:
+         #      name: DerivedMetaData/ObsMinusHofx
+         #    minvalue: 20.0
+         #  action:
+         #    name: inflate error
+         #    inflation factor: 2.0
+         #  defer to post: true
 
-         # Error inflation based on residual, max inflation if diff < -20
-         - filter: Perform Action
-           filter variables:
-           - name: radialVelocity
-           where:
-           - variable:
-               name: DerivedMetaData/ObsMinusHofx
-             maxvalue: -20.0
-           action:
-             name: inflate error
-             inflation factor: 2.0
-           defer to post: true
+         ## Error inflation based on residual, max inflation if diff < -20
+         #- filter: Perform Action
+         #  filter variables:
+         #  - name: radialVelocity
+         #  where:
+         #  - variable:
+         #      name: DerivedMetaData/ObsMinusHofx
+         #    maxvalue: -20.0
+         #  action:
+         #    name: inflate error
+         #    inflation factor: 2.0
+         #  defer to post: true
 
          # step b: get infaltion factor for over-high topography (factelv)
          # function: factelv=(2000/elevation)**2
