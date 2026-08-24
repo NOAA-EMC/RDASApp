@@ -46,12 +46,8 @@ basic_configs=(
     #["fv3jedi_3dvar.yaml"]="rrfs_fv3jedi_2024052700_3dvar.yaml"
     #["fv3jedi_3denvar.yaml"]="rrfs_fv3jedi_2024052700_3denvar.yaml"
     #["fv3jedi_hybrid3denvar.yaml"]="rrfs_fv3jedi_2024052700_hybrid3denvar.yaml"
-    #["fv3jedi_getkf_observer.yaml"]="rrfs_fv3jedi_2024052700_getkf_observer.yaml"
-    #["fv3jedi_getkf_solver.yaml"]="rrfs_fv3jedi_2024052700_getkf_solver.yaml"
     ["mpasjedi_3denvar.yaml"]="rrfs_mpasjedi_2024052700_3denvar.yaml"
     ["mpasjedi_getkf.yaml"]="rrfs_mpasjedi_2024052700_getkf.yaml"
-    ["mpasjedi_getkf_observer.yaml"]="rrfs_mpasjedi_2024052700_getkf_observer.yaml"
-    ["mpasjedi_getkf_solver.yaml"]="rrfs_mpasjedi_2024052700_getkf_solver.yaml"
 )
 
 # Loop over basic configs

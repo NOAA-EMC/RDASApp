@@ -27,8 +27,6 @@ set(rrfs_mpasjedi_tests)
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        "mpasjedi_error_covariance_toolbox.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3denvar"        "mpasjedi_variational.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf"          "mpasjedi_enkf.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_observer" "mpasjedi_enkf.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_solver"   "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3dvar"          "mpasjedi_variational.x")
 
 message(STATUS "Use test data from rrfs-test-data repository")
@@ -138,7 +136,7 @@ if(MPAS_DYCORE)
          get_from_dictionary(rrfs_mpasjedi_tests case exe)
 
 	 # Some case-dependent settings still needed
-         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf")
+         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf")
             if ("${MACHINE_ID}" STREQUAL "hercules")
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
             else()
@@ -174,20 +172,11 @@ if(MPAS_DYCORE)
 	 file(COPY ${bl_FILES} DESTINATION ${casedir})
 	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
-	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
-           ecbuild_add_test( TARGET ${target_test}
-                        MPI      ${MPI_TASKS}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${ARGS_NAME}
-			TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
-                        COMMAND  ${COMMAND_NAME} )
-	 else()
-           ecbuild_add_test( TARGET ${target_test}
-                        MPI      ${MPI_TASKS}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${ARGS_NAME}
-                        COMMAND  ${COMMAND_NAME} )
-	 endif()
+         ecbuild_add_test( TARGET ${target_test}
+                      MPI      ${MPI_TASKS}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                      ARGS     ${ARGS_NAME}
+                      COMMAND  ${COMMAND_NAME} )
          set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
                       "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
          set(MPI_ARGS ${RESTORE_MPI_ARGS})

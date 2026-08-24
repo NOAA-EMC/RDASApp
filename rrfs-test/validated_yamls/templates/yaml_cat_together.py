@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # POC: Guoqing.Ge@noaa.gov
 #
-import os, sys
+import sys
 # list of available observers
 dcObserver={
   "t133": "aircar_airTemperature_133",
@@ -48,9 +48,7 @@ dcObserver={
 
 # list of header files
 listHeader=[
-  "basic_config/mpasjedi_hyb3denvar.yaml",
-  "basic_config/mpasjedi_getkf_observer.yaml",
-  "basic_config/mpasjedi_getkf_solver.yaml"
+  "basic_config/mpasjedi_hybrid3denvar.yaml"
     ]
 
 #
@@ -86,9 +84,7 @@ for key in obsUser:
 #
 obdir="obtype_config/"
 for fheader in listHeader:
-  output_name=fheader.replace("basic_config/mpasjedi_","")
-  if not "getkf" in fheader:
-    output_name="jedivar.yaml"
+  output_name="jedivar.yaml"
   #
   skip_zone=False
   change_output_filename=False
@@ -107,14 +103,10 @@ for fheader in listHeader:
       elif "./bkg.$Y-$M-$D_$h.$m.$s.nc" in line:
         line=line.replace("./bkg.$Y-$M-$D_$h.$m.$s.nc","./prior_mean.nc")
       elif "filename:" in line:
-        if change_output_filename and "getkf" in fheader:
-          line=line.replace("./ana.$Y-$M-$D_$h.$m.$s.nc","./data/ens/mem%{member}%.nc")
-        elif change_output_filename: # for JEDIVAR
+        if change_output_filename: # for JEDIVAR
           line=line.replace("./ana.$Y-$M-$D_$h.$m.$s.nc","mpasin.nc")
       elif "data/mpasout.2024-05-27_00.00.00.nc" in line:
         line=line.replace("data/mpasout.2024-05-27_00.00.00.nc", "mpasin.nc")
-      elif "save posterior ensemble: false" in line:
-        line=line.replace("save posterior ensemble: false", "save posterior ensemble: true")
       elif "@OBSERVATIONS@" in line:
         skip_zone=True
       #
@@ -131,10 +123,7 @@ for fheader in listHeader:
           if "seed_time:" in line:
             line=line.replace("2024-05-27T00:00:00Z","@analysisDate@")
           elif "@DISTRIBUTION@" in line:
-            if "getkf_solver" in fheader:
-              line=line.replace("@DISTRIBUTION@","Halo")
-            else:
-              line=line.replace("@DISTRIBUTION@","RoundRobin")
+            line=line.replace("@DISTRIBUTION@","RoundRobin")
           elif value in line:
             tmp=value.split("_",1)[1]
             line=line.replace(tmp,key)
@@ -142,51 +131,6 @@ for fheader in listHeader:
           # ~~~~~~
           outfile.write(line)
 #
-# ~~~~~~~~~~~~
-# extra processing for solver
-#  copy the obsfile line from the obsdatain section to the obsdataout section
-#
-buffer_zone = []
-in_buffer_zone = False
-obsfile_line = None
-obsdataout = False
-with open("getkf_solver.yaml", 'r') as infile, open(".tmp.solver.yaml", 'w') as outfile:
-  for line in infile:
-    if "RoundRobin" in line:
-      line = line.replace("RoundRobin", "Halo")
-    elif "obsdatain" in line:
-      in_buffer_zone = True
-      buffer_zone.append(line)
-    elif in_buffer_zone:
-      buffer_zone.append(line)
-      if "obsdataout" in line:
-        obsdataout=True
-      elif "obsfile" in line:
-        if obsdataout:
-          line = line.replace("jdiag", "data/jdiag/jdiag")
-          obsfile_line = line  # Store the obsdataout "obsfile" line
-
-    if obsfile_line and in_buffer_zone:
-      # Replace the previous obsfile line with the new one
-      for i, buf_line in enumerate(buffer_zone):
-          if "obsfile" in buf_line:
-              buffer_zone[i] = obsfile_line
-              break
-      # Write out the buffer zone
-      for buf_line in buffer_zone:
-          outfile.write(buf_line)
-      # Reset buffer and state tracking
-      buffer_zone = []
-      in_buffer_zone = False
-      obsfile_line = None
-      obsdataout = False
-      continue
-
-    if not in_buffer_zone:
-        outfile.write(line)
-# ~~~~~~~~
-os.replace(".tmp.solver.yaml","getkf_solver.yaml")
-#
 # print out information
 #
-print("jedivar.yaml\ngetkf_observer.yaml\ngetkf_solver.yaml\n\ngenerated under current directory")
+print("jedivar.yaml\n\ngenerated under current directory")
