@@ -26,6 +26,7 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar_refl"     
 set(rrfs_mpasjedi_tests)
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        "mpasjedi_error_covariance_toolbox.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3denvar"        "mpasjedi_variational.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf"          "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_observer" "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_solver"   "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3dvar"          "mpasjedi_variational.x")
@@ -137,7 +138,7 @@ if(MPAS_DYCORE)
          get_from_dictionary(rrfs_mpasjedi_tests case exe)
 
 	 # Some case-dependent settings still needed
-         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
+         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf")
             if ("${MACHINE_ID}" STREQUAL "hercules")
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
             else()

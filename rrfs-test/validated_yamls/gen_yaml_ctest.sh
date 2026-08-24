@@ -49,6 +49,7 @@ basic_configs=(
     #["fv3jedi_getkf_observer.yaml"]="rrfs_fv3jedi_2024052700_getkf_observer.yaml"
     #["fv3jedi_getkf_solver.yaml"]="rrfs_fv3jedi_2024052700_getkf_solver.yaml"
     ["mpasjedi_3denvar.yaml"]="rrfs_mpasjedi_2024052700_3denvar.yaml"
+    ["mpasjedi_getkf.yaml"]="rrfs_mpasjedi_2024052700_getkf.yaml"
     ["mpasjedi_getkf_observer.yaml"]="rrfs_mpasjedi_2024052700_getkf_observer.yaml"
     ["mpasjedi_getkf_solver.yaml"]="rrfs_mpasjedi_2024052700_getkf_solver.yaml"
 )
@@ -88,12 +89,35 @@ for basic_config in "${!basic_configs[@]}"; do
     done
 
     # Replace the @DISTRIBUTION@ placeholder with the appropriate observation distribution
-    if [[ $basic_config == *"solver"* ]]; then
+    if [[ $basic_config == *"solver"* || $basic_config == *"getkf.yaml" ]]; then
         distribution="Halo"
     else
         distribution="RoundRobin"
     fi
     sed -i "s#@DISTRIBUTION@#${distribution}#" ./temp.yaml
+
+    # One-step L/GETKF: H(x) is computed here under ioda's default (RoundRobin) distribution and
+    # the obs are then redistributed into the local-solver Halo within the same job. That is
+    # requested with "redistribution" rather than "distribution", and needs the dataframe backend.
+    if [[ $basic_config == *"getkf.yaml" ]]; then
+        awk '
+            {
+                line = $0
+                if (line ~ /^[[:space:]]*distribution:[[:space:]]*$/) {
+                    match(line, /^[[:space:]]*/)
+                    indent = substr(line, 1, RLENGTH)
+                    sub(/distribution:/, "redistribution:", line)
+                    print line
+                    next
+                }
+                print line
+                if (indent != "" && line ~ /^[[:space:]]*halo size:/) {
+                    print indent "use data frame container: true"
+                    indent = ""
+                }
+            }
+        ' ./temp.yaml > ./temp_onestep.yaml && mv ./temp_onestep.yaml ./temp.yaml
+    fi
 
     # Copy the basic configuration yaml into the super yaml
     cp -p templates/basic_config/$basic_config ./jedi.yaml
