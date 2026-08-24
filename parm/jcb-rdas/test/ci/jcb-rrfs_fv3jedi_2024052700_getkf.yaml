@@ -1,10 +1,6 @@
 # This is overwritten in the testing but allows command line test of jcb
 algorithm: local_ensemble_da
-
-# One-step L/GETKF: compute H(x) under the default (RoundRobin) obs distribution,
-# then redistribute obs into the local-solver (Halo) distribution in the same job,
-# instead of splitting into a separate observer job + solver job.
-do_onestep_getkf: true
+do_onestep_letkf: true
 
 # Search path for model and obs for JCB (relative for the submodule, or can be absolute)
 # --------------------------------------------------------------------------------------
