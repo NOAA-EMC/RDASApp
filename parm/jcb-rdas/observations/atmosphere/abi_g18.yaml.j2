@@ -346,6 +346,7 @@
        # Observation post Filters (steps 10-20)
        # ----------------------------------------
        obs post filters:
+{% if use_online_domain_check | default(true) %}
        # ----------------------------------------------------------------------------------------
        # Step 10: online geo-domain Check, rejecting observations outside of regional MPAS domain
        # ----------------------------------------------------------------------------------------
@@ -362,6 +363,7 @@
            - name: set
              flag: GeoDomainCheck
            - name: reject
+{% endif %}
 
        # ---------------------------------------------------------------------------------------------------
        # Step 11 :  hofx/BT range check (sanity check)

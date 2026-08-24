@@ -306,6 +306,7 @@
        # Observation post Filters (steps 7-17)
        # ----------------------------------------
        obs post filters:
+{% if use_online_domain_check | default(true) %}
        # ----------------------------------------------------------------------------------------
        # Step 7: online geo-domain Check, rejecting observations outside of regional MPAS domain
        # ----------------------------------------------------------------------------------------
@@ -322,6 +323,7 @@
          - name: set
            flag: GeoDomainCheck
          - name: reject
+{% endif %}
 
        # ------------------------------------------------------------------------------------------------------------------------------------------------------------
        # Step 8: wavenumber Check, remove observations with wavenumber > 2400 cm-1 if solarzenith angle > 88.999  and containing water fraction in the field of view
