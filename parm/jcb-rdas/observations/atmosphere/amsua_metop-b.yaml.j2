@@ -83,6 +83,7 @@
            - name: set
              flag: Thinning
            - name: reject
+{% if use_online_domain_check | default(true) %}
        # Regional domain check to remove data outside of model domain
        - filter: Bounds Check
          filter variables:
@@ -94,6 +95,7 @@
            minvalue: 0.0
            maxvalue: 0.5
         #Toss data if the hofx is missing or outside of range
+{% endif %}
        - filter: Domain Check
          filter variables:
          - name: brightnessTemperature
