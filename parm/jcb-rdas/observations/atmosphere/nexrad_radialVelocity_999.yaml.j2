@@ -343,17 +343,107 @@
            action:
              name: reduce obs space
 
-         ## Gross Error Check
-         #- filter: Background Check
-         #  udescriptor: "gross_error_check"
+         ## Apply a minimum error for assimilation. Unlike the gross-check clamp, this change is retained.
+         #- filter: Perform Action
+         #  udescriptor: "minimum_assimilation_error"
          #  apply at iterations: 0,1
          #  filter variables:
          #  - name: radialVelocity
-         #  function absolute threshold:
-         #  - name: DerivedMetaData/ObsErrorBoundRW
+         #  where:
+         #  - variable:
+         #      name: ObsErrorData/radialVelocity
+         #    maxvalue: 2.0
+         #  - variable: ObsType/radialVelocity
+         #    is_in: 999
          #  action:
-         #    name: reject
+         #    name: assign error
+         #    error parameter: 2.0
          #  defer to post: true
+
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           udescriptor: "create_temporary_ObsErrorData"
+           apply at iterations: 0,1
+           where:
+           - variable: ObsType/radialVelocity
+             is_in: 999
+           assignments:
+           - name: RWObsErrorData/radialVelocity
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/radialVelocity
+           defer to post: true
+
+         # Set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           udescriptor: "ermin_set"
+           apply at iterations: 0,1
+           filter variables:
+           - name: radialVelocity
+           action:
+             name: assign error
+             error parameter: 2.0
+           where:
+           - variable:
+               name: ObsErrorData/radialVelocity
+             maxvalue: 2.0
+           - variable:
+               name: ObsErrorData/radialVelocity
+             value: is_valid
+           - variable: ObsType/radialVelocity
+             is_in: 999
+           defer to post: true
+
+         # Set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           udescriptor: "ermax_set"
+           apply at iterations: 0,1
+           filter variables:
+           - name: radialVelocity
+           action:
+             name: assign error
+             error parameter: 10.0
+           where:
+           - variable:
+               name: ObsErrorData/radialVelocity
+             minvalue: 10.0
+           - variable:
+               name: ObsErrorData/radialVelocity
+             value: is_valid
+           - variable: ObsType/radialVelocity
+             is_in: 999
+           defer to post: true
+
+         # Gross Error Check
+         - filter: Background Check
+           udescriptor: "gross_error_check"
+           apply at iterations: 0,1
+           filter variables:
+           - name: radialVelocity
+           threshold: 5.0
+           action:
+             name: reject
+           defer to post: true
+
+         # Re-assign err ObsErrorData <--- RWObsErrorData after gross error check.
+         - filter: Perform Action
+           udescriptor: "reassign_error_RWObsErrorData"
+           apply at iterations: 0,1
+           filter variables:
+           - name: radialVelocity
+           action:
+             name: assign error
+             error function: RWObsErrorData/radialVelocity
+           where:
+           - variable:
+               name: RWObsErrorData/radialVelocity
+             value: is_valid
+           - variable: ObsType/radialVelocity
+             is_in: 999
+           defer to post: true
 
          #- filter: GOMsaver
          #  filename: ./data/geovals/nexrad_geovals_rrfs.nc
