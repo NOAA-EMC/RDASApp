@@ -44,6 +44,7 @@ usage() {
   echo "  -d  compile in the debug mode          DEFAULT: NO"
   echo "  -w  compile with workaround codes      DEFAULT: YES"
   echo "  -r  compile rdas tools (ua2u)          DEFAULT: (fv3:YES; mpas:NO)"
+  echo "  -i  build i-jedi (and mist)            DEFAULT: NO"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -67,8 +68,9 @@ DEBUG_OPT=""
 BUFRQUERY_OPT=""
 BUILD_JCB="YES"
 BUILD_WORKAROUND="YES"
+BUILD_IJEDI="NO"
 
-while getopts "p:c:m:j:t:b:r:w:hvfsxd" opt; do
+while getopts "p:c:m:j:t:b:r:w:i:hvfsxd" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -96,6 +98,9 @@ while getopts "p:c:m:j:t:b:r:w:hvfsxd" opt; do
       ;;
     w)
       BUILD_WORKAROUND=$OPTARG
+      ;;
+    i)
+      BUILD_IJEDI=$OPTARG
       ;;
     v)
       BUILD_VERBOSE=YES
@@ -219,6 +224,8 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     rrfs_fv3jedi_2024052700_3denvar_mgbf.yaml
     rrfs_fv3jedi_2024052700_getkf_observer.yaml
     rrfs_fv3jedi_2024052700_getkf_solver.yaml
+    rrfs_ijedi_2024052700_getkf_observer.yaml
+    rrfs_ijedi_2024052700_getkf_solver.yaml
     rrfs_fv3jedi_2024052700_hybrid3denvar.yaml
     rrfs_fv3jedi_2024052700_hybrid3denvar_mgbf.yaml
 #    rrfs_mpasjedi_2024052700_bumploc.yaml
@@ -312,6 +319,13 @@ else
 fi
 
 CRTM_DATA=$dir_root/bundle/test-data-release/crtm/2.4.0
+# i-jedi (and mist) are off by default; rrfs-workflow does not need them yet
+if [[ "$BUILD_IJEDI" == "YES" ]]; then
+  CMAKE_OPTS+=" -DBUILD_IJEDI=ON"
+else
+  CMAKE_OPTS+=" -DBUILD_IJEDI=OFF"
+fi
+
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST -DUFO_CRTM_TESTFILES_PATH=$CRTM_DATA"
 # Configure
 echo "Configuring ..."

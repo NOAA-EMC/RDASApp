@@ -23,6 +23,12 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_remote"     
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_satrad"        "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar_refl"        "fv3jedi_var.x")
 
+# I-JEDI tests
+# Dictionary value is the ijedi.x app name (e.g. "var", "letkf")
+set(rrfs_ijedi_tests)
+add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_getkf_observer" "letkf")
+add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_getkf_solver"   "letkf")
+
 # MPAS-JEDI tests
 set(rrfs_mpasjedi_tests)
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        "mpasjedi_error_covariance_toolbox.x")
@@ -127,6 +133,86 @@ if(FV3_DYCORE)
            ecbuild_add_test( TARGET ${target_test}
                         MPI      ${MPI_TASKS}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                        ARGS     ${ARGS_NAME}
+                        COMMAND  ${COMMAND_NAME} )
+	 endif()
+         set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
+                      "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
+         set(MPI_ARGS ${RESTORE_MPI_ARGS})
+      endforeach()
+
+endif()
+
+if(FV3_DYCORE AND BUILD_IJEDI)
+
+      message(STATUS "MACHINE_ID is " ${MACHINE_ID})
+
+      get_all_keys(rrfs_ijedi_tests caselist)
+      foreach(case ${caselist})
+
+         get_from_dictionary(rrfs_ijedi_tests case app)
+
+	 # Match the fv3-jedi solver layout so the two can be compared like for like
+         if ("${case}" STREQUAL "rrfs_ijedi_2024052700_getkf_solver")
+           set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=10")
+         endif()
+
+	 # I-JEDI dispatches applications through a single executable, e.g. `ijedi.x var <yaml>`
+	 if ("${MACHINE_ID}" STREQUAL "wcoss2")
+           # wrapper_ctest_pbs.sh takes an optional 6th field for the app name
+           # (e.g. "var"/"letkf") and inserts it before the yaml for ijedi.x.
+           configure_file(${CMAKE_SOURCE_DIR}/rrfs-test/ush/wrapper_ctest_pbs.sh ${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh COPYONLY)
+	   set(COMMAND_NAME "${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh")
+           set(ARGS_NAME "${case} ijedi.x ${case}.yaml 40 4 ${app}")
+	   set(MPI_TASKS 0)
+	 else()
+	   set(COMMAND_NAME "ijedi.x")
+           set(ARGS_NAME "${app}" "${case}.yaml")
+	   set(MPI_TASKS 160)
+	 endif()
+
+         set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
+         set(src_casedir "${rrfs-test_data_local}/rrfs-data_fv3jedi_2024052700")
+         if (NOT EXISTS "${casedir}")
+           file(MAKE_DIRECTORY ${casedir})
+         endif()
+         file(CREATE_LINK ${src_casedir}/DataFix ${casedir}/DataFix SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/Data_static ${casedir}/Data_static SYMBOLIC)
+         file(COPY ${src_casedir}/fmsmpp.nml DESTINATION ${casedir})
+         file(COPY ${src_casedir}/field_table DESTINATION ${casedir})
+         file(COPY ${src_casedir}/input_lam_C775_NP16X10.nml DESTINATION ${casedir})
+         file(COPY ${src_casedir}/input_lam_C775_NP14X14.nml DESTINATION ${casedir})
+         file(COPY ${src_casedir}/dynamics_lam_cmaq.yaml DESTINATION ${casedir})
+
+         file(CREATE_LINK ${src_casedir}/INPUT ${casedir}/INPUT SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/data ${casedir}/data SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv_core.res.nc ${casedir}/fv_core.res.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv_core.res.tile1.nc ${casedir}/fv_core.res.tile1.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv_srf_wnd.res.tile1.nc ${casedir}/fv_srf_wnd.res.tile1.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv_tracer.res.tile1.nc ${casedir}/fv_tracer.res.tile1.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/phy_data.nc ${casedir}/phy_data.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/phy_data_prepdbz.nc ${casedir}/phy_data_prepdbz.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/sfc_data.nc ${casedir}/sfc_data.nc SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/berror_stats ${casedir}/berror_stats SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv3_akbk ${casedir}/fv3_akbk SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/fv3_grid_spec ${casedir}/fv3_grid_spec SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/coupler.res ${casedir}/coupler.res SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/gsiparm_regional.anl ${casedir}/gsiparm_regional.anl SYMBOLIC)
+
+         file(CREATE_LINK ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput SYMBOLIC)
+         file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir} )
+         set(target_test ${case})
+	 if ("${target_test}" STREQUAL "rrfs_ijedi_2024052700_getkf_solver")
+           ecbuild_add_test( TARGET ${target_test}
+                        MPI      ${MPI_TASKS}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                        ARGS     ${ARGS_NAME}
+			TEST_DEPENDS "rrfs_ijedi_2024052700_getkf_observer"
+                        COMMAND  ${COMMAND_NAME} )
+	 else()
+           ecbuild_add_test( TARGET ${target_test}
+                        MPI      ${MPI_TASKS}
+	                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
                         ARGS     ${ARGS_NAME}
                         COMMAND  ${COMMAND_NAME} )
 	 endif()
