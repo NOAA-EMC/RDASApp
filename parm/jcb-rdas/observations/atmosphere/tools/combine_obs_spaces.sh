@@ -11,12 +11,10 @@ cd "$RDASApp/ush"
 source load_rdas.sh
 cd "$OBS_DIR"
 
-# --- Detect all unique observation prefixes (e.g., adpsfc, aircar, etc.) ---
-prefixes=$(ls *Hum*.yaml.j2 2>/dev/null | awk -F'_' '{print $1}' | sort -u)
+# --- List the observation prefixes to combine (e.g., adpsfc, aircar, etc.) ---
 prefixes=(
     adpsfc
     aircar
-    adpsfc
     adpupa
     aircft
     msonet
@@ -25,14 +23,18 @@ prefixes=(
     proflr
     rassda
 )
-echo $prefixes
+printf 'Prefixes: %s\n' "${prefixes[*]}"
+
+# Treat an unmatched filename pattern as an empty array.
+shopt -s nullglob
+
 # Optional: limit to specific type while testing
 #prefixes="adpsfc"
-for prefix in ${prefixes[@]}; do
+for prefix in "${prefixes[@]}"; do
     echo "Processing prefix: $prefix"
 
     # Find YAML templates for this prefix (skip already-combined files)
-    files=($(ls ${prefix}_*.yaml.j2 2>/dev/null ))
+    files=( "${prefix}"_*.yaml.j2 )
     if [ ${#files[@]} -eq 0 ]; then
         echo "  No files found for prefix: $prefix"
         continue

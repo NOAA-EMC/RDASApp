@@ -3,12 +3,36 @@ import sys
 import re
 from pathlib import Path
 
-# --------------------------------------------------------
-#  List of udescriptors that are SAFE (no where required)
-# --------------------------------------------------------
-SAFE_UDESC = {
+# -----------------------------------------------------------------
+# List of udescriptors whose filters are intentionally unconditional
+# -----------------------------------------------------------------
+NO_WHERE_REQUIRED_UDESC = {
     "online_domain_check",
+    "at2m_temperature_alias",
+    "combined_time_window_check",
+    "obs_type_check_initial_reject",
+}
+
+# ------------------------------------------------------------------------
+# List of udescriptors that require where, but do not require an ObsType
+# ------------------------------------------------------------------------
+NO_OBSTYPE_REQUIRED_UDESC = {
     "quality_marker_check",
+}
+
+# -------------------------------------------------------------------------
+# obs_type_check is a historical name for the ObsValue-presence reduction.
+# The separate obs_kx_check filter performs the ObsType/KX selection.
+# -------------------------------------------------------------------------
+OBSVALUE_PRESENCE_UDESC = {
+    "obs_type_check",
+}
+
+# -------------------------------------------------------------------------
+# obs_subtype_check selects satellite-wind records by satellite identifier.
+# -------------------------------------------------------------------------
+SUBTYPE_SELECTION_UDESC = {
+    "obs_subtype_check",
 }
 
 # ---------------------------------------------------------------------------
@@ -51,8 +75,10 @@ def extract_filters(lines):
         filters.append(current)
     return filters
 
+
 def has_where_block(lines):
     return any(l.strip().startswith("where:") for l in lines)
+
 
 def where_has_obstype(lines):
     for line in lines:
@@ -62,6 +88,40 @@ def where_has_obstype(lines):
         if "ObsType/" in s:
             return True
     return False
+
+
+def where_has_obsvalue(lines):
+    return any("ObsValue/" in line for line in lines)
+
+
+def where_has_validity_test(lines):
+    pattern = re.compile(r"^value:\s*['\"]?is_(?:not_)?valid['\"]?\s*$")
+    return any(pattern.match(line.strip()) for line in lines)
+
+
+def where_has_satellite_identifier(lines):
+    return any("MetaData/satelliteIdentifier" in line for line in lines)
+
+
+def where_has_not_in_test(lines):
+    return any(line.strip().startswith("is_not_in:") for line in lines)
+
+
+def block_has_wind_variable(lines):
+    return any(
+        variable in line
+        for line in lines
+        for variable in ("windEastward", "windNorthward")
+    )
+
+
+def has_self_scoped_wind_gross_error(lines):
+    has_spdb_function = any(
+        "ObsFunction/WindsSPDBCheck" in line for line in lines
+    )
+    has_wndtype = any(line.strip().startswith("wndtype:") for line in lines)
+    return block_has_wind_variable(lines) and has_spdb_function and has_wndtype
+
 
 def validate_file(filename):
     with open(filename) as f:
@@ -81,17 +141,18 @@ def validate_file(filename):
             issues.append(f"FILTER {fnum}: Missing udescriptor")
             continue
 
-        # if udescriptor is safe, no where needed
-        if udesc in SAFE_UDESC:
+        # These operations are intentionally unconditional.
+        if udesc in NO_WHERE_REQUIRED_UDESC:
             continue
 
         # if this ob does not have an ObsType variable, no where needed
         if any(token in filename for token in SAFE_WHERE_OBSPACES):
-           continue
+            continue
 
-        # require ObsType reference inside where except wind gross error checks
+        # WindsSPDBCheck scopes itself with its wndtype option, so these wind
+        # gross-error checks do not need a separate where block.
         if "gross_error" in udesc.lower():
-            if "winds" in filename.lower():  # wind gross error checks
+            if has_self_scoped_wind_gross_error(block):
                 continue
 
         # require where block
@@ -99,9 +160,45 @@ def validate_file(filename):
             issues.append(f"FILTER {fnum} (udescriptor={udesc}): Missing where:")
             continue
 
+        # obs_type_check removes locations where the source ObsValue is absent.
+        # It is not the ObsType/KX selector, so validate its actual semantics.
+        if udesc in OBSVALUE_PRESENCE_UDESC:
+            if not where_has_obsvalue(block):
+                issues.append(
+                    f"FILTER {fnum} (udescriptor={udesc}): "
+                    "where block missing ObsValue reference"
+                )
+            if not where_has_validity_test(block):
+                issues.append(
+                    f"FILTER {fnum} (udescriptor={udesc}): "
+                    "where block missing ObsValue validity test"
+                )
+            continue
+
+        # obs_subtype_check performs a separate satellite-identifier selection.
+        if udesc in SUBTYPE_SELECTION_UDESC:
+            if not where_has_satellite_identifier(block):
+                issues.append(
+                    f"FILTER {fnum} (udescriptor={udesc}): "
+                    "where block missing MetaData/satelliteIdentifier"
+                )
+            if not where_has_not_in_test(block):
+                issues.append(
+                    f"FILTER {fnum} (udescriptor={udesc}): "
+                    "where block missing is_not_in selection"
+                )
+            continue
+
+        # These filters use another field, such as QualityMarker, for selection.
+        if udesc in NO_OBSTYPE_REQUIRED_UDESC:
+            continue
+
         # Require ObsType reference inside where
         if not where_has_obstype(block):
-            issues.append(f"FILTER {fnum} (udescriptor={udesc}): where block missing ObsType reference")
+            issues.append(
+                f"FILTER {fnum} (udescriptor={udesc}): "
+                "where block missing ObsType reference"
+            )
 
     return issues
 
@@ -126,4 +223,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
