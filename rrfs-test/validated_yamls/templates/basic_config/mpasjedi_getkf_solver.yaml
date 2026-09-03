@@ -65,6 +65,9 @@ background:
     nmembers: 30
 
 driver:
+  # Explicit: oops defaults this to true, and true is what a Halo distribution needs
+  # (each rank gets its patch center/radius). Stated here so it does not rely on the default.
+  update obs config with geometry info: true
   read HX from disk: true
   save posterior ensemble: false
   save prior mean: true
