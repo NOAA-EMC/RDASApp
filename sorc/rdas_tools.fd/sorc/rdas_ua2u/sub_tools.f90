@@ -599,7 +599,7 @@
      j1 = int((dst_lat(i,j) - ll_lat(1))/d_ll) + 1
      if ( i1 < 1 .or. j1 < 1 ) then
         write(*,'(a,4i6,4f10.3)')'i1j1---',i,j,i1,j1,ll_lon(1),ll_lat(1),dst_lon(i,j),dst_lat(i,j)
-        stop
+        stop 1
      endif
      if ( src_points(i1,j1) > 0 .and. src_points(i1,j1) <= max_points ) then
         !i2=i+1; if ( i2 > dst_ix) i2=i-1
@@ -763,7 +763,7 @@
            dst_weight = real(gwt%relaxzone - min_ij_src)/real(gwt%relaxzone)
            if ( dst_weight < 0.0 .or. dst_weight > 1.0 ) then
               write(*,'(a,7i6,f10.4)')'---relaxzone dst_weight:', i,j,ixs,jxs,min_ij_src,min_ij_dst,gwt%relaxzone,dst_weight
-              stop
+              stop 1
            endif
         endif
      else
@@ -792,7 +792,7 @@
            !write(*,*)'----tc zone', tc%lon, tc%lat, dis, tc%vortexreplace_r(1:2), dst_weight
            if ( dst_weight < 0.0 .or. dst_weight > 1.0 ) then
               write(*,'(a,4i6,4f10.2)')'---vortex dst_weight:', i,j,ixs,jxs,tc%vortexreplace_r(1:2), dis, dst_weight
-              stop
+              stop 1
            endif
         else
            dst_weight=1.0
