@@ -55,37 +55,15 @@ for basic_config in "${!basic_configs[@]}"; do
 
     rm -f jedi.yaml    # Remove any existing file
     rm -f temp.yaml    # Remove any existing file
-    rm -f replace.yaml # Remove any existing file
     ctest_yaml=${basic_configs[$basic_config]}
 
-    # Process each YAML file
-    declare -A processed_groups
+    # Concatenate each obtype YAML into the combined observations block
     for config in "${obtype_configs[@]}"; do
-# hliu
-
-        # If this is a LETKF solver ctest, we need to replace the input obs file with the observer's jdiag file
-        cp  "./templates/obtype_config/$config" ./replace.yaml
-        if [[ $basic_config == *"solver"* ]]; then
-            # New obs filename
-            previous_path=`sed -n '/obsdataout/{n; n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$config`
-            int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest_yaml::-5}\//gI")
-            new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
-            obs_filename_new="obsfile: ${new_path}"
-            # Old obs file name to replace
-            obsline=`grep "obsfile: \"data\/obs\/ioda" templates/obtype_config/${config}`
-            trimmed=$(echo "$obsline" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-            obs_filename=${trimmed}
-            # Replace
-            sed -i "s#${obs_filename}#${obs_filename_new}#" ./replace.yaml
-        fi
-
-        # Append YAML content
-        cat ./replace.yaml >> ./temp.yaml
-
+        cat "./templates/obtype_config/$config" >> ./temp.yaml
     done
 
     # Replace the @DISTRIBUTION@ placeholder with the appropriate observation distribution
-    if [[ $basic_config == *"solver"* || $basic_config == *"getkf.yaml" ]]; then
+    if [[ $basic_config == *"getkf.yaml" ]]; then
         distribution="Halo"
     else
         distribution="RoundRobin"
@@ -124,7 +102,6 @@ for basic_config in "${!basic_configs[@]}"; do
         d
     }' ./jedi.yaml
     rm -f temp.yaml # Clean up temporary yaml
-    rm -f replace.yaml # Clean up temporary yaml
 
     # Comment out some filters for the various ctests (different for fv3-jedi and mpas-jedi)
     python commentQC.py ${ctest_yaml}

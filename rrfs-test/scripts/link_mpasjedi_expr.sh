@@ -31,6 +31,7 @@ cp ${RDASApp}/rrfs-test/testinput/namelist.atmosphere .
 cp ${RDASApp}/rrfs-test/testinput/streams.atmosphere .
 cp ${RDASApp}/rrfs-test/example_yamls/sglobs_t120_mpasjedi.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_3denvar.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_bumploc.yaml ./bumploc.yaml
 cp ${RDASApp}/rrfs-test/testinput/rrfs_mpasjedi_2024052700_3dvar.yaml .
 if [[ "${exprname}" == "atl_2024052700" ]]; then
