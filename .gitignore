@@ -174,7 +174,6 @@ rrfs-test/testinput/rrfs_mpasjedi_2024052700_3denvar.yaml
 rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf.yaml
 rrfs-test/testinput/rrfs_mpasjedi_2024052700_3dvar*.yaml
 rrfs-test/testinput/*jcb*
-rrfs-test/validated_yamls/templates/jedivar.yaml
 
 # Ignore patch base_commit files
 patches/*/.base_commit

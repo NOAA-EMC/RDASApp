@@ -65,10 +65,8 @@ background:
     nmembers: 30
 
 driver:
-  # One-step GETKF: compute H(x) here rather than reading it from a separate observer job.
   read HX from disk: false
   run as observer only: false
-  # True is what a Halo distribution needs (each rank gets its patch center/radius).
   update obs config with geometry info: true
   save posterior ensemble: false
   save prior mean: true
