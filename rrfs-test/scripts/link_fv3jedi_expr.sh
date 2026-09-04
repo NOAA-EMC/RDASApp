@@ -19,8 +19,7 @@ cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3denvar.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3denvar_refl.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_hybrid3denvar.yaml .
-cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_observer.yaml .
-cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf_solver.yaml .
+cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_getkf.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_bumploc.yaml ./bumploc.yaml
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar_conv_surface.yaml .
 cp ${RDASApp}/rrfs-test/testinput/rrfs_fv3jedi_2024052700_3dvar_conv_upperair.yaml .

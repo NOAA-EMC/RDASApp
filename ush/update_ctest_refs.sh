@@ -13,8 +13,7 @@ rrfs_fv3jedi_tests=(
     "rrfs_fv3jedi_2024052700_3denvar_mgbf"
     "rrfs_fv3jedi_2024052700_hybrid3denvar"
     "rrfs_fv3jedi_2024052700_hybrid3denvar_mgbf"
-    "rrfs_fv3jedi_2024052700_getkf_observer"
-    "rrfs_fv3jedi_2024052700_getkf_solver"
+    "rrfs_fv3jedi_2024052700_getkf"
     "rrfs_fv3jedi_2024052700_3dvar_conv_upperair"
     "rrfs_fv3jedi_2024052700_3dvar_conv_surface"
     "rrfs_fv3jedi_2024052700_3dvar_remote"
@@ -25,8 +24,7 @@ rrfs_fv3jedi_tests=(
 # MPAS-JEDI tests
 rrfs_mpasjedi_tests=(
     "rrfs_mpasjedi_2024052700_3denvar"
-    "rrfs_mpasjedi_2024052700_getkf_observer"
-    "rrfs_mpasjedi_2024052700_getkf_solver"
+    "rrfs_mpasjedi_2024052700_getkf"
     "rrfs_mpasjedi_2024052700_bumploc"
     "rrfs_mpasjedi_2024052700_3dvar"
 )
