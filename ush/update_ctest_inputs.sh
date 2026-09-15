@@ -18,6 +18,7 @@ rrfs_fv3jedi_tests=(
     "rrfs_fv3jedi_2024052700_3dvar_conv_upperair"
     "rrfs_fv3jedi_2024052700_3dvar_conv_surface"
     "rrfs_fv3jedi_2024052700_3dvar_remote"
+    "rrfs_fv3jedi_2024052700_3dvar_rw"
     "rrfs_fv3jedi_2024052700_3dvar_satrad"
     "rrfs_fv3jedi_2024052700_3denvar_refl"
 )
