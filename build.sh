@@ -39,6 +39,7 @@ usage() {
   echo "  -f  force a clean build                DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
+  echo "  --reduced_scalar                       DEFAULT: NO"
   echo "  -x  build super executables            DEFAULT: NO"
   echo "  -t  include RRFS,BUFR_QUERY test data  DEFAULT: YES"
   echo "  -d  compile in the debug mode          DEFAULT: NO"
@@ -68,13 +69,24 @@ BUFRQUERY_OPT=""
 BUILD_JCB="YES"
 BUILD_WORKAROUND="YES"
 
-while getopts "p:c:m:j:t:b:r:w:hvfsxd" opt; do
+while getopts "p:c:m:j:t:b:r:w:hvfsxd-:" opt; do
   case $opt in
+    -)
+      case "$OPTARG" in
+        reduced_scalars)
+          CMAKE_OPTS+=" -DREDUCED_SCALARS=ON"
+          ;;
+        *)
+          echo "Unknown option: --$OPTARG"
+          exit 1
+          ;;
+      esac
+      ;;
     p)
       INSTALL_PREFIX=$OPTARG
       ;;
     c)
-      CMAKE_OPTS=$OPTARG
+      CMAKE_OPTS+=" $OPTARG"
       ;;
     m)
       DYCORE=$OPTARG
