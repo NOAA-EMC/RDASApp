@@ -68,7 +68,7 @@ BUFRQUERY_OPT=""
 BUILD_JCB="YES"
 BUILD_WORKAROUND="YES"
 
-while getopts "p:c:m:j:t:b:r:w:hvfsxd-:" opt; do
+while getopts "p:c:m:j:t:b:r:w:hvfsxd" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
