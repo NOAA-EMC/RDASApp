@@ -39,7 +39,7 @@ usage() {
   echo "  -f  force a clean build                DEFAULT: NO"
   echo "  -s  only build a subset of the bundle  DEFAULT: NO"
   echo "  -m  select dycore                      DEFAULT: FV3andMPAS"
-  echo "  --reduced_scalar                       DEFAULT: NO"
+  echo "  --reduced_scalars                      DEFAULT: NO"
   echo "  -x  build super executables            DEFAULT: NO"
   echo "  -t  include RRFS,BUFR_QUERY test data  DEFAULT: YES"
   echo "  -d  compile in the debug mode          DEFAULT: NO"
