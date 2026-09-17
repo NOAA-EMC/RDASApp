@@ -74,7 +74,7 @@ while getopts "p:c:m:j:t:b:r:w:hvfsxd" opt; do
       INSTALL_PREFIX=$OPTARG
       ;;
     c)
-      CMAKE_OPTS+=" $OPTARG"
+      CMAKE_OPTS=$OPTARG
       ;;
     m)
       DYCORE=$OPTARG
