@@ -154,8 +154,12 @@
 {% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
 #         # Reduce observation error and turn off ObsErrorFactorPressureCheck (l_gsd_terrain_match_surfTobs=.true., l_sfcobserror_ramp_t=.true.,)
 #         - filter: Perform Action
+#           udescriptor: "ob_error_inflation"
 #           filter variables:
 #           - name: airTemperature
+#           where:
+#           - variable: ObsType/airTemperature
+#             is_in: 183
 #           action:
 #             name: inflate error
 #             inflation factor: 0.5
