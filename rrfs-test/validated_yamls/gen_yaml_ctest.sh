@@ -46,11 +46,8 @@ basic_configs=(
     #["fv3jedi_3dvar.yaml"]="rrfs_fv3jedi_2024052700_3dvar.yaml"
     #["fv3jedi_3denvar.yaml"]="rrfs_fv3jedi_2024052700_3denvar.yaml"
     #["fv3jedi_hybrid3denvar.yaml"]="rrfs_fv3jedi_2024052700_hybrid3denvar.yaml"
-    #["fv3jedi_getkf_observer.yaml"]="rrfs_fv3jedi_2024052700_getkf_observer.yaml"
-    #["fv3jedi_getkf_solver.yaml"]="rrfs_fv3jedi_2024052700_getkf_solver.yaml"
     ["mpasjedi_3denvar.yaml"]="rrfs_mpasjedi_2024052700_3denvar.yaml"
-    ["mpasjedi_getkf_observer.yaml"]="rrfs_mpasjedi_2024052700_getkf_observer.yaml"
-    ["mpasjedi_getkf_solver.yaml"]="rrfs_mpasjedi_2024052700_getkf_solver.yaml"
+    ["mpasjedi_getkf.yaml"]="rrfs_mpasjedi_2024052700_getkf.yaml"
 )
 
 # Loop over basic configs
@@ -58,42 +55,43 @@ for basic_config in "${!basic_configs[@]}"; do
 
     rm -f jedi.yaml    # Remove any existing file
     rm -f temp.yaml    # Remove any existing file
-    rm -f replace.yaml # Remove any existing file
     ctest_yaml=${basic_configs[$basic_config]}
 
-    # Process each YAML file
-    declare -A processed_groups
+    # Concatenate each obtype YAML into the combined observations block
     for config in "${obtype_configs[@]}"; do
-# hliu
-
-        # If this is a LETKF solver ctest, we need to replace the input obs file with the observer's jdiag file
-        cp  "./templates/obtype_config/$config" ./replace.yaml
-        if [[ $basic_config == *"solver"* ]]; then
-            # New obs filename
-            previous_path=`sed -n '/obsdataout/{n; n; n; n; s/^[[:space:]]\+//; p;}' ./templates/obtype_config/$config`
-            int_path=$(echo "$previous_path" | sed "s/obsfile: /..\/rundir-${ctest_yaml::-5}\//gI")
-            new_path=$(echo "$int_path" | sed "s/solver/observer/gI")
-            obs_filename_new="obsfile: ${new_path}"
-            # Old obs file name to replace
-            obsline=`grep "obsfile: \"data\/obs\/ioda" templates/obtype_config/${config}`
-            trimmed=$(echo "$obsline" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-            obs_filename=${trimmed}
-            # Replace
-            sed -i "s#${obs_filename}#${obs_filename_new}#" ./replace.yaml
-        fi
-
-        # Append YAML content
-        cat ./replace.yaml >> ./temp.yaml
-
+        cat "./templates/obtype_config/$config" >> ./temp.yaml
     done
 
     # Replace the @DISTRIBUTION@ placeholder with the appropriate observation distribution
-    if [[ $basic_config == *"solver"* ]]; then
+    if [[ $basic_config == *"getkf.yaml" ]]; then
         distribution="Halo"
     else
         distribution="RoundRobin"
     fi
     sed -i "s#@DISTRIBUTION@#${distribution}#" ./temp.yaml
+
+    # One-step L/GETKF: H(x) is computed here under ioda's default (RoundRobin) distribution and
+    # the obs are then redistributed into the local-solver Halo within the same job. That is
+    # requested with "redistribution" rather than "distribution", and needs the dataframe backend.
+    if [[ $basic_config == *"getkf.yaml" ]]; then
+        awk '
+            {
+                line = $0
+                if (line ~ /^[[:space:]]*distribution:[[:space:]]*$/) {
+                    match(line, /^[[:space:]]*/)
+                    indent = substr(line, 1, RLENGTH)
+                    sub(/distribution:/, "redistribution:", line)
+                    print line
+                    next
+                }
+                print line
+                if (indent != "" && line ~ /^[[:space:]]*halo size:/) {
+                    print indent "use data frame container: true"
+                    indent = ""
+                }
+            }
+        ' ./temp.yaml > ./temp_onestep.yaml && mv ./temp_onestep.yaml ./temp.yaml
+    fi
 
     # Copy the basic configuration yaml into the super yaml
     cp -p templates/basic_config/$basic_config ./jedi.yaml
@@ -104,7 +102,6 @@ for basic_config in "${!basic_configs[@]}"; do
         d
     }' ./jedi.yaml
     rm -f temp.yaml # Clean up temporary yaml
-    rm -f replace.yaml # Clean up temporary yaml
 
     # Comment out some filters for the various ctests (different for fv3-jedi and mpas-jedi)
     python commentQC.py ${ctest_yaml}
