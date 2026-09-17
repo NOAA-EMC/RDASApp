@@ -230,6 +230,7 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     rrfs_fv3jedi_2024052700_3dvar_conv_upperair.yaml
     rrfs_fv3jedi_2024052700_3dvar_remote.yaml
     rrfs_fv3jedi_2024052700_3dvar_rw.yaml
+    rrfs_fv3jedi_2024052700_3dvar_dbz.yaml
     rrfs_fv3jedi_2024052700_3dvar_satrad.yaml
 
     # Observation ctests (fv3jedi & 3denvar only)
