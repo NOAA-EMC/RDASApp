@@ -1,5 +1,6 @@
 # This is overwritten in the testing but allows command line test of jcb
-algorithm: local_ensemble_da_observer
+algorithm: local_ensemble_da
+do_onestep_letkf: true
 
 # Search path for model and obs for JCB (relative for the submodule, or can be absolute)
 # --------------------------------------------------------------------------------------
@@ -29,8 +30,8 @@ atmosphere_number_ensemble_members: 30
 # Testing
 # -------
 do_testing: true
-test_reference_filename: testoutput/rrfs-fv3jedi-getkf-solver.ref
-test_output_filename: rrfs-fv3jedi-getkf-solver.out
+test_reference_filename: testoutput/rrfs-fv3jedi-getkf.ref
+test_output_filename: rrfs-fv3jedi-getkf.out
 test_float_relative_tolerance: 0.02
 test_float_absolute_tolerance: 1.0e-6
 test_integer_tolerance: 3
@@ -38,6 +39,7 @@ test_integer_tolerance: 3
 # Local Ensemble DA (LETKF)
 # -------------------------
 local_ensemble_da_solver: Deterministic GETKF
+use_linear_observer: true
 
 increment_variables:
 - eastward_wind
@@ -89,11 +91,9 @@ override_obs_distribution_localizations:
       lengthscale: 15e3
 
 # Driver
-# True is correct for a Halo distribution: each rank gets its patch center/radius so the halo
-# is patchRadius+halo size instead of ioda's ~50,000 km default (every rank holding every ob).
 driver_update_obs_config_with_geometry_info: true
 driver_run_as_observer_only: false
-driver_read_HX_from_disk: true
+driver_read_HX_from_disk: false
 driver_do_posterior_observer: false
 driver_save_posterior_mean: true
 driver_save_posterior_ensemble: false

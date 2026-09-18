@@ -14,8 +14,7 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar"          
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar_mgbf"       "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_hybrid3denvar"      "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_hybrid3denvar_mgbf" "fv3jedi_var.x")
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf_observer"     "fv3jedi_letkf.x")
-add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf_solver"       "fv3jedi_letkf.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_getkf"              "fv3jedi_letkf.x")
 # Observation tests
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_surface"  "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_upperair" "fv3jedi_var.x")
@@ -34,8 +33,7 @@ add_to_dictionary(rrfs_ijedi_tests "rrfs_ijedi_2024052700_getkf_solver"   "letkf
 set(rrfs_mpasjedi_tests)
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_bumploc"        "mpasjedi_error_covariance_toolbox.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3denvar"        "mpasjedi_variational.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_observer" "mpasjedi_enkf.x")
-add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf_solver"   "mpasjedi_enkf.x")
+add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_getkf"          "mpasjedi_enkf.x")
 add_to_dictionary(rrfs_mpasjedi_tests "rrfs_mpasjedi_2024052700_3dvar"          "mpasjedi_variational.x")
 
 message(STATUS "Use test data from rrfs-test-data repository")
@@ -62,7 +60,7 @@ if(FV3_DYCORE)
          get_from_dictionary(rrfs_fv3jedi_tests case exe)
 
 	 # Some case-dependent settings still needed
-         if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
+         if ("${case}" STREQUAL "rrfs_fv3jedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_fv3jedi_2024052700_getkf")
            set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=10")
          elseif ("${case}" MATCHES "mgbf|refl")
            set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=7")
@@ -123,20 +121,11 @@ if(FV3_DYCORE)
          file(CREATE_LINK ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput SYMBOLIC)
          file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir} )
          set(target_test ${case})
-	 if ("${target_test}" STREQUAL "rrfs_fv3jedi_2024052700_getkf_solver")
-           ecbuild_add_test( TARGET ${target_test}
-                        MPI      ${MPI_TASKS}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${ARGS_NAME}
-			TEST_DEPENDS "rrfs_fv3jedi_2024052700_getkf_observer"
-                        COMMAND  ${COMMAND_NAME} )
-	 else()
-           ecbuild_add_test( TARGET ${target_test}
-                        MPI      ${MPI_TASKS}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${ARGS_NAME}
-                        COMMAND  ${COMMAND_NAME} )
-	 endif()
+         ecbuild_add_test( TARGET ${target_test}
+                      MPI      ${MPI_TASKS}
+		      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                      ARGS     ${ARGS_NAME}
+                      COMMAND  ${COMMAND_NAME} )
          set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
                       "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
          set(MPI_ARGS ${RESTORE_MPI_ARGS})
@@ -234,7 +223,7 @@ if(MPAS_DYCORE)
          get_from_dictionary(rrfs_mpasjedi_tests case exe)
 
 	 # Some case-dependent settings still needed
-         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
+         if ("${case}" STREQUAL "rrfs_mpasjedi_2024052700_3denvar" OR "${case}" STREQUAL "rrfs_mpasjedi_2024052700_getkf")
             if ("${MACHINE_ID}" STREQUAL "hercules")
               set(MPI_ARGS "${MPI_ARGS} --ntasks-per-node=20")
             else()
@@ -270,20 +259,11 @@ if(MPAS_DYCORE)
 	 file(COPY ${bl_FILES} DESTINATION ${casedir})
 	 file(COPY ${src_yaml}/${case}.yaml DESTINATION ${casedir})
          set(target_test ${case})
-	 if ("${target_test}" STREQUAL "rrfs_mpasjedi_2024052700_getkf_solver")
-           ecbuild_add_test( TARGET ${target_test}
-                        MPI      ${MPI_TASKS}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${ARGS_NAME}
-			TEST_DEPENDS "rrfs_mpasjedi_2024052700_getkf_observer"
-                        COMMAND  ${COMMAND_NAME} )
-	 else()
-           ecbuild_add_test( TARGET ${target_test}
-                        MPI      ${MPI_TASKS}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
-                        ARGS     ${ARGS_NAME}
-                        COMMAND  ${COMMAND_NAME} )
-	 endif()
+         ecbuild_add_test( TARGET ${target_test}
+                      MPI      ${MPI_TASKS}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rundir-${target_test}
+                      ARGS     ${ARGS_NAME}
+                      COMMAND  ${COMMAND_NAME} )
          set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
                       "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
          set(MPI_ARGS ${RESTORE_MPI_ARGS})

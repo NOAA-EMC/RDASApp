@@ -65,10 +65,9 @@ background:
     nmembers: 30
 
 driver:
-  # Explicit: oops defaults this to true, and true is what a Halo distribution needs
-  # (each rank gets its patch center/radius). Stated here so it does not rely on the default.
+  read HX from disk: false
+  run as observer only: false
   update obs config with geometry info: true
-  read HX from disk: true
   save posterior ensemble: false
   save prior mean: true
   save posterior mean: true
@@ -89,8 +88,8 @@ observations:
         "@OBSERVATIONS@"
 
 test:
-  reference filename: testoutput/rrfs-mpasjedi-getkf-solver.ref
-  test output filename: ./rrfs-mpasjedi-getkf-solver.out
+  reference filename: testoutput/rrfs-mpasjedi-getkf.ref
+  test output filename: ./rrfs-mpasjedi-getkf.out
   float relative tolerance: 0.02
   float absolute tolerance: 1.0e-6
   integer tolerance: 3
