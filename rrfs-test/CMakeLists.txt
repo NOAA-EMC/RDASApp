@@ -21,6 +21,7 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_upperai
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_remote"        "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_rw"            "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_satrad"        "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_dbz"           "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar_refl"        "fv3jedi_var.x")
 
 # I-JEDI tests
@@ -111,6 +112,7 @@ if(FV3_DYCORE)
          file(CREATE_LINK ${src_casedir}/fv3_grid_spec ${casedir}/fv3_grid_spec SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/coupler.res ${casedir}/coupler.res SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/gsiparm_regional.anl ${casedir}/gsiparm_regional.anl SYMBOLIC)
+         file(CREATE_LINK ${src_casedir}/gsiparm_regional_dbz.anl ${casedir}/gsiparm_regional_dbz.anl SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/mgbf_p196_14x14.nml ${casedir}/mgbf_p196_14x14.nml SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/mgbf_13km_conus_norm_profile_bottom_up.txt  ${casedir}/mgbf_13km_conus_norm_profile_bottom_up.txt SYMBOLIC)
          file(CREATE_LINK ${src_casedir}/mgbf_dbz_13km_conus_norm_profile_bottom_up.txt  ${casedir}/mgbf_dbz_13km_conus_norm_profile_bottom_up.txt SYMBOLIC)
