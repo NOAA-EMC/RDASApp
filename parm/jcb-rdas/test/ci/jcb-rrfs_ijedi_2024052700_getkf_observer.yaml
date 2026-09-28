@@ -4,7 +4,7 @@ algorithm: local_ensemble_da_observer
 # Search path for model and obs for JCB (relative for the submodule, or can be absolute)
 # --------------------------------------------------------------------------------------
 app_path_algorithm: rdas/algorithm/atmosphere
-app_path_model: rdas/model/fv3/atmosphere
+app_path_model: rdas/model/fv3_ijedi/atmosphere
 app_path_observations: rdas/observations/atmosphere
 app_path_observation_chronicle: rdas/observation_chronicle/atmosphere
 
@@ -16,6 +16,10 @@ output_increment_file: atmosphere_output_mean_increments # not used in ctest
 output_ensemble_increments_file: atmosphere_output_ensemble_increments # not used in ctest
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
+vader_custom_cookbook_file: atmosphere_vader_custom_cookbook
+
+# i-jedi has no producer for GeoVaLs/observable_domain_mask (not in vader yet)
+use_online_domain_check: false
 
 # Global analysis things
 # ----------------------
@@ -28,8 +32,8 @@ atmosphere_number_ensemble_members: 30
 # Testing
 # -------
 do_testing: true
-test_reference_filename: testoutput/rrfs-fv3jedi-getkf-observer.ref
-test_output_filename: rrfs-fv3jedi-getkf-observer.out
+test_reference_filename: testoutput/rrfs-ijedi-getkf-observer.ref
+test_output_filename: rrfs-ijedi-getkf-observer.out
 test_float_relative_tolerance: 0.02
 test_float_absolute_tolerance: 1.0e-6
 test_integer_tolerance: 3
@@ -64,7 +68,7 @@ fields_to_write:
 # Veritcal localization for GETKF
 vl_fraction_of_retained_variance: 0.850
 vl_lengthscale: 0.50
-vl_lengthscale_units: logp
+vl_lengthscale_units: log pressure
 inflation_rtps: 0.95
 inflation_rtpp: 0.0
 inflation_mult: 1.0

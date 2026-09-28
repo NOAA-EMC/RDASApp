@@ -286,12 +286,26 @@ except:
     outfile = obs_filename.replace('.nc4', '_dc.nc4')
 fout = nc.Dataset(outfile, 'w')
 
-# Create dimensions and variables in the new file
+# Create the reduced Location dimension.
 fout.createDimension('Location', len(inside_indices))
-fout.createVariable('Location', 'int64', 'Location')
-fout.variables['Location'][:] = 0
-for attr in obs_ds.variables['Location'].ncattrs():  # Attributes for Location variable
-    fout.variables['Location'].setncattr(attr, obs_ds.variables['Location'].getncattr(attr))
+
+# Preserve the source Location datatype and set _FillValue when the
+# variable is created. NetCDF does not allow adding _FillValue later.
+source_location = obs_ds.variables['Location']
+location_fill = getattr(source_location, '_FillValue', None)
+
+if location_fill is None:
+    output_location = fout.createVariable('Location', source_location.datatype, ('Location',),)
+else:
+    output_location = fout.createVariable('Location', source_location.datatype, ('Location',), fill_value=location_fill,)
+
+output_location[:] = 0
+
+# Copy all remaining Location attributes.
+for attr in source_location.ncattrs():
+    if attr == '_FillValue':
+        continue
+    output_location.setncattr(attr, source_location.getncattr(attr),)
 
 # Copy all non-grouped attributes into the new file
 for attr in obs_ds.ncattrs():  # Attributes for the main file

@@ -126,6 +126,7 @@
            action:
              name: reduce obs space
 
+{% if use_online_domain_check | default(true) %}
          # Online regional domain check
          - filter: Bounds Check
            udescriptor: "online_domain_check"
@@ -135,6 +136,7 @@
            - name:  GeoVaLs/observable_domain_mask
            minvalue: 0.0
            maxvalue: 0.5
+{% endif %}
 
          # Initial error assignment
          - filter: Perform Action

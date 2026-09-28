@@ -5,10 +5,11 @@
              type: H5File
              obsfile: "data/obs/ioda_sfcshp.nc"
              missing file action: "warn"
-           obsgrouping:
-             group variables: ["stationIdentification"]
-             sort variable: "pressure"
-             sort order: "descending"
+           # obsgrouping disabled: ioda's Halo assigns an entire record from its first location, which drops these horizontally-moving obs.
+           # obsgrouping:
+           #   group variables: ["stationIdentification"]
+           #   sort variable: "pressure"
+           #   sort order: "descending"
          obsdataout:
            empty obs space action: "{{empty_obs_space_action}}"
            write multiple files: {{write_multiple_files | default(false) }}
@@ -117,6 +118,7 @@
            action:
              name: reduce obs space
 
+{% if use_online_domain_check | default(true) %}
          # Online regional domain check
          - filter: Bounds Check
            udescriptor: "online_domain_check"
@@ -126,6 +128,7 @@
            - name:  GeoVaLs/observable_domain_mask
            minvalue: 0.0
            maxvalue: 0.5
+{% endif %}
 
          # Initial error assignment
          - filter: Perform Action

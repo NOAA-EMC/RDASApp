@@ -126,7 +126,7 @@
   else
      !---NF90_BYTE, NF90_CHAR, NF90_SHORT
      write(*,*)' !!!! please add ',xtype,' xtype data here '
-     stop
+     stop 1
   endif
   call nccheck(nf90_close(ncid), 'wrong in close '//trim(ncfile), .false.)
 
@@ -172,7 +172,7 @@
   else
      !---NF90_BYTE, NF90_CHAR, NF90_SHORT
      write(*,*)' !!!! please add ',xtype,' xtype data here '
-     stop
+     stop 1
   endif
   call nccheck(nf90_close(ncid), 'wrong in close '//trim(ncfile), .false.)
 
@@ -398,7 +398,7 @@
      call nccheck(nf90_open(trim(ncfile), nf90_write, ncid), 'wrong in open '//trim(ncfile)//' for '//trim(varname), .true.)
   else
      write(*,*)' !!!! please call write_nc_dim to generate the nc file of '//trim(ncfile)
-     stop
+     stop 1
   endif
 
   !----3.0 check dimensions
@@ -613,7 +613,7 @@
      call nccheck(nf90_open(trim(ncfile), nf90_write, ncid), 'wrong in open '//trim(ncfile)//' for '//trim(varname), .true.)
   else
      write(*,*)' !!!! please call write_nc_dim to generate the nc file of '//trim(ncfile)
-     stop
+     stop 1
   endif
 
   !----3.0 check dimensions
@@ -736,7 +736,7 @@
      write(*,'(a,i0,a,i0)')' !!!!! error: ncks failed removing '//trim(varlist)//' from '//trim(ncfile)// &
                             '  cmdstat=',cmdstat,' exitstat=',exitstat
      write(*,'(a)')'             is ncks (NCO) available in PATH?'
-     stop
+     stop 1
   endif
 
   write(cmd,'(a)') 'mv '//trim(tmpfile)//' '//trim(ncfile)
@@ -744,7 +744,7 @@
   if ( cmdstat /= 0 .or. exitstat /= 0 ) then
      write(*,'(a,i0,a,i0)')' !!!!! error: mv failed replacing '//trim(ncfile)//' with the trimmed copy'// &
                             '  cmdstat=',cmdstat,' exitstat=',exitstat
-     stop
+     stop 1
   endif
 
   return
@@ -761,7 +761,7 @@
 
   if (status /= nf90_noerr) then
      write(*,'(a,a)')trim(nf90_strerror(status)), '   '//trim(states)
-     if ( ifstop ) stop
+     if ( ifstop ) stop 1
   end if
   end subroutine nccheck
 !=======================================================================================

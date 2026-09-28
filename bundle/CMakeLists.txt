@@ -86,6 +86,14 @@ if(BUILD_RDASBUNDLE)
   option(ENABLE_UFO_DATA "Obtain ufo test data from ufo-data repository (vs tarball)" ON)
   ecbuild_bundle( PROJECT ufo SOURCE "../sorc/ufo" )
 
+# I-JEDI (interface to JEDI) and mist, which only i-jedi depends on.
+# Off by default so rrfs-workflow builds skip them until we switch over.
+  option(BUILD_IJEDI "Build I-JEDI" OFF)
+  if(BUILD_IJEDI)
+    ecbuild_bundle( PROJECT mist  SOURCE "../sorc/mist" )
+    ecbuild_bundle( PROJECT ijedi SOURCE "../sorc/i-jedi" )
+  endif()
+
   if(FV3_DYCORE)
     # FMS and FV3 dynamical core
     include(../sorc/fv3-interface.cmake)
@@ -100,6 +108,9 @@ if(BUILD_RDASBUNDLE)
 
   if(MPAS_DYCORE)
     set(MPAS_DOUBLE_PRECISION "ON" CACHE STRING "MPAS-Model: Use double precision 64-bit Floating point.")
+    if(REDUCED_SCALARS)
+      set(MPAS_JEDI_IO "ON" CACHE STRING "MPAS-Model: Use reduced scalars var_array")
+    endif()
     set(MPAS_CORES init_atmosphere atmosphere CACHE STRING "MPAS-Model: cores to build.")
     ecbuild_bundle( PROJECT MPAS SOURCE "../sorc/mpas" )
     option(ENABLE_MPAS_JEDI_DATA "Obtain mpas-jedi test data from mpas-jedi-data repository (vs tarball)" ON)

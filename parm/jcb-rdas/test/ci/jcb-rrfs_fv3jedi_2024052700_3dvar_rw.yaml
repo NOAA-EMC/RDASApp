@@ -1,5 +1,5 @@
 # This is overwritten in the testing but allows command line test of jcb
-algorithm: local_ensemble_da_observer
+algorithm: 3dvar
 
 # Search path for model and obs for JCB (relative for the submodule, or can be absolute)
 # --------------------------------------------------------------------------------------
@@ -8,95 +8,91 @@ app_path_model: rdas/model/fv3/atmosphere
 app_path_observations: rdas/observations/atmosphere
 app_path_observation_chronicle: rdas/observation_chronicle/atmosphere
 
+
 # Places where we deviate from the generic file name of a yaml
 # ------------------------------------------------------------
-output_mean_prior_file: atmosphere_output_mean_prior
-posterior_output_file: atmosphere_output_mean_posterior
-output_increment_file: atmosphere_output_mean_increments # not used in ctest
-output_ensemble_increments_file: atmosphere_output_ensemble_increments # not used in ctest
+final_increment_file: atmosphere_final_increment
+output_file: atmosphere_output
+output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
+background_error_file: atmosphere_background_error_3dvar_gsibec
+#vader_custom_cookbook_file: atmosphere_vader_custom_cookbook
 
 # Global analysis things
 # ----------------------
 window_length: PT6H
 bound_to_include: begin
+minimizer: DRPCG
+final_diagnostics_departures: oman
+number_of_outer_loops: 2
+ninner: 50
+gradient_norm_reduction: 1e-3
+#write_increment_outer_loop_1: true
+#write_increment_outer_loop_2: true
+distribution: RoundRobin
 empty_obs_space_action: create output
 write_into_existing_files: false
-atmosphere_number_ensemble_members: 30
 
-# Testing
-# -------
-do_testing: true
-test_reference_filename: testoutput/rrfs-fv3jedi-getkf-solver.ref
-test_output_filename: rrfs-fv3jedi-getkf-solver.out
-test_float_relative_tolerance: 0.02
-test_float_absolute_tolerance: 1.0e-6
-test_integer_tolerance: 3
-
-# Local Ensemble DA (LETKF)
-# -------------------------
-local_ensemble_da_solver: Deterministic GETKF
-
-increment_variables:
+analysis_variables:
 - eastward_wind
 - northward_wind
 - air_temperature
-- air_pressure_thickness
 - water_vapor_mixing_ratio_wrt_moist_air
-- cloud_liquid_ice
-- cloud_liquid_water
 - ozone_mass_mixing_ratio
+#- air_pressure_thickness
+#- cloud_liquid_water
+#- cloud_liquid_ice
+#- rain_water
+#- snow_water
+#- graupel
+- upward_air_velocity
+#- equivalent_reflectivity_factor
+- air_pressure_at_surface
+
+control_variables:
+- eastward_wind
+- northward_wind
+- virtual_temperature
+- water_vapor_mixing_ratio_wrt_moist_air
+- mole_fraction_of_ozone_in_air
+#- cloud_liquid_water
+#- cloud_liquid_ice
+#- rain_water
+#- snow_water
+#- graupel
+- upward_air_velocity
+#- equivalent_reflectivity_factor
+- air_pressure_at_surface
 
 fields_to_write:
 - eastward_wind
 - northward_wind
 - air_temperature
-- air_pressure_thickness
 - water_vapor_mixing_ratio_wrt_moist_air
-- cloud_liquid_ice
-- cloud_liquid_water
-- rain_water
-- snow_water
-- graupel
+- ozone_mass_mixing_ratio
 - upward_air_velocity
+- air_pressure_thickness
 
-# Veritcal localization for GETKF
-vl_fraction_of_retained_variance: 0.850
-vl_lengthscale: 0.50
-vl_lengthscale_units: logp
-inflation_rtps: 0.95
-inflation_rtpp: 0.0
-inflation_mult: 1.0
+state_variables_to_inverse:
+- eastward_wind
+- northward_wind
+- air_temperature
+- water_vapor_mixing_ratio_wrt_moist_air
+- ozone_mass_mixing_ratio
+- upward_air_velocity
+- geopotential_at_surface
+- air_pressure_thickness
+- air_pressure_at_surface
 
-# Horizontal localization for GETKF
-obs_distribution_localizations:
-  obs_distribution:
-    name: Halo
-    halo size: 500e3
-  obs_localizations:
-  - localization method: Horizontal Gaspari-Cohn
-    lengthscale: 200e3
-override_obs_distribution_localizations:
-  override: true
-  refl10cm: # not used in getkf ctests, but leaving as an example
-    obs_distribution:
-      name: Halo
-      halo size: 100e3
-    obs_localizations:
-    - localization method: Horizontal Gaspari-Cohn
-      lengthscale: 15e3
-
-# Driver
-driver_update_obs_config_with_geometry_info: false
-driver_run_as_observer_only: false
-driver_read_HX_from_disk: true
-driver_do_posterior_observer: false
-driver_save_posterior_mean: true
-driver_save_posterior_ensemble: false
-driver_save_prior_mean: true
-driver_save_posterior_mean_increment: false
-driver_save_posterior_ensemble_increments: false
+# Testing
+# -------
+do_testing: true
+test_reference_filename: testoutput/rrfs-fv3jedi-3dvar-rw.ref
+test_output_filename: rrfs-fv3jedi-3dvar-rw.out
+test_float_relative_tolerance: 0.02
+test_float_absolute_tolerance: 1.0e-6
+test_integer_tolerance: 3
 
 # Model things
 # ------------
@@ -109,6 +105,8 @@ atmosphere_npz_ges: 65
 atmosphere_npx_anl: 420
 atmosphere_npy_anl: 252
 atmosphere_npz_anl: 65
+atmosphere_fv3jedi_files_path: DataFix
+atmosphere_fv3jedi_files_path: DataFix
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
 atmosphere_io_layout_y: 1
@@ -116,14 +114,15 @@ atmosphere_io_layout_y: 1
 # Background
 atmosphere_background_path: "./"
 atmosphere_background_ensemble_path: "data/inputs/mem%mem%"
+
 atmosphere_background_time_iso: '2024-05-27T00:00:00Z'
 atmosphere_background_time_prefix: ""
-filename_core: 20240527.000000.fv_core.res.tile1.nc
-filename_trcr: 20240527.000000.fv_tracer.res.tile1.nc
-filename_phys: 20240527.000000.phy_data_prepdbz.nc
-filename_sfcd: 20240527.000000.sfc_data.nc
-filename_sfcw: 20240527.000000.fv_srf_wnd.res.tile1.nc
-filename_cplr: 20240527.000000.coupler.res
+filename_core: fv_core.res.tile1.nc
+filename_trcr: fv_tracer.res.tile1.nc
+filename_phys: phy_data_prepdbz.nc
+filename_sfcd: sfc_data.nc
+filename_sfcw: fv_srf_wnd.res.tile1.nc
+filename_cplr: coupler.res
 
 state_variables:
 - eastward_wind
@@ -152,7 +151,6 @@ state_variables:
 - cloud_ice_number_concentration
 - rain_number_concentration
 - upward_air_velocity
-- equivalent_reflectivity_factor
 - air_temperature_at_2m
 - water_vapor_mixing_ratio_wrt_moist_air_at_2m
 - eastward_wind_at_surface
@@ -186,9 +184,29 @@ northward_wind_at_surface: v_srf
 
 abi_simulated_channels: 7-16
 
+# Background error
+atmosphere_bump_data_directory: DATA/berror
+atmosphere_gsibec_path: DATA/berror
+atmosphere_number_ensemble_members: 30
+atmosphere_layout_gsib_x: 16
+atmosphere_layout_gsib_y: 10
+gsibec_lats: 127
+gsibec_lons: 211
+lat_start: -14.726005
+lat_end: 14.726005
+lon_start: -25.076254
+lon_end: 25.076254
+north_pole_lat: 51.499999
+north_pole_lon: 82.500018
+gsi_bands: 10
+
 # Forecasting
 atmosphere_forecast_length: PT6H
 atmosphere_forecast_timestep: PT1H
+
+# Write final increment on Gaussian grid in variational
+atmosphere_final_increment_prefix: "./anl/atminc."
+
 
 # Observation things
 # ------------------
@@ -204,9 +222,9 @@ observations:
 #- adpupa_winds_220
 #- adpupa_winds_232
 
-- aircar_airTemperature_133
-- aircar_specificHumidity_133
-- aircar_winds_233
+#- aircar_airTemperature_133
+#- aircar_specificHumidity_133
+#- aircar_winds_233
 
 #- aircft_airTemperature_130
 #- aircft_airTemperature_131
@@ -251,13 +269,50 @@ observations:
 #- sfcshp_winds_282
 #- sfcshp_winds_284
 
+
 # Remote
+- nexrad_radialVelocity_999
 #- gnss_zenithTotalDelay
+
+# Meteosat / EUMETSAT satelliteIdentifier 56
+#- satwnd_winds_243_56
+#- satwnd_winds_253_56
+#
+# Meteosat / EUMETSAT satelliteIdentifier 57
+#- satwnd_winds_243_57
+#- satwnd_winds_253_57
+
+# Himawari / JMA satelliteIdentifier 174
+#- satwnd_winds_242_174
+#- satwnd_winds_250_174
+#- satwnd_winds_252_174
+
+# GOES-16 satelliteIdentifier 270
 #- satwnd_winds_245_270
+#- satwnd_winds_246_270
+#- satwnd_winds_247_270
+
+# GOES-18 satelliteIdentifier 272
 #- satwnd_winds_245_272
+#- satwnd_winds_246_272
+#- satwnd_winds_247_272
+
+# GOES-19 satelliteIdentifier 273
+#- satwnd_winds_245_273
+#- satwnd_winds_246_273
+#- satwnd_winds_247_273
 
 # SatRad
 #- abi_g16
+#- abi_g18
+#- amsua_n19
+#- amsua_metop-b
+#- amsua_metop-c
+#- atms_npp
+#- atms_n20
+#- atms_n21
+#- cris-fsr_n20
+#- cris-fsr_n21
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -317,12 +372,36 @@ iuse_sfcshp_winds_282: accept
 iuse_sfcshp_winds_284: accept
 
 # Remote
+iuse_nexrad_radialVelocity_999: accept
 iuse_gnss_zenithTotalDelay: accept
+iuse_satwnd_winds_243_56: accept
+iuse_satwnd_winds_253_56: accept
+iuse_satwnd_winds_243_57: accept
+iuse_satwnd_winds_253_57: accept
+iuse_satwnd_winds_242_174: accept
+iuse_satwnd_winds_250_174: accept
+iuse_satwnd_winds_252_174: accept
 iuse_satwnd_winds_245_270: accept
+iuse_satwnd_winds_246_270: accept
+iuse_satwnd_winds_247_270: accept
 iuse_satwnd_winds_245_272: accept
+iuse_satwnd_winds_246_272: accept
+iuse_satwnd_winds_247_272: accept
+iuse_satwnd_winds_245_273: accept
+iuse_satwnd_winds_246_273: accept
+iuse_satwnd_winds_247_273: accept
 
 # SatRad
 iuse_abi_g16: accept
+iuse_abi_g18: accept
+iuse_amsua_n19: accept
+iuse_amsua_metop-b: accept
+iuse_amsua_metop-c: accept
+iuse_atms_npp: accept
+iuse_atms_n20: accept
+iuse_atms_n21: accept
+iuse_cris-fsr_n20: accept
+iuse_cris-fsr_n21: accept
 
 crtm_coefficient_path: "Data/crtm"
 
@@ -349,3 +428,38 @@ atmosphere_obsbiasout_prefix: APREFIX
 atmosphere_obsbiasout_suffix: ".satbias.nc"
 atmosphere_obsbiascovout_prefix: APREFIX
 atmosphere_obsbiascovout_suffix: ".satbias_cov.nc"
+
+
+# Local Ensemble DA (LETKF)
+# -------------------------
+local_ensemble_da_solver: GETKF
+
+increment_variables:
+- eastward_wind
+- northward_wind
+- air_temperature
+- air_pressure_thickness
+- water_vapor_mixing_ratio_wrt_moist_air
+- cloud_liquid_ice
+- cloud_liquid_water
+- ozone_mass_mixing_ratio
+
+# Veritcal localization for GETKF
+vl_fraction_of_retained_variance: 0.750
+vl_lengthscale: 2.1
+vl_lengthscale_units: logp
+inflation_rtps: 0.85
+inflation_rtpp: 0.0
+inflation_mult: 1.0
+
+# Driver
+driver_update_obs_config_with_geometry_info: true
+driver_save_posterior_mean: false
+driver_save_posterior_ensemble: false
+driver_save_prior_mean: false
+driver_save_posterior_mean_increment: false
+driver_save_posterior_ensemble_increments: true
+
+# Diagnostics
+atmosphere_ensemble_increment_prefix: "./anl/mem%{member}%/atminc."
+atmosphere_posterior_output_gaussian: "./mem%{member}%/atmanl."

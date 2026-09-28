@@ -249,6 +249,7 @@
          action:
            name: reject
 
+{% if use_online_domain_check | default(true) %}
        # Regional Domain Check
        - filter: Bounds Check
          filter variables:
@@ -259,6 +260,7 @@
            flag all filter variables if any test variable is out of bounds: true
            minvalue: 0.0
            maxvalue: 0.5
+{% endif %}
 
        # Step 0-C: Assign Initial All-Sky Observation Error
        - filter: Perform Action

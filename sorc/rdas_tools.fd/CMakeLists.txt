@@ -26,3 +26,4 @@ find_package(ZLIB REQUIRED)
 find_package(MPI REQUIRED)
 
 add_subdirectory(sorc/rdas_ua2u)
+add_subdirectory(sorc/rdas_nexrad_superob)

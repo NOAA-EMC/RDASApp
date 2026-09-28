@@ -71,7 +71,7 @@
      if ( ndims /= 4 ) then
         write(*,'(a)')' !!!!! warning: please check u dimensions in '//trim(in_file)
         write(*,*)ndims, dims
-        stop
+        stop 1
      endif
      iz=dims(3)
      write(*,*),'dims: ',dims(1:4)
@@ -114,7 +114,7 @@
      if ( ndims /= 4 ) then
         write(*,'(a)')' !!!!! warning: please check ua dimensions in '//trim(in_anl)
         write(*,*)ndims, dims
-        stop
+        stop 1
      endif
      iz=dims(3)
      write(*,'(a,i,a,i,a,i,a,i,a,i)')'u dimensions: ',ix,'=',dims(1),':',iy,'=',dims(2),':',iz
@@ -173,7 +173,7 @@
      if ( ndims /= 4 ) then
         write(*,'(a)')' !!!!! warning: please check ua dimensions in '//trim(in_file)
         write(*,*)ndims, dims
-        stop
+        stop 1
      endif
      iz=dims(3)
      write(*,'(a,i,a,i,a,i,a,i,a,i)')'u dimensions: ',ix,'=',dims(1),':',iy,'=',dims(2),':',iz
@@ -220,7 +220,7 @@
         if ( trim(out_file) == 'w' .or. len_trim(out_file) < 1 ) then
            write(*,'(a)')' !!!!! error: --in_file has no u/v to update in place, and --out_file was not given'
            write(*,'(a)')'             specify --out_file (to write raw increments)'
-           stop
+           stop 1
         else
            nc_file=trim(out_file)
         endif
@@ -307,7 +307,7 @@
               deallocate(ddat4)
            else
               write(*,*)' !!!! please add ',xtype,' xtype data here '
-              stop
+              stop 1
            endif
 
            !---write out
