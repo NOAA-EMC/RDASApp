@@ -320,6 +320,12 @@ fi
 CRTM_DATA=$dir_root/bundle/test-data-release/crtm/2.4.0
 # i-jedi (and mist) are off by default; rrfs-workflow does not need them yet
 if [[ "$BUILD_IJEDI" == "YES" ]]; then
+  # Clone mist on demand if it has not been checked out yet.
+  # mist is private (needs GitHub login), so .gitmodules sets update=none to keep recursive clones anonymous.
+  if [[ ! -e $dir_root/sorc/mist/.git ]]; then
+    echo "Cloning private mist submodule (requires GitHub access to JCSDA-internal) ..."
+    git -C $dir_root submodule update --init --checkout sorc/mist
+  fi
   CMAKE_OPTS+=" -DBUILD_IJEDI=ON"
 else
   CMAKE_OPTS+=" -DBUILD_IJEDI=OFF"
