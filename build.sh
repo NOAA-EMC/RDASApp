@@ -144,7 +144,7 @@ esac
 # Set default number of build jobs based on machine
 if [[ $BUILD_TARGET == 'orion' ]]; then # lower due to memory limit on login nodes
   BUILD_JOBS=${BUILD_JOBS:-4}
-elif [[ $BUILD_TARGET == 'gaeac6' ]] || [[ $BUILD_TARGET == 'ursa' ]]; then # each node has 192 cores
+elif [[ $BUILD_TARGET == gaeac* ]] || [[ $BUILD_TARGET == 'ursa' ]]; then # each node has 192 cores
   BUILD_JOBS=${BUILD_JOBS:-12}
 else # hera, hercules, jet, etc
   BUILD_JOBS=${BUILD_JOBS:-6}

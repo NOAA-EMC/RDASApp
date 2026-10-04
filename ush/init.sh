@@ -14,9 +14,6 @@ case ${MACHINE_ID} in
   ursa)
     RDAS_DATA=/scratch4/BMC/rtrr/RDAS_DATA
     ;;
-  jet)
-    RDAS_DATA=/lfs5/BMC/nrtrr/RDAS_DATA
-    ;;
   orion|hercules)
     RDAS_DATA=/work/noaa/zrtrr/RDAS_DATA
     ;;
@@ -28,6 +25,8 @@ case ${MACHINE_ID} in
       RDAS_DATA=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/RDAS_DATA
     elif [[ -d /gpfs/f6 ]]; then
       RDAS_DATA=/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/RDAS_DATA
+    elif [[ -d /gpfs/f7 ]]; then
+      RDAS_DATA=/gpfs/f7/wrfruc/world-shared/role.rrfsfix/RDAS_DATA
     else
       echo "unsupported gaea cluster: ${MACHINE_ID}"
     fi
