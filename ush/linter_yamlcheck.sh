@@ -8,26 +8,25 @@ case ${MACHINE_ID} in
     EXEC_DIR=/to/be/added
     ;;
   hera)
-    # Note: bokeh env installed on Ursa but linter checks still work on Hera
-    EXEC_DIR=/scratch3/BMC/wrfruc/gge/Miniforge3/envs/bokeh/bin
+    # Note: pyDAmonitor env installed on Ursa but linter checks still work on Hera
+    EXEC_DIR=/scratch3/BMC/wrfruc/gge/Miniforge3/envs/pyDAmonitor/bin
     ;;
   ursa)
-    EXEC_DIR=/scratch3/BMC/wrfruc/gge/Miniforge3/envs/bokeh/bin
-    ;;
-  jet)
-    EXEC_DIR=/lfs6/BMC/wrfruc/gge/Miniforge3/envs/bokeh/bin
+    EXEC_DIR=/scratch3/BMC/wrfruc/gge/Miniforge3/envs/pyDAmonitor/bin
     ;;
   orion)
-    EXEC_DIR=/work/noaa/zrtrr/gge/Miniforge3/envs/bokeh/bin
+    EXEC_DIR=/work/noaa/zrtrr/gge/Miniforge3/envs/pyDAmonitor/bin
     ;;
   hercules)
-    EXEC_DIR=/work/noaa/zrtrr/gge/hercules/Miniforge3/envs/bokeh/bin
+    EXEC_DIR=/work/noaa/zrtrr/gge/hercules/Miniforge3/envs/pyDAmonitor/bin
     ;;
   gaeac?)
     if [[ -d /gpfs/f5 ]]; then
       EXEC_DIR=/to/be/added
     elif [[ -d /gpfs/f6 ]]; then
-      EXEC_DIR=/gpfs/f6/bil-fire10-oar/world-shared/gge/Miniforge3/envs/bokeh/bin
+      EXEC_DIR=/gpfs/f6/bil-fire10-oar/world-shared/gge/Miniforge3/envs/pyDAmonitor/bin
+    elif [[ -d /gpfs/f7 ]]; then
+      EXEC_DIR=/gpfs/f7/wrfruc/world-shared/gge/Miniforge3/envs/pyDAmonitor/bin
     else
       echo "unsupported gaea cluster: ${MACHINE_ID}"
       exit 1
