@@ -27,8 +27,9 @@
           - GeopotentialHeight_B
           geopotential_height_at_surface:
           - GeopotentialHeightAtSurface_A
-          geopotential_height_levels:
-          - GeopotentialHeightLevels_B
+          # Currently does not work with top-down models
+          #geopotential_height_levels:
+          #- GeopotentialHeightLevels_B
           #gsi_snow_water_equivalent:
           #- GsiSnowWaterEquivalent_A
           gsi_surface_type_index:
@@ -104,7 +105,8 @@
         - effective_radius_of_cloud_liquid_water_particle
         - geopotential_height
         - geopotential_height_at_surface
-        - geopotential_height_levels
+        # Currently does not work with top-down models
+        #- geopotential_height_levels
         #- gsi_snow_water_equivalent
         - height_above_mean_sea_level
         - height_above_mean_sea_level_at_surface
