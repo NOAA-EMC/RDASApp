@@ -51,6 +51,21 @@
        obs filters:
          # Create the height coordinate and wind scaling used by VertInterp
          # so surface wind H(x) represents the reported 10 m wind.
+         # Surface wind observations are reported 10 m above station elevation.
+         - filter: Variable Assignment
+           where:
+           - variable:
+               name: ObsType/windEastward
+             is_in: [282]
+           assignments:
+           - name: MetaData/height
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables: [MetaData/stationElevation]
+                 coefs: [1.0]
+                 intercept: 10.0
          - filter: Variable Transforms
            Transform: AdjustedHeightCoordinate
            SkipWhenNoObs: False
