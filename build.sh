@@ -302,6 +302,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Workaround for ObsErrorFactorPressureCheck.cc and At2M (no PR yet)
   cp ../sorc/_workaround_/ufo/ObsErrorFactorPressureCheck.cc ../sorc/ufo/src/ufo/filters/obsfunctions/.
 
+  # Publish the scaled 10 m wind under the surface-wind name required by CRTM (no PR yet).
+  cp ../sorc/_workaround_/vader/WindSpeedAt10m_B.cc ../sorc/vader/src/vader/betaNames_CRTMRecipes/.
+
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)
