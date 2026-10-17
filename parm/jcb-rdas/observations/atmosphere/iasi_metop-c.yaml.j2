@@ -35,7 +35,9 @@
            IRVISiceCoeff: NPOESS
          linear obs operator:
            Absorbers: [H2O,O3]
-           zeroO3JacRange: [996, 1170]
+           nullify jacobian params:
+           - variable: mole_fraction_of_ozone_in_air
+             channels: 1-8461
 
       # ------------------------------------
       # Observation Bias Correction (VarBC)
@@ -410,7 +412,7 @@
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *iasi_metop-c_channels
              options:
-               sensor: iasi_metop-c
+               sensor: infrared
                channels: *iasi_metop-c_channels
 
        # ---------------------------------------------------------------
@@ -430,7 +432,7 @@
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *iasi_metop-c_channels
              options:
-               sensor: iasi_metop-c  
+               sensor: infrared
                channels: *iasi_metop-c_channels
 
        # -----------------------------------------------------------------
@@ -450,7 +452,7 @@
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *iasi_metop-c_channels
              options:
-               sensor: iasi_metop-c  
+               sensor: infrared
                channels: *iasi_metop-c_channels
 
        # -----------------------------------------------------------------------------------------------------------------------------------------------------

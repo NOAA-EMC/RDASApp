@@ -384,7 +384,12 @@
              name: ObsErrorFactorTopoRad@ObsFunction
              channels: *atms_n20_channels
              options:
-               sensor: atms_n20
+               sensor: microwave
+               height groups:
+               - channels: 1-7, 16-22
+                 height: 2000
+               - channels: 8
+                 height: 4000
                channels: *atms_n20_channels
 
        - filter: Perform Action

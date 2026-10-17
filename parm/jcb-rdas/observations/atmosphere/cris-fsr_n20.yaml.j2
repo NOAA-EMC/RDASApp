@@ -35,7 +35,9 @@
            #IRVISiceCoeff: NPOESS
          linear obs operator:
            Absorbers: [H2O, O3]
-           zeroO3JacRange: [996, 1170]
+           nullify jacobian params:
+           - variable: mole_fraction_of_ozone_in_air
+             channels: 1-2211
 
       # ------------------------------------
       # Observation Bias Correction (VarBC)
@@ -377,7 +379,7 @@
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *cris-fsr_n20_channels
              options:
-               sensor: cris-fsr_n20
+               sensor: infrared
                channels: *cris-fsr_n20_channels
 
        # -----------------------------------------------------------------------------------------------------------------------------------------------
