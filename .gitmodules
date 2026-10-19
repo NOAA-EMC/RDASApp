@@ -1,7 +1,7 @@
 [submodule "sorc/crtm"]
 	path = sorc/crtm
-	url = https://github.com/jcsda/crtm
-	branch = release/crtm_jedi_v2.4.1
+	url = https://github.com/RRFSx/crtm
+	branch = aod
 	ignore = all
 [submodule "sorc/femps"]
 	path = sorc/femps
@@ -51,7 +51,7 @@
 [submodule "sorc/saber"]
 	path = sorc/saber
 	url = https://github.com/RRFSx/saber.git
-	branch = rrfs_20261016
+	branch = rrfs_20261019
 	ignore = all
 [submodule "sorc/ufo"]
 	path = sorc/ufo
