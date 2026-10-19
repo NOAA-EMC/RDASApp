@@ -22,19 +22,55 @@
          simulated variables: [windEastward, windNorthward]
 
        obs operator:
-           name: SfcCorrected
-           correction scheme to use: GSL
+           name: VertInterp
+           # Interpolate the lowest model wind to the observation height and
+           # scale it to represent the observed 10 m wind.
+           vertical coordinate: geopotential_height
+           observation vertical coordinate: adjustedHeight
+           observation vertical coordinate group: DerivedVariables
+           interpolation method: linear
+           hofx scaling field: SurfaceWindScalingHeight
+           hofx scaling field group: DerivedVariables
            variables:
            - name: windEastward
            - name: windNorthward
 
        linear obs operator:
-         name: Identity
+         name: VertInterp
+         vertical coordinate: geopotential_height
+         observation vertical coordinate: adjustedHeight
+         observation vertical coordinate group: DerivedVariables
+         interpolation method: linear
+         hofx scaling field: SurfaceWindScalingHeight
+         hofx scaling field group: DerivedVariables
 
        obs error:
          covariance model: diagonal
 
        obs filters:
+         # Create the height coordinate and wind scaling used by VertInterp
+         # so surface wind H(x) represents the reported 10 m wind.
+         # Surface wind observations are reported 10 m above station elevation.
+         - filter: Variable Assignment
+           where:
+           - variable:
+               name: ObsType/windEastward
+             is_in: [284]
+           assignments:
+           - name: MetaData/height
+             type: int
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables: [MetaData/stationElevation]
+                 coefs: [1.0]
+                 intercept: 10.0
+         - filter: Variable Transforms
+           Transform: AdjustedHeightCoordinate
+           SkipWhenNoObs: False
+         - filter: Variable Transforms
+           Transform: SurfaceWindScalingHeight
+           SkipWhenNoObs: False
          # ------------------
          # wind (284)
          # ------------------

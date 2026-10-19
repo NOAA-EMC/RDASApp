@@ -1,0 +1,379 @@
+     - obs space:
+         name: adpsfc_airTemperatureAt2M_187
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "data/obs/ioda_adpsfc.nc"
+             missing file action: "warn"
+           obsgrouping:
+             group variables: ["stationIdentification"]
+             sort variable: "pressure"
+             sort order: "descending"
+         obsdataout:
+           empty obs space action: "{{empty_obs_space_action}}"
+           write multiple files: {{write_multiple_files | default(false) }}
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_airTemperatureAt2M_187.nc
+             allow overwrite: true
+         io pool:
+           max pool size: {{ max_pool_size | default(1) }}
+         observed variables: [airTemperatureAt2M]
+         simulated variables: [airTemperatureAt2M]
+
+       obs operator:
+         name: Identity
+
+       linear obs operator:
+         name: Identity
+         variable maps:
+         - name: airTemperatureAt2M
+           alias: air_temperature
+
+       obs error:
+         covariance model: diagonal
+
+       obs filters:
+         - filter: Variable Assignment
+           identifier:
+             name: DerivedSurfaceTemperature
+             logging: true
+           assignments:
+           - name: DerivedObsValue/airTemperatureAt2M
+             type: float
+             function:
+               name: ObsFunction/ModelHeightAdjustedAirTemperature
+               options:
+                 elevation:
+                   name: MetaData/stationElevation
+                 observed variable:
+                   name: ObsValue/airTemperatureAt2M
+                 temperature lapse rate in K/km:
+                   scheme: local
+                   level1: 1
+                   level2: 5
+                   bounds:
+                     minvalue: 0.5
+                     maxvalue: 10.0
+         # ------------------
+         # airTemperatureAt2M (187)
+         # ------------------
+         # Accept, reject, or passivate (monitor)
+         - filter: Perform Action
+           udescriptor: "iuse_check"
+           filter variables:
+           - name: airTemperatureAt2M
+           where:
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           action:
+             name: {{iuse_adpsfc_airTemperatureAt2M_187 | default("passivate", true)}} # accept, reject, passivate
+
+         # Reject all obs not in type
+         - filter: Perform Action
+           udescriptor: "obs_type_check"
+           where:
+           - variable: ObsValue/airTemperatureAt2M
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in kx
+         - filter: Perform Action
+           udescriptor: "obs_kx_check"
+           where:
+           - variable: ObsType/airTemperatureAt2M
+             is_not_in: 187
+           action:
+             name: reduce obs space
+
+         # Reject all obs with QualityMarker > 3
+         - filter: RejectList
+           udescriptor: "quality_marker_check"
+           filter variables:
+           - name: airTemperatureAt2M
+           where:
+           - variable: QualityMarker/airTemperatureAt2M
+             is_in: 4-15
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Time window filter
+         - filter: Bounds Check
+           udescriptor: "time_window_check"
+           filter variables:
+           - name: airTemperatureAt2M
+           test variables:
+           - name: MetaData/timeOffset
+           minvalue: -900
+           maxvalue: 900
+           where:
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: DuplicateThinning
+           udescriptor: "duplicate_check"
+           filter variables:
+           - name: airTemperatureAt2M
+           analysis_time: "{{ atmosphere_background_time_iso }}"
+           analysis_time_tolerance: PT0S
+           min_spacing: PT90M
+           equidistant_time_selection: after
+           variable names:
+           - MetaData/longitude
+           - MetaData/latitude
+           tolerance:
+           - 1.0e-6
+           - 1.0e-6
+           where:
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           action:
+             name: reduce obs space
+
+{% if use_online_domain_check | default(true) %}
+         # Online regional domain check
+         - filter: Bounds Check
+           udescriptor: "online_domain_check"
+           filter variables:
+           - name: airTemperatureAt2M
+           test variables:
+           - name:  GeoVaLs/observable_domain_mask
+           minvalue: 0.0
+           maxvalue: 0.5
+{% endif %}
+
+         # Initial error assignment
+         - filter: Perform Action
+           udescriptor: "initial_error_assignment"
+           filter variables:
+           - name: airTemperatureAt2M
+           where:
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           action:
+             name: assign error
+             error function:
+               name: ObsFunction/ObsErrorModelStepwiseLinear
+               options:
+                 xvar:
+                   name: MetaData/pressure
+                 xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
+                 errors: [2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585, 2.2585]
+
+{% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
+         # Reduce observation error and turn off ObsErrorFactorPressureCheck (l_gsd_terrain_match_surfTobs=.true., l_sfcobserror_ramp_t=.true.,)
+         - filter: Perform Action
+           udescriptor: "ob_error_inflation"
+           filter variables:
+           - name: airTemperatureAt2M
+           where:
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           action:
+             name: inflate error
+             inflation factor: 0.5
+
+#         # Error inflation based on pressure check (setupt.f90)
+#         - filter: Perform Action
+#           udescriptor: "error_inflation_pressure_check"
+#           filter variables:
+#           - name: airTemperatureAt2M
+#           where:
+#           - variable: ObsType/airTemperatureAt2M
+#             is_in: 187
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorPressureCheck
+#               options:
+#                 variable: airTemperatureAt2M
+#                 surface observation error ramp: true
+#                 max levels below surface: 15
+#                 inflation factor: 8.0
+
+#         # Error inflation based on errormod (qcmod.f90)
+#         - filter: Perform Action
+#           filter variables:
+#           - name: airTemperatureAt2M
+#           where:
+#           - variable: ObsType/airTemperatureAt2M
+#             is_in: 187
+#           action:
+#             name: inflate error
+#             inflation variable:
+#               name: ObsFunction/ObsErrorFactorConventional
+#               options:
+#                 inflate variables: [airTemperatureAt2M]
+#                 pressure: MetaData/pressure
+
+         # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
+         - filter: Perform Action
+           udescriptor: "error_inflation_QualityMarker"
+           filter variables:
+           - name: airTemperatureAt2M
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: QualityMarker/airTemperatureAt2M
+             is_in: 3
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+
+         # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
+         - filter: Perform Action
+           udescriptor: "error_inflation_observation_pressure"
+           filter variables:
+           - name: airTemperatureAt2M
+           action:
+             name: inflate error
+             inflation factor: 1.2
+           where:
+           - variable: MetaData/pressure
+             maxvalue: 10000.0
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+{% endif %}  # END use_error_inflation
+
+         # Bounds Check (ObsError)
+         - filter: Bounds Check
+           udescriptor: "bounds_check_ObsError"
+           filter variables:
+           - name: airTemperatureAt2M
+           test variables:
+           - name:  ObsErrorData/airTemperatureAt2M
+           minvalue: 0.0
+           maxvalue: 1000
+           where:
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           action:
+             name: reduce obs space
+
+         # Bounds Check (ObsValue)
+         - filter: Bounds Check
+           udescriptor: "bounds_check_ObsValue"
+           filter variables:
+           - name: airTemperatureAt2M
+           minvalue: 100
+           maxvalue: 400
+           where:
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           action:
+             name: reduce obs space
+
+         # Create temporary ObsErrorData
+         - filter: Variable Assignment
+           udescriptor: "create_temporary_ObsErrorData"
+           apply at iterations: 0,1
+           where:
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           assignments:
+           - name: TempObsErrorData/airTemperatureAt2M
+             type: float
+             function:
+               name: ObsFunction/Arithmetic
+               options:
+                 variables:
+                 - name: ObsErrorData/airTemperatureAt2M
+           defer to post: true
+
+         # Set ObsError set "error parameter" if < "max value"
+         - filter: Perform Action
+           udescriptor: "ermin_set"
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperatureAt2M
+           action:
+             name: assign error
+             error parameter: 1.0
+           where:
+           - variable:
+               name: ObsErrorData/airTemperatureAt2M
+             maxvalue: 1.0
+           - variable:
+               name: ObsErrorData/airTemperatureAt2M
+             value: is_valid
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           defer to post: true
+
+         # Set ObsError set "error parameter" if > "min value"
+         - filter: Perform Action
+           udescriptor: "ermax_set"
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperatureAt2M
+           action:
+             name: assign error
+             error parameter: 3.0
+           where:
+           - variable:
+               name: ObsErrorData/airTemperatureAt2M
+             minvalue: 3.0
+           - variable:
+               name: ObsErrorData/airTemperatureAt2M
+             value: is_valid
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           defer to post: true
+
+         # Gross Error Check
+         - filter: Background Check
+           udescriptor: "gross_error_check"
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperatureAt2M
+           threshold: 5.0
+           action:
+             name: reject
+           where:
+           - variable: QualityMarker/airTemperatureAt2M
+             is_not_in: 3
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           defer to post: true
+
+         # Gross Error Check: cgross*0.7 if QualityMarker=3
+         - filter: Background Check
+           udescriptor: "gross_error_check_0.7"
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperatureAt2M
+           threshold: 3.5
+           action:
+             name: reject
+           where:
+           - variable: QualityMarker/airTemperatureAt2M
+             is_in: 3
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           defer to post: true
+
+         # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
+         - filter: Perform Action
+           udescriptor: "reassign_error_TempObsErrorData"
+           apply at iterations: 0,1
+           filter variables:
+           - name: airTemperatureAt2M
+           action:
+             name: assign error
+             error function: TempObsErrorData/airTemperatureAt2M
+           where:
+           - variable:
+               name: TempObsErrorData/airTemperatureAt2M
+             value: is_valid
+           - variable: ObsType/airTemperatureAt2M
+             is_in: 187
+           defer to post: true
+
+         #- filter: GOMsaver
+         #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc

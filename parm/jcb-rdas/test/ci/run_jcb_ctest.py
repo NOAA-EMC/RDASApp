@@ -213,8 +213,8 @@ if __name__ == "__main__":
     msonet_provider_accepts_allsprvs = []
     msonet_provider_accepts_subproviders = []
 
-    print("uselist_path:", uselist_path)
-    print("exists:", os.path.exists(uselist_path) if uselist_path else "N/A")
+    #print("uselist_path:", uselist_path)
+    #print("exists:", os.path.exists(uselist_path) if uselist_path else "N/A")
 
     if uselist_path:
         msonet_station_accepts = parse_gsd_sfcobs_uselist(uselist_path)
@@ -227,8 +227,8 @@ if __name__ == "__main__":
         task_config["msonet_station_accepts_airTemperature"] = msonet_station_accepts_airTemperature
         task_config["msonet_station_accepts_specificHumidity"] = msonet_station_accepts_specificHumidity
 
-    print("provider_path:", provider_path)
-    print("exists:", os.path.exists(provider_path) if provider_path else "N/A")
+    #print("provider_path:", provider_path)
+    #print("exists:", os.path.exists(provider_path) if provider_path else "N/A")
 
     if provider_path:
        (msonet_provider_accepts_allsprvs, msonet_provider_accepts_subproviders) = parse_gsd_sfcobs_provider(provider_path)

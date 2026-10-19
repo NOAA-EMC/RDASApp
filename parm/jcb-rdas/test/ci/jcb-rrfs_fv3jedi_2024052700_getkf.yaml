@@ -138,7 +138,7 @@ state_variables:
 - cloud_liquid_water
 - ozone_mass_mixing_ratio
 - geopotential_at_surface
-- f10m
+- ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m
 - slmsk
 - sheleg
 - skin_temperature_at_surface
@@ -186,6 +186,7 @@ air_temperature_at_2m: t2m
 water_vapor_mixing_ratio_wrt_moist_air_at_2m: q2m
 eastward_wind_at_surface: u_srf
 northward_wind_at_surface: v_srf
+ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m: f10m
 
 abi_simulated_channels: 7-16
 
@@ -196,6 +197,12 @@ atmosphere_forecast_timestep: PT1H
 # Observation things
 # ------------------
 use_error_inflation: true
+mesonet_use_list_winds: true
+mesonet_use_list_airTemperature: true
+mesonet_use_list_specificHumidity: true
+mesonet_use_list_stationPressure: true
+mesonet_gsd_sfcobs_uselist: gsd_sfcobs_uselist.txt
+mesonet_gsd_sfcobs_provider: gsd_sfcobs_provider.txt
 
 observations:
 # Upper-air conventional
@@ -226,28 +233,28 @@ observations:
 #- rassda_airTemperature_126
 
 # Surface conventional
-#- adpsfc_airTemperature_181
-#- adpsfc_airTemperature_183
-#- adpsfc_airTemperature_187
-#- adpsfc_specificHumidity_181
-#- adpsfc_specificHumidity_183
-#- adpsfc_specificHumidity_187
+#- adpsfc_airTemperatureAt2M_181
+#- adpsfc_airTemperatureAt2M_183
+#- adpsfc_airTemperatureAt2M_187
+#- adpsfc_specificHumidityAt2M_181
+#- adpsfc_specificHumidityAt2M_183
+#- adpsfc_specificHumidityAt2M_187
 #- adpsfc_stationPressure_181
 #- adpsfc_stationPressure_187
 #- adpsfc_winds_281
 #- adpsfc_winds_284
 #- adpsfc_winds_287
-#- msonet_airTemperature_188
-#- msonet_specificHumidity_188
+#- msonet_airTemperatureAt2M_188
+#- msonet_specificHumidityAt2M_188
 #- msonet_stationPressure_188
 #- msonet_winds_288
 
-#- sfcshp_airTemperature_180
-#- sfcshp_airTemperature_182
-#- sfcshp_airTemperature_183
-#- sfcshp_specificHumidity_180
-#- sfcshp_specificHumidity_182
-#- sfcshp_specificHumidity_183
+#- sfcshp_airTemperatureAt2M_180
+#- sfcshp_airTemperatureAt2M_182
+#- sfcshp_airTemperatureAt2M_183
+#- sfcshp_specificHumidityAt2M_180
+#- sfcshp_specificHumidityAt2M_182
+#- sfcshp_specificHumidityAt2M_183
 #- sfcshp_stationPressure_180
 #- sfcshp_stationPressure_182
 #- sfcshp_winds_280
@@ -256,11 +263,50 @@ observations:
 
 # Remote
 #- gnss_zenithTotalDelay
+
+# Meteosat / EUMETSAT satelliteIdentifier 56
+#- satwnd_winds_243_56
+#- satwnd_winds_253_56
+#
+# Meteosat / EUMETSAT satelliteIdentifier 57
+#- satwnd_winds_243_57
+#- satwnd_winds_253_57
+
+# Himawari / JMA satelliteIdentifier 174
+#- satwnd_winds_242_174
+#- satwnd_winds_250_174
+#- satwnd_winds_252_174
+
+# GOES-16 satelliteIdentifier 270
 #- satwnd_winds_245_270
+#- satwnd_winds_246_270
+#- satwnd_winds_247_270
+
+# GOES-18 satelliteIdentifier 272
 #- satwnd_winds_245_272
+#- satwnd_winds_246_272
+#- satwnd_winds_247_272
+
+# GOES-19 satelliteIdentifier 273
+#- satwnd_winds_245_273
+#- satwnd_winds_246_273
+#- satwnd_winds_247_273
 
 # SatRad
 #- abi_g16
+#- abi_g18
+#- amsua_n19
+#- amsua_metop-b
+#- amsua_metop-c
+#- atms_npp
+#- atms_n20
+#- atms_n21
+#- iasi_metop-b
+#- iasi_metop-c
+
+# Radar
+#- mrms_refl
+#- nexrad_radialVelocity_999
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -291,28 +337,28 @@ iuse_vadwnd_winds_224: accept
 iuse_rassda_airTemperature_126: accept
 
 # Surface conventional
-iuse_adpsfc_airTemperature_181: accept
-iuse_adpsfc_airTemperature_183: accept
-iuse_adpsfc_airTemperature_187: accept
-iuse_adpsfc_specificHumidity_181: accept
-iuse_adpsfc_specificHumidity_183: accept
-iuse_adpsfc_specificHumidity_187: accept
+iuse_adpsfc_airTemperatureAt2M_181: accept
+iuse_adpsfc_airTemperatureAt2M_183: accept
+iuse_adpsfc_airTemperatureAt2M_187: accept
+iuse_adpsfc_specificHumidityAt2M_181: accept
+iuse_adpsfc_specificHumidityAt2M_183: accept
+iuse_adpsfc_specificHumidityAt2M_187: accept
 iuse_adpsfc_stationPressure_181: accept
 iuse_adpsfc_stationPressure_187: accept
 iuse_adpsfc_winds_281: accept
 iuse_adpsfc_winds_284: accept
 iuse_adpsfc_winds_287: accept
-iuse_msonet_airTemperature_188: accept
-iuse_msonet_specificHumidity_188: accept
+iuse_msonet_airTemperatureAt2M_188: accept
+iuse_msonet_specificHumidityAt2M_188: accept
 iuse_msonet_stationPressure_188: accept
 iuse_msonet_winds_288: accept
 
-iuse_sfcshp_airTemperature_180: accept
-iuse_sfcshp_airTemperature_182: accept
-iuse_sfcshp_airTemperature_183: accept
-iuse_sfcshp_specificHumidity_180: accept
-iuse_sfcshp_specificHumidity_182: accept
-iuse_sfcshp_specificHumidity_183: accept
+iuse_sfcshp_airTemperatureAt2M_180: accept
+iuse_sfcshp_airTemperatureAt2M_182: accept
+iuse_sfcshp_airTemperatureAt2M_183: accept
+iuse_sfcshp_specificHumidityAt2M_180: accept
+iuse_sfcshp_specificHumidityAt2M_182: accept
+iuse_sfcshp_specificHumidityAt2M_183: accept
 iuse_sfcshp_stationPressure_180: accept
 iuse_sfcshp_stationPressure_182: accept
 iuse_sfcshp_winds_280: accept
@@ -321,11 +367,38 @@ iuse_sfcshp_winds_284: accept
 
 # Remote
 iuse_gnss_zenithTotalDelay: accept
+iuse_satwnd_winds_243_56: accept
+iuse_satwnd_winds_253_56: accept
+iuse_satwnd_winds_243_57: accept
+iuse_satwnd_winds_253_57: accept
+iuse_satwnd_winds_242_174: accept
+iuse_satwnd_winds_250_174: accept
+iuse_satwnd_winds_252_174: accept
 iuse_satwnd_winds_245_270: accept
+iuse_satwnd_winds_246_270: accept
+iuse_satwnd_winds_247_270: accept
 iuse_satwnd_winds_245_272: accept
+iuse_satwnd_winds_246_272: accept
+iuse_satwnd_winds_247_272: accept
+iuse_satwnd_winds_245_273: accept
+iuse_satwnd_winds_246_273: accept
+iuse_satwnd_winds_247_273: accept
 
 # SatRad
 iuse_abi_g16: accept
+iuse_abi_g18: accept
+iuse_amsua_n19: accept
+iuse_amsua_metop-b: accept
+iuse_amsua_metop-c: accept
+iuse_atms_npp: accept
+iuse_atms_n20: accept
+iuse_atms_n21: accept
+iuse_cris-fsr_n20: accept
+iuse_cris-fsr_n21: accept
+
+# Radar
+iuse_mrms_refl: accept
+iuse_nexrad_radialVelocity_999: accept
 
 crtm_coefficient_path: "Data/crtm"
 
