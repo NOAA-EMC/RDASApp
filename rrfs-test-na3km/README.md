@@ -20,21 +20,21 @@ rrfs-test-na3km/scripts/stage_na3km_case.sh <download_dir> <case_dir>
 ```
 
 `<download_dir>` holds the RRFSv1 2024052700 restarts: `fcst_fv3lam/INPUT` for the
-control and `memNNNN/fcst_fv3lam/DA_OUTPUT` for the members. The default case location is
-`fix/.agent/expr_data/na3km_2024052700` (the machine's RDAS_DATA tree).
+control and `memNNNN/fcst_fv3lam/DA_OUTPUT` for the members. The staged case location is
+set per machine in `CMakeLists.txt`:
+
+- ursa: `/scratch4/BMC/zrtrr/Samuel.Degelia/rrfsv1_NA_domain/na3km_2024052700`
+- wcoss2: not staged yet
 
 ## Configure and run
 
 ```
-RRFS_NA3KM_DATA=<case_dir> ./build.sh -m FV3 -n YES   # RRFS_NA3KM_DATA only if not the default
-# or, in an existing build:
-cd build && cmake -DBUILD_RRFS_TEST_NA3KM=ON -DRRFS_NA3KM_DATA=<case_dir> .
-cd rrfs-test-na3km && ctest -V
+./build.sh -m FV3 -n YES
+cd build/rrfs-test-na3km && ctest -V
 ```
 
-Optional settings: `RRFS_NA3KM_PPN` (tasks per node, default 40) and
-`RRFS_NA3KM_WALLTIME` (default 01:00:00). On ursa, set `SLURM_ACCOUNT` before running ctest;
-on wcoss2, set `PBS_ACCOUNT`.
+The test uses 1600 MPI tasks (40 per node) with a 1 hour wall time. On ursa, set
+`SLURM_ACCOUNT` before running ctest; on wcoss2, set `PBS_ACCOUNT`.
 
 ## Switching to hybrid 3DEnVar
 

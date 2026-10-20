@@ -5,13 +5,13 @@
 # Usage: stage_na3km_case.sh <download_dir> <case_dir>
 #   download_dir: RRFSv1 restarts for 2024052700, holding fcst_fv3lam/INPUT (control)
 #                 and memNNNN/fcst_fv3lam/DA_OUTPUT (ensemble members)
-#   case_dir:     directory to create; pass it to cmake as -DRRFS_NA3KM_DATA=<case_dir>
+#   case_dir:     directory to create; the path for each machine is set in ../CMakeLists.txt
 #
-# Restarts and large fix files are symlinked. The obs are copied from the RDASApp
-# ctest obs (same cycle) and re-domain-checked against the NA 3 km grid, following
-# rrfs-workflow's exrrfs_ioda_bufr.sh.
+# Restarts and large fix files are symlinked. The obs are converted from the cycle's
+# prepbufr and satwnd bufr (staged with the RDASApp ctest data) and domain checked
+# against the NA 3 km grid, following rrfs-workflow's exrrfs_ioda_bufr.sh.
 #
-# Run with the RDAS modules plus py-shapely and py-cartopy loaded.
+# Run from a built RDASApp with the RDAS modules plus py-shapely and py-cartopy loaded.
 
 set -eu
 
@@ -39,7 +39,7 @@ case ${MACHINE_ID} in
     exit 1
     ;;
 esac
-obs_src=${OBS_SRC:-${RDAS_DATA}/fix/expr_data/obs_2024052700_oct2026}
+bufr_src=${BUFR_SRC:-${RDAS_DATA}/fix/expr_data/obs_2024052700_oct2026/bufr}
 gridfix=${FIX_RRFS}/gsi/RRFS_NA_3km_C3463
 lamfix=${FIX_RRFS}/lam/RRFS_NA_3km_C3463_Lake_fracSV
 
@@ -78,19 +78,38 @@ ln -snf "${lamfix}/C3463_grid.tile7.halo3.nc"    "${case_dir}/INPUT/C3463_grid.t
 ln -snf "${lamfix}/C3463_grid.tile7.halo3.nc"    "${case_dir}/INPUT/C3463_grid.tile7.nc"
 ln -snf "${lamfix}/C3463_mosaic.halo3.nc"        "${case_dir}/INPUT/grid_spec.nc"
 
-# Observations: domain check against the NA 3 km grid, then patch
-obs_files="ioda_adpsfc.nc ioda_adpupa.nc ioda_aircar.nc ioda_aircft.nc ioda_msonet.nc
-           ioda_proflr.nc ioda_rassda.nc ioda_sfcshp.nc
-           ioda_satwnd.abi_goes-16.nc ioda_satwnd.abi_goes-18.nc"
+# Observations: convert the cycle's bufr with RDASApp's converters, then domain check
+# against the NA 3 km grid and patch, following rrfs-workflow's exrrfs_ioda_bufr.sh
 workdir="${case_dir}/obs_work"
 rm -rf "${workdir}"
-mkdir -p "${workdir}" "${case_dir}/obs"
+mkdir -p "${workdir}/bufr" "${case_dir}/obs"
 cd "${workdir}"
+ln -snf "${bufr_src}/2024052700.rap.t00z.prepbufr.tm00" prepbufr
+ln -snf "${bufr_src}/2024052700.rap.t00z.prepbufr.tm00" bufr/prepbufr
+ln -snf "${bufr_src}/2024052700.rap.t00z.satwnd.tm00.bufr_d" satwndbufr
+export LD_LIBRARY_PATH="${RDASApp}/build/lib64:${LD_LIBRARY_PATH:-}"
+pyioda=$(ls -d "${RDASApp}"/build/lib/python3.* | head -1)
+export PYTHONPATH="${RDASApp}/sorc/wxflow/src:${pyioda}:${pyioda}/site-packages:${PYTHONPATH:-}"
+export PDY=20240527 cyc=00
+
+for obs in adpsfc aircar aircft msonet proflr rassda sfcshp; do
+  sed "s/@REFERENCETIME@/2024-05-27T00:00:00Z/" "${RDASApp}/rrfs-test/IODA/yaml/prepbufr_${obs}.yaml" > prepbufr_${obs}.yaml
+  cp "${FIX_RRFS}/jedi/ioda_empty.nc" ioda_${obs}.nc
+  "${RDASApp}/build/bin/bufr2ioda.x" prepbufr_${obs}.yaml
+done
+pydir=${RDASApp}/rrfs-test/IODA/python
+for conv in adpupa_prepbufr satwnd_amv_goes; do
+  python "${pydir}/gen_bufr2ioda_json.py" -t "${pydir}/bufr2ioda_${conv}.json" -o bufr2ioda_${conv}.json
+  python "${pydir}/bufr2ioda_${conv}.py" -c bufr2ioda_${conv}.json
+done
+
 cp "${RDASApp}/rrfs-test/IODA/offline_domain_check.py" .
 cp "${RDASApp}/rrfs-test/IODA/offline_ioda_patch.py" .
 ln -snf "${gridfix}/fv3_grid_spec" fv3_grid_spec
+obs_files="ioda_adpsfc.nc ioda_adpupa.nc ioda_aircar.nc ioda_aircft.nc ioda_msonet.nc
+           ioda_proflr.nc ioda_rassda.nc ioda_sfcshp.nc
+           ioda_satwnd.abi_goes-16.nc ioda_satwnd.abi_goes-18.nc"
 for ioda_file in ${obs_files}; do
-  cp "${obs_src}/${ioda_file}" .
   base_name=$(basename "${ioda_file}" .nc)
   python offline_domain_check.py -o "${ioda_file}" -g fv3_grid_spec -s 0.005 -f
   mv "${base_name}_dc.nc" "${ioda_file}"
@@ -104,4 +123,4 @@ done
 cd "${case_dir}"
 rm -rf "${workdir}"
 
-echo "Done. Configure RDASApp with -DBUILD_RRFS_TEST_NA3KM=ON -DRRFS_NA3KM_DATA=${case_dir}"
+echo "Done. Make sure ${case_dir} is the na3km_data path for ${MACHINE_ID} in rrfs-test-na3km/CMakeLists.txt"

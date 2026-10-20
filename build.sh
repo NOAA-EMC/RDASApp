@@ -46,7 +46,6 @@ usage() {
   echo "  -r  compile rdas tools (ua2u)          DEFAULT: (fv3:YES; mpas:NO)"
   echo "  -i  build i-jedi (and mist)            DEFAULT: NO"
   echo "  -n  add optional NA 3 km ctest         DEFAULT: NO"
-  echo "      (wcoss2/ursa; set RRFS_NA3KM_DATA to use a non-default case dir)"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -331,9 +330,6 @@ fi
 # Optional NA 3 km full-analysis ctest (rrfs-test-na3km); not part of CI
 if [[ "$BUILD_RRFS_TEST_NA3KM" == "YES" ]]; then
   CMAKE_OPTS+=" -DBUILD_RRFS_TEST_NA3KM=ON"
-  if [[ -n "${RRFS_NA3KM_DATA:-}" ]]; then
-    CMAKE_OPTS+=" -DRRFS_NA3KM_DATA=${RRFS_NA3KM_DATA}"
-  fi
 else
   CMAKE_OPTS+=" -DBUILD_RRFS_TEST_NA3KM=OFF"
 fi
