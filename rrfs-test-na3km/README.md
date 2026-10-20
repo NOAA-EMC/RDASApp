@@ -26,7 +26,7 @@ control and `memNNNN/fcst_fv3lam/DA_OUTPUT` for the members. The default case lo
 ## Configure and run
 
 ```
-./build.sh -m FV3 -c "-DBUILD_RRFS_TEST_NA3KM=ON -DRRFS_NA3KM_DATA=<case_dir>"
+RRFS_NA3KM_DATA=<case_dir> ./build.sh -m FV3 -n YES   # RRFS_NA3KM_DATA only if not the default
 # or, in an existing build:
 cd build && cmake -DBUILD_RRFS_TEST_NA3KM=ON -DRRFS_NA3KM_DATA=<case_dir> .
 cd rrfs-test-na3km && ctest -V
