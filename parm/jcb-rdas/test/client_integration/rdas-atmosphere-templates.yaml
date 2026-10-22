@@ -76,7 +76,7 @@ atmosphere_ensemble_history_prefix: "ens_"
 
 atmosphere_background_time_iso: '2024-05-27T00:00:00Z'
 atmosphere_background_time_prefix: '20240527.000000.'
-state_variables: [eastward_wind, northward_wind, air_temperature, air_pressure_thickness, water_vapor_mixing_ratio_wrt_moist_air ,cloud_liquid_ice, cloud_liquid_water, ozone_mass_mixing_ratio, geopotential_at_surface, f10m, slmsk, sheleg, skin_temperature_at_surface, vtype, stype, vfrac, soilt, soilm, eastward_wind_at_surface, northward_wind_at_surface]
+state_variables: [eastward_wind, northward_wind, air_temperature, air_pressure_thickness, water_vapor_mixing_ratio_wrt_moist_air ,cloud_liquid_ice, cloud_liquid_water, ozone_mass_mixing_ratio, geopotential_at_surface, ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m, slmsk, sheleg, skin_temperature_at_surface, vtype, stype, vfrac, soilt, soilm, eastward_wind_at_surface, northward_wind_at_surface]
 eastward_wind: ua
 northward_wind: va
 air_temperature: T
@@ -91,6 +91,7 @@ soilt: tslb
 soilm: smois
 eastward_wind_at_surface: u_srf
 northward_wind_at_surface: v_srf
+ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m: f10m
 
 # Background error
 atmosphere_bump_data_directory: DATA/berror

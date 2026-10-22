@@ -249,6 +249,11 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     jcb_config="jcb-$ctest_yaml"
     cp $dir_root/parm/jcb-rdas/test/ci/$jcb_config .
     python run_jcb_ctest.py 2024052700 $jcb_config $ctest_yaml
+    err=$?
+    if [[ $err != 0 ]]; then
+      echo "Failed: python run_jcb_ctest.py 2024052700 "${jcb_config}" "${ctest_yaml}""
+      exit 9
+    fi
     ctest=${ctest_yaml%.yaml}
   done
   cd ${BUILD_DIR}
@@ -275,14 +280,15 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Need to convert all the copy-based workaround methods to commit-based method
   #$dir_root/ush/apply_patches.sh
 
-  # Workaround for GSL surface operator
-  cp ../sorc/_workaround_/ufo/CMakeLists.txt   ../sorc/ufo/src/ufo/operators/sfccorrected/.
-  cp ../sorc/_workaround_/ufo/EvalSurface*     ../sorc/ufo/src/ufo/operators/sfccorrected/.
-  cp ../sorc/_workaround_/ufo/ObsSfcCorrected* ../sorc/ufo/src/ufo/operators/sfccorrected/.
-
   # Workaround for updating surface and delp states after outerloops (fv3-jedi PR1511)
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_state_mod.F90    ../sorc/fv3-jedi/src/fv3jedi/State/.
   cp ../sorc/_workaround_/fv3-jedi/FieldsMetadataDefault.h  ../sorc/fv3-jedi/src/fv3jedi/FieldMetadata/.
+
+  # Workaround for ObsErrorFactorPressureCheck.cc and At2M (no PR yet)
+  cp ../sorc/_workaround_/ufo/ObsErrorFactorPressureCheck.cc ../sorc/ufo/src/ufo/filters/obsfunctions/.
+
+  # Publish the scaled 10 m wind under the surface-wind name required by CRTM (no PR yet).
+  cp ../sorc/_workaround_/vader/WindSpeedAt10m_B.cc ../sorc/vader/src/vader/betaNames_CRTMRecipes/.
 
 fi
 

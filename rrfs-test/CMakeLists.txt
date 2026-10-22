@@ -283,7 +283,7 @@ if(MPAS_DYCORE)
       # YAML-based bufr2ioda
       set(case "rrfs_bufr2ioda_msonet")
       set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
-      set(src_casedir "${rrfs-test_data_local}/rrfs-data_mpasjedi_2024052700")
+      set(src_casedir "${rrfs-test_data_local}/rrfs-data_fv3jedi_2024052700")
       if (NOT EXISTS "${casedir}")
          file(MAKE_DIRECTORY ${casedir})
          file(MAKE_DIRECTORY ${casedir}/bufr)
