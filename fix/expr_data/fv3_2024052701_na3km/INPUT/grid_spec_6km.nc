@@ -1,0 +1,1 @@
+../../../.agent_na3km/INPUT/grid_spec_6km.nc
