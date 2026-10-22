@@ -30,7 +30,7 @@ set(na3km_walltime "00:45:00")
 
 set(test_dir "${CMAKE_CURRENT_SOURCE_DIR}")
 set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
-file(MAKE_DIRECTORY ${casedir}/data)
+file(MAKE_DIRECTORY ${casedir}/data/satbias_out)
 
 # Link everything in; the backgrounds, ensemble and grid files are far too large to copy
 file(GLOB bkg_files "${na3km_data}/bkg/*")
@@ -44,6 +44,8 @@ file(CREATE_LINK ${rdasapp_dir}/fix/gsi_bec/gsiparm_regional_na3km_dbz.anl ${cas
 file(CREATE_LINK ${na3km_data}/INPUT ${casedir}/INPUT SYMBOLIC)
 file(CREATE_LINK ${na3km_data}/inputs ${casedir}/data/inputs SYMBOLIC)
 file(CREATE_LINK ${na3km_data}/obs ${casedir}/data/obs SYMBOLIC)
+file(CREATE_LINK ${na3km_data}/crtm ${casedir}/data/crtm SYMBOLIC)
+file(CREATE_LINK ${na3km_data}/satbias_in ${casedir}/data/satbias_in SYMBOLIC)
 file(CREATE_LINK ${test_dir}/testoutput ${casedir}/testoutput SYMBOLIC)
 file(CREATE_LINK ${test_dir}/testinput/gsd_sfcobs_uselist.txt ${casedir}/gsd_sfcobs_uselist.txt SYMBOLIC)
 file(CREATE_LINK ${test_dir}/testinput/gsd_sfcobs_provider.txt ${casedir}/gsd_sfcobs_provider.txt SYMBOLIC)
