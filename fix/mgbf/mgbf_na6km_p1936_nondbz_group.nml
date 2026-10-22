@@ -5,7 +5,7 @@
   hx=12,hy=12,hz=12,p=2,
 !
   mgbf_line=.true., mgbf_proc=5,
-  lm_a=65,lm=30,km2=0,km3=5,
+  lm_a=65,lm=30,km2=0,km3=6,
   coef_normalization_const=1.946,
   dir_coef_normalization="./mgbf_na6km_p1936_nondbz_norm_profiles"
   l_vert_stretched_filtgrid=.false.,
