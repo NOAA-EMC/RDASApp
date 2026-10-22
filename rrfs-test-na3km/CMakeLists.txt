@@ -3,8 +3,8 @@
 #!-------------------------------------------------------------------------
 
 # Optional full-capability analysis on the RRFS NA 3 km domain (2024-05-27 01Z).
-# Not part of CI: added only with -DBUILD_RRFS_TEST_NA3KM=ON, on wcoss2 and ursa,
-# where ush/init.sh links the staged case data to fix/.agent_na3km (see README.md).
+# Added only on wcoss2 and ursa, where ush/init.sh links the staged case data to
+# fix/.agent_na3km (see README.md). build.sh renders the yaml into testinput/ with JCB.
 
 set(case "rrfs_fv3jedi_na3km_2024052701_analysis")
 set(exe "fv3jedi_var.x")
@@ -45,23 +45,11 @@ file(CREATE_LINK ${na3km_data}/INPUT ${casedir}/INPUT SYMBOLIC)
 file(CREATE_LINK ${na3km_data}/inputs ${casedir}/data/inputs SYMBOLIC)
 file(CREATE_LINK ${na3km_data}/obs ${casedir}/data/obs SYMBOLIC)
 file(CREATE_LINK ${test_dir}/testoutput ${casedir}/testoutput SYMBOLIC)
-file(CREATE_LINK ${rdasapp_dir}/rrfs-test/testinput/gsd_sfcobs_uselist.txt ${casedir}/gsd_sfcobs_uselist.txt SYMBOLIC)
-file(CREATE_LINK ${rdasapp_dir}/rrfs-test/testinput/gsd_sfcobs_provider.txt ${casedir}/gsd_sfcobs_provider.txt SYMBOLIC)
+file(CREATE_LINK ${test_dir}/testinput/gsd_sfcobs_uselist.txt ${casedir}/gsd_sfcobs_uselist.txt SYMBOLIC)
+file(CREATE_LINK ${test_dir}/testinput/gsd_sfcobs_provider.txt ${casedir}/gsd_sfcobs_provider.txt SYMBOLIC)
 
-# Render the JEDI yaml with JCB; re-run on the next build if the JCB config changes
-set(jcb_config "${rdasapp_dir}/parm/jcb-rdas/test/ci/jcb-${case}.yaml")
-set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${jcb_config})
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
-execute_process(
-  COMMAND ${CMAKE_COMMAND} -E env
-          "PYTHONPATH=${rdasapp_dir}/sorc/jcb/src:${rdasapp_dir}/sorc/wxflow/src:$ENV{PYTHONPATH}"
-          ${Python3_EXECUTABLE} ${rdasapp_dir}/parm/jcb-rdas/test/ci/run_jcb_ctest.py
-          2024052701 ${jcb_config} ${case}.yaml
-  WORKING_DIRECTORY ${casedir}
-  RESULT_VARIABLE jcb_result)
-if(NOT jcb_result EQUAL 0)
-  message(FATAL_ERROR "${case}: JCB failed to render ${case}.yaml from ${jcb_config}")
-endif()
+# The yaml is rendered by build.sh with JCB
+file(COPY ${test_dir}/testinput/${case}.yaml DESTINATION ${casedir})
 
 if("${MACHINE_ID}" STREQUAL "wcoss2")
   configure_file(${rdasapp_dir}/rrfs-test/ush/wrapper_ctest_pbs.sh ${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh COPYONLY)

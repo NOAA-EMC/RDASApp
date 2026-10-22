@@ -45,7 +45,6 @@ usage() {
   echo "  -w  compile with workaround codes      DEFAULT: YES"
   echo "  -r  compile rdas tools (ua2u)          DEFAULT: (fv3:YES; mpas:NO)"
   echo "  -i  build i-jedi (and mist)            DEFAULT: NO"
-  echo "  -n  add optional NA 3 km ctest         DEFAULT: NO"
   echo "  -h  display this message and quit"
   echo
   exit 1
@@ -70,9 +69,8 @@ BUFRQUERY_OPT=""
 BUILD_JCB="YES"
 BUILD_WORKAROUND="YES"
 BUILD_IJEDI="NO"
-BUILD_RRFS_TEST_NA3KM="NO"
 
-while getopts "p:c:m:j:t:b:r:w:i:n:hvfsxd" opt; do
+while getopts "p:c:m:j:t:b:r:w:i:hvfsxd" opt; do
   case $opt in
     p)
       INSTALL_PREFIX=$OPTARG
@@ -103,9 +101,6 @@ while getopts "p:c:m:j:t:b:r:w:i:n:hvfsxd" opt; do
       ;;
     i)
       BUILD_IJEDI=$OPTARG
-      ;;
-    n)
-      BUILD_RRFS_TEST_NA3KM=$OPTARG
       ;;
     v)
       BUILD_VERBOSE=YES
@@ -261,6 +256,17 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     fi
     ctest=${ctest_yaml%.yaml}
   done
+
+  # NA 3 km full-analysis ctest (rrfs-test-na3km)
+  cd $dir_root/rrfs-test-na3km/testinput
+  ctest_yaml=rrfs_fv3jedi_na3km_2024052701_analysis.yaml
+  cp $dir_root/parm/jcb-rdas/test/ci/run_jcb_ctest.py .
+  cp $dir_root/parm/jcb-rdas/test/ci/jcb-$ctest_yaml .
+  python run_jcb_ctest.py 2024052701 jcb-$ctest_yaml $ctest_yaml
+  if [[ $? != 0 ]]; then
+    echo "Failed: python run_jcb_ctest.py 2024052701 jcb-${ctest_yaml} ${ctest_yaml}"
+    exit 9
+  fi
   cd ${BUILD_DIR}
 
   # Link in test data for experiments: MPAS-JEDI
@@ -333,12 +339,6 @@ else
   CMAKE_OPTS+=" -DBUILD_IJEDI=OFF"
 fi
 
-# Optional NA 3 km full-analysis ctest (rrfs-test-na3km); not part of CI
-if [[ "$BUILD_RRFS_TEST_NA3KM" == "YES" ]]; then
-  CMAKE_OPTS+=" -DBUILD_RRFS_TEST_NA3KM=ON"
-else
-  CMAKE_OPTS+=" -DBUILD_RRFS_TEST_NA3KM=OFF"
-fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST -DUFO_CRTM_TESTFILES_PATH=$CRTM_DATA"
 # Configure

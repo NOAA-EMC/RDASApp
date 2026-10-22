@@ -126,10 +126,7 @@ if(BUILD_RDASBUNDLE)
 # rdas tests and super executables
   if(BUILD_RRFS_TEST)
     ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
-  endif()
-  # Optional full-domain NA 3 km analysis test (wcoss2/ursa only); not run in CI
-  option(BUILD_RRFS_TEST_NA3KM "Add the RRFS NA 3 km full analysis ctest" OFF)
-  if(BUILD_RRFS_TEST_NA3KM)
+    # Full-domain NA 3 km analysis test; added only on wcoss2 and ursa, where its data is staged
     ecbuild_bundle( PROJECT rrfs-test-na3km SOURCE "../rrfs-test-na3km" )
   endif()
   if(BUILD_SUPER_EXE)

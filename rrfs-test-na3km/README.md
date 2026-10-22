@@ -18,8 +18,9 @@ radar reflectivity assimilation:
 
 It writes increments (`inc_jedi.*`) on the 3 km grid and leaves the backgrounds untouched.
 
-It is not part of CI. It is only added when RDASApp is configured with
-`-DBUILD_RRFS_TEST_NA3KM=ON`, and only on wcoss2 and ursa.
+It is added on wcoss2 and ursa whenever the RRFS tests are built, but it is not part of CI:
+`ush/run_rrfs_tests.sh` only runs the ctests in `build/rrfs-test`. `build.sh` renders its
+yaml with JCB into `testinput/`.
 
 ## Test data
 
@@ -55,7 +56,7 @@ The test's own static files are in the repository:
 ## Configure and run
 
 ```
-./build.sh -m FV3 -n YES
+./build.sh -m FV3
 cd build/rrfs-test-na3km && ctest -V
 ```
 
