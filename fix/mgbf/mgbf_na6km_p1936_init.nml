@@ -1,0 +1,8 @@
+&parameters_mgbf_init
+ nscale=1,nvargrp=2,
+  readin_mgbf_nml_group(1)="./mgbf_na6km_p1936_dbz_group.nml"
+  readin_mgbf_nml_group(2)="./mgbf_na6km_p1936_nondbz_group.nml",
+  readin_multigrp_cor=1.0,0.6,0.6,1.0,
+  readin_ivargroup=6,11,
+/
+

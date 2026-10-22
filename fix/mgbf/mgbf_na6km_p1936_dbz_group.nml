@@ -1,0 +1,31 @@
+&PARAMETERS_MGBETA
+  mg_ampl01=1.1,mg_ampl02=0.49,mg_ampl03=2.0,
+   mg_weig1=20.,mg_weig2=120.,mg_weig3=15000.,mg_weig4=1.,
+!
+  hx=14,hy=14,hz=6,p=2,
+!
+  mgbf_line=.true., mgbf_proc=5,
+  lm_a=65,lm=30,km2=0,km3=6,
+  coef_normalization_const=1.946,
+  dir_coef_normalization="./mgbf_na6km_p1936_dbz_norm_profiles"
+  l_vert_stretched_filtgrid=.false.,
+
+
+!
+   nxPE=44,nyPE=44,im_filt=28,jm_filt=28,
+!
+!GSI - REDUCED DOMAIN
+    nm0 = 1232,
+    mm0 = 1232,
+!
+
+    l_vertical_filter=.true.,
+    gm_max=1,
+    l_constant_aspt2=.false.,
+    dxfmctrl=8750,
+    dyfmctrl=8750,
+    l_for_localization=.true.,
+    ldelta=.false.,
+
+/
+
