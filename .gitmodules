@@ -50,8 +50,8 @@
 	ignore = all
 [submodule "sorc/saber"]
 	path = sorc/saber
-	url = https://github.com/RRFSx/saber.git
-	branch = rrfs_20261019
+	url = https://github.com/jcsda/saber.git
+	branch = develop
 	ignore = all
 [submodule "sorc/ufo"]
 	path = sorc/ufo
