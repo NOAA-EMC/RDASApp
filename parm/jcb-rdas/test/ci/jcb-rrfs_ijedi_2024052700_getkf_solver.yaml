@@ -139,7 +139,7 @@ state_variables:
 - cloud_liquid_water
 - ozone_mass_mixing_ratio
 - geopotential_at_surface
-- f10m
+- ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m
 - slmsk
 - sheleg
 - skin_temperature_at_surface
@@ -187,6 +187,7 @@ air_temperature_at_2m: t2m
 water_vapor_mixing_ratio_wrt_moist_air_at_2m: q2m
 eastward_wind_at_surface: u_srf
 northward_wind_at_surface: v_srf
+ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m: f10m
 
 abi_simulated_channels: 7-16
 
