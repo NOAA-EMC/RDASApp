@@ -2,7 +2,7 @@
 import netCDF4 as nc
 import numpy as np
 from matplotlib.path import Path
-from scipy.spatial import ConvexHull, Delaunay
+from scipy.spatial import ConvexHull, Delaunay, cKDTree
 from timeit import default_timer as timer
 import argparse
 import warnings
@@ -213,6 +213,28 @@ def build_domain_ring(grid_ds):
         ring[:, 0] = L_shift
     return ring
 
+def nearest_grid_point_filter(grid_ds, lat, lon, max_dist_km):
+    # Keep obs whose nearest grid point is within max_dist_km and not on the domain edge
+    vars_ = grid_ds.variables
+    if 'grid_latt' in vars_ and 'grid_lont' in vars_:
+        glat = np.radians(np.array(vars_['grid_latt'][:], dtype=np.float64))
+        glon = np.radians(np.array(vars_['grid_lont'][:], dtype=np.float64))
+    elif 'grid_lat' in vars_ and 'grid_lon' in vars_:
+        glat = np.radians(np.array(vars_['grid_lat'][:], dtype=np.float64))
+        glon = np.radians(np.array(vars_['grid_lon'][:], dtype=np.float64))
+    else:
+        raise RuntimeError("--max-dist needs an FV3 grid file (grid_latt/grid_lont or grid_lat/grid_lon)")
+    ny, nx = glat.shape
+
+    def to_xyz(la, lo):
+        return np.c_[np.cos(la) * np.cos(lo), np.cos(la) * np.sin(lo), np.sin(la)]
+
+    tree = cKDTree(to_xyz(glat.ravel(), glon.ravel()))
+    dist, idx = tree.query(to_xyz(np.radians(lat), np.radians(lon)))
+    j, i = np.unravel_index(idx, (ny, nx))
+    on_edge = (j == 0) | (j == ny - 1) | (i == 0) | (i == nx - 1)
+    return (dist * 6371.0 <= max_dist_km) & ~on_edge
+
 def shrink_boundary(points, factor=0.01):
     centroid = np.nanmean(points, axis=0)
     v = points - centroid
@@ -232,6 +254,8 @@ parser.add_argument('-g', '--grid', type=str, help='grid file', required=True)
 parser.add_argument('-o', '--obs', type=str, help='ioda observation file', required=True)
 parser.add_argument('-f', '--fig', action='store_true', help='disable figure (default is False)', required=False)
 parser.add_argument('-s', '--shrink', type=float, help='hull shrink factor', required=True)
+parser.add_argument('-d', '--max-dist', type=float, required=False,
+                    help='FV3 only: drop obs farther than this (km) from the nearest grid point')
 args = parser.parse_args()
 
 # Assign filenames
@@ -278,6 +302,12 @@ inside_small = domain_path.contains_points(obs_coords[candidates])
 inside_indices = candidates[inside_small]
 toc(tic1,label="Time to find obs within domain: ")
 
+if args.max_dist is not None:
+    keep = nearest_grid_point_filter(grid_ds, np.ma.getdata(obs_lat)[inside_indices],
+                                     np.ma.getdata(obs_lon)[inside_indices], args.max_dist)
+    print(f"Nearest grid point check dropped {np.count_nonzero(~keep)} of {len(inside_indices)} obs")
+    inside_indices = inside_indices[keep]
+
 tic2 = tic()
 # Create a new NetCDF file to store the selected data using the more efficient method
 try:
@@ -317,17 +347,16 @@ for group in groups:
     g = fout.createGroup(group)
     for var in obs_ds.groups[group].variables:
         invar = obs_ds.groups[group].variables[var]
+        # Copy raw values (auto-masking turns values outside valid_range into missing)
+        invar.set_auto_mask(False)
         try:  # Non-string variables
             vartype = invar.dtype
             fill = invar.getncattr('_FillValue')
             g.createVariable(var, vartype, 'Location', fill_value=fill)
         except:  # String variables
             g.createVariable(var, 'str', 'Location')
-        # Make sure lat/lon are not masked
-        if var in ['latitude', 'longitude']: 
-            g.variables[var][:] = invar[:][inside_indices].data
-        else:
-            g.variables[var][:] = invar[:][inside_indices]
+        g.variables[var].set_auto_mask(False)
+        g.variables[var][:] = invar[:][inside_indices]
         # Copy attributes for this variable
         for attr in invar.ncattrs():
             if '_FillValue' in attr: continue
