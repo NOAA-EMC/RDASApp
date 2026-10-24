@@ -280,24 +280,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Need to convert all the copy-based workaround methods to commit-based method
   #$dir_root/ush/apply_patches.sh
 
-  # Workaround for parallel IO developed by Dan Kokron at GDIT
-  cp ../sorc/_workaround_/fv3-jedi-io/CMakeLists.txt                            ../sorc/fv3-jedi/src/fv3jedi/CMakeLists.txt
-  cp ../sorc/_workaround_/fv3-jedi-io/Fields/fv3jedi_field_mod.f90              ../sorc/fv3-jedi/src/fv3jedi/Fields/fv3jedi_field_mod.f90
-  cp ../sorc/_workaround_/fv3-jedi-io/Geometry/fv3jedi_geom_mod.f90             ../sorc/fv3-jedi/src/fv3jedi/Geometry/fv3jedi_geom_mod.f90
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.h                     ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.h
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.cc                    ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.cc
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.interface.F90         ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.interface.F90
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/IOFms.interface.h           ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/IOFms.interface.h
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/fv3jedi_io_fms2_mod.f90     ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/fv3jedi_io_fms2_mod.f90
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/module_fv3lam_stats.f90     ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/module_fv3lam_stats.f90
-  cp ../sorc/_workaround_/fv3-jedi-io/IO/FV3Restart/m_TwoPhaseScatterGather.f90 ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/m_TwoPhaseScatterGather.f90
-
   # Workaround for updating surface and delp states after outerloops (fv3-jedi PR1511)
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_state_mod.F90    ../sorc/fv3-jedi/src/fv3jedi/State/.
   cp ../sorc/_workaround_/fv3-jedi/FieldsMetadataDefault.h  ../sorc/fv3-jedi/src/fv3jedi/FieldMetadata/.
-
-  # DuplicateThinning zero-obs space fix
-  cp ../sorc/_workaround_/ufo/DuplicateThinning.cc ../sorc/ufo/src/ufo/filters/.
 
   # Workaround for ObsErrorFactorPressureCheck.cc and At2M (no PR yet)
   cp ../sorc/_workaround_/ufo/ObsErrorFactorPressureCheck.cc ../sorc/ufo/src/ufo/filters/obsfunctions/.
