@@ -304,9 +304,6 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Read the ensemble on its native geometry and convert it online to the inner-loop geometry (oops PR3346)
   cp ../sorc/_workaround_/oops/EnsembleCovariance.h ../sorc/oops/src/oops/base/.
 
-  # Pass reflectivity (dbz) from the first guess to the GSI static B (saber PR1313)
-  cp ../sorc/_workaround_/saber/gsi_covariance_mod.f90 ../sorc/saber/src/saber/gsi/covariance/.
-
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)
