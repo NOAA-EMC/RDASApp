@@ -1,16 +1,16 @@
-CostJo   : Nonlinear Jo(adpupa_airTemperature_120) = 3.0966912273396506e+03, nobs = 33220, Jo/n = 9.3217676921723377e-02, err = 3.0516040987307407e+00
+CostJo   : Nonlinear Jo(adpupa_airTemperature_120) = 3.1516467055159487e+03, nobs = 33232, Jo/n = 9.4837707797181897e-02, err = 3.0073148028988133e+00
 CostJo   : Nonlinear Jo(adpupa_airTemperature_132) = 0.0000000000000000e+00 --- No Observations
-CostJo   : Nonlinear Jo(adpupa_specificHumidity_120) = 2.1747938447525376e+03, nobs = 32343, Jo/n = 6.7241562154176718e-02, err = 1.4986121681784847e-03
+CostJo   : Nonlinear Jo(adpupa_specificHumidity_120) = 2.1716505574093335e+03, nobs = 32355, Jo/n = 6.7119473262535423e-02, err = 1.5006437668017027e-03
 CostJo   : Nonlinear Jo(adpupa_specificHumidity_132) = 0.0000000000000000e+00 --- No Observations
 CostJo   : Nonlinear Jo(adpupa_stationPressure_120) = 3.4445364521762792e+02, nobs = 221, Jo/n = 1.5586137792652848e+00, err = 7.0918447259099850e+01
-CostJo   : Nonlinear Jo(adpupa_winds_220) = 1.1973186470151544e+04, nobs = 74950, Jo/n = 1.5974898559241554e-01, err = 6.8622560846263081e+00
+CostJo   : Nonlinear Jo(adpupa_winds_220) = 1.2199341147850544e+04, nobs = 75010, Jo/n = 1.6263619714505459e-01, err = 6.7627388464451483e+00
 CostJo   : Nonlinear Jo(adpupa_winds_232) = 0.0000000000000000e+00 --- No Observations
 CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 1.5287638108291916e+04, nobs = 30013, Jo/n = 5.0936721115156480e-01, err = 8.9244022461337735e-01
 CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 8.7989781725952878e+02, nobs = 3862, Jo/n = 2.2783475330386554e-01, err = 1.8280085832811945e-03
 CostJo   : Nonlinear Jo(aircar_winds_233) = 4.5230413125748062e+04, nobs = 63852, Jo/n = 7.0836329520998653e-01, err = 2.3789473708317854e+00
-CostJo   : Nonlinear Jo(aircft_airTemperature_130) = 5.8920965192397240e+01, nobs = 115, Jo/n = 5.1235621906432383e-01, err = 1.2411003930115128e+00
+CostJo   : Nonlinear Jo(aircft_airTemperature_130) = 5.9124798526297056e+01, nobs = 116, Jo/n = 5.0969653901980216e-01, err = 1.2417550009518121e+00
 CostJo   : Nonlinear Jo(aircft_airTemperature_131) = 1.9054776503443100e+02, nobs = 208, Jo/n = 9.1609502420399513e-01, err = 8.6344257585845141e-01
-CostJo   : Nonlinear Jo(aircft_airTemperature_134) = 2.2245161907269232e+01, nobs = 34, Jo/n = 6.5426946786085971e-01, err = 1.4316275130154064e+00
+CostJo   : Nonlinear Jo(aircft_airTemperature_134) = 2.2245161907269228e+01, nobs = 34, Jo/n = 6.5426946786085960e-01, err = 1.4316275130154064e+00
 CostJo   : Nonlinear Jo(aircft_airTemperature_135) = 0.0000000000000000e+00 --- No Observations
 CostJo   : Nonlinear Jo(aircft_specificHumidity_134) = 1.6211677023384929e+01, nobs = 24, Jo/n = 6.7548654264103869e-01, err = 7.7347972945004560e-04
 CostJo   : Nonlinear Jo(aircft_winds_230) = 2.1988379538686257e+01, nobs = 48, Jo/n = 4.5809124038929699e-01, err = 3.2950999736785889e+00
@@ -19,128 +19,258 @@ CostJo   : Nonlinear Jo(aircft_winds_234) = 6.0108694276497570e+00, nobs = 46, J
 CostJo   : Nonlinear Jo(aircft_winds_235) = 0.0000000000000000e+00 --- No Observations
 CostJo   : Nonlinear Jo(proflr_winds_227) = 2.3007535509486888e+02, nobs = 1291, Jo/n = 1.7821483740888372e-01, err = 6.5347056015708374e+00
 CostJo   : Nonlinear Jo(rassda_airTemperature_126) = 4.0330839206279620e+01, nobs = 118, Jo/n = 3.4178677293457305e-01, err = 3.0717027842858875e+00
-CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_181) = 3.0974762720417380e+03, nobs = 1028, Jo/n = 3.0131092140483831e+00, err = 7.5279998779296875e-01
-CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_183) = 5.9965974730125531e+01, nobs = 376, Jo/n = 1.5948397534607853e-01, err = 3.4594920301083193e+09
-CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_187) = 3.6216579188065430e+03, nobs = 2397, Jo/n = 1.5109127738033137e+00, err = 1.1292500495910645e+00
-CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_181) = 4.6028521976891022e+02, nobs = 1040, Jo/n = 4.4258194208549062e-01, err = 1.7656181896741193e-03
-CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_183) = 1.0505275311055743e+02, nobs = 370, Jo/n = 2.8392635975826336e-01, err = 1.5057179021694643e-03
-CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_187) = 1.1254282484408691e+03, nobs = 2380, Jo/n = 4.7286901194994502e-01, err = 1.9402502689126399e-03
-CostJo   : Nonlinear Jo(adpsfc_stationPressure_181) = 3.1779913335868318e+03, nobs = 1045, Jo/n = 3.0411400321405089e+00, err = 5.6291381768313364e+01
-CostJo   : Nonlinear Jo(adpsfc_stationPressure_187) = 4.6101392486098539e+03, nobs = 2460, Jo/n = 1.8740403449633551e+00, err = 5.5224812852700822e+01
-CostJo   : Nonlinear Jo(adpsfc_winds_281) = 1.4462153607054051e+03, nobs = 2006, Jo/n = 7.2094484581525675e-01, err = 1.7470749395190293e+00
+CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_181) = 3.1011741700078646e+03, nobs = 1032, Jo/n = 3.0050137306277760e+00, err = 7.5279998779296875e-01
+CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_183) = 5.9965974730125524e+01, nobs = 376, Jo/n = 1.5948397534607853e-01, err = 3.4594920301083193e+09
+CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_187) = 3.6261877884423438e+03, nobs = 2400, Jo/n = 1.5109115785176432e+00, err = 1.1292500495910645e+00
+CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_181) = 4.6371836527477529e+02, nobs = 1045, Jo/n = 4.4374963184189026e-01, err = 1.7726796986280546e-03
+CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_183) = 1.0505275311055742e+02, nobs = 370, Jo/n = 2.8392635975826330e-01, err = 1.5057179021694643e-03
+CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_187) = 1.1270699273099017e+03, nobs = 2383, Jo/n = 4.7296262161556935e-01, err = 1.9401011379202434e-03
+CostJo   : Nonlinear Jo(adpsfc_stationPressure_181) = 3.1745883483717926e+03, nobs = 1050, Jo/n = 3.0234174746398024e+00, err = 5.6736830731963757e+01
+CostJo   : Nonlinear Jo(adpsfc_stationPressure_187) = 4.6224756473225125e+03, nobs = 2463, Jo/n = 1.8767664016737768e+00, err = 5.5264277762228694e+01
+CostJo   : Nonlinear Jo(adpsfc_winds_281) = 1.4609240587302600e+03, nobs = 2014, Jo/n = 7.2538433899218469e-01, err = 1.7476245753329385e+00
 CostJo   : Nonlinear Jo(adpsfc_winds_284) = 4.7103039766231552e+02, nobs = 724, Jo/n = 6.5059447190927555e-01, err = 1.8733839645999892e+00
-CostJo   : Nonlinear Jo(adpsfc_winds_287) = 2.9680064406419938e+03, nobs = 4618, Jo/n = 6.4270386328323814e-01, err = 1.6857680331812641e+00
-CostJo   : Nonlinear Jo(msonet_airTemperatureAt2M_188) = 1.3501383581327789e+03, nobs = 13626, Jo/n = 9.9085451205986996e-02, err = 3.2361436714586749e+09
-CostJo   : Nonlinear Jo(msonet_specificHumidityAt2M_188) = 1.7093991456792087e+03, nobs = 6554, Jo/n = 2.6081769082685513e-01, err = 3.6678155166309707e-03
-CostJo   : Nonlinear Jo(msonet_stationPressure_188) = 5.2823067159359482e+02, nobs = 450, Jo/n = 1.1738459368746552e+00, err = 5.5476127744258584e+01
-CostJo   : Nonlinear Jo(msonet_winds_288) = 2.0543791753097449e+02, nobs = 1172, Jo/n = 1.7528832553837415e-01, err = 3.0983599022137467e+00
-CostJo   : Nonlinear Jo(sfcshp_airTemperatureAt2M_180) = 2.0496616347265413e+02, nobs = 480, Jo/n = 4.2701284056802946e-01, err = 1.9895560643855536e+09
+CostJo   : Nonlinear Jo(adpsfc_winds_287) = 2.9725539973934701e+03, nobs = 4622, Jo/n = 6.4313154422186714e-01, err = 1.6857008619006217e+00
+CostJo   : Nonlinear Jo(msonet_airTemperatureAt2M_188) = 1.3507257500010276e+03, nobs = 13629, Jo/n = 9.9106739305967237e-02, err = 3.2357874837220330e+09
+CostJo   : Nonlinear Jo(msonet_specificHumidityAt2M_188) = 1.7096998667709479e+03, nobs = 6557, Jo/n = 2.6074422247536189e-01, err = 3.6766340583698999e-03
+CostJo   : Nonlinear Jo(msonet_stationPressure_188) = 5.2877216839706921e+02, nobs = 451, Jo/n = 1.1724438323660071e+00, err = 5.5467476516416170e+01
+CostJo   : Nonlinear Jo(msonet_winds_288) = 2.0566909163795373e+02, nobs = 1174, Jo/n = 1.7518661979382771e-01, err = 3.0983538962899595e+00
+CostJo   : Nonlinear Jo(sfcshp_airTemperatureAt2M_180) = 2.0498080768911285e+02, nobs = 481, Jo/n = 4.2615552534119094e-01, err = 1.9874868427498958e+09
 CostJo   : Nonlinear Jo(sfcshp_airTemperatureAt2M_182) = 0.0000000000000000e+00 --- No Observations
 CostJo   : Nonlinear Jo(sfcshp_airTemperatureAt2M_183) = 1.9818025365697569e+01, nobs = 28, Jo/n = 7.0778662020348460e-01, err = 2.6726124191242437e+09
-CostJo   : Nonlinear Jo(sfcshp_specificHumidityAt2M_180) = 4.5745620283717119e+02, nobs = 388, Jo/n = 1.1790108320545649e+00, err = 1.2953405886644218e-03
+CostJo   : Nonlinear Jo(sfcshp_specificHumidityAt2M_180) = 4.5769916936729715e+02, nobs = 389, Jo/n = 1.1766045485020493e+00, err = 1.2946254043238725e-03
 CostJo   : Nonlinear Jo(sfcshp_specificHumidityAt2M_182) = 0.0000000000000000e+00 --- No Observations
 CostJo   : Nonlinear Jo(sfcshp_specificHumidityAt2M_183) = 4.2900996252506820e+00, nobs = 9, Jo/n = 4.7667773613896469e-01, err = 1.3586448377110143e-03
-CostJo   : Nonlinear Jo(sfcshp_stationPressure_180) = 5.9427474268932701e+03, nobs = 990, Jo/n = 6.0027751786800705e+00, err = 4.0349052961773531e+01
+CostJo   : Nonlinear Jo(sfcshp_stationPressure_180) = 6.0143221275809356e+03, nobs = 995, Jo/n = 6.0445448518401363e+00, err = 4.0569391317503502e+01
 CostJo   : Nonlinear Jo(sfcshp_stationPressure_182) = 0.0000000000000000e+00 --- No Observations
 CostJo   : Nonlinear Jo(sfcshp_winds_280) = 3.0417636727662352e+02, nobs = 1110, Jo/n = 2.7403276331227344e-01, err = 2.7066512035393147e+00
 CostJo   : Nonlinear Jo(sfcshp_winds_282) = 1.9868318829446526e+01, nobs = 20, Jo/n = 9.9341594147232626e-01, err = 1.0833263625844276e+00
 CostJo   : Nonlinear Jo(sfcshp_winds_284) = 7.7259938565355924e+01, nobs = 64, Jo/n = 1.2071865400836863e+00, err = 1.6985508276166814e+00
-CostJo   : Nonlinear Jo(satwnd_winds_245_270) = 1.3842190496521332e+03, nobs = 3622, Jo/n = 3.8216980940147244e-01, err = 1.9880121096014851e+00
-CostJo   : Nonlinear Jo(satwnd_winds_246_270) = 5.9838285076509248e+02, nobs = 2240, Jo/n = 2.6713520123441631e-01, err = 3.4626224648448747e+00
-CostJo   : Nonlinear Jo(satwnd_winds_247_270) = 2.7484802403773999e-14, nobs = 1344, Jo/n = 2.0450001788522320e-17, err = 5.0000000000000000e+08
-CostJo   : Nonlinear Jo(satwnd_winds_245_272) = 1.3987587308451866e+03, nobs = 4780, Jo/n = 2.9262734954920222e-01, err = 1.9517699181677537e+00
-CostJo   : Nonlinear Jo(satwnd_winds_246_272) = 3.2322091015907790e+02, nobs = 1262, Jo/n = 2.5611799537169405e-01, err = 3.4537068893548453e+00
+CostJo   : Nonlinear Jo(satwnd_winds_245_270) = 1.4240160204602730e+03, nobs = 3710, Jo/n = 3.8383181144481754e-01, err = 1.9882972953534834e+00
+CostJo   : Nonlinear Jo(satwnd_winds_246_270) = 6.0876756859771422e+02, nobs = 2296, Jo/n = 2.6514266924987551e-01, err = 3.4631667330149027e+00
+CostJo   : Nonlinear Jo(satwnd_winds_247_270) = 2.7496902999999093e-14, nobs = 1346, Jo/n = 2.0428605497770499e-17, err = 5.0000000000000000e+08
+CostJo   : Nonlinear Jo(satwnd_winds_245_272) = 1.4125187651725423e+03, nobs = 4800, Jo/n = 2.9427474274427967e-01, err = 1.9518484715251874e+00
+CostJo   : Nonlinear Jo(satwnd_winds_246_272) = 3.2755089648422529e+02, nobs = 1272, Jo/n = 2.5750856641841613e-01, err = 3.4536322110701070e+00
 CostJo   : Nonlinear Jo(satwnd_winds_247_272) = 1.7314938961787065e-14, nobs = 1178, Jo/n = 1.4698589950583246e-17, err = 5.0000000000000000e+08
 CostJo   : Nonlinear Jo(refl10cm) = 1.9415239009229263e+05, nobs = 665900, Jo/n = 2.9156388360458418e-01, err = 5.3805097512363398e+00
-CostFunction: Nonlinear J = 3.0944657145421696e+05
-DRPCGMinimizer: reduction in residual norm = 5.1382633150532174e-02
+CostJo   : Nonlinear Jo(abi_g16) = 1.2886036768974543e+03, nobs = 9888, Jo/n = 1.3031995114254191e-01, err = 1.7403063426625600e+00
+CostJo   : Nonlinear Jo(abi_g18) = 9.6186700505392230e+02, nobs = 9228, Jo/n = 1.0423352893952344e-01, err = 1.6997482763679403e+00
+CostJo   : Nonlinear Jo(amsua_n19) = 1.2035601192720191e+04, nobs = 9365, Jo/n = 1.2851683067506878e+00, err = 7.3984143300975562e+00
+CostJo   : Nonlinear Jo(amsua_metop-b) = 1.9543283488779314e+04, nobs = 11511, Jo/n = 1.6977919806080544e+00, err = 3.0170260462948029e-01
+CostJo   : Nonlinear Jo(amsua_metop-c) = 3.3343497237240023e+04, nobs = 38861, Jo/n = 8.5801953725431723e-01, err = 1.0043706501901145e+01
+CostJo   : Nonlinear Jo(atms_npp) = 2.3488183005009087e+04, nobs = 145983, Jo/n = 1.6089670033503276e-01, err = 5.6306435441552258e+00
+CostJo   : Nonlinear Jo(atms_n20) = 1.6178583617680749e+03, nobs = 10406, Jo/n = 1.5547360770402410e-01, err = 5.7864472520208352e+00
+CostJo   : Nonlinear Jo(atms_n21) = 3.5651109102239781e+04, nobs = 161203, Jo/n = 2.2115661062287786e-01, err = 5.6971958237320521e+00
+CostJo   : Nonlinear Jo(iasi_metop-b) = 0.0000000000000000e+00 --- No Observations
+CostJo   : Nonlinear Jo(iasi_metop-c) = 3.9377835946580395e+04, nobs = 122066, Jo/n = 3.2259462869742922e-01, err = 9.7592140777299541e-01
+CostFunction: Nonlinear J = 4.7721583823721990e+05
+DRPCGMinimizer: reduction in residual norm = 5.8822775522473440e-02
 CostFunction::addIncrement: Analysis: 
 ----------------------------------------------------------------------------------------------------
 State print | number of fields = 31 | cube sphere face size: C3950
-air_pressure_at_surface                      | Min:+5.2542511599177509e+04 Max:+1.0323160185233734e+05 RMS:+9.9413192609027377e+04
-air_pressure_thickness                       | Min:+1.1172754070386772e+02 Max:+3.3590266014905710e+03 RMS:+1.8381724500038981e+03
-air_temperature                              | Min:+1.6473095727022405e+02 Max:+3.1674503135080857e+02 RMS:+2.5576321704438308e+02
-air_temperature_at_2m                        | Min:+2.5146112497892989e+02 Max:+3.1598926352854295e+02 RMS:+2.8690273735397142e+02
+air_pressure_at_surface                      | Min:+5.2542194752980686e+04 Max:+1.0323191825173180e+05 RMS:+9.9412940896889806e+04
+air_pressure_thickness                       | Min:+1.1172686696347648e+02 Max:+3.3590389625203570e+03 RMS:+1.8381673869678491e+03
+air_temperature                              | Min:+1.6472996946113176e+02 Max:+3.1701525153510306e+02 RMS:+2.5574703786394983e+02
+air_temperature_at_2m                        | Min:+2.5149230908260213e+02 Max:+3.1626351203314994e+02 RMS:+2.8700661079457802e+02
 cloud_droplet_number_concentration           | Min:+0.0000000000000000e+00 Max:+1.9902287360000000e+09 RMS:+4.4757042524116620e+07
 cloud_ice_number_concentration               | Min:+0.0000000000000000e+00 Max:+3.2640734000000000e+07 RMS:+1.4277455666642883e+05
-cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+5.7696035475729478e-03 RMS:+4.1178875905580542e-06
-cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+6.7360985189927579e-03 RMS:+4.8137217244366780e-05
-eastward_wind                                | Min:-6.8691595686885265e+01 Max:+7.1845169837533561e+01 RMS:+1.1933633532236817e+01
-eastward_wind_at_surface                     | Min:-3.0898399128724190e+01 Max:+2.7283202024363231e+01 RMS:+4.8343453857303809e+00
-equivalent_reflectivity_factor               | Min:-6.0161737760641572e+01 Max:+8.6541672171495804e+01 RMS:+3.2816784475415992e+00
+cloud_liquid_ice                             | Min:+0.0000000000000000e+00 Max:+5.7695962597083261e-03 RMS:+4.1149393253803631e-06
+cloud_liquid_water                           | Min:+0.0000000000000000e+00 Max:+6.7344668003624557e-03 RMS:+4.8031530681476554e-05
+eastward_wind                                | Min:-6.8700096947272925e+01 Max:+7.5807419065312075e+01 RMS:+1.1932033394886735e+01
+eastward_wind_at_surface                     | Min:-3.0886770672535572e+01 Max:+2.6645476008082579e+01 RMS:+4.8349057711792698e+00
+equivalent_reflectivity_factor               | Min:-6.1330074820842206e+01 Max:+8.5143026043897109e+01 RMS:+3.2822110670377169e+00
 geopotential_at_surface                      | Min:-1.7408297364935633e-14 Max:+4.9638152343750000e+04 RMS:+5.2828539295268865e+03
-graupel                                      | Min:+0.0000000000000000e+00 Max:+2.1974877122682326e-02 RMS:+3.1059039860926783e-05
-northward_wind                               | Min:-6.6341132157065459e+01 Max:+5.7090295404987650e+01 RMS:+6.7493420126821571e+00
-northward_wind_at_surface                    | Min:-2.0405727597691900e+01 Max:+1.7887522228088446e+01 RMS:+3.8929502005553722e+00
-ozone_mass_mixing_ratio                      | Min:+2.5334536690735376e-09 Max:+1.6413063349318691e-05 RMS:+4.2319475446486855e-06
+graupel                                      | Min:+0.0000000000000000e+00 Max:+2.1974869226178265e-02 RMS:+3.1138377908766759e-05
+northward_wind                               | Min:-6.9057576406445108e+01 Max:+5.9792323175076596e+01 RMS:+6.7652835037021548e+00
+northward_wind_at_surface                    | Min:-2.0404609975182627e+01 Max:+1.7805307223809734e+01 RMS:+3.8955821878977379e+00
+ozone_mass_mixing_ratio                      | Min:+0.0000000000000000e+00 Max:+1.6413063349318691e-05 RMS:+4.2317525066511093e-06
 rain_number_concentration                    | Min:+0.0000000000000000e+00 Max:+9.3413762500000000e+05 RMS:+5.4959789124151109e+02
-rain_water                                   | Min:+0.0000000000000000e+00 Max:+1.3001417520643561e-02 RMS:+3.4293514185901300e-05
+rain_water                                   | Min:+0.0000000000000000e+00 Max:+1.2931351559404516e-02 RMS:+3.4279538701721281e-05
 ratio_of_wind_at_surface_adjacent_layer_to_w | Min:+1.0009140968322754e+00 Max:+1.1139839887619019e+00 RMS:+1.0174489281427452e+00
 sheleg                                       | Min:+0.0000000000000000e+00 Max:+7.0814703369140625e+02 RMS:+2.2031516831633436e+01
 skin_temperature_at_surface                  | Min:+2.3840284729003906e+02 Max:+3.1544363403320312e+02 RMS:+2.8741722380484441e+02
 slmsk                                        | Min:+0.0000000000000000e+00 Max:+2.0000000000000000e+00 RMS:+8.0798418518359505e-01
 smois                                        | Min:+2.0000000949949026e-03 Max:+1.0000000000000000e+00 RMS:+8.5431368482909886e-01
-snow_water                                   | Min:+0.0000000000000000e+00 Max:+8.9370332047000699e-03 RMS:+7.0684482567595573e-05
+snow_water                                   | Min:+0.0000000000000000e+00 Max:+8.9703563703528374e-03 RMS:+7.0722824520505980e-05
 stype                                        | Min:+0.0000000000000000e+00 Max:+1.6000000000000000e+01 RMS:+4.1249108416397071e+00
 tslb                                         | Min:+9.3837173461914062e+01 Max:+3.6366830444335938e+02 RMS:+2.8515249429973397e+02
 upward_air_velocity                          | Min:-1.7817825317382812e+01 Max:+6.1858951568603516e+01 RMS:+1.3187973675294329e-01
 vfrac                                        | Min:+0.0000000000000000e+00 Max:+1.0000000000000000e+00 RMS:+1.9895199764559454e-01
 vtype                                        | Min:+0.0000000000000000e+00 Max:+2.0000000000000000e+01 RMS:+5.8243076970592345e+00
-water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.7907301753751584e-02 RMS:+5.2782461324598256e-03
-water_vapor_mixing_ratio_wrt_moist_air_at_2m | Min:+0.0000000000000000e+00 Max:+2.9308292165390798e-02 RMS:+1.0409029330820788e-02
+water_vapor_mixing_ratio_wrt_moist_air       | Min:+0.0000000000000000e+00 Max:+2.8126012786069299e-02 RMS:+5.2984158097429688e-03
+water_vapor_mixing_ratio_wrt_moist_air_at_2m | Min:+0.0000000000000000e+00 Max:+2.9527003197708512e-02 RMS:+1.0443980057089372e-02
 ----------------------------------------------------------------------------------------------------
-CostJo   : Nonlinear Jo(adpupa_airTemperature_120) = 865.6393844762054, nobs = 33220, Jo/n = 0.02605777797941617, err = 3.051604098730741
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -0.5930730104446411,  Max= 0.4321136904979661,  Norm= 0.9742862639543376
+   lapseRate_order_2:  Min= -0.3981029987335205,  Max= 0.6178179979324341,  Norm= 1.023244576161224
+           lapseRate:  Min= 0.08640867037758614,  Max= 0.8076580166816711,  Norm= 0.9439387599529034
+  emissivityJacobian:  Min= -0.01764705223932186,  Max= 1.556737464895764,  Norm= 1.557809579508421
+sensorScanAngle_order_4:  Min= -3.133533000946045,  Max= 0.02197104747675357,  Norm= 4.719387886773328
+sensorScanAngle_order_3:  Min= -0.3406580090522766,  Max= 8.756513595581055,  Norm= 12.69172528513403
+sensorScanAngle_order_2:  Min= -9.161121368408203,  Max= 2.089296102523804,  Norm= 12.84248774318163
+     sensorScanAngle:  Min= -1.678300023078918,  Max= 4.278260231018066,  Norm= 6.689888158837574
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -0.1679481934102015,  Max= 0.3883680105209351,  Norm= 0.5848524725821669
+   lapseRate_order_2:  Min= -0.4668599963188171,  Max= 0.3315469920635223,  Norm= 0.7340871761863533
+           lapseRate:  Min= -0.06235500052571297,  Max= 0.2223359942436218,  Norm= 0.4503569584904576
+  emissivityJacobian:  Min= -0.06801719803003801,  Max= 2.03363660409391,  Norm= 2.035430159885762
+sensorScanAngle_order_4:  Min= -0.372518002986908,  Max= 0.6741399765014648,  Norm= 1.19677704801407
+sensorScanAngle_order_3:  Min= -0.6276729702949524,  Max= 0.4025000035762787,  Norm= 1.241722249876694
+sensorScanAngle_order_2:  Min= -1.072016954421997,  Max= 0.7148740291595459,  Norm= 1.917956895409657
+     sensorScanAngle:  Min= -0.1455475405126744,  Max= 1.14900803565979,  Norm= 2.045799091943756
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -1.286906957626343,  Max= 4.983478063304949,  Norm= 5.69097426701598
+   lapseRate_order_2:  Min= -4.334727054049962,  Max= 5.623413476837746,  Norm= 7.755923305703988
+           lapseRate:  Min= -2.283145072237005,  Max= 1.490716121601682,  Norm= 3.743353915025052
+  emissivityJacobian:  Min= -5.636494159698486,  Max= 53.24392700195312,  Norm= 61.47955089696156
+sensorScanAngle_order_4:  Min= -7.971814862169244,  Max= 4.052136132693508,  Norm= 15.7996208828018
+sensorScanAngle_order_3:  Min= -1.37118503618919,  Max= 2.937005747197788,  Norm= 3.895922006744898
+sensorScanAngle_order_2:  Min= -2.339777685306845,  Max= 12.33429790237317,  Norm= 14.88892946242577
+     sensorScanAngle:  Min= -0.8573494852563469,  Max= 0.05103004889096403,  Norm= 1.463946363355382
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -1.017029047012329,  Max= 5.473200798034668,  Norm= 6.040678223411801
+   lapseRate_order_2:  Min= -0.04256099835038185,  Max= 0.01482999976724386,  Norm= 0.06747122741626702
+           lapseRate:  Min= -0.08047916904614333,  Max= 0.1905740052461624,  Norm= 0.2322872835535031
+  emissivityJacobian:  Min= -0.210792863841707,  Max= 65.80697631835938,  Norm= 72.18517573100613
+sensorScanAngle_order_4:  Min= -4.111810207366943,  Max= 3.194360017776489,  Norm= 7.972111144428252
+sensorScanAngle_order_3:  Min= -4.448944091796875,  Max= 2.176019906997681,  Norm= 5.806779552372579
+sensorScanAngle_order_2:  Min= -3.629050016403198,  Max= 4.395469188690186,  Norm= 6.847908540940225
+     sensorScanAngle:  Min= -0.8942109942436218,  Max= 0.5390170216560364,  Norm= 1.467286195777865
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -1.343298376905585,  Max= 5.725358837127419,  Norm= 6.633820971405785
+   lapseRate_order_2:  Min= -4.594996572151886,  Max= 2.519651731232604,  Norm= 5.65096767161586
+           lapseRate:  Min= -1.224377116852609,  Max= 1.648448274982396,  Norm= 2.551949110792722
+  emissivityJacobian:  Min= -9.592052459716797,  Max= 62.53194427490234,  Norm= 70.28075634644144
+sensorScanAngle_order_4:  Min= -4.00389693274285,  Max= 9.242571116442358,  Norm= 14.3852689881629
+sensorScanAngle_order_3:  Min= -1.803545459912134,  Max= 1.486815999246033,  Norm= 4.111951797945431
+sensorScanAngle_order_2:  Min= -1.210746975282692,  Max= 12.60884604226701,  Norm= 14.59255927468037
+     sensorScanAngle:  Min= -0.2204569965064242,  Max= 0.5205875320146998,  Norm= 0.85213263757933
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -3.163290885412778,  Max= 5.932653903961182,  Norm= 8.110515109129611
+   lapseRate_order_2:  Min= -8.19031819289714,  Max= 0.2612110065635679,  Norm= 9.869068559483257
+           lapseRate:  Min= -1.45344285712834,  Max= 1.436035761551549,  Norm= 2.600559982855685
+  emissivityJacobian:  Min= -11.54935449045957,  Max= 28.42764663696289,  Norm= 33.32519897959221
+sensorScanAngle_order_4:  Min= -11.41372966766357,  Max= 2.819189177844251,  Norm= 14.34456761948037
+sensorScanAngle_order_3:  Min= -2.371535978383885,  Max= 5.157439231872559,  Norm= 6.47008718788246
+sensorScanAngle_order_2:  Min= -1.984976985326784,  Max= 12.11228841853835,  Norm= 19.56240194842609
+     sensorScanAngle:  Min= -0.6364780068397522,  Max= 0.1521381193561352,  Norm= 0.7840573975179348
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -3.17433626044674,  Max= 6.005035877227783,  Norm= 8.408870909512373
+   lapseRate_order_2:  Min= -15.11583037579139,  Max= 0.3792220056056976,  Norm= 15.88259912085776
+           lapseRate:  Min= -1.382239037124891,  Max= 2.457129176196403,  Norm= 4.311125899362851
+  emissivityJacobian:  Min= -12.88235664367676,  Max= 25.01142501831055,  Norm= 32.40193280942133
+sensorScanAngle_order_4:  Min= -9.488522529602051,  Max= 7.59131035172768,  Norm= 15.39518747537109
+sensorScanAngle_order_3:  Min= -3.080289122005104,  Max= -0.05195674187941028,  Norm= 4.678543711585851
+sensorScanAngle_order_2:  Min= -0.7247583067555281,  Max= 10.94828365201587,  Norm= 17.03854231109772
+     sensorScanAngle:  Min= -0.4219037850029705,  Max= 0.676842987537384,  Norm= 1.097826848499919
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -0.954260718950014,  Max= 4.791766166687012,  Norm= 5.427333094265942
+   lapseRate_order_2:  Min= -1.553839905535696,  Max= 8.431662525196344,  Norm= 12.27230115201087
+           lapseRate:  Min= -1.409196120808202,  Max= 2.756338723318205,  Norm= 4.441591325376177
+  emissivityJacobian:  Min= -20.76750695962509,  Max= 21.59684279109453,  Norm= 33.70616734322879
+sensorScanAngle_order_4:  Min= -41.97243659594982,  Max= 25.04378116969561,  Norm= 67.11587096093587
+sensorScanAngle_order_3:  Min= -4.319447994232178,  Max= 0.5317216775318874,  Norm= 6.522942603330979
+sensorScanAngle_order_2:  Min= -23.28621773501207,  Max= 4.154344087277694,  Norm= 33.40687310053423
+     sensorScanAngle:  Min= -0.1837321470292353,  Max= 1.167259412272284,  Norm= 1.913262730132606
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -1.087491035461426,  Max= 2.021744966506958,  Norm= 11.71733010814245
+   lapseRate_order_2:  Min= -42.08840942382812,  Max= 1.310472965240479,  Norm= 81.42869922777771
+           lapseRate:  Min= -1.796242952346802,  Max= 3.996735095977783,  Norm= 11.83759372785942
+  emissivityJacobian:  Min= -38.08234024047852,  Max= 106.1750183105469,  Norm= 125.6833081577798
+sensorScanAngle_order_4:  Min= -6.465839862823486,  Max= 3.861633062362671,  Norm= 56.9565771346406
+sensorScanAngle_order_3:  Min= -1.491539001464844,  Max= 0.2475980073213577,  Norm= 15.566617792082
+sensorScanAngle_order_2:  Min= -1.937749981880188,  Max= 2.57807993888855,  Norm= 24.32357359138381
+     sensorScanAngle:  Min= -0.4354099929332733,  Max= 0.599943995475769,  Norm= 5.449415419680044
+---------------------------------------------------------------
+Obs bias coefficients: 
+---------------------------------------------------------------
+            constant:  Min= -1.246654033660889,  Max= 5.636725902557373,  Norm= 13.55242046770498
+   lapseRate_order_2:  Min= -10.45708274841309,  Max= 0.457275003194809,  Norm= 29.66146850255796
+           lapseRate:  Min= -2.115154027938843,  Max= 2.220607995986938,  Norm= 8.0230299347787
+  emissivityJacobian:  Min= -36.49983596801758,  Max= 86.06784820556641,  Norm= 103.8124588690577
+sensorScanAngle_order_4:  Min= -2.013627052307129,  Max= 4.499519824981689,  Norm= 18.89481162288824
+sensorScanAngle_order_3:  Min= -1.634034991264343,  Max= 1.61526894569397,  Norm= 14.00777496702376
+sensorScanAngle_order_2:  Min= -6.114565849304199,  Max= 3.781960010528564,  Norm= 11.22089687905868
+     sensorScanAngle:  Min= -0.2015859931707382,  Max= 0.9586150050163269,  Norm= 6.555134061686803
+---------------------------------------------------------------
+CostJo   : Nonlinear Jo(adpupa_airTemperature_120) = 905.8666812098663, nobs = 33232, Jo/n = 0.02725886739317123, err = 3.007314802898813
 CostJo   : Nonlinear Jo(adpupa_airTemperature_132) = 0 --- No Observations
-CostJo   : Nonlinear Jo(adpupa_specificHumidity_120) = 524.3073864463161, nobs = 32343, Jo/n = 0.01621084582278441, err = 0.001498612168178485
+CostJo   : Nonlinear Jo(adpupa_specificHumidity_120) = 537.2825440300296, nobs = 32355, Jo/n = 0.01660585826085704, err = 0.001500643766801703
 CostJo   : Nonlinear Jo(adpupa_specificHumidity_132) = 0 --- No Observations
-CostJo   : Nonlinear Jo(adpupa_stationPressure_120) = 48.46090600844857, nobs = 221, Jo/n = 0.2192801176852877, err = 70.91844725909985
-CostJo   : Nonlinear Jo(adpupa_winds_220) = 3457.102612937797, nobs = 74950, Jo/n = 0.04612545180704199, err = 6.862256084626308
+CostJo   : Nonlinear Jo(adpupa_stationPressure_120) = 49.8171560393982, nobs = 221, Jo/n = 0.2254169956533855, err = 70.91844725909985
+CostJo   : Nonlinear Jo(adpupa_winds_220) = 3592.772661808906, nobs = 75010, Jo/n = 0.0478972491908933, err = 6.762738846445148
 CostJo   : Nonlinear Jo(adpupa_winds_232) = 0 --- No Observations
-CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 3435.935463230348, nobs = 30013, Jo/n = 0.1144815734258604, err = 0.8924402246133774
-CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 401.4949541627177, nobs = 3862, Jo/n = 0.103960371352335, err = 0.001828008583281195
-CostJo   : Nonlinear Jo(aircar_winds_233) = 6730.722690221651, nobs = 63852, Jo/n = 0.1054113056790962, err = 2.378947370831785
-CostJo   : Nonlinear Jo(aircft_airTemperature_130) = 8.895508056539544, nobs = 115, Jo/n = 0.07735224396990908, err = 1.241100393011513
-CostJo   : Nonlinear Jo(aircft_airTemperature_131) = 31.00686736493514, nobs = 208, Jo/n = 0.1490714777160343, err = 0.8634425758584514
-CostJo   : Nonlinear Jo(aircft_airTemperature_134) = 4.667517077982164, nobs = 34, Jo/n = 0.137279914058299, err = 1.431627513015406
+CostJo   : Nonlinear Jo(aircar_airTemperature_133) = 3632.742092251069, nobs = 30013, Jo/n = 0.1210389528621287, err = 0.8924402246133774
+CostJo   : Nonlinear Jo(aircar_specificHumidity_133) = 410.9269324494972, nobs = 3862, Jo/n = 0.1064026236275239, err = 0.001828008583281195
+CostJo   : Nonlinear Jo(aircar_winds_233) = 6926.876555911815, nobs = 63852, Jo/n = 0.1084833138493988, err = 2.378947370831785
+CostJo   : Nonlinear Jo(aircft_airTemperature_130) = 10.2842855558056, nobs = 116, Jo/n = 0.08865763410177238, err = 1.241755000951812
+CostJo   : Nonlinear Jo(aircft_airTemperature_131) = 31.20296593250385, nobs = 208, Jo/n = 0.1500142592908839, err = 0.8634425758584514
+CostJo   : Nonlinear Jo(aircft_airTemperature_134) = 4.142339012855731, nobs = 34, Jo/n = 0.1218335003781097, err = 1.431627513015406
 CostJo   : Nonlinear Jo(aircft_airTemperature_135) = 0 --- No Observations
-CostJo   : Nonlinear Jo(aircft_specificHumidity_134) = 4.940496914924733, nobs = 24, Jo/n = 0.2058540381218639, err = 0.0007734797294500456
-CostJo   : Nonlinear Jo(aircft_winds_230) = 4.165464316678832, nobs = 48, Jo/n = 0.08678050659747566, err = 3.295099973678589
-CostJo   : Nonlinear Jo(aircft_winds_231) = 12.78243491311914, nobs = 414, Jo/n = 0.03087544665004623, err = 5.656700134277344
-CostJo   : Nonlinear Jo(aircft_winds_234) = 0.8972169725883445, nobs = 46, Jo/n = 0.01950471679539879, err = 5.225674215393889
+CostJo   : Nonlinear Jo(aircft_specificHumidity_134) = 5.397059596606711, nobs = 24, Jo/n = 0.2248774831919463, err = 0.0007734797294500456
+CostJo   : Nonlinear Jo(aircft_winds_230) = 4.259469062453275, nobs = 48, Jo/n = 0.08873893880110989, err = 3.295099973678589
+CostJo   : Nonlinear Jo(aircft_winds_231) = 13.69094525848733, nobs = 414, Jo/n = 0.03306991608330272, err = 5.656700134277344
+CostJo   : Nonlinear Jo(aircft_winds_234) = 0.9560762155392754, nobs = 46, Jo/n = 0.02078426555520164, err = 5.225674215393889
 CostJo   : Nonlinear Jo(aircft_winds_235) = 0 --- No Observations
-CostJo   : Nonlinear Jo(proflr_winds_227) = 17.0805838216206, nobs = 1291, Jo/n = 0.01323050644587188, err = 6.534705601570837
-CostJo   : Nonlinear Jo(rassda_airTemperature_126) = 12.18708466655823, nobs = 118, Jo/n = 0.1032803785301545, err = 3.071702784285887
-CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_181) = 343.3172577462014, nobs = 1028, Jo/n = 0.3339662040332698, err = 0.7527999877929688
-CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_183) = 13.57891381044231, nobs = 376, Jo/n = 0.03611413247458062, err = 3459492030.108319
-CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_187) = 897.1831875089614, nobs = 2397, Jo/n = 0.3742941958735759, err = 1.129250049591064
-CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_181) = 114.3100416653269, nobs = 1040, Jo/n = 0.1099135016012758, err = 0.001765618189674119
-CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_183) = 11.33808441836362, nobs = 370, Jo/n = 0.03064347140098275, err = 0.001505717902169464
-CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_187) = 279.5856339892421, nobs = 2380, Jo/n = 0.1174729554576647, err = 0.00194025026891264
-CostJo   : Nonlinear Jo(adpsfc_stationPressure_181) = 215.0070805358845, nobs = 1045, Jo/n = 0.2057484024266838, err = 56.29138176831336
-CostJo   : Nonlinear Jo(adpsfc_stationPressure_187) = 231.1088907913902, nobs = 2460, Jo/n = 0.09394670357373586, err = 55.22481285270082
-CostJo   : Nonlinear Jo(adpsfc_winds_281) = 212.5880288068842, nobs = 2006, Jo/n = 0.1059760861450071, err = 1.747074939519029
-CostJo   : Nonlinear Jo(adpsfc_winds_284) = 26.45799678610527, nobs = 724, Jo/n = 0.0365441944559465, err = 1.873383964599989
-CostJo   : Nonlinear Jo(adpsfc_winds_287) = 600.0927099508267, nobs = 4618, Jo/n = 0.1299464508338733, err = 1.685768033181264
-CostJo   : Nonlinear Jo(msonet_airTemperatureAt2M_188) = 653.0731190261733, nobs = 13626, Jo/n = 0.04792845435389501, err = 3236143671.458675
-CostJo   : Nonlinear Jo(msonet_specificHumidityAt2M_188) = 663.2423050359911, nobs = 6554, Jo/n = 0.1011965677503801, err = 0.003667815516630971
-CostJo   : Nonlinear Jo(msonet_stationPressure_188) = 58.04917608276345, nobs = 450, Jo/n = 0.1289981690728076, err = 55.47612774425858
-CostJo   : Nonlinear Jo(msonet_winds_288) = 91.73459847228193, nobs = 1172, Jo/n = 0.07827184169989926, err = 3.098359902213747
-CostJo   : Nonlinear Jo(sfcshp_airTemperatureAt2M_180) = 143.8100564247389, nobs = 480, Jo/n = 0.2996042842182061, err = 1989556064.385554
+CostJo   : Nonlinear Jo(proflr_winds_227) = 17.79575877118902, nobs = 1291, Jo/n = 0.01378447619766772, err = 6.534705601570837
+CostJo   : Nonlinear Jo(rassda_airTemperature_126) = 11.58267123523341, nobs = 118, Jo/n = 0.09815823080706278, err = 3.071702784285887
+CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_181) = 256.5808862751264, nobs = 1032, Jo/n = 0.2486248898014791, err = 0.7527999877929688
+CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_183) = 12.32268471648411, nobs = 376, Jo/n = 0.0327730976502237, err = 3459492030.108319
+CostJo   : Nonlinear Jo(adpsfc_airTemperatureAt2M_187) = 470.605112310701, nobs = 2400, Jo/n = 0.1960854634627921, err = 1.129250049591064
+CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_181) = 118.7484864082275, nobs = 1045, Jo/n = 0.1136349152231842, err = 0.001772679698628055
+CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_183) = 11.99368396747313, nobs = 370, Jo/n = 0.03241536207425171, err = 0.001505717902169464
+CostJo   : Nonlinear Jo(adpsfc_specificHumidityAt2M_187) = 289.819046549646, nobs = 2383, Jo/n = 0.1216194068609509, err = 0.001940101137920243
+CostJo   : Nonlinear Jo(adpsfc_stationPressure_181) = 213.6955574688051, nobs = 1050, Jo/n = 0.2035195785417191, err = 56.73683073196376
+CostJo   : Nonlinear Jo(adpsfc_stationPressure_187) = 243.1132668873692, nobs = 2463, Jo/n = 0.0987061578917455, err = 55.26427776222869
+CostJo   : Nonlinear Jo(adpsfc_winds_281) = 228.9186075969152, nobs = 2014, Jo/n = 0.1136636581911198, err = 1.747624575332938
+CostJo   : Nonlinear Jo(adpsfc_winds_284) = 27.23000763860744, nobs = 724, Jo/n = 0.03761050778813183, err = 1.873383964599989
+CostJo   : Nonlinear Jo(adpsfc_winds_287) = 611.8259077594998, nobs = 4622, Jo/n = 0.1323725460319126, err = 1.685700861900622
+CostJo   : Nonlinear Jo(msonet_airTemperatureAt2M_188) = 444.5444187227577, nobs = 13629, Jo/n = 0.03261753750992425, err = 3235787483.722033
+CostJo   : Nonlinear Jo(msonet_specificHumidityAt2M_188) = 664.2581385392591, nobs = 6557, Jo/n = 0.1013051911757296, err = 0.0036766340583699
+CostJo   : Nonlinear Jo(msonet_stationPressure_188) = 57.54579561758572, nobs = 451, Jo/n = 0.1275959991520748, err = 55.46747651641617
+CostJo   : Nonlinear Jo(msonet_winds_288) = 94.34022373231713, nobs = 1174, Jo/n = 0.0803579418503553, err = 3.098353896289959
+CostJo   : Nonlinear Jo(sfcshp_airTemperatureAt2M_180) = 127.930287308214, nobs = 481, Jo/n = 0.2659673332811101, err = 1987486842.749896
 CostJo   : Nonlinear Jo(sfcshp_airTemperatureAt2M_182) = 0 --- No Observations
-CostJo   : Nonlinear Jo(sfcshp_airTemperatureAt2M_183) = 10.90582110403055, nobs = 28, Jo/n = 0.3894936108582338, err = 2672612419.124244
-CostJo   : Nonlinear Jo(sfcshp_specificHumidityAt2M_180) = 118.3488153511953, nobs = 388, Jo/n = 0.3050227199773075, err = 0.001295340588664422
+CostJo   : Nonlinear Jo(sfcshp_airTemperatureAt2M_183) = 9.139165029797788, nobs = 28, Jo/n = 0.3263987510642067, err = 2672612419.124244
+CostJo   : Nonlinear Jo(sfcshp_specificHumidityAt2M_180) = 127.7441055794954, nobs = 389, Jo/n = 0.3283910169138698, err = 0.001294625404323873
 CostJo   : Nonlinear Jo(sfcshp_specificHumidityAt2M_182) = 0 --- No Observations
-CostJo   : Nonlinear Jo(sfcshp_specificHumidityAt2M_183) = 2.630733252328695, nobs = 9, Jo/n = 0.2923036947031883, err = 0.001358644837711014
-CostJo   : Nonlinear Jo(sfcshp_stationPressure_180) = 249.1348225297522, nobs = 990, Jo/n = 0.2516513358886386, err = 40.34905296177353
+CostJo   : Nonlinear Jo(sfcshp_specificHumidityAt2M_183) = 2.799446936759783, nobs = 9, Jo/n = 0.3110496596399759, err = 0.001358644837711014
+CostJo   : Nonlinear Jo(sfcshp_stationPressure_180) = 254.3742740095796, nobs = 995, Jo/n = 0.2556525366930448, err = 40.5693913175035
 CostJo   : Nonlinear Jo(sfcshp_stationPressure_182) = 0 --- No Observations
-CostJo   : Nonlinear Jo(sfcshp_winds_280) = 107.8786126203592, nobs = 1110, Jo/n = 0.09718793929762089, err = 2.706651203539315
-CostJo   : Nonlinear Jo(sfcshp_winds_282) = 1.911332260616414, nobs = 20, Jo/n = 0.09556661303082069, err = 1.083326362584428
-CostJo   : Nonlinear Jo(sfcshp_winds_284) = 10.77565892752775, nobs = 64, Jo/n = 0.168369670742621, err = 1.698550827616681
-CostJo   : Nonlinear Jo(satwnd_winds_245_270) = 96.64440305230325, nobs = 3622, Jo/n = 0.02668260713757682, err = 1.988012109601485
-CostJo   : Nonlinear Jo(satwnd_winds_246_270) = 136.519978099558, nobs = 2240, Jo/n = 0.06094641879444553, err = 3.462622464844875
-CostJo   : Nonlinear Jo(satwnd_winds_247_270) = 2.734585832271212e-14, nobs = 1342, Jo/n = 2.037694360857833e-17, err = 500000000
-CostJo   : Nonlinear Jo(satwnd_winds_245_272) = 89.61805257626902, nobs = 4780, Jo/n = 0.01874854656407302, err = 1.951769918167754
-CostJo   : Nonlinear Jo(satwnd_winds_246_272) = 50.56753236415261, nobs = 1262, Jo/n = 0.04006936003498622, err = 3.453706889354845
-CostJo   : Nonlinear Jo(satwnd_winds_247_272) = 1.693008455919373e-14, nobs = 1178, Jo/n = 1.437188842036819e-17, err = 500000000
-CostJo   : Nonlinear Jo(refl10cm) = 21820.89341067896, nobs = 665900, Jo/n = 0.03276902449418675, err = 6.684829747407143
-CostFunction: Nonlinear J = 42810.59282545705
+CostJo   : Nonlinear Jo(sfcshp_winds_280) = 109.9657909450503, nobs = 1110, Jo/n = 0.09906828013067591, err = 2.706651203539315
+CostJo   : Nonlinear Jo(sfcshp_winds_282) = 1.464358448575879, nobs = 20, Jo/n = 0.07321792242879396, err = 1.083326362584428
+CostJo   : Nonlinear Jo(sfcshp_winds_284) = 11.12446712068184, nobs = 64, Jo/n = 0.1738197987606538, err = 1.698550827616681
+CostJo   : Nonlinear Jo(satwnd_winds_245_270) = 113.8003086205754, nobs = 3710, Jo/n = 0.03067393763357829, err = 1.988297295353483
+CostJo   : Nonlinear Jo(satwnd_winds_246_270) = 150.1759524226139, nobs = 2296, Jo/n = 0.06540764478336841, err = 3.463166733014903
+CostJo   : Nonlinear Jo(satwnd_winds_247_270) = 2.678636950778533e-14, nobs = 1342, Jo/n = 1.996003689104719e-17, err = 500000000
+CostJo   : Nonlinear Jo(satwnd_winds_245_272) = 101.9585032857359, nobs = 4800, Jo/n = 0.02124135485119499, err = 1.951848471525187
+CostJo   : Nonlinear Jo(satwnd_winds_246_272) = 56.43775627411301, nobs = 1272, Jo/n = 0.04436930524694419, err = 3.453632211070107
+CostJo   : Nonlinear Jo(satwnd_winds_247_272) = 1.689928007770736e-14, nobs = 1178, Jo/n = 1.434573860586363e-17, err = 500000000
+CostJo   : Nonlinear Jo(refl10cm) = 22412.23196786165, nobs = 665900, Jo/n = 0.03365705356339037, err = 6.684829747407143
+CostJo   : Nonlinear Jo(abi_g16) = 145.0934500773706, nobs = 9888, Jo/n = 0.01467369033953991, err = 1.74030634266256
+CostJo   : Nonlinear Jo(abi_g18) = 115.1657474803632, nobs = 9228, Jo/n = 0.0124800333203688, err = 1.69974827636794
+CostJo   : Nonlinear Jo(amsua_n19) = 1530.607427250751, nobs = 9365, Jo/n = 0.16343912730921, err = 7.398414330097556
+CostJo   : Nonlinear Jo(amsua_metop-b) = 1851.520144544632, nobs = 11511, Jo/n = 0.1608478971891784, err = 0.3017026046294803
+CostJo   : Nonlinear Jo(amsua_metop-c) = 4792.397494476415, nobs = 38861, Jo/n = 0.1233215175748544, err = 10.04370650190114
+CostJo   : Nonlinear Jo(atms_npp) = 5263.950480836254, nobs = 145983, Jo/n = 0.03605865395858596, err = 5.630643544155226
+CostJo   : Nonlinear Jo(atms_n20) = 485.8046755255478, nobs = 10406, Jo/n = 0.046685054346103, err = 5.786447252020835
+CostJo   : Nonlinear Jo(atms_n21) = 12773.16562760179, nobs = 161203, Jo/n = 0.07923652554606175, err = 5.697195823732052
+CostJo   : Nonlinear Jo(iasi_metop-b) = 0 --- No Observations
+CostJo   : Nonlinear Jo(iasi_metop-c) = 9414.378892267543, nobs = 126328, Jo/n = 0.07452329564520568, err = 0.9894916758087321
+CostFunction: Nonlinear J = 79752.36834243555

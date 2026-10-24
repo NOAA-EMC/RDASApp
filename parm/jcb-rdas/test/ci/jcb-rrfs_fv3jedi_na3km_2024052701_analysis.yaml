@@ -31,6 +31,8 @@ ninner: 50
 gradient_norm_reduction: 1e-3
 distribution: RoundRobin
 empty_obs_space_action: create output
+# One obs writer per node: a single writer for all 1936 tasks runs out of MPI receive requests on IASI
+max_pool_size: 44
 
 # Reflectivity and hydrometeors first: the MGBF variable groups follow this order
 analysis_variables:

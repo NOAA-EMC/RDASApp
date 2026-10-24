@@ -2,7 +2,7 @@
 #!    NOAA/NCEP, National Centers for Environmental Prediction  RDASapp        !
 #!-------------------------------------------------------------------------
 
-# Optional full-capability analysis on the RRFS NA 3 km domain (2024-05-27 01Z).
+# Full-capability analysis on the RRFS NA 3 km domain (2024-05-27 01Z).
 # Added only on wcoss2 and ursa, where ush/init.sh links the staged case data to
 # fix/.agent_na3km (see README.md). build.sh renders the yaml into testinput/ with JCB.
 
