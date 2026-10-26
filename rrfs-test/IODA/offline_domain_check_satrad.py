@@ -2,7 +2,7 @@
 import netCDF4 as nc
 import numpy as np
 from matplotlib.path import Path
-from scipy.spatial import ConvexHull, Delaunay, cKDTree
+from scipy.spatial import ConvexHull, Delaunay
 from timeit import default_timer as timer
 import argparse
 import warnings
@@ -212,28 +212,19 @@ def build_domain_ring(grid_ds):
         ring[:, 0] = L_shift
     return ring
 
-def nearest_grid_point_filter(grid_ds, lat, lon, max_dist_km=None):
-    # Keep obs within max_dist_km (default: the grid spacing) of the nearest FV3 grid point
-    vars_ = grid_ds.variables
-    if 'grid_latt' in vars_ and 'grid_lont' in vars_:
-        glat = np.radians(np.array(vars_['grid_latt'][:], dtype=np.float64))
-        glon = np.radians(np.array(vars_['grid_lont'][:], dtype=np.float64))
-    else:
-        glat = np.radians(np.array(vars_['grid_lat'][:], dtype=np.float64))
-        glon = np.radians(np.array(vars_['grid_lon'][:], dtype=np.float64))
+def enclosed_pole(ring):
+    # 1 or -1 if the ring winds once around the north or south pole, else 0
+    dlon = np.diff(np.r_[ring[:, 0], ring[:1, 0]])
+    winding = np.sum((dlon + 180.0) % 360.0 - 180.0)
+    if abs(winding) < 180.0:
+        return 0
+    return 1 if np.mean(ring[:, 1]) > 0 else -1
 
-    def to_xyz(la, lo):
-        return np.c_[np.cos(la) * np.cos(lo), np.cos(la) * np.sin(lo), np.sin(la)]
-
-    xyz = to_xyz(glat.ravel(), glon.ravel())
-    if max_dist_km is None:
-        if 'area' in vars_:
-            max_dist_km = np.sqrt(np.median(vars_['area'][:])) / 1000.0
-        else:
-            xyz2d = xyz.reshape(glat.shape + (3,))
-            max_dist_km = np.median(np.linalg.norm(xyz2d[:, 1:] - xyz2d[:, :-1], axis=-1)) * 6371.0
-    dist, _ = cKDTree(xyz).query(to_xyz(np.radians(lat), np.radians(lon)))
-    return dist * 6371.0 <= max_dist_km, max_dist_km
+def polar_xy(coords, pole):
+    # Azimuthal equidistant x/y (degrees) about the pole
+    r = 90.0 - pole * coords[:, 1]
+    lon = np.radians(coords[:, 0])
+    return np.c_[r * np.cos(lon), r * np.sin(lon)]
 
 def shrink_boundary(points, factor=0.01):
     centroid = np.nanmean(points, axis=0)
@@ -254,9 +245,6 @@ parser.add_argument('-g', '--grid', type=str, help='grid file', required=True)
 parser.add_argument('-o', '--obs', type=str, help='ioda observation file', required=True)
 parser.add_argument('-f', '--fig', action='store_true', help='disable figure (default is False)', required=False)
 parser.add_argument('-s', '--shrink', type=float, help='hull shrink factor', required=True)
-parser.add_argument('-d', '--max-dist', type=float, required=False,
-                    help='FV3 only: drop obs farther than this (km) from the nearest grid point '
-                         '(default: the grid spacing, 0 turns the check off)')
 args = parser.parse_args()
 
 # Assign filenames
@@ -283,17 +271,24 @@ obs_ds = nc.Dataset(obs_filename, 'r')
 # Build ring
 ring = build_domain_ring(grid_ds)
 
-# Optional slight shrink to avoid grazing the exact boundary
-ring = shrink_boundary(ring, factor=hull_shrink_factor)
-
-# Build polygon
-domain_path = Path(ring)
-
 # Observation coords (normalize lon)
 obs_lat = obs_ds.groups['MetaData'].variables['latitude'][:]
 obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
 obs_lon = normalize_lon(obs_lon)
 obs_coords = np.c_[obs_lon, obs_lat]
+
+# A ring around a pole does not enclose the pole in lon/lat, so use polar coordinates
+pole = enclosed_pole(ring)
+if pole != 0:
+    print(f"Domain encloses the {'north' if pole > 0 else 'south'} pole, using polar coordinates")
+    ring = polar_xy(ring, pole)
+    obs_coords = polar_xy(obs_coords, pole)
+
+# Optional slight shrink to avoid grazing the exact boundary
+ring = shrink_boundary(ring, factor=hull_shrink_factor)
+
+# Build polygon
+domain_path = Path(ring)
 
 # Fast prefilter with bbox
 prefilter_mask = bbox_filter(obs_coords, ring)
@@ -302,17 +297,6 @@ candidates = np.where(prefilter_mask)[0]
 inside_small = domain_path.contains_points(obs_coords[candidates])
 inside_indices = candidates[inside_small]
 toc(tic1,label="Time to find obs within domain: ")
-
-fv3_grid = ({'grid_latt', 'grid_lont'} <= grid_ds.variables.keys() or
-            {'grid_lat', 'grid_lon'} <= grid_ds.variables.keys())
-if args.max_dist is not None and not fv3_grid:
-    raise RuntimeError("--max-dist needs an FV3 grid file (grid_latt/grid_lont or grid_lat/grid_lon)")
-if fv3_grid and args.max_dist != 0:
-    keep, max_dist = nearest_grid_point_filter(grid_ds, np.ma.getdata(obs_lat)[inside_indices],
-                                               np.ma.getdata(obs_lon)[inside_indices], args.max_dist)
-    print(f"Nearest grid point check ({max_dist:.2f} km) dropped {np.count_nonzero(~keep)} "
-          f"of {len(inside_indices)} obs")
-    inside_indices = inside_indices[keep]
 
 tic2 = tic()
 # Create a new NetCDF file to store the selected data using the more efficient method
