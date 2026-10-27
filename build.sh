@@ -284,6 +284,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   cp ../sorc/_workaround_/fv3-jedi/fv3jedi_state_mod.F90    ../sorc/fv3-jedi/src/fv3jedi/State/.
   cp ../sorc/_workaround_/fv3-jedi/FieldsMetadataDefault.h  ../sorc/fv3-jedi/src/fv3jedi/FieldMetadata/.
 
+  # Workaround for adding new variables when writing into existing restart files (no PR yet)
+  cp ../sorc/_workaround_/fv3-jedi/fv3jedi_io_fms2_mod.f90  ../sorc/fv3-jedi/src/fv3jedi/IO/FV3Restart/.
+
   # Workaround for ObsErrorFactorPressureCheck.cc and At2M (no PR yet)
   cp ../sorc/_workaround_/ufo/ObsErrorFactorPressureCheck.cc ../sorc/ufo/src/ufo/filters/obsfunctions/.
 
