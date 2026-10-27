@@ -126,6 +126,7 @@ if(BUILD_RDASBUNDLE)
 # rdas tests and super executables
   if(BUILD_RRFS_TEST)
     ecbuild_bundle( PROJECT rrfs-test SOURCE "../rrfs-test" )
+    ecbuild_bundle( PROJECT rrfs-test-na3km SOURCE "../rrfs-test-na3km" )
   endif()
   if(BUILD_SUPER_EXE)
     ecbuild_bundle( PROJECT rdas SOURCE "../mains" )

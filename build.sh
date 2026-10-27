@@ -256,6 +256,17 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     fi
     ctest=${ctest_yaml%.yaml}
   done
+
+  # NA 3 km full-analysis ctest (rrfs-test-na3km)
+  cd $dir_root/rrfs-test-na3km/testinput
+  ctest_yaml=rrfs_fv3jedi_na3km_2024052701_analysis.yaml
+  cp $dir_root/parm/jcb-rdas/test/ci/run_jcb_ctest.py .
+  cp $dir_root/parm/jcb-rdas/test/ci/jcb-$ctest_yaml .
+  python run_jcb_ctest.py 2024052701 jcb-$ctest_yaml $ctest_yaml
+  if [[ $? != 0 ]]; then
+    echo "Failed: python run_jcb_ctest.py 2024052701 jcb-${ctest_yaml} ${ctest_yaml}"
+    exit 9
+  fi
   cd ${BUILD_DIR}
 
   # Link in test data for experiments: MPAS-JEDI
@@ -292,6 +303,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
 
   # Publish the scaled 10 m wind under the surface-wind name required by CRTM (no PR yet).
   cp ../sorc/_workaround_/vader/WindSpeedAt10m_B.cc ../sorc/vader/src/vader/betaNames_CRTMRecipes/.
+
+  # Read the ensemble on its native geometry and convert it online to the inner-loop geometry (oops PR3346)
+  cp ../sorc/_workaround_/oops/EnsembleCovariance.h ../sorc/oops/src/oops/base/.
 
 fi
 

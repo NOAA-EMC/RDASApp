@@ -1,0 +1,1 @@
+../../rrfs-test/testinput/gsd_sfcobs_uselist.txt

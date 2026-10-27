@@ -27,7 +27,7 @@ qsub -Wblock=true <<EOF
 #!/bin/bash
 #PBS -N ${TEST_NAME}
 #PBS -l place=excl,select=${NODES}:ncpus=${PPN}:mem=500GB
-#PBS -l walltime=00:45:00
+#PBS -l walltime=${CTEST_PBS_WALLTIME:-00:45:00}
 #PBS -o ${OUTFILE}
 #PBS -e ${ERRFILE}
 #PBS -A ${PBS_ACCOUNT}

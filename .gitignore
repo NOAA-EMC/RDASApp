@@ -160,6 +160,7 @@ install*/
 expr
 fix/INIT_DONE
 fix/.agent
+fix/.agent_na3km
 modulefiles/RDAS/hostgeneric.intel.lua
 
 # Ignore the rrfs-test ctest yamls since they are build with RDASApp
@@ -176,6 +177,8 @@ rrfs-test/testinput/rrfs_mpasjedi_2024052700_3denvar.yaml
 rrfs-test/testinput/rrfs_mpasjedi_2024052700_getkf.yaml
 rrfs-test/testinput/rrfs_mpasjedi_2024052700_3dvar*.yaml
 rrfs-test/testinput/*jcb*
+rrfs-test-na3km/testinput/rrfs_fv3jedi_na3km_2024052701_analysis.yaml
+rrfs-test-na3km/testinput/*jcb*
 
 # Ignore patch base_commit files
 patches/*/.base_commit

@@ -46,4 +46,16 @@ if [[ ! "${filetype}" == *"symbolic link"* ]]; then
 fi
 mkdir -p ${basedir}/fix
 ln -snf ${RDAS_DATA}/fix ${agentfile}
+# Data for the optional RRFS NA 3 km ctest (rrfs-test-na3km)
+case ${MACHINE_ID} in
+  ursa)
+    NA3KM_DATA=/scratch4/BMC/zrtrr/Samuel.Degelia/rrfs-test-na3km_data
+    ;;
+  wcoss2)
+    NA3KM_DATA=/lfs/h3/emc/lam/noscrub/samuel.degelia/rrfs-test-na3km_data
+    ;;
+esac
+if [[ -n "${NA3KM_DATA:-}" ]]; then
+  ln -snf ${NA3KM_DATA} ${basedir}/fix/.agent_na3km
+fi
 touch ${basedir}/fix/INIT_DONE
