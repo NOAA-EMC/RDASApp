@@ -220,7 +220,12 @@
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *amsua_metop-b_channels
              options:
-               sensor: amsua_metop-b
+               sensor: microwave
+               height groups:
+               - channels: 1-6, 15
+                 height: 2000
+               - channels: 7
+                 height: 4000
                channels: *amsua_metop-b_channels
        #  Transmittnace Top Check
        - filter: BlackList
@@ -355,7 +360,12 @@
                channels: *amsua_metop-b_channels
                options:
                  channels: *amsua_metop-b_channels
-                 sensor: amsua_metop-b
+                 sensor: microwave
+                 height groups:
+                 - channels: 1-6, 15
+                   height: 2000
+                 - channels: 7
+                   height: 4000
              obserr_function:
                name: ObsFunction/ObsErrorModelRamp
                channels: *amsua_metop-b_channels
