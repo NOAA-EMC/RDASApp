@@ -1,0 +1,39 @@
+covariance model: SABER
+saber central block:
+  saber block name: gsi static covariance
+  active variables: {{control_variables}}
+  read:
+    gsi akbk: fv3_akbk
+    gsi error covariance file: berror_stats
+    gsi berror namelist file: gsiparm_regional.anl
+    processor layout x direction: {{atmosphere_layout_gsib_x}}
+    processor layout y direction: {{atmosphere_layout_gsib_y}}
+    debugging deep bypass gsi B error: false
+    debugging mode: false
+    regional mode: true
+saber outer blocks:
+- saber block name: interpolation
+  inner geometry:
+    function space: StructuredColumns
+    custom grid matching gsi:
+      type: rotated_lonlat
+      lats: {{gsibec_lats}}
+      lons: {{gsibec_lons}}
+      lat_start: {{lat_start}}
+      lat_end: {{lat_end}}
+      lon_start: {{lon_start}}
+      lon_end: {{lon_end}}
+      north_pole_lat: {{north_pole_lat}}
+      north_pole_lon: {{north_pole_lon}}
+    custom partitioner matching gsi:
+      bands: {{gsi_bands}}
+    halo: 1
+  forward interpolator:
+    local interpolator type: oops unstructured grid interpolator
+  inverse interpolator:
+    local interpolator type: oops unstructured grid interpolator
+    regional nn fill distance in km: 800
+  state variables to inverse: {{state_variables_to_inverse}}
+linear variable change:
+  input variables: {{control_variables}}
+  output variables: {{analysis_variables}}

@@ -1,0 +1,46 @@
+output:
+  state component:
+    io:
+      filetype: fv3 restart
+      datapath: ./
+      prepend files with date: false
+      filename_core: inc_ijedi.fv_core.res.tile1.nc
+      filename_trcr: inc_ijedi.fv_tracer.res.tile1.nc
+      filename_phys: inc_ijedi.phy_data.nc
+      filename_sfcd: inc_ijedi.sfc_data.nc
+      filename_sfcw: inc_ijedi.fv_srf_wnd.res.tile1.nc
+      filename_cplr: inc_ijedi.coupler.res
+      fields to write: {{analysis_variables}}
+      field io names:
+        eastward_wind: {{eastward_wind}}
+        northward_wind: {{northward_wind}}
+        air_temperature: {{air_temperature}}
+        air_pressure_at_surface: {{air_pressure_at_surface}}
+        air_pressure_thickness: {{air_pressure_thickness}}
+        water_vapor_mixing_ratio_wrt_moist_air: {{water_vapor_mixing_ratio_wrt_moist_air}}
+        cloud_liquid_ice: {{cloud_liquid_ice}}
+        cloud_liquid_water: {{cloud_liquid_water}}
+        ozone_mass_mixing_ratio: {{ozone_mass_mixing_ratio}}
+        geopotential_at_surface: {{geopotential_at_surface}}
+        skin_temperature_at_surface: {{skin_temperature_at_surface}}
+        tslb: {{tslb}}
+        smois: {{smois}}
+        eastward_wind_at_surface: {{eastward_wind_at_surface}}
+        northward_wind_at_surface: {{northward_wind_at_surface}}
+        ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m: {{ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m}}
+        rain_water: {{rain_water}}
+        snow_water: {{snow_water}}
+        graupel: {{graupel}}
+        upward_air_velocity: {{upward_air_velocity}}
+        equivalent_reflectivity_factor: {{equivalent_reflectivity_factor}}
+geometry:
+  geometry_type: fv3
+  fms initialization:
+    namelist filename: fmsmpp.nml
+    field table filename: field_table
+  namelist filename: {{fv3lam_nml}}
+  akbk: fv3_akbk
+  npz: {{atmosphere_npz_ges}}
+  layout: [{{atmosphere_layout_x}}, {{atmosphere_layout_y}}]
+  io_layout: [{{atmosphere_io_layout_x}}, {{atmosphere_io_layout_y}}]
+  ntiles: {{atmosphere_ntiles}}
