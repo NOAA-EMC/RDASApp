@@ -213,6 +213,20 @@ def build_domain_ring(grid_ds):
         ring[:, 0] = L_shift
     return ring
 
+def enclosed_pole(ring):
+    # 1 or -1 if the ring winds once around the north or south pole, else 0
+    dlon = np.diff(np.r_[ring[:, 0], ring[:1, 0]])
+    winding = np.sum((dlon + 180.0) % 360.0 - 180.0)
+    if abs(winding) < 180.0:
+        return 0
+    return 1 if np.mean(ring[:, 1]) > 0 else -1
+
+def polar_xy(coords, pole):
+    # Azimuthal equidistant x/y (degrees) about the pole
+    r = 90.0 - pole * coords[:, 1]
+    lon = np.radians(coords[:, 0])
+    return np.c_[r * np.cos(lon), r * np.sin(lon)]
+
 def shrink_boundary(points, factor=0.01):
     centroid = np.nanmean(points, axis=0)
     v = points - centroid
@@ -258,17 +272,24 @@ obs_ds = nc.Dataset(obs_filename, 'r')
 # Build ring
 ring = build_domain_ring(grid_ds)
 
-# Optional slight shrink to avoid grazing the exact boundary
-ring = shrink_boundary(ring, factor=hull_shrink_factor)
-
-# Build polygon
-domain_path = Path(ring)
-
 # Observation coords (normalize lon)
 obs_lat = obs_ds.groups['MetaData'].variables['latitude'][:]
 obs_lon = obs_ds.groups['MetaData'].variables['longitude'][:]
 obs_lon = normalize_lon(obs_lon)
 obs_coords = np.c_[obs_lon, obs_lat]
+
+# A ring around a pole does not enclose the pole in lon/lat, so use polar coordinates
+pole = enclosed_pole(ring)
+if pole != 0:
+    print(f"Domain encloses the {'north' if pole > 0 else 'south'} pole, using polar coordinates")
+    ring = polar_xy(ring, pole)
+    obs_coords = polar_xy(obs_coords, pole)
+
+# Optional slight shrink to avoid grazing the exact boundary
+ring = shrink_boundary(ring, factor=hull_shrink_factor)
+
+# Build polygon
+domain_path = Path(ring)
 
 # Fast prefilter with bbox
 prefilter_mask = bbox_filter(obs_coords, ring)
@@ -317,17 +338,16 @@ for group in groups:
     g = fout.createGroup(group)
     for var in obs_ds.groups[group].variables:
         invar = obs_ds.groups[group].variables[var]
+        # Copy raw values (auto-masking turns values outside valid_range into missing)
+        invar.set_auto_mask(False)
         try:  # Non-string variables
             vartype = invar.dtype
             fill = invar.getncattr('_FillValue')
             g.createVariable(var, vartype, 'Location', fill_value=fill)
         except:  # String variables
             g.createVariable(var, 'str', 'Location')
-        # Make sure lat/lon are not masked
-        if var in ['latitude', 'longitude']: 
-            g.variables[var][:] = invar[:][inside_indices].data
-        else:
-            g.variables[var][:] = invar[:][inside_indices]
+        g.variables[var].set_auto_mask(False)
+        g.variables[var][:] = invar[:][inside_indices]
         # Copy attributes for this variable
         for attr in invar.ncattrs():
             if '_FillValue' in attr: continue
