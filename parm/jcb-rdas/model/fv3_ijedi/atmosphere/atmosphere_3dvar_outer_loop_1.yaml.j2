@@ -1,0 +1,19 @@
+- ninner: {{ninner}}
+  gradient norm reduction: {{gradient_norm_reduction}}
+  geometry:
+    geometry_type: fv3
+    fms initialization:
+      namelist filename: fmsmpp.nml
+      field table filename: field_table
+    namelist filename: {{fv3lam_nml_inner | default(fv3lam_nml)}}
+    akbk: fv3_akbk
+    npz: {{atmosphere_npz_anl}}
+    layout:
+    - {{atmosphere_layout_x}}
+    - {{atmosphere_layout_y}}
+    io_layout:
+    - {{atmosphere_io_layout_x}}
+    - {{atmosphere_io_layout_y}}
+    ntiles: {{atmosphere_ntiles}}
+  online diagnostics:
+    write increment: false
