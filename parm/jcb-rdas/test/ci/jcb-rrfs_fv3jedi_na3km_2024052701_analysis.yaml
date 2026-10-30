@@ -26,7 +26,7 @@ bound_to_include: begin
 minimizer: DRPCG
 final_diagnostics_departures: oman
 final_j_evaluation: true
-number_of_outer_loops: 1
+number_of_outer_loops: 2
 ninner: 50
 gradient_norm_reduction: 1e-3
 distribution: RoundRobin
