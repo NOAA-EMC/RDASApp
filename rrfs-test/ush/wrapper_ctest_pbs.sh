@@ -10,7 +10,8 @@ WORKDIR="$(pwd)"
 RDASApp="${WORKDIR}/../../.."
 OUTFILE="${WORKDIR}/${TEST_NAME}.out"
 ERRFILE="${WORKDIR}/${TEST_NAME}.err"
-NTASKS=$((NODES * PPN))
+# Optional CTEST_PBS_*/CTEST_MPIRUN_ARGS overrides come from the test's ENVIRONMENT property
+NTASKS=${CTEST_PBS_NTASKS:-$((NODES * PPN))}
 
 rm -f ${OUTFILE}
 rm -f ${ERRFILE}
@@ -26,7 +27,7 @@ fi
 qsub -Wblock=true <<EOF
 #!/bin/bash
 #PBS -N ${TEST_NAME}
-#PBS -l place=excl,select=${NODES}:ncpus=${PPN}:mem=500GB
+#PBS -l place=excl,select=${NODES}:ncpus=${CTEST_PBS_NCPUS:-${PPN}}:mem=500GB
 #PBS -l walltime=${CTEST_PBS_WALLTIME:-00:45:00}
 #PBS -o ${OUTFILE}
 #PBS -e ${ERRFILE}
@@ -41,7 +42,8 @@ ulimit -a
 export OOPS_TRACE=0
 export OMP_NUM_THREADS=1
 export LD_LIBRARY_PATH="${RDASApp}/build/lib64:${LD_LIBRARY_PATH}"
-mpirun -n ${NTASKS} -ppn ${PPN} -cpu-bind core "${RDASApp}/build/bin/${EXECUTABLE}" ${EXE_ARGS}
+${CTEST_PBS_ENV:+export ${CTEST_PBS_ENV}}
+mpirun -n ${NTASKS} -ppn ${PPN} ${CTEST_MPIRUN_ARGS:-} -cpu-bind core "${RDASApp}/build/bin/${EXECUTABLE}" ${EXE_ARGS}
 MPIRUN_EXIT_CODE=\$?
 echo "TEST_FINISHED_WITH_EXIT_CODE \$MPIRUN_EXIT_CODE" >> "${OUTFILE}"
 exit \$MPIRUN_EXIT_CODE

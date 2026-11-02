@@ -4,7 +4,7 @@
 
 # Full-capability analysis on the RRFS NA 3 km domain (2024-05-27 01Z).
 # Added only on wcoss2 and ursa, where ush/init.sh links the staged case data to
-# fix/.agent_na3km (see README.md). build.sh renders the yaml into testinput/ with JCB.
+# fix/.agent_na3km. build.sh renders the yaml into testinput/ with JCB.
 
 set(case "rrfs_fv3jedi_na3km_2024052701_analysis")
 set(exe "fv3jedi_var.x")
@@ -26,7 +26,7 @@ endif()
 
 # 44x44 layout = 1936 MPI tasks
 set(na3km_ppn 44)
-set(na3km_walltime "00:45:00")
+set(na3km_walltime "01:15:00")
 
 set(test_dir "${CMAKE_CURRENT_SOURCE_DIR}")
 set(casedir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}")
@@ -54,14 +54,32 @@ file(CREATE_LINK ${test_dir}/testinput/gsd_sfcobs_provider.txt ${casedir}/gsd_sf
 file(COPY ${test_dir}/testinput/${case}.yaml DESTINATION ${casedir})
 
 if("${MACHINE_ID}" STREQUAL "wcoss2")
+  set(na3km_ppn 32)
+  set(na3km_threads 4)
+  set(na3km_nodes 61)
   configure_file(${rdasapp_dir}/rrfs-test/ush/wrapper_ctest_pbs.sh ${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh COPYONLY)
-  math(EXPR nodes "1936 / ${na3km_ppn}")
   ecbuild_add_test( TARGET  ${case}
                     MPI     0
                     WORKING_DIRECTORY ${casedir}
-                    ARGS    "${case} ${exe} ${case}.yaml ${na3km_ppn} ${nodes}"
+                    ARGS    "${case} ${exe} ${case}.yaml ${na3km_ppn} ${na3km_nodes}"
                     COMMAND ${CMAKE_CURRENT_BINARY_DIR}/wrapper_ctest_pbs.sh )
   set_property(TEST ${case} APPEND PROPERTY ENVIRONMENT "CTEST_PBS_WALLTIME=${na3km_walltime}")
+  set_property(TEST ${case} APPEND PROPERTY ENVIRONMENT "CTEST_PBS_NTASKS=1936")
+  set_property(TEST ${case} APPEND PROPERTY ENVIRONMENT "CTEST_PBS_NCPUS=128")
+  set_property(TEST ${case} APPEND PROPERTY ENVIRONMENT "CTEST_MPIRUN_ARGS=--depth ${na3km_threads}")
+  set(wcoss2_env
+      OMP_NUM_THREADS=${na3km_threads}
+      OMP_PLACES=cores
+      OMP_PROC_BIND=close
+      OMP_STACKSIZE=512M
+      MPICH_ALLTOALLV_THROTTLE=484
+      FI_MR_CACHE_MONITOR=memhooks
+      FI_MR_CACHE_MAX_COUNT=0
+      MPICH_OFI_STARTUP_CONNECT=1
+      MPICH_OFI_VERBOSE=1
+      "MPICH_MPIIO_HINTS='*.tile1.nc:romio_cb_read=disable,...'")
+  list(JOIN wcoss2_env " " wcoss2_env)
+  set_property(TEST ${case} APPEND PROPERTY ENVIRONMENT "CTEST_PBS_ENV=${wcoss2_env}")
 else()
   set(MPI_ARGS "${MPI_ARGS} --time=${na3km_walltime} --exclusive --mem=0 --ntasks-per-node=${na3km_ppn}")
   ecbuild_add_test( TARGET  ${case}
