@@ -27,9 +27,8 @@
          observed variables: [zenithTotalDelay]
 
        obs operator:
-#        name: GroundgnssMetOffice
-# ------- the OMD FOV avaeraging operator --------
-         name: GroundgnssOMD
+         name: GroundgnssMetOffice
+# ------- the FOV avaerage option --------
          num_fov: 9        # number of sample grid points for FOV averaging
          observation alias file: obsop_name_map.yaml
 
