@@ -197,6 +197,8 @@ fi
 
 # Install the jcb clients
 if [[ $BUILD_JCB == 'YES' ]]; then
+  # Use the pinned parm/jcb-algorithms submodule; jcb_client_init.py would otherwise clone develop
+  ln -snf $dir_root/parm/jcb-algorithms $dir_root/sorc/jcb/src/jcb/configuration/algorithms
   cd $dir_root/sorc/jcb
   python jcb_client_init.py
   # Link the RDASApp/parm/jcb-rdas regular folder instead of submodule
