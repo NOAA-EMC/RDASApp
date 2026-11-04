@@ -153,23 +153,6 @@
                  errors: [0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912, 0.05912]
 
 {% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
-         # Error inflation based on pressure check (setupq.f90) -- if this is off, use ObsFunction/ObsErrorModelHumidity
-         - filter: Perform Action
-           udescriptor: "error_inflation_pressure_check"
-           filter variables:
-           - name: specificHumidityAt2M
-           where:
-           - variable: ObsType/specificHumidityAt2M
-             is_in: 183
-           action:
-             name: inflate error
-             inflation variable:
-               name: ObsFunction/ObsErrorFactorPressureCheck
-               options:
-                 variable: specificHumidityAt2M
-                 surface observation error ramp: true
-                 max levels below surface: 15
-                 inflation factor: 8.0
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -210,9 +193,27 @@
              inflation factor: 1.2
            where:
            - variable: MetaData/pressure
-             maxvalue: 10000.0
+             maxvalue: 9999.0
            - variable: ObsType/specificHumidityAt2M
              is_in: 183
+
+         # Error inflation based on pressure check (setupq.f90) -- if this is off, use ObsFunction/ObsErrorModelHumidity
+         - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
+           filter variables:
+           - name: specificHumidityAt2M
+           where:
+           - variable: ObsType/specificHumidityAt2M
+             is_in: 183
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: specificHumidityAt2M
+                 surface observation error ramp: true
+                 max levels below surface: 15
+                 inflation factor: 8.0
 {% endif %}  # END use_error_inflation
 
          # Bounds Check (ObsError)

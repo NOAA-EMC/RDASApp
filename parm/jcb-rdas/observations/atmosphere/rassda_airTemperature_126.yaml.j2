@@ -151,23 +151,6 @@
                  errors: [2.4296, 2.4261, 2.3798, 2.3022, 2.2627, 2.2817, 2.2826, 2.1826, 2.0092, 1.8385, 1.7169, 1.6511, 1.6306, 1.6472, 1.7005, 1.7905, 1.9016, 1.9907, 2.0094, 1.9571, 1.8864, 1.86, 1.9104, 2.0392, 2.2324, 2.4605, 2.6741, 2.8318, 2.9263, 2.9735, 2.9931, 2.9985, 2.9924]
 
 {% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
-         # Error inflation based on pressure check (setupt.f90)
-         - filter: Perform Action
-           udescriptor: "error_inflation_pressure_check"
-           filter variables:
-           - name: airTemperature
-           where:
-           - variable: ObsType/airTemperature
-             is_in: 126
-           action:
-             name: inflate error
-             inflation variable:
-               name: ObsFunction/ObsErrorFactorPressureCheck
-               options:
-                 variable: airTemperature
-                 surface observation error ramp: true
-                 max levels below surface: 15
-                 inflation factor: 8.0
 
          # Error inflation based on errormod (qcmod.f90)
          - filter: Perform Action
@@ -209,9 +192,27 @@
              inflation factor: 1.2
            where:
            - variable: MetaData/pressure
-             maxvalue: 10000.0
+             maxvalue: 9999.0
            - variable: ObsType/airTemperature
              is_in: 126
+
+         # Error inflation based on pressure check (setupt.f90)
+         - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 126
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: airTemperature
+                 surface observation error ramp: true
+                 max levels below surface: 15
+                 inflation factor: 8.0
 {% endif %}  # END use_error_inflation
 
          # Bounds Check (ObsError)

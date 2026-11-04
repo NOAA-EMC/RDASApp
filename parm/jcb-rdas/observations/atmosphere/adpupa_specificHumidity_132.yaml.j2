@@ -155,23 +155,6 @@
                  errors: [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
 
 {% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
-         # Error inflation based on pressure check (setupq.f90)
-         - filter: Perform Action
-           udescriptor: "error_inflation_pressure_check"
-           filter variables:
-           - name: specificHumidity
-           where:
-           - variable: ObsType/specificHumidity
-             is_in: 132
-           action:
-             name: inflate error
-             inflation variable:
-               name: ObsFunction/ObsErrorFactorPressureCheck
-               options:
-                 variable: specificHumidity
-                 surface observation error ramp: true
-                 max levels below surface: 15
-                 inflation factor: 8.0
 
          # Error inflation based on errormod (qcmod.f90)
          - filter: Perform Action
@@ -213,9 +196,27 @@
              inflation factor: 1.2
            where:
            - variable: MetaData/pressure
-             maxvalue: 10000.0
+             maxvalue: 9999.0
            - variable: ObsType/specificHumidity
              is_in: 132
+
+         # Error inflation based on pressure check (setupq.f90)
+         - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
+           filter variables:
+           - name: specificHumidity
+           where:
+           - variable: ObsType/specificHumidity
+             is_in: 132
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: specificHumidity
+                 surface observation error ramp: true
+                 max levels below surface: 15
+                 inflation factor: 8.0
 {% endif %}  # END use_error_inflation
 
          # Bounds Check (ObsError)
