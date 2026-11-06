@@ -1,116 +1,116 @@
-     - obs space:
-         name: refl10cm
-         obsdatain:
-           engine:
-             type: H5File
-             obsfile: "data/obs/ioda_mrms_refl.nc"
-             missing file action: "warn"
-         obsdataout:
-           empty obs space action: "{{empty_obs_space_action}}"
-           write multiple files: {{write_multiple_files | default(false) }}
-           engine:
-             type: H5File
-             obsfile: jdiag_mrms_refl.nc
-             allow overwrite: true
-         io pool:
-           max pool size: {{ max_pool_size | default(1) }}
-         simulated variables: [equivalentReflectivityFactor]
-         observed variables: [equivalentReflectivityFactor]
+- obs space:
+    name: refl10cm
+    obsdatain:
+      engine:
+        type: H5File
+        obsfile: "data/obs/ioda_mrms_refl.nc"
+        missing file action: "warn"
+    obsdataout:
+      empty obs space action: "{{empty_obs_space_action}}"
+      write multiple files: {{write_multiple_files | default(false) }}
+      engine:
+        type: H5File
+        obsfile: jdiag_mrms_refl.nc
+        allow overwrite: true
+    io pool:
+      max pool size: {{ max_pool_size | default(1) }}
+    simulated variables: [equivalentReflectivityFactor]
+    observed variables: [equivalentReflectivityFactor]
 
-       obs operator:
-         name: VertInterp
-         vertical coordinate: height_above_mean_sea_level
-         observation vertical coordinate: height
-         interpolation method: linear
+  obs operator:
+    name: VertInterp
+    vertical coordinate: height_above_mean_sea_level
+    observation vertical coordinate: height
+    interpolation method: linear
 
-       obs error:
-         covariance model: diagonal
+  obs error:
+    covariance model: diagonal
 
-       obs filters:
-         # ------------------
-         # MRMS Reflectivity
-         # ------------------
-         # Accept, reject, or passivate (monitor)
-         - filter: Perform Action
-           udescriptor: "iuse_check"
-           action:
-             name: {{iuse_mrms_refl | default("passivate", true)}} # accept, reject, passivate
+  obs filters:
+    # ------------------
+    # MRMS Reflectivity
+    # ------------------
+    # Accept, reject, or passivate (monitor)
+    - filter: Perform Action
+      udescriptor: "iuse_check"
+      action:
+        name: {{iuse_mrms_refl | default("passivate", true)}} # accept, reject, passivate
 
-         # Compute height AGL for height check filter
-         - filter: Variable Assignment
-           udescriptor: "calc_height_agl"
-           assignments:
-           - name: DerivedMetaData/height_agl
-             type: float
-             function:
-               name: ObsFunction/Arithmetic
-               options:
-                 variables: [MetaData/height, GeoVaLs/height_above_mean_sea_level_at_surface]
-                 coefs: [1.0, -1.0]
+    # Compute height AGL for height check filter
+    - filter: Variable Assignment
+      udescriptor: "calc_height_agl"
+      assignments:
+      - name: DerivedMetaData/height_agl
+        type: float
+        function:
+          name: ObsFunction/Arithmetic
+          options:
+            variables: [MetaData/height, GeoVaLs/height_above_mean_sea_level_at_surface]
+            coefs: [1.0, -1.0]
 
-         # Reject obs above 10 km AGL
-         - filter: Domain Check
-           udescriptor: height_check
-           filter variables:
-           - name: equivalentReflectivityFactor
-           where:
-           - variable: DerivedMetaData/height_agl
-             maxvalue: 10000.0
-           defer to post: true
+    # Reject obs above 10 km AGL
+    - filter: Domain Check
+      udescriptor: height_check
+      filter variables:
+      - name: equivalentReflectivityFactor
+      where:
+      - variable: DerivedMetaData/height_agl
+        maxvalue: 10000.0
+      defer to post: true
 
-         # Initial error assignment
-         - filter: Perform Action
-           udescriptor: "intial_error_assignment"
-           filter variables:
-           - name: equivalentReflectivityFactor
-           action:
-             name: assign error
-             error parameter: 5.0
+    # Initial error assignment
+    - filter: Perform Action
+      udescriptor: "intial_error_assignment"
+      filter variables:
+      - name: equivalentReflectivityFactor
+      action:
+        name: assign error
+        error parameter: 5.0
 
-         # Inflate obs error in precipitation
-         - filter: Perform Action
-           udescriptor: inflate_error_precip
-           apply at iterations: 0,1
-           filter variables:
-           - name: equivalentReflectivityFactor
-           where:
-           - variable: ObsValue/equivalentReflectivityFactor
-             minvalue: 5
-           action:
-             name: inflate error
-             inflation factor: 2.0
+    # Inflate obs error in precipitation
+    - filter: Perform Action
+      udescriptor: inflate_error_precip
+      apply at iterations: 0,1
+      filter variables:
+      - name: equivalentReflectivityFactor
+      where:
+      - variable: ObsValue/equivalentReflectivityFactor
+        minvalue: 5
+      action:
+        name: inflate error
+        inflation factor: 2.0
 
-         # First gross error check to inflate errors if ratio > 4
-         - filter: Background Check
-           udescriptor: gross_error_check_inflt
-           apply at iterations: 0,1
-           filter variables:
-           - name: equivalentReflectivityFactor
-           where:
-           - variable: ObsValue/equivalentReflectivityFactor
-             minvalue: 5
-           threshold: 4.0
-           action:
-             name: assign error
-             error function:
-               name: ObsFunction/Arithmetic
-               options:
-                 variables: [ObsValue/equivalentReflectivityFactor, HofX/equivalentReflectivityFactor]
-                 coefficients: [1.0, -1.0]
-                 total coefficient: 0.25
-                 absolute value: [true, true]
-           defer to post: true
+    # First gross error check to inflate errors if ratio > 4
+    - filter: Background Check
+      udescriptor: gross_error_check_inflt
+      apply at iterations: 0,1
+      filter variables:
+      - name: equivalentReflectivityFactor
+      where:
+      - variable: ObsValue/equivalentReflectivityFactor
+        minvalue: 5
+      threshold: 4.0
+      action:
+        name: assign error
+        error function:
+          name: ObsFunction/Arithmetic
+          options:
+            variables: [ObsValue/equivalentReflectivityFactor, HofX/equivalentReflectivityFactor]
+            coefficients: [1.0, -1.0]
+            total coefficient: 0.25
+            absolute value: [true, true]
+      defer to post: true
 
-         # Second gross error check to reject anything with ratio > 8
-         - filter: Background Check
-           udescriptor: gross_error_check_reject
-           apply at iterations: 0,1
-           filter variables:
-           - name: equivalentReflectivityFactor
-           where:
-           - variable: ObsValue/equivalentReflectivityFactor
-             minvalue: 5
-           threshold: 8.0
-           action:
-             name: reject
-           defer to post: true
+    # Second gross error check to reject anything with ratio > 8
+    - filter: Background Check
+      udescriptor: gross_error_check_reject
+      apply at iterations: 0,1
+      filter variables:
+      - name: equivalentReflectivityFactor
+      where:
+      - variable: ObsValue/equivalentReflectivityFactor
+        minvalue: 5
+      threshold: 8.0
+      action:
+        name: reject
+      defer to post: true
