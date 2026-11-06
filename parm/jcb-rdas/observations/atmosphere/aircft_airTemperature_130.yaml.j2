@@ -152,23 +152,6 @@
                  errors: [2.4618, 2.4244, 2.3481, 2.2352, 2.0999, 1.9647, 1.8522, 1.7754, 1.7323, 1.7134, 1.7093, 1.7131, 1.717, 1.7061, 1.655, 1.5397, 1.3754, 1.2567, 1.2116, 1.252, 1.37, 1.501, 1.6004, 1.6588, 1.6865, 1.6969, 1.6998, 1.7001, 1.7, 1.7, 1.7003, 1.6999, 1.6956]
 
 {% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
-         # Error inflation based on pressure check (setupt.f90)
-         - filter: Perform Action
-           udescriptor: "error_inflation_pressure_check"
-           filter variables:
-           - name: airTemperature
-           where:
-           - variable: ObsType/airTemperature
-             is_in: 130
-           action:
-             name: inflate error
-             inflation variable:
-               name: ObsFunction/ObsErrorFactorPressureCheck
-               options:
-                 variable: airTemperature
-                 surface observation error ramp: true
-                 max levels below surface: 15
-                 inflation factor: 8.0
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
@@ -210,8 +193,27 @@
            where:
            - variable: MetaData/pressure
              maxvalue: 10000.0
+             max_exclusive: true
            - variable: ObsType/airTemperature
              is_in: 130
+
+         # Error inflation based on pressure check (setupt.f90)
+         - filter: Perform Action
+           udescriptor: "error_inflation_pressure_check"
+           filter variables:
+           - name: airTemperature
+           where:
+           - variable: ObsType/airTemperature
+             is_in: 130
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: airTemperature
+                 surface observation error ramp: true
+                 max levels below surface: 15
+                 inflation factor: 8.0
 {% endif %}  # END use_error_inflation
 
          # Bounds Check (ObsError)
