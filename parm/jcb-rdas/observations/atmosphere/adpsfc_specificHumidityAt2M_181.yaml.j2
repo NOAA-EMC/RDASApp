@@ -39,7 +39,9 @@
          # ------------------
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
-           udescriptor: "iuse_check"
+           identifier:
+             name: "PerformAction_iuse_check"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            where:
@@ -50,7 +52,9 @@
 
          # Reject all obs not in type
          - filter: Perform Action
-           udescriptor: "obs_type_check"
+           identifier:
+             name: "PerformAction_obs_type_check"
+             logging: true
            where:
            - variable: ObsValue/specificHumidityAt2M
              value: is_not_valid
@@ -59,7 +63,9 @@
 
          # Reject all obs not in kx
          - filter: Perform Action
-           udescriptor: "obs_kx_check"
+           identifier:
+             name: "PerformAction_obs_kx_check"
+             logging: true
            where:
            - variable: ObsType/specificHumidityAt2M
              is_not_in: 181
@@ -68,7 +74,9 @@
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
-           udescriptor: "quality_marker_check"
+           identifier:
+             name: "RejectList_quality_marker_check"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            where:
@@ -81,7 +89,9 @@
 
          # Time window filter
          - filter: Bounds Check
-           udescriptor: "time_window_check"
+           identifier:
+             name: "BoundsCheck_time_window_check"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            test variables:
@@ -96,7 +106,9 @@
 
          # Duplicate Check
          - filter: DuplicateThinning
-           udescriptor: "duplicate_check"
+           identifier:
+             name: "DuplicateThinning_duplicate_check"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            analysis_time: "{{ atmosphere_background_time_iso }}"
@@ -118,7 +130,9 @@
 {% if use_online_domain_check | default(true) %}
          # Online regional domain check
          - filter: Bounds Check
-           udescriptor: "online_domain_check"
+           identifier:
+             name: "BoundsCheck_online_domain_check"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            test variables:
@@ -129,7 +143,9 @@
 
          # Initial error assignment
          - filter: Perform Action
-           udescriptor: "initial_error_assignment"
+           identifier:
+             name: "PerformAction_initial_error_assignment"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            where:
@@ -153,6 +169,9 @@
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           identifier:
+#             name: "PerformAction_error_inflation_errormod"
+#             logging: true
 #           filter variables:
 #           - name: specificHumidityAt2M
 #           where:
@@ -168,7 +187,9 @@
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
-           udescriptor: "error_inflation_QualityMarker"
+           identifier:
+             name: "PerformAction_error_inflation_QualityMarker"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            action:
@@ -182,7 +203,9 @@
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
-           udescriptor: "error_inflation_observation_pressure"
+           identifier:
+             name: "PerformAction_error_inflation_observation_pressure"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            action:
@@ -197,7 +220,9 @@
 
          # Error inflation based on pressure check (setupq.f90) -- if this is off, use ObsFunction/ObsErrorModelHumidity
          - filter: Perform Action
-           udescriptor: "error_inflation_pressure_check"
+           identifier:
+             name: "PerformAction_error_inflation_pressure_check"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            where:
@@ -216,7 +241,9 @@
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
-           udescriptor: "bounds_check_ObsError"
+           identifier:
+             name: "BoundsCheck_bounds_check_ObsError"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            test variables:
@@ -231,7 +258,9 @@
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
-           udescriptor: "bounds_check_ObsValue"
+           identifier:
+             name: "BoundsCheck_bounds_check_ObsValue"
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            minvalue: 0.0
@@ -261,7 +290,9 @@
 
          # Set ObsError set "error parameter" if < "max value"
          - filter: Perform Action
-           udescriptor: "ermin_set"
+           identifier:
+             name: "PerformAction_ermin_set"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: specificHumidityAt2M
@@ -281,7 +312,9 @@
 
          # Set ObsError set "error parameter" if > "min value"
          - filter: Perform Action
-           udescriptor: "ermax_set"
+           identifier:
+             name: "PerformAction_ermax_set"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: specificHumidityAt2M
@@ -301,7 +334,9 @@
 
          # Gross Error Check
          - filter: Background Check
-           udescriptor: "gross_error_check"
+           identifier:
+             name: "BackgroundCheck_gross_error_check"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: specificHumidityAt2M
@@ -317,7 +352,9 @@
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
-           udescriptor: "gross_error_check_0.7"
+           identifier:
+             name: "BackgroundCheck_gross_error_check_0.7"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: specificHumidityAt2M
@@ -333,7 +370,9 @@
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
          - filter: Perform Action
-           udescriptor: "reassign_error_TempObsErrorData"
+           identifier:
+             name: "PerformAction_reassign_error_TempObsErrorData"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: specificHumidityAt2M

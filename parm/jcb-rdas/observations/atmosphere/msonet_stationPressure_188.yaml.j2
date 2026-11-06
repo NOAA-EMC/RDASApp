@@ -44,7 +44,9 @@
 
          # Mesonet provider/station use lists
          - filter: RejectList  # initially reject all providers
-           udescriptor: "initial_reject_all_providers"
+           identifier:
+             name: "RejectList_initial_reject_all_providers"
+             logging: true
            filter variables:
            - name: stationPressure
            where:
@@ -53,7 +55,9 @@
 
 {% if msonet_provider_accepts_allsprvs | default([]) %}
          - filter: AcceptList
-           udescriptor: "accept_msonet_stationPressure_provider_allsprvs"
+           identifier:
+             name: "AcceptList_accept_msonet_stationPressure_provider_allsprvs"
+             logging: true
            filter variables:
            - name: stationPressure
            where:
@@ -65,7 +69,9 @@
 
 {% for item in msonet_provider_accepts_subproviders | default([]) %}
          - filter: AcceptList
-           udescriptor: "accept_msonet_stationPressure_provider_{{ item.provider }}_{{ item.subprovider }}"
+           identifier:
+             name: "AcceptList_accept_msonet_stationPressure_provider_{{ item.provider }}_{{ item.subprovider }}"
+             logging: true
            filter variables:
            - name: stationPressure
            where:
@@ -80,7 +86,9 @@
 #{% if mesonet_station_accepts_stationPressure | default(false) %}
 #{% for item in msonet_station_accepts_stationPressure | default([]) %}
 #         - filter: AcceptList
-#           udescriptor: "accept_msonet_stationPressure_stations_{{ item.provider }}"
+#           identifier:
+#             name: "AcceptList_accept_msonet_stationPressure_stations_{{ item.provider }}"
+#             logging: true
 #           filter variables:
 #           - name: stationPressure
 #           where:
@@ -97,7 +105,9 @@
 
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
-           udescriptor: "iuse_check"
+           identifier:
+             name: "PerformAction_iuse_check"
+             logging: true
            filter variables:
            - name: stationPressure
            where:
@@ -112,7 +122,9 @@
 
          # Reject all obs not in type
          - filter: Perform Action
-           udescriptor: "obs_type_check"
+           identifier:
+             name: "PerformAction_obs_type_check"
+             logging: true
            where:
            - variable: ObsValue/stationPressure
              value: is_not_valid
@@ -121,7 +133,9 @@
 
          # Reject all obs not in kx
          - filter: Perform Action
-           udescriptor: "obs_kx_check"
+           identifier:
+             name: "PerformAction_obs_kx_check"
+             logging: true
            where:
            - variable: ObsType/stationPressure
              is_not_in: 188
@@ -130,7 +144,9 @@
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
-           udescriptor: "quality_marker_check"
+           identifier:
+             name: "RejectList_quality_marker_check"
+             logging: true
            filter variables:
            - name: stationPressure
            where:
@@ -143,7 +159,9 @@
 
          # Time window filter
          - filter: Bounds Check
-           udescriptor: "time_window_check"
+           identifier:
+             name: "BoundsCheck_time_window_check"
+             logging: true
            filter variables:
            - name: stationPressure
            test variables:
@@ -158,7 +176,9 @@
 
          # Duplicate Check
          - filter: DuplicateThinning
-           udescriptor: "duplicate_check"
+           identifier:
+             name: "DuplicateThinning_duplicate_check"
+             logging: true
            filter variables:
            - name: stationPressure
            analysis_time: "{{ atmosphere_background_time_iso }}"
@@ -180,7 +200,9 @@
 {% if use_online_domain_check | default(true) %}
          # Online regional domain check
          - filter: Bounds Check
-           udescriptor: "online_domain_check"
+           identifier:
+             name: "BoundsCheck_online_domain_check"
+             logging: true
            filter variables:
            - name: stationPressure
            test variables:
@@ -191,7 +213,9 @@
 
          # Initial error assignment
          - filter: Perform Action
-           udescriptor: "initial_error_assignment"
+           identifier:
+             name: "PerformAction_initial_error_assignment"
+             logging: true
            filter variables:
            - name: stationPressure
            where:
@@ -210,7 +234,9 @@
 {% if use_error_inflation | default(true) %}  # BEGIN use_error_inflation
          # Error inflation based on pressure check (setupps.f90)
          - filter: Perform Action
-           udescriptor: "error_inflation_pressure_check"
+           identifier:
+             name: "PerformAction_error_inflation_pressure_check"
+             logging: true
            filter variables:
            - name: stationPressure
            where:
@@ -227,6 +253,9 @@
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           identifier:
+#             name: "PerformAction_error_inflation_errormod"
+#             logging: true
 #           filter variables:
 #           - name: stationPressure
 #           where:
@@ -242,7 +271,9 @@
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
-           udescriptor: "error_inflation_QualityMarker"
+           identifier:
+             name: "PerformAction_error_inflation_QualityMarker"
+             logging: true
            filter variables:
            - name: stationPressure
            action:
@@ -256,7 +287,9 @@
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
-           udescriptor: "error_inflation_observation_pressure"
+           identifier:
+             name: "PerformAction_error_inflation_observation_pressure"
+             logging: true
            filter variables:
            - name: stationPressure
            action:
@@ -272,7 +305,9 @@
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
-           udescriptor: "bounds_check_ObsError"
+           identifier:
+             name: "BoundsCheck_bounds_check_ObsError"
+             logging: true
            filter variables:
            - name: stationPressure
            test variables:
@@ -287,7 +322,9 @@
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
-           udescriptor: "bounds_check_ObsValue"
+           identifier:
+             name: "BoundsCheck_bounds_check_ObsValue"
+             logging: true
            filter variables:
            - name: stationPressure
            minvalue: 20000.0
@@ -317,7 +354,9 @@
 
          # Set ObsError set "error parameter" if < "max value"
          - filter: Perform Action
-           udescriptor: "ermin_set"
+           identifier:
+             name: "PerformAction_ermin_set"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
@@ -337,7 +376,9 @@
 
          # Set ObsError set "error parameter" if > "min value"
          - filter: Perform Action
-           udescriptor: "ermax_set"
+           identifier:
+             name: "PerformAction_ermax_set"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
@@ -357,7 +398,9 @@
 
          # Gross Error Check
          - filter: Background Check
-           udescriptor: "gross_error_check"
+           identifier:
+             name: "BackgroundCheck_gross_error_check"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
@@ -373,7 +416,9 @@
 
          # Gross Error Check: cgross*0.7 if QualityMarker=3
          - filter: Background Check
-           udescriptor: "gross_error_check_0.7"
+           identifier:
+             name: "BackgroundCheck_gross_error_check_0.7"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure
@@ -389,7 +434,9 @@
 
          # Re-assign err ObsErrorData <--- TempObsErrorData after gross error check.
          - filter: Perform Action
-           udescriptor: "reassign_error_TempObsErrorData"
+           identifier:
+             name: "PerformAction_reassign_error_TempObsErrorData"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: stationPressure

@@ -34,7 +34,9 @@
          # ------------------
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
-           udescriptor: "iuse_check"
+           identifier:
+             name: "PerformAction_iuse_check"
+             logging: true
            filter variables:
            - name: radialVelocity
            where:
@@ -45,7 +47,9 @@
 
          # Reject all obs not in type
          - filter: Perform Action
-           udescriptor: "obs_type_check"
+           identifier:
+             name: "PerformAction_obs_type_check"
+             logging: true
            where:
            - variable: ObsValue/radialVelocity
              value: is_not_valid
@@ -54,7 +58,9 @@
 
          # Reject all obs not in kx
          - filter: Perform Action
-           udescriptor: "obs_kx_check"
+           identifier:
+             name: "PerformAction_obs_kx_check"
+             logging: true
            where:
            - variable: ObsType/radialVelocity
              is_not_in: 999
@@ -63,7 +69,9 @@
 
          ## Reject all obs with QualityMarker > 3
          #- filter: RejectList
-         #  udescriptor: "quality_marker_check"
+         #  identifier:
+         #    name: "RejectList_quality_marker_check"
+         #    logging: true
          #  filter variables:
          #  - name: radialVelocity
          #  where:
@@ -76,7 +84,9 @@
 
          # Time window filter
          - filter: Bounds Check
-           udescriptor: "time_window_check"
+           identifier:
+             name: "BoundsCheck_time_window_check"
+             logging: true
            filter variables:
            - name: radialVelocity
            test variables:
@@ -91,7 +101,9 @@
 
          ## Duplicate Check
          #- filter: DuplicateThinning
-         #  udescriptor: "duplicate_check"
+         #  identifier:
+         #    name: "DuplicateThinning_duplicate_check"
+         #    logging: true
          #  filter variables:
          #  - name: radialVelocity
          #  analysis_time: "{{ atmosphere_background_time_iso }}"
@@ -112,7 +124,9 @@
 
          # Online domain check
          - filter: Bounds Check
-           udescriptor: "online_domain_check"
+           identifier:
+             name: "BoundsCheck_online_domain_check"
+             logging: true
            filter variables:
            - name: radialVelocity
            test variables:
@@ -123,7 +137,9 @@
          # Match GSI's hard-coded no-VAD superob spread check.
          # This must run before ObsError is replaced with 5 m/s.
          - filter: Bounds Check
-           udescriptor: "superob_spread_check"
+           identifier:
+             name: "BoundsCheck_superob_spread_check"
+             logging: true
            filter variables:
            - name: radialVelocity
            test variables:
@@ -138,7 +154,9 @@
 
          ## Initial error assignment
          #- filter: Perform Action
-         #  udescriptor: "initial_error_assignment"
+         #  identifier:
+         #    name: "PerformAction_initial_error_assignment"
+         #    logging: true
          #  filter variables:
          #  - name: radialVelocity
          #  where:
@@ -165,6 +183,9 @@
 
          ## Error inflation based on residual, max inflation if diff > 20
          #- filter: Perform Action
+         #  identifier:
+         #    name: "PerformAction_error_inflation_positive_residual"
+         #    logging: true
          #  filter variables:
          #  - name: radialVelocity
          #  where:
@@ -178,6 +199,9 @@
 
          ## Error inflation based on residual, max inflation if diff < -20
          #- filter: Perform Action
+         #  identifier:
+         #    name: "PerformAction_error_inflation_negative_residual"
+         #    logging: true
          #  filter variables:
          #  - name: radialVelocity
          #  where:
@@ -218,6 +242,9 @@
 
          # for elevation > 2000 m: inflation = elev_sq / 2000**2
          - filter: Perform Action
+           identifier:
+             name: "PerformAction_error_inflation_station_elevation"
+             logging: true
            filter variables:
            - name: radialVelocity
            where:
@@ -274,6 +301,9 @@
 
          # For elevation differences > 200 m: inflation = elev_diff_sq / 200**2
          - filter: Perform Action
+           identifier:
+             name: "PerformAction_error_inflation_elevation_difference"
+             logging: true
            filter variables:
            - name: radialVelocity
            where:
@@ -290,7 +320,9 @@
 
          # check if observation below model surface (zsges >= dpres)
          - filter: Bounds Check
-           udescriptor: "bounds_check_below_model_surface"
+           identifier:
+             name: "BoundsCheck_bounds_check_below_model_surface"
+             logging: true
            filter variables:
            - name: radialVelocity
            test variables:
@@ -306,7 +338,9 @@
 
          # Bounds Check (height)
          - filter: Bounds Check
-           udescriptor: "bounds_check_height"
+           identifier:
+             name: "BoundsCheck_bounds_check_height"
+             logging: true
            filter variables:
            - name: radialVelocity
            test variables:
@@ -317,7 +351,9 @@
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
-           udescriptor: "bounds_check_ObsError"
+           identifier:
+             name: "BoundsCheck_bounds_check_ObsError"
+             logging: true
            filter variables:
            - name: radialVelocity
            test variables:
@@ -332,7 +368,9 @@
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
-           udescriptor: "bounds_check_ObsValue"
+           identifier:
+             name: "BoundsCheck_bounds_check_ObsValue"
+             logging: true
            filter variables:
            - name: radialVelocity
            minvalue: -130
@@ -345,7 +383,9 @@
 
          ## Apply a minimum error for assimilation. Unlike the gross-check clamp, this change is retained.
          #- filter: Perform Action
-         #  udescriptor: "minimum_assimilation_error"
+         #  identifier:
+         #    name: "PerformAction_minimum_assimilation_error"
+         #    logging: true
          #  apply at iterations: 0,1
          #  filter variables:
          #  - name: radialVelocity
@@ -379,7 +419,9 @@
 
          # Set ObsError set "error parameter" if < "max value"
          - filter: Perform Action
-           udescriptor: "ermin_set"
+           identifier:
+             name: "PerformAction_ermin_set"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: radialVelocity
@@ -399,7 +441,9 @@
 
          # Set ObsError set "error parameter" if > "min value"
          - filter: Perform Action
-           udescriptor: "ermax_set"
+           identifier:
+             name: "PerformAction_ermax_set"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: radialVelocity
@@ -419,7 +463,9 @@
 
          # Gross Error Check
          - filter: Background Check
-           udescriptor: "gross_error_check"
+           identifier:
+             name: "BackgroundCheck_gross_error_check"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: radialVelocity
@@ -430,7 +476,9 @@
 
          # Re-assign err ObsErrorData <--- RWObsErrorData after gross error check.
          - filter: Perform Action
-           udescriptor: "reassign_error_RWObsErrorData"
+           identifier:
+             name: "PerformAction_reassign_error_RWObsErrorData"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: radialVelocity

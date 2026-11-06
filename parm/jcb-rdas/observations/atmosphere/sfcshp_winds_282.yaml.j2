@@ -67,9 +67,15 @@
                  coefs: [1.0]
                  intercept: 10.0
          - filter: Variable Transforms
+           identifier:
+             name: "VariableTransforms_AdjustedHeightCoordinate"
+             logging: true
            Transform: AdjustedHeightCoordinate
            SkipWhenNoObs: False
          - filter: Variable Transforms
+           identifier:
+             name: "VariableTransforms_SurfaceWindScalingHeight"
+             logging: true
            Transform: SurfaceWindScalingHeight
            SkipWhenNoObs: False
          # ------------------
@@ -77,7 +83,9 @@
          # ------------------
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
-           udescriptor: "iuse_check"
+           identifier:
+             name: "PerformAction_iuse_check"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -89,7 +97,9 @@
 
          # Reject all obs not in type
          - filter: Perform Action
-           udescriptor: "obs_type_check"
+           identifier:
+             name: "PerformAction_obs_type_check"
+             logging: true
            where:
            - variable: ObsValue/windEastward
              value: is_not_valid
@@ -98,7 +108,9 @@
 
          # Reject all obs not in kx
          - filter: Perform Action
-           udescriptor: "obs_kx_check"
+           identifier:
+             name: "PerformAction_obs_kx_check"
+             logging: true
            where:
            - variable: ObsType/windEastward
              is_not_in: 282
@@ -107,7 +119,9 @@
 
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
-           udescriptor: "quality_marker_check"
+           identifier:
+             name: "RejectList_quality_marker_check"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -121,7 +135,9 @@
 
          # Time window filter
          - filter: Bounds Check
-           udescriptor: "time_window_check"
+           identifier:
+             name: "BoundsCheck_time_window_check"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -137,7 +153,9 @@
 
          # Duplicate Check
          - filter: DuplicateThinning
-           udescriptor: "duplicate_check"
+           identifier:
+             name: "DuplicateThinning_duplicate_check"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -160,7 +178,9 @@
 {% if use_online_domain_check | default(true) %}
          # Online domain check
          - filter: Bounds Check
-           udescriptor: "online_domain_check"
+           identifier:
+             name: "BoundsCheck_online_domain_check"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -172,7 +192,9 @@
 
          # Initial error assignment
          - filter: Perform Action
-           udescriptor: "initial_error_assignment"
+           identifier:
+             name: "PerformAction_initial_error_assignment"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -193,6 +215,9 @@
 
 #         # Error inflation (windEastward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           identifier:
+#             name: "PerformAction_error_inflation_errormod_windEastward"
+#             logging: true
 #           filter variables:
 #           - name: windEastward
 #           where:
@@ -211,6 +236,9 @@
 
 #         # Error inflation (windNorthward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           identifier:
+#             name: "PerformAction_error_inflation_errormod_windNorthward"
+#             logging: true
 #           filter variables:
 #           - name: windNorthward
 #           where:
@@ -229,7 +257,9 @@
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
-           udescriptor: "error_inflation_QualityMarker"
+           identifier:
+             name: "PerformAction_error_inflation_QualityMarker"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -244,7 +274,9 @@
 
          # Error inflation when observation pressure < 50 hPa (read_prepbufr.f90)
          - filter: Perform Action
-           udescriptor: "error_inflation_observation_pressure"
+           identifier:
+             name: "PerformAction_error_inflation_observation_pressure"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -260,7 +292,9 @@
 
          # Error inflation (windEastward) based on pressure check (setupw.f90)
          - filter: Perform Action
-           udescriptor: "error_inflation_pressure_check"
+           identifier:
+             name: "PerformAction_error_inflation_pressure_check_windEastward"
+             logging: true
            filter variables:
            - name: windEastward
            where:
@@ -279,7 +313,9 @@
 
          # Error inflation (windNorthward) based on pressure check (setupw.f90)
          - filter: Perform Action
-           udescriptor: "error_inflation_pressure_check"
+           identifier:
+             name: "PerformAction_error_inflation_pressure_check_windNorthward"
+             logging: true
            filter variables:
            - name: windNorthward
            where:
@@ -299,7 +335,9 @@
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
-           udescriptor: "bounds_check_ObsError"
+           identifier:
+             name: "BoundsCheck_bounds_check_ObsError"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -315,7 +353,9 @@
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
-           udescriptor: "bounds_check_ObsValue"
+           identifier:
+             name: "BoundsCheck_bounds_check_ObsValue"
+             logging: true
            filter variables:
            - name: windEastward
            - name: windNorthward
@@ -329,7 +369,9 @@
 
          # Gross Error Check (windEastward)
          - filter: Background Check
-           udescriptor: "gross_error_check"
+           identifier:
+             name: "BackgroundCheck_gross_error_check_windEastward"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: windEastward
@@ -350,7 +392,9 @@
 
          # Gross Error Check (windNorthward)
          - filter: Background Check
-           udescriptor: "gross_error_check"
+           identifier:
+             name: "BackgroundCheck_gross_error_check_windNorthward"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: windNorthward
@@ -371,7 +415,9 @@
 
          # Gross Error Check (windEastward): cgross*0.7 if QualityMarker=3
          - filter: Background Check
-           udescriptor: "gross_error_check_0.7"
+           identifier:
+             name: "BackgroundCheck_gross_error_check_0.7_windEastward"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: windEastward
@@ -392,7 +438,9 @@
 
          # Gross Error Check (windNorthward): cgross*0.7 if QualityMarker=3
          - filter: Background Check
-           udescriptor: "gross_error_check_0.7"
+           identifier:
+             name: "BackgroundCheck_gross_error_check_0.7_windNorthward"
+             logging: true
            apply at iterations: 0,1
            filter variables:
            - name: windNorthward
