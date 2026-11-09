@@ -41,7 +41,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_iuse_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -57,7 +57,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_obs_type_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable: ObsValue/windEastward
         value: is_not_valid
@@ -68,7 +68,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_obs_kx_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable: ObsType/windEastward
         is_not_in: 245
@@ -79,7 +79,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_obs_subtype_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable: MetaData/satelliteIdentifier
         is_not_in: 270
@@ -90,7 +90,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_time_window_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -110,7 +110,7 @@
     - filter: DuplicateThinning
       identifier:
         name: "DuplicateThinning_duplicate_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -136,7 +136,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_initial_error_assignment"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -161,7 +161,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_ob_error_inflation"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -178,7 +178,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_pressure_check_windEastward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       where:
@@ -198,7 +198,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_pressure_check_windNorthward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windNorthward
       where:
@@ -219,7 +219,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_ObsValue"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -237,7 +237,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_qifn"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -257,7 +257,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_satellite_zenith_angle"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -276,7 +276,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_pressure"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -295,7 +295,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_bounds_check_pressure_over_land"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -315,7 +315,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_pct1"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -335,7 +335,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_bounds_check_reject_over_nonwater"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -355,7 +355,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_reject_low_speed_amv"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -373,7 +373,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_amv_experr_norm_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -393,7 +393,7 @@
     - filter: Difference Check
       identifier:
         name: "DifferenceCheck_difference_check_tropopause_pressure"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -412,7 +412,7 @@
     - filter: Difference Check
       identifier:
         name: "DifferenceCheck_difference_check_air_pressure_at_surface"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -431,7 +431,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_pressure_range_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -450,7 +450,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check_windEastward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: windEastward
@@ -470,7 +470,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check_windNorthward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: windNorthward
