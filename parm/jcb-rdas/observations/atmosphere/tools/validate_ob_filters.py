@@ -14,6 +14,8 @@ NO_WHERE_REQUIRED_IDENTIFIER_SUFFIXES = {
     "DerivedSurfaceTemperature",
     "AdjustedHeightCoordinate",
     "SurfaceWindScalingHeight",
+    "save_raw_surface_temperature",
+    "initialize_derived_surface_temperature",
 }
 
 # ------------------------------------------------------------------------

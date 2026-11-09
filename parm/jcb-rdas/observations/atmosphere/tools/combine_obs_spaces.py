@@ -59,6 +59,14 @@ OPERATOR_CONFLICT_POLICIES = (
     "error",
 )
 
+RAW_SURFACE_TEMPERATURE = "MetaData/airTemperatureAt2MObserved"
+DERIVED_SURFACE_TEMPERATURE = "DerivedObsValue/airTemperatureAt2M"
+SURFACE_TEMPERATURE_FUNCTIONS = {
+    "Arithmetic", "ModelHeightAdjustedAirTemperature", "ObsErrorFactorConventional",
+    "ObsErrorFactorPressureCheck", "ObsErrorFactorSfcPressure", "ObsErrorModelHumidity",
+    "ObsErrorModelStepwiseLinear", "WindsSPDBCheck",
+}
+
 
 # ------------------------
 # Parsed operator containers
@@ -843,6 +851,89 @@ def operator_key(template):
     return template.obs_operator, template.linear_obs_operator
 
 
+def surface_temperature_writers(template):
+    """Find assignments that create the derived surface temperature."""
+    return [block for block in template.filter_section.blocks
+            if filter_name(block) == "Variable Assignment"
+            and any("name: " + DERIVED_SURFACE_TEMPERATURE in line
+                    for line in block.lines)]
+
+
+def function_options_index(lines, function_name):
+    """Find a function's directly associated options block, if unambiguous."""
+    matches = [i for i, line in enumerate(lines)
+               if line.strip() == "name: ObsFunction/" + function_name]
+    if len(matches) != 1:
+        return None
+    index = matches[0] + 1
+    while index < len(lines) and (not lines[index].strip() or lines[index].lstrip().startswith("#")):
+        index += 1
+    if (index >= len(lines) or lines[index].strip() != "options:"
+            or leading_spaces(lines[index]) != leading_spaces(lines[matches[0]])):
+        return None
+    return index
+
+
+def can_combine_surface_temperatures(templates):
+    """Recognize only reviewed surface-temperature and pressure configurations."""
+    if len(templates) < 2 or not any(surface_temperature_writers(t) for t in templates):
+        return False
+    family = templates[0].path.name.split("_", 1)[0]
+    if family not in {"adpsfc", "msonet", "sfcshp"}:
+        return False
+    seen_types = set()
+    for template in templates:
+        if template.path.name.split("_", 1)[0] != family:
+            return False
+        if not set(template.variables) <= {
+            "airTemperatureAt2M", "specificHumidityAt2M", "stationPressure",
+            "windEastward", "windNorthward",
+        }:
+            return False
+        if template.obs_operator.name not in {"Identity", "SfcCorrected", "VertInterp"}:
+            return False
+        if template.obs_operator.name == "SfcCorrected":
+            options = "\n".join(template.obs_operator.option_lines)
+            if "correction scheme to use: GSL" not in options or "observed temperature variable:" in options:
+                return False
+        writers = surface_temperature_writers(template)
+        if len(writers) > 1:
+            return False
+        if writers:
+            block = writers[0]
+            lines = "\n".join(block.lines)
+            if (block.jinja_depth or template.selection.kx_variable != "airTemperatureAt2M"
+                    or template.selection.value_variable != "airTemperatureAt2M"
+                    or not template.selection.kx_values
+                    or any(value in seen_types for value in template.selection.kx_values)
+                    or any(line.strip() == "where:" for line in block.lines)
+                    or lines.count("name: " + DERIVED_SURFACE_TEMPERATURE) != 1
+                    or sum(line.strip().startswith("- name:") for line in block.lines) != 1
+                    or lines.count("name: ObsValue/airTemperatureAt2M") != 1
+                    or not ("source variable:" in lines
+                            or "ObsFunction/ModelHeightAdjustedAirTemperature" in lines)
+                    or ("ObsFunction/ModelHeightAdjustedAirTemperature" in lines
+                        and ("observed temperature variable:" in lines
+                             or function_options_index(block.lines, "ModelHeightAdjustedAirTemperature") is None))):
+                return False
+            seen_types.update(template.selection.kx_values)
+        for block in template.filter_section.blocks:
+            lines = "\n".join(block.lines)
+            if RAW_SURFACE_TEMPERATURE in lines:
+                return False
+            if ("airTemperatureAt2M" not in template.variables
+                    and "ObsValue/airTemperatureAt2M" in lines):
+                return False
+            functions = re.findall(r"ObsFunction/([A-Za-z0-9_]+)", lines)
+            if any(function not in SURFACE_TEMPERATURE_FUNCTIONS for function in functions):
+                return False
+            if "ObsFunction/ObsErrorFactorSfcPressure" in lines:
+                if ("observed temperature variable:" in lines
+                        or function_options_index(block.lines, "ObsErrorFactorSfcPressure") is None):
+                    return False
+    return True
+
+
 def parse_input_templates(input_names):
     """Read and parse every input template once."""
 
@@ -873,17 +964,11 @@ def partition_inputs(templates):
     """Greedily place each template into the first compatible ObsSpace."""
 
     partitions = []
+    combine_temperatures = can_combine_surface_temperatures(templates)
     for template in templates:
         # Derived surface temperatures are read implicitly by other operators.
-        # Keep each writer in its own ObsSpace so one stream cannot change
-        # another stream's input values through DerivedObsValue.
-        writes_derived_temperature = any(
-            filter_name(block) == "Variable Assignment"
-            and any("name: DerivedObsValue/airTemperatureAt2M" in line
-                    for line in block.lines)
-            for block in template.filter_section.blocks
-        )
-        if writes_derived_temperature:
+        # Keep unrecognized writers isolated rather than guessing their behavior.
+        if surface_temperature_writers(template) and not combine_temperatures:
             partitions.append(ObsSpacePartition(templates=[template], isolated=True))
             continue
 
@@ -1355,6 +1440,7 @@ def build_combined_filters(templates, obs_vars):
     """Transform and render all filters for one combined ObsSpace."""
 
     stats = FilterMergeStats()
+    combine_temperatures = can_combine_surface_temperatures(templates)
     occurrences = []
     occurrences_by_template: Dict[Path, List[FilterOccurrence]] = OrderedDict()
 
@@ -1366,6 +1452,33 @@ def build_combined_filters(templates, obs_vars):
                 block=block,
                 lines=list(block.lines),
             )
+            if combine_temperatures and block in surface_temperature_writers(template):
+                # Restrict each writer to its original stream and read the raw value.
+                indent = " " * (leading_spaces(block.lines[0]) + 2)
+                occurrence.lines[1:1] = [
+                    indent + "where:",
+                    indent + "- variable: ObsType/airTemperatureAt2M",
+                    indent + "  is_in: [" + ", ".join(template.selection.kx_values) + "]",
+                ]
+                if any("ObsFunction/ModelHeightAdjustedAirTemperature" in line
+                       for line in occurrence.lines):
+                    index = function_options_index(occurrence.lines, "ModelHeightAdjustedAirTemperature")
+                    line = occurrence.lines[index]
+                    occurrence.lines.insert(index + 1, " " * (leading_spaces(line) + 2)
+                                            + "observed temperature variable: "
+                                            + RAW_SURFACE_TEMPERATURE)
+                else:
+                    occurrence.lines = [line.replace("name: ObsValue/airTemperatureAt2M",
+                                                     "name: " + RAW_SURFACE_TEMPERATURE)
+                                        for line in occurrence.lines]
+            if combine_temperatures and any("ObsFunction/ObsErrorFactorSfcPressure" in line
+                                            for line in occurrence.lines):
+                # Pressure error inflation must use the same raw temperature as the operator.
+                option_index = function_options_index(occurrence.lines, "ObsErrorFactorSfcPressure")
+                option = occurrence.lines[option_index]
+                occurrence.lines.insert(option_index + 1,
+                    " " * (leading_spaces(option) + 2)
+                    + "observed temperature variable: " + RAW_SURFACE_TEMPERATURE)
             occurrences.append(occurrence)
             template_occurrences.append(occurrence)
         occurrences_by_template[template.path] = template_occurrences
@@ -1422,6 +1535,8 @@ def build_combined_filters(templates, obs_vars):
         "DomainCheck_obs_kx_check",
         "BoundsCheck_combined_time_window_check",
         "PerformAction_obs_type_check_initial_reject",
+        "VariableAssignment_save_raw_surface_temperature",
+        "VariableAssignment_initialize_derived_surface_temperature",
     }
     for occurrence in iuse_occurrences:
         namespace_filter_identifier(occurrence, used_names)
@@ -1435,6 +1550,24 @@ def build_combined_filters(templates, obs_vars):
 
     output.extend(build_reject_filter(obs_vars).rstrip().splitlines())
     output.append("")
+
+    if combine_temperatures:
+        # Initialize derived values from the original observations before applying scoped writers.
+        for suffix, destination, source in (
+            ("save_raw_surface_temperature", RAW_SURFACE_TEMPERATURE, "ObsValue/airTemperatureAt2M"),
+            ("initialize_derived_surface_temperature", DERIVED_SURFACE_TEMPERATURE, RAW_SURFACE_TEMPERATURE),
+        ):
+            output.append("         - filter: Variable Assignment")
+            output.extend(identifier_lines("Variable Assignment", suffix))
+            output.extend([
+                "           assignments:",
+                "           - name: " + destination,
+                "             type: float",
+                "             source variable:",
+                "               name: " + source,
+                "             skip derived: true",
+                "",
+            ])
 
     if iuse_occurrences:
         output.append("         # ---- Accept, reject, or passivate configured streams ----")
@@ -1584,6 +1717,18 @@ def build_obs_space_yaml(templates, space_name, input_name, conflict_policy):
         templates,
         conflict_policy,
     )
+    if can_combine_surface_temperatures(templates):
+        # GSL pressure must see the unadjusted temperature used in its source ObsSpace.
+        for group in operator_groups:
+            operator = group.obs_operator
+            if operator.name == "SfcCorrected":
+                group.obs_operator = OperatorSpec(
+                    operator.name,
+                    operator.option_lines + (
+                        "observed temperature variable: " + RAW_SURFACE_TEMPERATURE,
+                    ),
+                    operator.had_variables,
+                )
     obs_operator_block = build_obs_operator_block(operator_groups)
     filters, filter_stats = build_combined_filters(templates, obs_vars)
 
@@ -1639,6 +1784,10 @@ def build_combined_yaml(input_names, output_name, conflict_policy):
     if conflict_policy == "split":
         partitions = partition_inputs(templates)
     else:
+        if (any(surface_temperature_writers(t) for t in templates)
+                and not can_combine_surface_temperatures(templates)):
+            raise CombineError("Cannot safely combine unrecognized derived surface temperature writers; "
+                               "use --operator-conflict split to keep them isolated")
         partitions = [ObsSpacePartition(templates=templates)]
 
     header_lines = [
