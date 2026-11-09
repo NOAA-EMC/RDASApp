@@ -159,6 +159,7 @@ class ObsSpacePartition:
 
     templates: List[InputTemplate] = field(default_factory=list)
     variable_owners: dict = field(default_factory=dict)
+    isolated: bool = False
 
 
 class CombineError(ValueError):
@@ -873,9 +874,24 @@ def partition_inputs(templates):
 
     partitions = []
     for template in templates:
+        # Derived surface temperatures are read implicitly by other operators.
+        # Keep each writer in its own ObsSpace so one stream cannot change
+        # another stream's input values through DerivedObsValue.
+        writes_derived_temperature = any(
+            filter_name(block) == "Variable Assignment"
+            and any("name: DerivedObsValue/airTemperatureAt2M" in line
+                    for line in block.lines)
+            for block in template.filter_section.blocks
+        )
+        if writes_derived_temperature:
+            partitions.append(ObsSpacePartition(templates=[template], isolated=True))
+            continue
+
         template_key = operator_key(template)
 
         for partition in partitions:
+            if partition.isolated:
+                continue
             compatible = all(
                 variable not in partition.variable_owners
                 or partition.variable_owners[variable] == template_key
