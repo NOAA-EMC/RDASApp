@@ -29,7 +29,7 @@ from typing import Dict, List, Optional, Tuple
 # ------------------------
 # Constants
 # ------------------------
-SELECTION_UDESCRIPTORS = (
+SELECTION_IDENTIFIER_SUFFIXES = (
     "obs_type_check",
     "obs_kx_check",
 )
@@ -48,7 +48,7 @@ POINTWISE_MERGEABLE_FILTERS = (
 # These filters occur before stream-specific error assignments and thinning in
 # the conventional templates. Merging later filters would require a dependency
 # scheduler to ensure that every source stream has completed its prerequisites.
-ORDER_INDEPENDENT_MERGE_UDESCRIPTORS = (
+ORDER_INDEPENDENT_MERGE_IDENTIFIER_SUFFIXES = (
     "quality_marker_check",
     "time_window_check",
 )
@@ -513,14 +513,89 @@ def yaml_scalar(value):
     return value.split("#", 1)[0].strip().strip("\"'")
 
 
-def filter_udescriptor(block):
-    """Return a filter udescriptor, or None when it is absent."""
+def identifier_name_field(block):
+    """Return the direct identifier.name line and value without matching nested names."""
 
-    for line in block.lines:
+    field_indent = leading_spaces(block.lines[0]) + 2
+    inside_identifier = False
+    for index, line in enumerate(block.lines[1:], start=1):
         stripped = line.strip()
-        if stripped.startswith("udescriptor:"):
-            return yaml_scalar(stripped.split(":", 1)[1])
-    return None
+        if not stripped or stripped.startswith("#") or is_active_jinja_control(line):
+            continue
+        indent = leading_spaces(line)
+        if indent == field_indent and stripped == "identifier:":
+            inside_identifier = True
+            continue
+        if inside_identifier and indent <= field_indent:
+            inside_identifier = False
+        if inside_identifier and indent == field_indent + 2 and stripped.startswith("name:"):
+            name = yaml_scalar(stripped.split(":", 1)[1])
+            return index, name
+    return None, None
+
+
+def filter_identifier_suffix(block):
+    """Return the rule suffix from a filter's identifier.name."""
+
+    _, name = identifier_name_field(block)
+    if not name:
+        return None
+    # Source namespaces distinguish output instances without changing their rule roles.
+    name = name.split("__from_", 1)[0]
+    prefix = filter_name(block).replace(" ", "") + "_"
+    return name[len(prefix):] if name.startswith(prefix) else name
+
+
+def identifier_lines(filter_type, suffix, indent=11):
+    """Build an identifier block using the same logging switch as source templates."""
+
+    name = filter_type.replace(" ", "") + "_" + suffix
+    padding = " " * indent
+    return [
+        f"{padding}identifier:",
+        f'{padding}  name: "{name}"',
+        padding + "  logging: {{ obs_filter_logging | default(true) }}",
+    ]
+
+
+def namespace_filter_identifier(occurrence, used_names):
+    """Give one retained source filter a unique name within the output ObsSpace."""
+
+    block = block_with_lines(occurrence)
+    index, name = identifier_name_field(block)
+    if index is None or not name:
+        raise CombineError(
+            f"{occurrence.template.path}: {filter_name(block)} filter is missing identifier.name"
+        )
+    source = Path(occurrence.template.path.stem).stem
+    source = re.sub(r"[^A-Za-z0-9_.-]", "_", source)
+    candidate = f"{name}__from_{source}"
+    unique_name = candidate
+    sequence = 2
+    while unique_name in used_names:
+        unique_name = f"{candidate}__{sequence}"
+        sequence += 1
+    used_names.add(unique_name)
+    padding = " " * leading_spaces(occurrence.lines[index])
+    occurrence.lines[index] = f'{padding}name: "{unique_name}"'
+
+
+def render_source_filter(lines, indent=9):
+    """Align a retained filter with generated filters without changing nested YAML."""
+
+    source_indent = leading_spaces(lines[0])
+    result = []
+    for line in lines:
+        if not line.strip():
+            result.append(line)
+        elif leading_spaces(line) >= source_indent:
+            result.append(" " * indent + line[source_indent:])
+        elif line.lstrip().startswith("#") or is_active_jinja_control(line):
+            # Outer comments and Jinja controls may start before the filter itself.
+            result.append(line)
+        else:
+            raise CombineError("A retained filter contains an outdented YAML line")
+    return result
 
 
 def filter_action(block):
@@ -714,21 +789,21 @@ def condition_variable(block, group_name, condition_name, condition_value, path)
 def parse_selection_spec(filter_section, path):
     """Extract the source template's missing-value and KX reduction rules."""
 
-    by_udescriptor = {}
+    by_identifier_suffix = {}
     for block in filter_section.blocks:
-        udescriptor = filter_udescriptor(block)
-        if udescriptor in SELECTION_UDESCRIPTORS:
-            by_udescriptor.setdefault(udescriptor, []).append(block)
+        suffix = filter_identifier_suffix(block)
+        if suffix in SELECTION_IDENTIFIER_SUFFIXES:
+            by_identifier_suffix.setdefault(suffix, []).append(block)
 
-    for udescriptor in SELECTION_UDESCRIPTORS:
-        count = len(by_udescriptor.get(udescriptor, []))
+    for suffix in SELECTION_IDENTIFIER_SUFFIXES:
+        count = len(by_identifier_suffix.get(suffix, []))
         if count != 1:
             raise CombineError(
-                f"{path}: expected exactly one '{udescriptor}' filter, found {count}"
+                f"{path}: expected exactly one '{suffix}' filter, found {count}"
             )
 
-    type_block = by_udescriptor["obs_type_check"][0]
-    kx_block = by_udescriptor["obs_kx_check"][0]
+    type_block = by_identifier_suffix["obs_type_check"][0]
+    kx_block = by_identifier_suffix["obs_kx_check"][0]
     if filter_action(type_block) != "reduce obs space":
         raise CombineError(
             f"{path}: 'obs_type_check' must use 'reduce obs space'"
@@ -957,7 +1032,7 @@ def simple_iuse_filter(block):
     """Return true when an iuse filter can be moved ahead of combined QC."""
 
     return (
-        filter_udescriptor(block) == "iuse_check"
+        filter_identifier_suffix(block) == "iuse_check"
         and block.jinja_depth == 0
         and not filter_contains_jinja_control(block)
     )
@@ -966,20 +1041,20 @@ def simple_iuse_filter(block):
 def early_merge_position_is_safe(occurrence):
     """Verify that a merge candidate has no stream-specific prerequisite."""
 
-    udescriptor = filter_udescriptor(occurrence.block)
+    suffix = filter_identifier_suffix(occurrence.block)
     allowed_predecessors = {
         "at2m_temperature_alias",
         "iuse_check",
         "obs_kx_check",
         "obs_type_check",
     }
-    if udescriptor == "time_window_check":
+    if suffix == "time_window_check":
         allowed_predecessors.add("quality_marker_check")
 
     for block in occurrence.template.filter_section.blocks:
         if block is occurrence.block:
             return True
-        predecessor = filter_udescriptor(block)
+        predecessor = filter_identifier_suffix(block)
         if predecessor not in allowed_predecessors:
             return False
         if predecessor == "iuse_check" and not simple_iuse_filter(block):
@@ -996,7 +1071,7 @@ def merge_signature(occurrence):
         return None
     if filter_name(block) not in POINTWISE_MERGEABLE_FILTERS:
         return None
-    if filter_udescriptor(block) not in ORDER_INDEPENDENT_MERGE_UDESCRIPTORS:
+    if filter_identifier_suffix(block) not in ORDER_INDEPENDENT_MERGE_IDENTIFIER_SUFFIXES:
         return None
     if not early_merge_position_is_safe(occurrence):
         return None
@@ -1073,7 +1148,7 @@ def merge_compatible_filters(occurrences, stats):
             continue
         if filter_name(block) not in POINTWISE_MERGEABLE_FILTERS:
             continue
-        if filter_udescriptor(block) not in ORDER_INDEPENDENT_MERGE_UDESCRIPTORS:
+        if filter_identifier_suffix(block) not in ORDER_INDEPENDENT_MERGE_IDENTIFIER_SUFFIXES:
             continue
         if not early_merge_position_is_safe(occurrence):
             continue
@@ -1089,7 +1164,7 @@ def merge_compatible_filters(occurrences, stats):
 def time_window_details(block, path):
     """Return a simple numeric time-window definition, or None."""
 
-    if filter_udescriptor(block) != "time_window_check":
+    if filter_identifier_suffix(block) != "time_window_check":
         return None
     if filter_name(block) != "Bounds Check":
         return None
@@ -1133,7 +1208,7 @@ def find_shared_time_reducer(templates, occurrences, obs_vars):
 
     by_template: Dict[Path, List[FilterOccurrence]] = OrderedDict()
     for occurrence in occurrences:
-        if filter_udescriptor(occurrence.block) == "time_window_check":
+        if filter_identifier_suffix(occurrence.block) == "time_window_check":
             by_template.setdefault(occurrence.template.path, []).append(occurrence)
 
     selected = []
@@ -1190,7 +1265,7 @@ def build_selection_reducers(templates, obs_vars):
         "         # ---- Safe combined location reduction ----",
         "         # Keep a location when at least one source ObsValue is valid.",
         "         - filter: Domain Check",
-        '           udescriptor: "obs_type_check"',
+        *identifier_lines("Domain Check", "obs_type_check"),
         "           filter variables:",
     ]
     lines.extend(f"           - name: {variable}" for variable in obs_vars)
@@ -1211,7 +1286,7 @@ def build_selection_reducers(templates, obs_vars):
             "",
             "         # Keep a location when at least one variable has an allowed KX.",
             "         - filter: Domain Check",
-            '           udescriptor: "obs_kx_check"',
+                *identifier_lines("Domain Check", "obs_kx_check"),
             "           filter variables:",
         ]
     )
@@ -1242,7 +1317,7 @@ def build_time_reducer(test_variable, minimum, maximum, obs_vars):
     lines = [
         "         # Remove only locations outside every source time window.",
         "         - filter: Bounds Check",
-        '           udescriptor: "combined_time_window_check"',
+        *identifier_lines("Bounds Check", "combined_time_window_check"),
         "           filter variables:",
     ]
     lines.extend(f"           - name: {variable}" for variable in obs_vars)
@@ -1280,7 +1355,7 @@ def build_combined_filters(templates, obs_vars):
         occurrences_by_template[template.path] = template_occurrences
 
     for occurrence in occurrences:
-        if filter_udescriptor(occurrence.block) in SELECTION_UDESCRIPTORS:
+        if filter_identifier_suffix(occurrence.block) in SELECTION_IDENTIFIER_SUFFIXES:
             occurrence.skip = True
 
     time_reducer = find_shared_time_reducer(templates, occurrences, obs_vars)
@@ -1325,6 +1400,19 @@ def build_combined_filters(templates, obs_vars):
         else:
             stats.converted_reductions += 1
 
+    # Namespace only emitted source filters, after comparisons used for merging.
+    used_names = {
+        "DomainCheck_obs_type_check",
+        "DomainCheck_obs_kx_check",
+        "BoundsCheck_combined_time_window_check",
+        "PerformAction_obs_type_check_initial_reject",
+    }
+    for occurrence in iuse_occurrences:
+        namespace_filter_identifier(occurrence, used_names)
+    for occurrence in occurrences:
+        if not occurrence.skip:
+            namespace_filter_identifier(occurrence, used_names)
+
     output = build_selection_reducers(templates, obs_vars)
     if time_reducer is not None:
         output.extend(build_time_reducer(test_variable, minimum, maximum, obs_vars))
@@ -1336,7 +1424,7 @@ def build_combined_filters(templates, obs_vars):
         output.append("         # ---- Accept, reject, or passivate configured streams ----")
         for occurrence in iuse_occurrences:
             output.append(f"         # From {occurrence.template.path.name}")
-            output.extend(occurrence.lines)
+            output.extend(render_source_filter(occurrence.lines))
             output.append("")
 
     for template in templates:
@@ -1351,7 +1439,7 @@ def build_combined_filters(templates, obs_vars):
             output.extend(decorative)
             for note in occurrence.notes:
                 output.append(f"         # {note}")
-            output.extend(occurrence.lines)
+            output.extend(render_source_filter(occurrence.lines))
         output.extend(template.filter_section.trailing_lines)
         output.append("")
 
@@ -1462,8 +1550,8 @@ def build_reject_filter(obs_vars):
     return (
         "         # ---- Initial blanket rejection ----\n"
         "         - filter: Perform Action\n"
-        "           udescriptor: \"obs_type_check_initial_reject\"\n"
-        "           filter variables:\n"
+        + "\n".join(identifier_lines("Perform Action", "obs_type_check_initial_reject"))
+        + "\n           filter variables:\n"
         + "".join(f"           - name: {variable}\n" for variable in obs_vars)
         + "           action:\n"
           "             name: reject\n\n"
