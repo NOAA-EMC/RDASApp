@@ -52,6 +52,9 @@
     # so surface wind H(x) represents the reported 10 m wind.
     # Surface wind observations are reported 10 m above station elevation.
     - filter: Variable Assignment
+      identifier:
+        name: "VariableAssignment_surface_wind_observation_height"
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable:
           name: ObsType/windEastward
@@ -68,13 +71,13 @@
     - filter: Variable Transforms
       identifier:
         name: "VariableTransforms_AdjustedHeightCoordinate"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       Transform: AdjustedHeightCoordinate
       SkipWhenNoObs: False
     - filter: Variable Transforms
       identifier:
         name: "VariableTransforms_SurfaceWindScalingHeight"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       Transform: SurfaceWindScalingHeight
       SkipWhenNoObs: False
     # ------------------
@@ -84,7 +87,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_iuse_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -98,7 +101,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_obs_type_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable: ObsValue/windEastward
         value: is_not_valid
@@ -109,7 +112,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_obs_kx_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable: ObsType/windEastward
         is_not_in: 281
@@ -120,7 +123,7 @@
     - filter: RejectList
       identifier:
         name: "RejectList_quality_marker_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -136,7 +139,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_time_window_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -154,7 +157,7 @@
     - filter: DuplicateThinning
       identifier:
         name: "DuplicateThinning_duplicate_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -179,7 +182,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_online_domain_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -193,7 +196,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_initial_error_assignment"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -258,7 +261,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_QualityMarker"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -275,7 +278,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_observation_pressure"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -293,7 +296,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_pressure_check_windEastward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       where:
@@ -314,7 +317,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_pressure_check_windNorthward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windNorthward
       where:
@@ -336,7 +339,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_ObsError"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -354,7 +357,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_ObsValue"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: windEastward
       - name: windNorthward
@@ -370,7 +373,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check_windEastward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: windEastward
@@ -393,7 +396,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check_windNorthward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: windNorthward
@@ -416,7 +419,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check_0.7_windEastward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: windEastward
@@ -439,7 +442,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check_0.7_windNorthward"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: windNorthward
