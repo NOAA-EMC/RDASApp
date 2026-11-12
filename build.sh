@@ -33,7 +33,6 @@ usage() {
   echo
   echo "  -p  installation prefix <prefix>       DEFAULT: <none>"
   echo "  -c  additional CMake options           DEFAULT: <none>"
-  echo "      e.g. -c \"-DCRTM_VERSION=3\" to build with CRTMv3 (default: CRTMv2)"
   echo "  -v  build with verbose output          DEFAULT: NO"
   echo "  -j  number of build jobs               DEFAULT: 4 on Orion, 6 on other machines"
   echo "  -b  build JCB                          DEFAULT: YES"
