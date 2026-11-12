@@ -33,6 +33,7 @@ usage() {
   echo
   echo "  -p  installation prefix <prefix>       DEFAULT: <none>"
   echo "  -c  additional CMake options           DEFAULT: <none>"
+  echo "      e.g. -c \"-DCRTM_VERSION=3\" to build with CRTMv3 (default: CRTMv2)"
   echo "  -v  build with verbose output          DEFAULT: NO"
   echo "  -j  number of build jobs               DEFAULT: 4 on Orion, 6 on other machines"
   echo "  -b  build JCB                          DEFAULT: YES"
@@ -343,6 +344,11 @@ else
 fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST -DUFO_CRTM_TESTFILES_PATH=$CRTM_DATA"
+if [[ " ${CMAKE_OPTS:-} " == *" -DCRTM_VERSION=3 "* ]]; then
+  export LOCAL_PATH_JEDI_TESTFILES="$dir_root/fix/crtm/fix_REL-3.1.6.0"
+  echo "Using CRTMv3 3.1.6.0 coefficients from ${LOCAL_PATH_JEDI_TESTFILES}/fix"
+fi
+
 # Configure
 echo "Configuring ..."
 set -x
