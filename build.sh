@@ -219,6 +219,13 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
 
   cd $dir_root/rrfs-test/testinput
 
+  # Prepare private ObsSpace templates and configs in the main test input directory.
+  if ! python "$dir_root/rrfs-test/ush/prepare_conv_obsspaces.py" \
+    --rdas-root "$dir_root" --output-dir "$dir_root/rrfs-test/testinput"; then
+    echo "Failed to prepare the conventional equivalence inputs" >&2
+    exit 9
+  fi
+
   ctest_yamls=(
     # Algorithm ctests
     rrfs_fv3jedi_2024052700_3dvar.yaml
@@ -250,7 +257,7 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
   cp $dir_root/parm/jcb-rdas/test/ci/run_jcb_ctest.py .
   for ctest_yaml in "${ctest_yamls[@]}"; do
     jcb_config="jcb-$ctest_yaml"
-    cp $dir_root/parm/jcb-rdas/test/ci/$jcb_config .
+    cp "$dir_root/parm/jcb-rdas/test/ci/$jcb_config" .
     python run_jcb_ctest.py 2024052700 $jcb_config $ctest_yaml
     err=$?
     if [[ $err != 0 ]]; then
@@ -258,6 +265,18 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
       exit 9
     fi
     ctest=${ctest_yaml%.yaml}
+  done
+
+  # Render the prepared pair without replacing their private template paths.
+  for ctest_yaml in \
+    rrfs_fv3jedi_2024052700_3dvar_conv_all_itemized.yaml \
+    rrfs_fv3jedi_2024052700_3dvar_conv_all_combined.yaml; do
+    jcb_config="jcb-$ctest_yaml"
+    python run_jcb_ctest.py 2024052700 "$jcb_config" "$ctest_yaml"
+    if [[ $? != 0 ]]; then
+      echo "Failed to render $jcb_config" >&2
+      exit 9
+    fi
   done
 
   # NA 3 km full-analysis ctest (rrfs-test-na3km)
@@ -343,11 +362,6 @@ else
 fi
 
 CMAKE_OPTS+=" -DMPIEXEC_MAX_NUMPROCS:STRING=120 -DBUILD_SUPER_EXE=$BUILD_SUPER_EXE -DBUILD_RRFS_TEST=$BUILD_RRFS_TEST -DUFO_CRTM_TESTFILES_PATH=$CRTM_DATA"
-if [[ " ${CMAKE_OPTS:-} " == *" -DCRTM_VERSION=3 "* ]]; then
-  export LOCAL_PATH_JEDI_TESTFILES="$dir_root/fix/crtm/fix_REL-3.1.6.0"
-  echo "Using CRTMv3 3.1.6.0 coefficients from ${LOCAL_PATH_JEDI_TESTFILES}/fix"
-fi
-
 # Configure
 echo "Configuring ..."
 set -x
