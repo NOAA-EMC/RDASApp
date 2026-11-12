@@ -37,7 +37,7 @@
     - filter: Variable Assignment
       identifier:
         name: "DerivedSurfaceTemperature"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       assignments:
       - name: DerivedObsValue/airTemperatureAt2M
         type: float
@@ -62,7 +62,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_iuse_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       where:
@@ -75,7 +75,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_obs_type_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable: ObsValue/airTemperatureAt2M
         value: is_not_valid
@@ -86,7 +86,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_obs_kx_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable: ObsType/airTemperatureAt2M
         is_not_in: 187
@@ -97,7 +97,7 @@
     - filter: RejectList
       identifier:
         name: "RejectList_quality_marker_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       where:
@@ -112,7 +112,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_time_window_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       test variables:
@@ -129,7 +129,7 @@
     - filter: DuplicateThinning
       identifier:
         name: "DuplicateThinning_duplicate_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       analysis_time: "{{ atmosphere_background_time_iso }}"
@@ -153,7 +153,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_online_domain_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       test variables:
@@ -166,7 +166,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_initial_error_assignment"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       where:
@@ -206,7 +206,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_QualityMarker"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       action:
@@ -222,7 +222,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_observation_pressure"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       action:
@@ -239,7 +239,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_ob_error_inflation"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       where:
@@ -274,7 +274,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_ObsError"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       test variables:
@@ -291,7 +291,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_ObsValue"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: airTemperatureAt2M
       minvalue: 100
@@ -304,7 +304,9 @@
 
     # Create temporary ObsErrorData
     - filter: Variable Assignment
-      udescriptor: "create_temporary_ObsErrorData"
+      identifier:
+        name: "VariableAssignment_create_temporary_ObsErrorData"
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       where:
       - variable: ObsType/airTemperatureAt2M
@@ -323,7 +325,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_ermin_set"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: airTemperatureAt2M
@@ -345,7 +347,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_ermax_set"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: airTemperatureAt2M
@@ -367,7 +369,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: airTemperatureAt2M
@@ -385,7 +387,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check_0.7"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: airTemperatureAt2M
@@ -403,7 +405,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_reassign_error_TempObsErrorData"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: airTemperatureAt2M
