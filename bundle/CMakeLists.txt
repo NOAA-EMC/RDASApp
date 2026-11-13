@@ -66,7 +66,16 @@ if(BUILD_RDASBUNDLE)
   # TODO remove the CRTM from here and use it as a library
   #option("BUNDLE_SKIP_CRTM" "Don't build CRTM" "OFF") # Don't build crtm unless user passes -DBUNDLE_SKIP_CRTM=OFF
   #ecbuild_bundle( PROJECT crtm GIT "https://github.com/JCSDA/crtm.git"   TAG v2.4.1-jedi.1 )
-  ecbuild_bundle( PROJECT crtm SOURCE "../sorc/crtm" )
+  # CRTM_VERSION=2 builds sorc/crtm (CRTM v2.4.1); CRTM_VERSION=3 builds sorc/crtmv3 (CRTM v3.x).
+  # Both provide the "crtm" package; UFO detects the version and sets -DCRTM_VERSION accordingly.
+  set(CRTM_VERSION "2" CACHE STRING "CRTM major version to build")
+  if(CRTM_VERSION STREQUAL "2")
+    ecbuild_bundle( PROJECT crtm SOURCE "../sorc/crtm" )
+  elseif(CRTM_VERSION STREQUAL "3")
+    ecbuild_bundle( PROJECT crtm SOURCE "../sorc/crtmv3" )
+  else()
+    message(FATAL_ERROR "Invalid CRTM_VERSION=${CRTM_VERSION}; valid values are 2 or 3")
+  endif()
 
 # Build GSI-B
   option(BUILD_GSIBEC "Build GSI-B" OFF)
