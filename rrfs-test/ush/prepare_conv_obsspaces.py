@@ -25,8 +25,12 @@ def prepare(rdas_root, output_dir):
             configs[mode] = yaml.safe_load(stream)
     streams = configs["itemized"]["observations"]
     families = sorted({name.split("_", 1)[0] for name in streams})
-    if len(streams) != 48 or len(set(streams)) != 48 or len(families) != 9:
-        raise ValueError("The itemized case must name 48 distinct streams in nine families")
+    # The configured stream list defines the test coverage without a fixed count.
+    if not streams or len(set(streams)) != len(streams) or len(families) != 9:
+        raise ValueError("The itemized case must name distinct streams in nine families")
+    missing = [name for name in streams if not (obs_dir / (name + ".yaml.j2")).is_file()]
+    if missing:
+        raise ValueError(f"Missing itemized observation templates: {missing}")
     if configs["combined"]["observations"] != families:
         raise ValueError("The combined case must name the same nine families")
     private_dir = output_dir / "jcb-conv-combined-observations"

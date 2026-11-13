@@ -66,8 +66,20 @@ def load_run(directory, mode):
     with config_path.open() as stream:
         configuration = yaml.safe_load(stream)
     observers = configuration["cost function"]["observations"]["observers"]
-    if mode == "itemized" and len(observers) != 48:
-        raise ComparisonError(f"{config_path}: expected 48 itemized ObsSpaces, found {len(observers)}")
+    if mode == "itemized":
+        # Verify all configured streams rendered, even when the stream count changes.
+        staged_config = Path(__file__).resolve().parents[1] / "testinput" / ("jcb-" + CASE_PREFIX + mode + ".yaml")
+        with staged_config.open() as stream:
+            expected = yaml.safe_load(stream)["observations"]
+        actual = [observer["obs space"]["name"] for observer in observers]
+        if not expected or len(set(expected)) != len(expected):
+            raise ComparisonError(f"{staged_config}: itemized streams must be nonempty and distinct")
+        if len(actual) != len(expected) or set(actual) != set(expected):
+            raise ComparisonError(
+                f"{config_path}: itemized observers do not match {staged_config}; "
+                f"missing={sorted(set(expected) - set(actual))}, "
+                f"extra={sorted(set(actual) - set(expected))}"
+            )
     if mode == "combined" and len(observers) < len(FAMILIES):
         raise ComparisonError(f"{config_path}: expected at least {len(FAMILIES)} combined ObsSpaces")
     outer_loops = len(configuration["variational"]["iterations"])
