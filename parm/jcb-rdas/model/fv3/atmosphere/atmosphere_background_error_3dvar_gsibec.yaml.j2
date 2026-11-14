@@ -5,7 +5,7 @@ saber central block:
   read:
     gsi akbk: fv3_akbk
     gsi error covariance file: berror_stats
-    gsi berror namelist file: gsiparm_regional.anl
+    gsi berror namelist file: {{ gsi_berror_namelist_file | default("gsiparm_regional.anl", true) }}
     processor layout x direction: {{atmosphere_layout_gsib_x}}
     processor layout y direction: {{atmosphere_layout_gsib_y}}
     debugging deep bypass gsi B error: false
