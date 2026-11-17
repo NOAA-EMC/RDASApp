@@ -22,6 +22,8 @@ add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_remote"     
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_rw"            "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_satrad"        "fv3jedi_var.x")
 add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3denvar_refl"        "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_all_itemized" "fv3jedi_var.x")
+add_to_dictionary(rrfs_fv3jedi_tests "rrfs_fv3jedi_2024052700_3dvar_conv_all_combined" "fv3jedi_var.x")
 
 # I-JEDI tests
 # Dictionary value is the ijedi.x app name (e.g. "var", "letkf")
@@ -129,8 +131,27 @@ if(FV3_DYCORE)
                       COMMAND  ${COMMAND_NAME} )
          set_property(TEST ${target_test} PROPERTY ENVIRONMENT_MODIFICATION
                       "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_SOURCE_DIR}/../build/lib64")
+         # Run both ObsSpace cases serially and provide fixtures for their comparison.
+         if ("${case}" MATCHES "^rrfs_fv3jedi_2024052700_3dvar_conv_all_(itemized|combined)$")
+           set_property(TEST ${target_test} APPEND PROPERTY LABELS "obs_space_equivalence;obs_space_efficiency")
+           set_property(TEST ${target_test} PROPERTY RUN_SERIAL TRUE)
+           set_property(TEST ${target_test} PROPERTY FIXTURES_SETUP "conv_all_${CMAKE_MATCH_1}")
+           set_property(TEST ${target_test} PROPERTY TIMEOUT 86400)
+         endif()
          set(MPI_ARGS ${RESTORE_MPI_ARGS})
       endforeach()
+
+      # Compare the completed runs as part of the main CTest suite.
+      find_package(Python3 REQUIRED COMPONENTS Interpreter)
+      set(conv_case_prefix "rrfs_fv3jedi_2024052700_3dvar_conv_all_")
+      add_test(NAME "${conv_case_prefix}compare"
+               COMMAND "${Python3_EXECUTABLE}"
+                       "${CMAKE_SOURCE_DIR}/rrfs-test/ush/compare_conv_obsspaces.py"
+                       --itemized-dir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${conv_case_prefix}itemized"
+                       --combined-dir "${CMAKE_CURRENT_BINARY_DIR}/rundir-${conv_case_prefix}combined")
+      set_tests_properties("${conv_case_prefix}compare" PROPERTIES
+                           FIXTURES_REQUIRED "conv_all_itemized;conv_all_combined"
+                           LABELS obs_space_equivalence)
 
 endif()
 

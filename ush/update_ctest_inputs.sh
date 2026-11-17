@@ -20,6 +20,8 @@ rrfs_fv3jedi_tests=(
     "rrfs_fv3jedi_2024052700_3dvar_rw"
     "rrfs_fv3jedi_2024052700_3dvar_satrad"
     "rrfs_fv3jedi_2024052700_3denvar_refl"
+    "rrfs_fv3jedi_2024052700_3dvar_conv_all_itemized"
+    "rrfs_fv3jedi_2024052700_3dvar_conv_all_combined"
 )
 
 # MPAS-JEDI tests
@@ -60,12 +62,28 @@ PYTHONPATH="${PYTHONPATH}:${RDASApp}/sorc/jcb/src/:${RDASApp}/build/lib/python3.
 cd "${src_yaml}"
 cp "${RDASApp}/parm/jcb-rdas/test/ci/run_jcb_ctest.py" .
 
+# Regenerate the equivalence pair without overwriting source observation templates.
+if ! python "${RDASApp}/rrfs-test/ush/prepare_conv_obsspaces.py" \
+  --rdas-root "${RDASApp}" --output-dir "${src_yaml}"; then
+  echo "Failed to prepare the conventional equivalence inputs" >&2
+  exit 1
+fi
+
 for ctest_yaml in "${rrfs_fv3jedi_tests[@]}"; do
   ctest_yaml="${ctest_yaml}.yaml"
   jcb_config="jcb-${ctest_yaml}"
-  cp "${RDASApp}/parm/jcb-rdas/test/ci/${jcb_config}" .
-  python run_jcb_ctest.py 2024052700 "${jcb_config}" "${ctest_yaml}"
+  # Preserve the prepared pair's private combined-template paths.
+  if [[ "${ctest_yaml}" != rrfs_fv3jedi_2024052700_3dvar_conv_all_itemized.yaml &&
+        "${ctest_yaml}" != rrfs_fv3jedi_2024052700_3dvar_conv_all_combined.yaml ]]; then
+    cp "${RDASApp}/parm/jcb-rdas/test/ci/${jcb_config}" .
+  fi
+  # Do not copy stale runnable YAMLs when JCB generation fails.
+  if ! python run_jcb_ctest.py 2024052700 "${jcb_config}" "${ctest_yaml}"; then
+    echo "Failed to render ${jcb_config}" >&2
+    exit 1
+  fi
 done
+
 for ctest_yaml in "${rrfs_mpasjedi_tests[@]}"; do
   if [[ $ctest_yaml == "rrfs_mpasjedi_2024052700_3dvar" ]]; then # Remove if-condition after switching more mpasjedi ctests to jcb
   ctest_yaml="${ctest_yaml}.yaml"
@@ -84,6 +102,7 @@ if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then
       case=${ctest}
       echo "Updating ${case}..."
       casedir=${CMAKE_CURRENT_BINARY_DIR}/rundir-${case}
+      mkdir -p "${casedir}"
       src_casedir=${rrfs_test_data_local}/rrfs-data_fv3jedi_2024052700
       ln -snf ${src_casedir}/DataFix ${casedir}/DataFix
       ln -snf ${casedir}/DataFix/field_table ${casedir}/.
@@ -103,6 +122,8 @@ if [[ $DYCORE == "FV3JEDI" || $DYCORE == "BOTH" ]]; then
       ln -snf ${CMAKE_SOURCE_DIR}/rrfs-test/testoutput ${casedir}/testoutput
       cp ${src_yaml}/${case}.yaml ${casedir}
    done
+
+
 fi
 
 if [[ $DYCORE == "MPASJEDI" || $DYCORE == "BOTH" ]]; then
