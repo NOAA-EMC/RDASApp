@@ -86,6 +86,23 @@ def patch_solver_struct(cfg_plain, ctest_yaml):
 
     return cfg_plain
 
+def comment_out_obsdataout(yaml_text):
+    """
+    Comment out every obsdataout block so that no obs diagnostics are written.
+    """
+    lines = []
+    block_indent = None
+    for line in yaml_text.splitlines():
+        indent = len(line) - len(line.lstrip())
+        if block_indent is not None and line.strip() and indent <= block_indent:
+            block_indent = None
+        if block_indent is None and line.strip() == "obsdataout:":
+            block_indent = indent
+        if block_indent is not None:
+            line = line[:block_indent] + "# " + line[block_indent:]
+        lines.append(line)
+    return "\n".join(lines) + "\n"
+
 def to_plain(obj):
     # Common pattern in wxflow/JCB style objects
     for attr in ("to_dict", "as_dict", "dict"):
@@ -256,9 +273,12 @@ if __name__ == "__main__":
         ctest_yaml = jedi_yaml[:-5]  # strip ".yaml"
         cfg_plain = patch_solver_struct(cfg_plain, ctest_yaml)
 
-    # Write clean YAML
+    # Write clean YAML, optionally without the obs diagnostics
+    yaml_text = yaml.safe_dump(cfg_plain, default_flow_style=False, sort_keys=False)
+    if not task_config.get("write_obsdataout", True):
+        yaml_text = comment_out_obsdataout(yaml_text)
     with open(jedi_yaml, "w") as f:
-        yaml.safe_dump(cfg_plain, f, default_flow_style=False, sort_keys=False)
+        f.write(yaml_text)
 
     print(f"Wrote {jedi_yaml} for cycle {cycle_str}")
 
