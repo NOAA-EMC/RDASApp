@@ -279,16 +279,17 @@ if [[ $BUILD_RRFS_TEST == 'YES' ]]; then
     fi
   done
 
-  # NA 3 km full-analysis ctest (rrfs-test-na3km)
+  # NA 3 km full-analysis ctests (rrfs-test-na3km)
   cd $dir_root/rrfs-test-na3km/testinput
-  ctest_yaml=rrfs_fv3jedi_na3km_2024052701_analysis.yaml
   cp $dir_root/parm/jcb-rdas/test/ci/run_jcb_ctest.py .
-  cp $dir_root/parm/jcb-rdas/test/ci/jcb-$ctest_yaml .
-  python run_jcb_ctest.py 2024052701 jcb-$ctest_yaml $ctest_yaml
-  if [[ $? != 0 ]]; then
-    echo "Failed: python run_jcb_ctest.py 2024052701 jcb-${ctest_yaml} ${ctest_yaml}"
-    exit 9
-  fi
+  for ctest_yaml in rrfs_fv3jedi_na3km_2024052701_analysis.yaml rrfs_fv3jedi_na3km_2024052701_getkf.yaml; do
+    cp $dir_root/parm/jcb-rdas/test/ci/jcb-$ctest_yaml .
+    python run_jcb_ctest.py 2024052701 jcb-$ctest_yaml $ctest_yaml
+    if [[ $? != 0 ]]; then
+      echo "Failed: python run_jcb_ctest.py 2024052701 jcb-${ctest_yaml} ${ctest_yaml}"
+      exit 9
+    fi
+  done
   cd ${BUILD_DIR}
 
   # Link in test data for experiments: MPAS-JEDI
