@@ -330,6 +330,9 @@ if [[ $BUILD_WORKAROUND == 'YES' ]]; then
   # Read the ensemble on its native geometry and convert it online to the inner-loop geometry (oops PR3346)
   cp ../sorc/_workaround_/oops/EnsembleCovariance.h ../sorc/oops/src/oops/base/.
 
+  # Skip GetValues communication and interpolator setup between rank pairs with no shared obs (oops PR3437)
+  cp ../sorc/_workaround_/oops/GetValues.h ../sorc/oops/src/oops/base/.
+
 fi
 
 # Build RDAS-specific tools (e.g. rdas_ua2u.x)
