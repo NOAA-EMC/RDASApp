@@ -35,7 +35,7 @@ file(MAKE_DIRECTORY ${casedir}/data/satbias_out)
 # Link everything in; the backgrounds, ensemble and grid files are far too large to copy
 file(GLOB bkg_files "${na3km_data}/bkg/*")
 file(GLOB data_fix_files "${na3km_data}/fix/*")
-file(GLOB mgbf_files "${rdasapp_dir}/fix/mgbf/mgbf_na6km_p1936_*")
+file(GLOB mgbf_files "${rdasapp_dir}/fix/mgbf/mgbf_na6km_p1936_*" "${rdasapp_dir}/fix/mgbf/dupvar_mgbf_na6km_p1936_*")
 foreach(f ${bkg_files} ${data_fix_files} ${mgbf_files} ${na3km_data}/fmsmpp.nml)
   get_filename_component(fname ${f} NAME)
   file(CREATE_LINK ${f} ${casedir}/${fname} SYMBOLIC)
