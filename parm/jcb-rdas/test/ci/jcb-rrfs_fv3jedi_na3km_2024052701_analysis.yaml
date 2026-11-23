@@ -34,7 +34,7 @@ empty_obs_space_action: create output
 # One obs writer per node: a single writer for all 1936 tasks runs out of MPI receive requests on IASI
 max_pool_size: 44
 
-# Reflectivity and hydrometeors first: the MGBF variable groups follow this order
+# Reflectivity and hydrometeors first, as in mgbf_variable_groupings
 analysis_variables:
 - equivalent_reflectivity_factor
 - cloud_liquid_water
@@ -238,13 +238,32 @@ static_weight: 0.2
 ensemble_weight: 0.8
 
 # MGBF localization on a rotated lon-lat filter grid (same rotation as the gsibec grid)
-mgbf_init_nml: mgbf_na6km_p1936_init.nml
+mgbf_init_nml: dupvar_mgbf_na6km_p1936_init.nml
 mgbf_nx: 1232
 mgbf_ny: 1232
 mgbf_x_start: -60.0310278618037
 mgbf_x_end: 60.0310278618037
 mgbf_y_start: -36.6574659140194
 mgbf_y_end: 36.6574659140194
+# Each group is summed into one field by the duplicate variables outer block, so MGBF filters
+# two fields. The order here must match readin_mgbf_nml_group in the init namelist.
+mgbf_variable_groupings:
+- name: dupvar_group_1
+  components:
+  - equivalent_reflectivity_factor
+  - cloud_liquid_water
+  - cloud_liquid_ice
+  - rain_water
+  - snow_water
+  - graupel
+- name: dupvar_group_2
+  components:
+  - eastward_wind
+  - northward_wind
+  - air_temperature
+  - water_vapor_mixing_ratio_wrt_moist_air
+  - ozone_mass_mixing_ratio
+  - air_pressure_at_surface
 
 # Forecasting
 atmosphere_forecast_length: PT6H

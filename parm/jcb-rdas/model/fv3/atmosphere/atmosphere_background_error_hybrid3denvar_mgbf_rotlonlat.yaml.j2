@@ -135,5 +135,16 @@ components:
          inverse interpolator:
            local interpolator type: oops unstructured grid interpolator
            regional nn fill distance in km: 800
+{% if mgbf_variable_groupings is defined %}
+      # The last entry is the outermost block (model side): its adjoint sums each group's variables into one field on
+      # the increment grid, so MGBF filters one field per group; the forward copies it back.
+      # Single-level variables use the bottom level of the group field.
+      -  saber block name: duplicate variables
+         variable groupings:
+{% for group in mgbf_variable_groupings %}
+         - group variable name: {{group.name}}
+           group components: {{group.components}}
+{% endfor %}
+{% endif %}
   weight:
     value: {{ensemble_weight | default(0.85)}}
