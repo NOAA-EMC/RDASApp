@@ -29,7 +29,7 @@ from typing import Dict, List, Optional, Tuple
 # ------------------------
 # Constants
 # ------------------------
-SELECTION_UDESCRIPTORS = (
+SELECTION_IDENTIFIER_SUFFIXES = (
     "obs_type_check",
     "obs_kx_check",
 )
@@ -48,7 +48,7 @@ POINTWISE_MERGEABLE_FILTERS = (
 # These filters occur before stream-specific error assignments and thinning in
 # the conventional templates. Merging later filters would require a dependency
 # scheduler to ensure that every source stream has completed its prerequisites.
-ORDER_INDEPENDENT_MERGE_UDESCRIPTORS = (
+ORDER_INDEPENDENT_MERGE_IDENTIFIER_SUFFIXES = (
     "quality_marker_check",
     "time_window_check",
 )
@@ -58,6 +58,14 @@ OPERATOR_CONFLICT_POLICIES = (
     "use-first",
     "error",
 )
+
+RAW_SURFACE_TEMPERATURE = "MetaData/airTemperatureAt2MObserved"
+DERIVED_SURFACE_TEMPERATURE = "DerivedObsValue/airTemperatureAt2M"
+SURFACE_TEMPERATURE_FUNCTIONS = {
+    "Arithmetic", "ModelHeightAdjustedAirTemperature", "ObsErrorFactorConventional",
+    "ObsErrorFactorPressureCheck", "ObsErrorFactorSfcPressure", "ObsErrorModelHumidity",
+    "ObsErrorModelStepwiseLinear", "WindsSPDBCheck",
+}
 
 
 # ------------------------
@@ -159,6 +167,7 @@ class ObsSpacePartition:
 
     templates: List[InputTemplate] = field(default_factory=list)
     variable_owners: dict = field(default_factory=dict)
+    isolated: bool = False
 
 
 class CombineError(ValueError):
@@ -513,14 +522,89 @@ def yaml_scalar(value):
     return value.split("#", 1)[0].strip().strip("\"'")
 
 
-def filter_udescriptor(block):
-    """Return a filter udescriptor, or None when it is absent."""
+def identifier_name_field(block):
+    """Return the direct identifier.name line and value without matching nested names."""
 
-    for line in block.lines:
+    field_indent = leading_spaces(block.lines[0]) + 2
+    inside_identifier = False
+    for index, line in enumerate(block.lines[1:], start=1):
         stripped = line.strip()
-        if stripped.startswith("udescriptor:"):
-            return yaml_scalar(stripped.split(":", 1)[1])
-    return None
+        if not stripped or stripped.startswith("#") or is_active_jinja_control(line):
+            continue
+        indent = leading_spaces(line)
+        if indent == field_indent and stripped == "identifier:":
+            inside_identifier = True
+            continue
+        if inside_identifier and indent <= field_indent:
+            inside_identifier = False
+        if inside_identifier and indent == field_indent + 2 and stripped.startswith("name:"):
+            name = yaml_scalar(stripped.split(":", 1)[1])
+            return index, name
+    return None, None
+
+
+def filter_identifier_suffix(block):
+    """Return the rule suffix from a filter's identifier.name."""
+
+    _, name = identifier_name_field(block)
+    if not name:
+        return None
+    # Source namespaces distinguish output instances without changing their rule roles.
+    name = name.split("__from_", 1)[0]
+    prefix = filter_name(block).replace(" ", "") + "_"
+    return name[len(prefix):] if name.startswith(prefix) else name
+
+
+def identifier_lines(filter_type, suffix, indent=11):
+    """Build an identifier block using the same logging switch as source templates."""
+
+    name = filter_type.replace(" ", "") + "_" + suffix
+    padding = " " * indent
+    return [
+        f"{padding}identifier:",
+        f'{padding}  name: "{name}"',
+        padding + "  logging: {{ obs_filter_logging | default(true) }}",
+    ]
+
+
+def namespace_filter_identifier(occurrence, used_names):
+    """Give one retained source filter a unique name within the output ObsSpace."""
+
+    block = block_with_lines(occurrence)
+    index, name = identifier_name_field(block)
+    if index is None or not name:
+        raise CombineError(
+            f"{occurrence.template.path}: {filter_name(block)} filter is missing identifier.name"
+        )
+    source = Path(occurrence.template.path.stem).stem
+    source = re.sub(r"[^A-Za-z0-9_.-]", "_", source)
+    candidate = f"{name}__from_{source}"
+    unique_name = candidate
+    sequence = 2
+    while unique_name in used_names:
+        unique_name = f"{candidate}__{sequence}"
+        sequence += 1
+    used_names.add(unique_name)
+    padding = " " * leading_spaces(occurrence.lines[index])
+    occurrence.lines[index] = f'{padding}name: "{unique_name}"'
+
+
+def render_source_filter(lines, indent=9):
+    """Align a retained filter with generated filters without changing nested YAML."""
+
+    source_indent = leading_spaces(lines[0])
+    result = []
+    for line in lines:
+        if not line.strip():
+            result.append(line)
+        elif leading_spaces(line) >= source_indent:
+            result.append(" " * indent + line[source_indent:])
+        elif line.lstrip().startswith("#") or is_active_jinja_control(line):
+            # Outer comments and Jinja controls may start before the filter itself.
+            result.append(line)
+        else:
+            raise CombineError("A retained filter contains an outdented YAML line")
+    return result
 
 
 def filter_action(block):
@@ -714,21 +798,21 @@ def condition_variable(block, group_name, condition_name, condition_value, path)
 def parse_selection_spec(filter_section, path):
     """Extract the source template's missing-value and KX reduction rules."""
 
-    by_udescriptor = {}
+    by_identifier_suffix = {}
     for block in filter_section.blocks:
-        udescriptor = filter_udescriptor(block)
-        if udescriptor in SELECTION_UDESCRIPTORS:
-            by_udescriptor.setdefault(udescriptor, []).append(block)
+        suffix = filter_identifier_suffix(block)
+        if suffix in SELECTION_IDENTIFIER_SUFFIXES:
+            by_identifier_suffix.setdefault(suffix, []).append(block)
 
-    for udescriptor in SELECTION_UDESCRIPTORS:
-        count = len(by_udescriptor.get(udescriptor, []))
+    for suffix in SELECTION_IDENTIFIER_SUFFIXES:
+        count = len(by_identifier_suffix.get(suffix, []))
         if count != 1:
             raise CombineError(
-                f"{path}: expected exactly one '{udescriptor}' filter, found {count}"
+                f"{path}: expected exactly one '{suffix}' filter, found {count}"
             )
 
-    type_block = by_udescriptor["obs_type_check"][0]
-    kx_block = by_udescriptor["obs_kx_check"][0]
+    type_block = by_identifier_suffix["obs_type_check"][0]
+    kx_block = by_identifier_suffix["obs_kx_check"][0]
     if filter_action(type_block) != "reduce obs space":
         raise CombineError(
             f"{path}: 'obs_type_check' must use 'reduce obs space'"
@@ -767,6 +851,89 @@ def operator_key(template):
     return template.obs_operator, template.linear_obs_operator
 
 
+def surface_temperature_writers(template):
+    """Find assignments that create the derived surface temperature."""
+    return [block for block in template.filter_section.blocks
+            if filter_name(block) == "Variable Assignment"
+            and any("name: " + DERIVED_SURFACE_TEMPERATURE in line
+                    for line in block.lines)]
+
+
+def function_options_index(lines, function_name):
+    """Find a function's directly associated options block, if unambiguous."""
+    matches = [i for i, line in enumerate(lines)
+               if line.strip() == "name: ObsFunction/" + function_name]
+    if len(matches) != 1:
+        return None
+    index = matches[0] + 1
+    while index < len(lines) and (not lines[index].strip() or lines[index].lstrip().startswith("#")):
+        index += 1
+    if (index >= len(lines) or lines[index].strip() != "options:"
+            or leading_spaces(lines[index]) != leading_spaces(lines[matches[0]])):
+        return None
+    return index
+
+
+def can_combine_surface_temperatures(templates):
+    """Recognize only reviewed surface-temperature and pressure configurations."""
+    if len(templates) < 2 or not any(surface_temperature_writers(t) for t in templates):
+        return False
+    family = templates[0].path.name.split("_", 1)[0]
+    if family not in {"adpsfc", "msonet", "sfcshp"}:
+        return False
+    seen_types = set()
+    for template in templates:
+        if template.path.name.split("_", 1)[0] != family:
+            return False
+        if not set(template.variables) <= {
+            "airTemperatureAt2M", "specificHumidityAt2M", "stationPressure",
+            "windEastward", "windNorthward",
+        }:
+            return False
+        if template.obs_operator.name not in {"Identity", "SfcCorrected", "VertInterp"}:
+            return False
+        if template.obs_operator.name == "SfcCorrected":
+            options = "\n".join(template.obs_operator.option_lines)
+            if "correction scheme to use: GSL" not in options or "observed temperature variable:" in options:
+                return False
+        writers = surface_temperature_writers(template)
+        if len(writers) > 1:
+            return False
+        if writers:
+            block = writers[0]
+            lines = "\n".join(block.lines)
+            if (block.jinja_depth or template.selection.kx_variable != "airTemperatureAt2M"
+                    or template.selection.value_variable != "airTemperatureAt2M"
+                    or not template.selection.kx_values
+                    or any(value in seen_types for value in template.selection.kx_values)
+                    or any(line.strip() == "where:" for line in block.lines)
+                    or lines.count("name: " + DERIVED_SURFACE_TEMPERATURE) != 1
+                    or sum(line.strip().startswith("- name:") for line in block.lines) != 1
+                    or lines.count("name: ObsValue/airTemperatureAt2M") != 1
+                    or not ("source variable:" in lines
+                            or "ObsFunction/ModelHeightAdjustedAirTemperature" in lines)
+                    or ("ObsFunction/ModelHeightAdjustedAirTemperature" in lines
+                        and ("observed temperature variable:" in lines
+                             or function_options_index(block.lines, "ModelHeightAdjustedAirTemperature") is None))):
+                return False
+            seen_types.update(template.selection.kx_values)
+        for block in template.filter_section.blocks:
+            lines = "\n".join(block.lines)
+            if RAW_SURFACE_TEMPERATURE in lines:
+                return False
+            if ("airTemperatureAt2M" not in template.variables
+                    and "ObsValue/airTemperatureAt2M" in lines):
+                return False
+            functions = re.findall(r"ObsFunction/([A-Za-z0-9_]+)", lines)
+            if any(function not in SURFACE_TEMPERATURE_FUNCTIONS for function in functions):
+                return False
+            if "ObsFunction/ObsErrorFactorSfcPressure" in lines:
+                if ("observed temperature variable:" in lines
+                        or function_options_index(block.lines, "ObsErrorFactorSfcPressure") is None):
+                    return False
+    return True
+
+
 def parse_input_templates(input_names):
     """Read and parse every input template once."""
 
@@ -797,10 +964,19 @@ def partition_inputs(templates):
     """Greedily place each template into the first compatible ObsSpace."""
 
     partitions = []
+    combine_temperatures = can_combine_surface_temperatures(templates)
     for template in templates:
+        # Derived surface temperatures are read implicitly by other operators.
+        # Keep unrecognized writers isolated rather than guessing their behavior.
+        if surface_temperature_writers(template) and not combine_temperatures:
+            partitions.append(ObsSpacePartition(templates=[template], isolated=True))
+            continue
+
         template_key = operator_key(template)
 
         for partition in partitions:
+            if partition.isolated:
+                continue
             compatible = all(
                 variable not in partition.variable_owners
                 or partition.variable_owners[variable] == template_key
@@ -957,7 +1133,7 @@ def simple_iuse_filter(block):
     """Return true when an iuse filter can be moved ahead of combined QC."""
 
     return (
-        filter_udescriptor(block) == "iuse_check"
+        filter_identifier_suffix(block) == "iuse_check"
         and block.jinja_depth == 0
         and not filter_contains_jinja_control(block)
     )
@@ -966,20 +1142,20 @@ def simple_iuse_filter(block):
 def early_merge_position_is_safe(occurrence):
     """Verify that a merge candidate has no stream-specific prerequisite."""
 
-    udescriptor = filter_udescriptor(occurrence.block)
+    suffix = filter_identifier_suffix(occurrence.block)
     allowed_predecessors = {
         "at2m_temperature_alias",
         "iuse_check",
         "obs_kx_check",
         "obs_type_check",
     }
-    if udescriptor == "time_window_check":
+    if suffix == "time_window_check":
         allowed_predecessors.add("quality_marker_check")
 
     for block in occurrence.template.filter_section.blocks:
         if block is occurrence.block:
             return True
-        predecessor = filter_udescriptor(block)
+        predecessor = filter_identifier_suffix(block)
         if predecessor not in allowed_predecessors:
             return False
         if predecessor == "iuse_check" and not simple_iuse_filter(block):
@@ -996,7 +1172,7 @@ def merge_signature(occurrence):
         return None
     if filter_name(block) not in POINTWISE_MERGEABLE_FILTERS:
         return None
-    if filter_udescriptor(block) not in ORDER_INDEPENDENT_MERGE_UDESCRIPTORS:
+    if filter_identifier_suffix(block) not in ORDER_INDEPENDENT_MERGE_IDENTIFIER_SUFFIXES:
         return None
     if not early_merge_position_is_safe(occurrence):
         return None
@@ -1073,7 +1249,7 @@ def merge_compatible_filters(occurrences, stats):
             continue
         if filter_name(block) not in POINTWISE_MERGEABLE_FILTERS:
             continue
-        if filter_udescriptor(block) not in ORDER_INDEPENDENT_MERGE_UDESCRIPTORS:
+        if filter_identifier_suffix(block) not in ORDER_INDEPENDENT_MERGE_IDENTIFIER_SUFFIXES:
             continue
         if not early_merge_position_is_safe(occurrence):
             continue
@@ -1089,7 +1265,7 @@ def merge_compatible_filters(occurrences, stats):
 def time_window_details(block, path):
     """Return a simple numeric time-window definition, or None."""
 
-    if filter_udescriptor(block) != "time_window_check":
+    if filter_identifier_suffix(block) != "time_window_check":
         return None
     if filter_name(block) != "Bounds Check":
         return None
@@ -1133,7 +1309,7 @@ def find_shared_time_reducer(templates, occurrences, obs_vars):
 
     by_template: Dict[Path, List[FilterOccurrence]] = OrderedDict()
     for occurrence in occurrences:
-        if filter_udescriptor(occurrence.block) == "time_window_check":
+        if filter_identifier_suffix(occurrence.block) == "time_window_check":
             by_template.setdefault(occurrence.template.path, []).append(occurrence)
 
     selected = []
@@ -1190,7 +1366,7 @@ def build_selection_reducers(templates, obs_vars):
         "         # ---- Safe combined location reduction ----",
         "         # Keep a location when at least one source ObsValue is valid.",
         "         - filter: Domain Check",
-        '           udescriptor: "obs_type_check"',
+        *identifier_lines("Domain Check", "obs_type_check"),
         "           filter variables:",
     ]
     lines.extend(f"           - name: {variable}" for variable in obs_vars)
@@ -1211,7 +1387,7 @@ def build_selection_reducers(templates, obs_vars):
             "",
             "         # Keep a location when at least one variable has an allowed KX.",
             "         - filter: Domain Check",
-            '           udescriptor: "obs_kx_check"',
+                *identifier_lines("Domain Check", "obs_kx_check"),
             "           filter variables:",
         ]
     )
@@ -1242,7 +1418,7 @@ def build_time_reducer(test_variable, minimum, maximum, obs_vars):
     lines = [
         "         # Remove only locations outside every source time window.",
         "         - filter: Bounds Check",
-        '           udescriptor: "combined_time_window_check"',
+        *identifier_lines("Bounds Check", "combined_time_window_check"),
         "           filter variables:",
     ]
     lines.extend(f"           - name: {variable}" for variable in obs_vars)
@@ -1264,6 +1440,7 @@ def build_combined_filters(templates, obs_vars):
     """Transform and render all filters for one combined ObsSpace."""
 
     stats = FilterMergeStats()
+    combine_temperatures = can_combine_surface_temperatures(templates)
     occurrences = []
     occurrences_by_template: Dict[Path, List[FilterOccurrence]] = OrderedDict()
 
@@ -1275,12 +1452,39 @@ def build_combined_filters(templates, obs_vars):
                 block=block,
                 lines=list(block.lines),
             )
+            if combine_temperatures and block in surface_temperature_writers(template):
+                # Restrict each writer to its original stream and read the raw value.
+                indent = " " * (leading_spaces(block.lines[0]) + 2)
+                occurrence.lines[1:1] = [
+                    indent + "where:",
+                    indent + "- variable: ObsType/airTemperatureAt2M",
+                    indent + "  is_in: [" + ", ".join(template.selection.kx_values) + "]",
+                ]
+                if any("ObsFunction/ModelHeightAdjustedAirTemperature" in line
+                       for line in occurrence.lines):
+                    index = function_options_index(occurrence.lines, "ModelHeightAdjustedAirTemperature")
+                    line = occurrence.lines[index]
+                    occurrence.lines.insert(index + 1, " " * (leading_spaces(line) + 2)
+                                            + "observed temperature variable: "
+                                            + RAW_SURFACE_TEMPERATURE)
+                else:
+                    occurrence.lines = [line.replace("name: ObsValue/airTemperatureAt2M",
+                                                     "name: " + RAW_SURFACE_TEMPERATURE)
+                                        for line in occurrence.lines]
+            if combine_temperatures and any("ObsFunction/ObsErrorFactorSfcPressure" in line
+                                            for line in occurrence.lines):
+                # Pressure error inflation must use the same raw temperature as the operator.
+                option_index = function_options_index(occurrence.lines, "ObsErrorFactorSfcPressure")
+                option = occurrence.lines[option_index]
+                occurrence.lines.insert(option_index + 1,
+                    " " * (leading_spaces(option) + 2)
+                    + "observed temperature variable: " + RAW_SURFACE_TEMPERATURE)
             occurrences.append(occurrence)
             template_occurrences.append(occurrence)
         occurrences_by_template[template.path] = template_occurrences
 
     for occurrence in occurrences:
-        if filter_udescriptor(occurrence.block) in SELECTION_UDESCRIPTORS:
+        if filter_identifier_suffix(occurrence.block) in SELECTION_IDENTIFIER_SUFFIXES:
             occurrence.skip = True
 
     time_reducer = find_shared_time_reducer(templates, occurrences, obs_vars)
@@ -1325,6 +1529,21 @@ def build_combined_filters(templates, obs_vars):
         else:
             stats.converted_reductions += 1
 
+    # Namespace only emitted source filters, after comparisons used for merging.
+    used_names = {
+        "DomainCheck_obs_type_check",
+        "DomainCheck_obs_kx_check",
+        "BoundsCheck_combined_time_window_check",
+        "PerformAction_obs_type_check_initial_reject",
+        "VariableAssignment_save_raw_surface_temperature",
+        "VariableAssignment_initialize_derived_surface_temperature",
+    }
+    for occurrence in iuse_occurrences:
+        namespace_filter_identifier(occurrence, used_names)
+    for occurrence in occurrences:
+        if not occurrence.skip:
+            namespace_filter_identifier(occurrence, used_names)
+
     output = build_selection_reducers(templates, obs_vars)
     if time_reducer is not None:
         output.extend(build_time_reducer(test_variable, minimum, maximum, obs_vars))
@@ -1332,11 +1551,29 @@ def build_combined_filters(templates, obs_vars):
     output.extend(build_reject_filter(obs_vars).rstrip().splitlines())
     output.append("")
 
+    if combine_temperatures:
+        # Initialize derived values from the original observations before applying scoped writers.
+        for suffix, destination, source in (
+            ("save_raw_surface_temperature", RAW_SURFACE_TEMPERATURE, "ObsValue/airTemperatureAt2M"),
+            ("initialize_derived_surface_temperature", DERIVED_SURFACE_TEMPERATURE, RAW_SURFACE_TEMPERATURE),
+        ):
+            output.append("         - filter: Variable Assignment")
+            output.extend(identifier_lines("Variable Assignment", suffix))
+            output.extend([
+                "           assignments:",
+                "           - name: " + destination,
+                "             type: float",
+                "             source variable:",
+                "               name: " + source,
+                "             skip derived: true",
+                "",
+            ])
+
     if iuse_occurrences:
         output.append("         # ---- Accept, reject, or passivate configured streams ----")
         for occurrence in iuse_occurrences:
             output.append(f"         # From {occurrence.template.path.name}")
-            output.extend(occurrence.lines)
+            output.extend(render_source_filter(occurrence.lines))
             output.append("")
 
     for template in templates:
@@ -1351,7 +1588,7 @@ def build_combined_filters(templates, obs_vars):
             output.extend(decorative)
             for note in occurrence.notes:
                 output.append(f"         # {note}")
-            output.extend(occurrence.lines)
+            output.extend(render_source_filter(occurrence.lines))
         output.extend(template.filter_section.trailing_lines)
         output.append("")
 
@@ -1462,8 +1699,8 @@ def build_reject_filter(obs_vars):
     return (
         "         # ---- Initial blanket rejection ----\n"
         "         - filter: Perform Action\n"
-        "           udescriptor: \"obs_type_check_initial_reject\"\n"
-        "           filter variables:\n"
+        + "\n".join(identifier_lines("Perform Action", "obs_type_check_initial_reject"))
+        + "\n           filter variables:\n"
         + "".join(f"           - name: {variable}\n" for variable in obs_vars)
         + "           action:\n"
           "             name: reject\n\n"
@@ -1480,6 +1717,18 @@ def build_obs_space_yaml(templates, space_name, input_name, conflict_policy):
         templates,
         conflict_policy,
     )
+    if can_combine_surface_temperatures(templates):
+        # GSL pressure must see the unadjusted temperature used in its source ObsSpace.
+        for group in operator_groups:
+            operator = group.obs_operator
+            if operator.name == "SfcCorrected":
+                group.obs_operator = OperatorSpec(
+                    operator.name,
+                    operator.option_lines + (
+                        "observed temperature variable: " + RAW_SURFACE_TEMPERATURE,
+                    ),
+                    operator.had_variables,
+                )
     obs_operator_block = build_obs_operator_block(operator_groups)
     filters, filter_stats = build_combined_filters(templates, obs_vars)
 
@@ -1535,6 +1784,10 @@ def build_combined_yaml(input_names, output_name, conflict_policy):
     if conflict_policy == "split":
         partitions = partition_inputs(templates)
     else:
+        if (any(surface_temperature_writers(t) for t in templates)
+                and not can_combine_surface_temperatures(templates)):
+            raise CombineError("Cannot safely combine unrecognized derived surface temperature writers; "
+                               "use --operator-conflict split to keep them isolated")
         partitions = [ObsSpacePartition(templates=templates)]
 
     header_lines = [

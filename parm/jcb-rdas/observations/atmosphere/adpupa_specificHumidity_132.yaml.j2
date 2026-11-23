@@ -44,7 +44,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_iuse_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       where:
@@ -57,7 +57,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_obs_type_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable: ObsValue/specificHumidity
         value: is_not_valid
@@ -68,7 +68,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_obs_kx_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       where:
       - variable: ObsType/specificHumidity
         is_not_in: 132
@@ -79,7 +79,7 @@
     - filter: RejectList
       identifier:
         name: "RejectList_quality_marker_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       where:
@@ -94,7 +94,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_time_window_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       test variables:
@@ -111,7 +111,7 @@
     - filter: DuplicateThinning
       identifier:
         name: "DuplicateThinning_duplicate_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       analysis_time: "{{ atmosphere_background_time_iso }}"
@@ -137,7 +137,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_online_domain_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       test variables:
@@ -150,7 +150,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_initial_error_assignment"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       where:
@@ -176,7 +176,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_errormod"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       where:
@@ -194,7 +194,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_QualityMarker"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       action:
@@ -210,7 +210,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_observation_pressure"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       action:
@@ -227,7 +227,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_error_inflation_pressure_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       where:
@@ -248,7 +248,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_ObsError"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       test variables:
@@ -265,7 +265,7 @@
     - filter: Bounds Check
       identifier:
         name: "BoundsCheck_bounds_check_ObsValue"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: specificHumidity
       minvalue: 0.0
@@ -278,7 +278,9 @@
 
     # Create temporary ObsErrorData
     - filter: Variable Assignment
-      udescriptor: "create_temporary_ObsErrorData"
+      identifier:
+        name: "VariableAssignment_create_temporary_ObsErrorData"
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       where:
       - variable: ObsType/specificHumidity
@@ -297,7 +299,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_ermin_set"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: specificHumidity
@@ -319,7 +321,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_ermax_set"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: specificHumidity
@@ -341,7 +343,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: specificHumidity
@@ -359,7 +361,7 @@
     - filter: Background Check
       identifier:
         name: "BackgroundCheck_gross_error_check_0.7"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: specificHumidity
@@ -377,7 +379,7 @@
     - filter: Perform Action
       identifier:
         name: "PerformAction_reassign_error_TempObsErrorData"
-        logging: true
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: specificHumidity

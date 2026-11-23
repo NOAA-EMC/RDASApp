@@ -65,6 +65,9 @@
   obs pre filters:
   # Step 0-A: Create Diagnostic Flags
   - filter: Create Diagnostic Flags
+    identifier:
+      name: "CreateDiagnosticFlags_create_diagnostic_flags"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -98,6 +101,9 @@
   # Step 0-B: Calculate derived variables
   # Calculate CLW retrieved from observation
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_cloud_liquid_water_retrieval_ObsValue"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: CLWRetFromObs@DerivedMetaData
       type: float
@@ -110,6 +116,9 @@
 
   # Calculate CLW retrieved from observation
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_cloud_liquid_water_retrieval_HofX"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: CLWRetFromBkg@DerivedMetaData
       type: float
@@ -122,12 +131,18 @@
 
   # Calculate symmetric retrieved CLW
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_initialize_symmetric_cloud_liquid_water"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: CLWRetSymmetric@DerivedMetaData
       type: float
       value: 1000.0
 
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_calculate_symmetric_cloud_liquid_water"
+      logging: {{ obs_filter_logging | default(true) }}
     where:
     - variable:
         name: CLWRetFromObs@DerivedMetaData
@@ -151,6 +166,9 @@
 
   # Calculate scattering index from observation
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_scattering_index_ObsValue"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: SIRetFromObs@DerivedMetaData
       type: float
@@ -164,6 +182,9 @@
 
   # Calculate CLW obs/bkg match index
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_cloud_liquid_water_match_index"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: CLWMatchIndex@DerivedMetaData
       channels: *atms_n21_channels
@@ -185,6 +206,9 @@
 
   # Calculate symmetric observation error
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_initial_observation_error"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: InitialObsError@DerivedMetaData
       channels: *atms_n21_channels
@@ -219,6 +243,9 @@
 
   # Calculate Innovation@DerivedMetaData
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_innovation"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: Innovation@DerivedMetaData
       channels: *atms_n21_channels
@@ -236,6 +263,9 @@
 
   # Toss the data if the hofx is missing or outside of range
   - filter: Domain Check
+    identifier:
+      name: "DomainCheck_hofx_brightness_temperature_range_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -252,6 +282,9 @@
 {% if use_online_domain_check | default(true) %}
   # Regional Domain Check
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_online_domain_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -264,6 +297,9 @@
 
   # Step 0-C: Assign Initial All-Sky Observation Error
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_initial_error_assignment"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -275,6 +311,9 @@
 
   # Step 1: Remove Observations from the Edge of the Scan
   - filter: Domain Check
+    identifier:
+      name: "DomainCheck_scan_edge_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 1-22
@@ -289,6 +328,9 @@
 
   # Step 2: data Thinning
   - filter: Gaussian Thinning
+    identifier:
+      name: "GaussianThinning_spatial_thinning"
+      logging: {{ obs_filter_logging | default(true) }}
     #horizontal_mesh: 145
     horizontal_mesh: 60
     use_reduced_horizontal_grid: true
@@ -302,6 +344,9 @@
 
   # Step 3A: CLW Retrieval Check (observation_based)
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_cloud_liquid_water_retrieval_ObsValue"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 1-7, 16-22
@@ -315,6 +360,9 @@
 
   # Step 3B: CLW Retrieval Check (background_based)
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_cloud_liquid_water_retrieval_HofX"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 1-7, 16-22
@@ -328,6 +376,9 @@
 
   # Step 4: Window Channel Sanity Check
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_window_channel_innovation_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 1-7, 16, 17-22
@@ -344,6 +395,9 @@
 
   # Step 5: Hydrometeor Check (cloud/precipitation affected chanels)
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_hydrometeor_check"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedMetaData/HydrometeorCheckATMS
       channels: *atms_n21_channels
@@ -361,6 +415,9 @@
             channels: *atms_n21_channels
 
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_hydrometeor_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -376,6 +433,9 @@
 
   # Step 6: Observation Error Inflation based on Topography Check
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_error_factor_topography"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: ObsErrorFactorTopo@DerivedMetaData
       channels: *atms_n21_channels
@@ -393,6 +453,9 @@
           channels: *atms_n21_channels
 
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_topography"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -404,6 +467,9 @@
 
   # Step 7: Obs Error Inflation based on TOA Transmittancec Check
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_error_factor_model_top_transmittance"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: ObsErrorFactorTransmitTop@DerivedMetaData
       channels: *atms_n21_channels
@@ -415,6 +481,9 @@
           channels: *atms_n21_channels
 
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_model_top_transmittance"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -426,6 +495,9 @@
 
   # Step 8: Observation Error Inflation based on Surface Jacobian Check
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_error_factor_surface_jacobians"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: ObsErrorFactorSurfJacobian@DerivedMetaData
       channels: *atms_n21_channels
@@ -440,6 +512,9 @@
           obserr_dtempf: [0.500, 2.000, 1.000, 2.000, 4.500]
 
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_surface_jacobians"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -451,6 +526,9 @@
 
   # Step 9: Situation Dependent Check
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_error_factor_situation_dependent"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: ObsErrorFactorSituDepend@DerivedMetaData
       channels: *atms_n21_channels
@@ -476,6 +554,9 @@
           obserr_clearsky: *atms_n21_error
 
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_situation_dependent"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -488,6 +569,9 @@
   # Step 10: Gross check
   # Remove data if abs(Obs-HofX) > absolute threhold
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_error_factor_latitude"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: ObsErrorFactorLat@DerivedMetaData
       type: float
@@ -497,6 +581,9 @@
           latitude_parameters: [25.0, 0.25, 0.04, 3.0]
 
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_observation_error_bound"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: ObsErrorBound@DerivedMetaData
       channels: *atms_n21_channels
@@ -524,6 +611,9 @@
           obserr_bound_max: [{{ get_satellite_variable(observation_from_jcb, "ermax") }}]
 
   - filter: Background Check
+    identifier:
+      name: "BackgroundCheck_gross_error_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -538,6 +628,9 @@
 
   # Step 11: Inter-Channel Check
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_inter_channel_consistency_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels
@@ -557,6 +650,9 @@
 
   # Step 12: Useflag Check
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_channel_useflag_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *atms_n21_channels

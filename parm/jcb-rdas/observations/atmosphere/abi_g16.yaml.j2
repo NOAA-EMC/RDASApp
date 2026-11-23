@@ -88,6 +88,9 @@
   # Step 0: Create Diagnostic Flags
   # -------------------------------
   - filter: Create Diagnostic Flags
+    identifier:
+      name: "CreateDiagnosticFlags_create_diagnostic_flags"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -139,6 +142,9 @@
   # Step 1 : Satellite Zenith Angle check: remove observations with zenith angle larger than 65 degree
   # ----------------------------------------------------------------------------------------------------
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_satellite_zenith_angle_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -157,6 +163,9 @@
   #          this initial cloud fraction is applied to all 10 channels
   # ----------------------------------------------------------------------------------------------------------------------------
   - filter: Domain Check
+    identifier:
+      name: "DomainCheck_initial_cloud_fraction_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -177,6 +186,9 @@
   #          max_exclusive is false (default) sincce STDB=1.3 will not be removed
   # ---------------------------------------------------------------------------------------------------------------
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_initial_clear_sky_stddev_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -197,6 +209,9 @@
   # Step 4 :  BT range check (sanity check)
   # ----------------------------------------------------------------------------------------------------
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_brightness_temperature_range_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -213,6 +228,9 @@
   # Step 5 : Create a variable of thinning priority based on cloudFree and StdDev from ABI channel 13
   # ----------------------------------------------------------------------------------------------------
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_thinning_priority"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedMetaData/thinning_priority
       type: float
@@ -231,6 +249,9 @@
   # Step 6 : Data Thinning (spatial and temporal thinning)
   # ----------------------------------------------------------------------------------------------------
   - filter: Gaussian Thinning
+    identifier:
+      name: "GaussianThinning_spatial_temporal_thinning"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -264,6 +285,9 @@
   # Step 7 : Initial obs erro assignment
   # -----------------------------------
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_initial_error_assignment"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -280,6 +304,9 @@
   # Mixed/Other: 4.
   # ----------------------------------------------------------
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_surface_flag"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedMetaData/surfaceFlag
       type: int
@@ -314,6 +341,9 @@
   # Step 9: Surface Parameter assignment from geovals
   # ----------------------------------------------------------
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_surface_parameter"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedMetaData/surfaceParam
       type: int
@@ -354,6 +384,9 @@
   # Step 10: online geo-domain Check, rejecting observations outside of regional MPAS domain
   # ----------------------------------------------------------------------------------------
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_online_domain_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -373,6 +406,9 @@
   # Toss data if the hofx is missing or outside of range
   # ----------------------------------------------------------------------------------------------------
   - filter: Domain Check
+    identifier:
+      name: "DomainCheck_hofx_brightness_temperature_range_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -391,6 +427,9 @@
   # Step 12a: Toss all channels 7, 11-16  data over land
   # ------------------------------------------------------
   - filter: RejectList
+    identifier:
+      name: "RejectList_land_surface_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 7, 11-16
@@ -403,6 +442,9 @@
   # Setp 12b: Toss all channels data over snow
   # --------------------------------------------
   - filter: RejectList
+    identifier:
+      name: "RejectList_snow_surface_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -415,6 +457,9 @@
   # Step 12c: Toss all channels data over ice (reject if ice_area_fraction>=0.99)
   # ---------------------------------------------------------------------------------
   - filter: RejectList
+    identifier:
+      name: "RejectList_ice_surface_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -427,6 +472,9 @@
   # Step 12d:  Toss all channels data over mixed surface
   # --------------------------------------------------------
   - filter: RejectList
+    identifier:
+      name: "RejectList_mixed_surface_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -454,6 +502,9 @@
   # This obsfunction calculates the observation error inflation factor for satellite radiances as a function of model top-to-space transmittance.
   # ------------------------------------------------------------------------------------------------------------------------------------------------
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_model_top_transmittance"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -469,6 +520,9 @@
   # Step 14:  MinResidual Cloud Detection Check
   # ---------------------------------------------------
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_min_residual_cloud_detection"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -493,6 +547,9 @@
   # This step would remove more data for channel 10
   # ---------------------------------------------------------------------------------------------------------------------
   - filter: Domain Check
+    identifier:
+      name: "DomainCheck_channel_13_scene_consistency_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 7, 10-16
@@ -512,6 +569,9 @@
   # Step 16: Observation Error inflation: adjust error for channels 8-10 according to ch8 BT standard deviation
   # --------------------------------------------------------------------------------------------------------------
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_channel_8_stddev_0.4_0.5"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 8-10
@@ -527,6 +587,9 @@
       inflation factor: 1.1489
 
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_channel_8_stddev_0.5_0.6"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 8-10
@@ -543,6 +606,9 @@
       inflation factor: 1.2923
 
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_channel_8_stddev_0.6_0.7"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 8-10
@@ -559,6 +625,9 @@
       inflation factor: 1.4967
 
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_channel_8_stddev_above_0.7"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 8-10
@@ -579,6 +648,9 @@
   # The brightness_temperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12.
   # ---------------------------------------------------------------------------------------------------------------------------------------------------------
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_near_sea_surface_temperature_retrieval_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -604,6 +676,9 @@
   # a function of weighted surface temperature jacobian and surface emissivity jacobian.
   # -----------------------------------------------------------------------------------------------------------
   - filter: Perform Action
+    identifier:
+      name: "PerformAction_error_inflation_surface_jacobians"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -624,6 +699,9 @@
   # this step would remove more data from channel 8
   # -----------------------------------------------------------------------------------------------------------
   - filter: Domain Check
+    identifier:
+      name: "DomainCheck_additional_cloud_fraction_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 7, 10-16
@@ -642,6 +720,9 @@
   # Step 20a: Variable assignment, OmF non bias corrected
   # -----------------------------------------------------------------------------------------------------------
   - filter: Variable Assignment
+    identifier:
+      name: "VariableAssignment_split_window_OmFNBC"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedMetaData/OmFNBC
       type: float
@@ -669,6 +750,9 @@
   #           min_exclusive:true is uesed to reject when omFNBC= -0.75
   # ------------------------------------------------------------------------------------------------------------------
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_split_window_opaque_cloud_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 7, 10-16
@@ -686,6 +770,9 @@
   # Step 21: Gross check
   # ----------------------------------
   - filter: Background Check
+    identifier:
+      name: "BackgroundCheck_gross_error_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels
@@ -717,6 +804,9 @@
   # Step 22: Useflag Check
   # -------------------------------
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_channel_useflag_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *abi_g16_channels

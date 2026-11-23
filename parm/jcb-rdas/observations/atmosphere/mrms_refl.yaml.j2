@@ -32,13 +32,17 @@
     # ------------------
     # Accept, reject, or passivate (monitor)
     - filter: Perform Action
-      udescriptor: "iuse_check"
+      identifier:
+        name: "PerformAction_iuse_check"
+        logging: {{ obs_filter_logging | default(true) }}
       action:
         name: {{iuse_mrms_refl | default("passivate", true)}} # accept, reject, passivate
 
     # Compute height AGL for height check filter
     - filter: Variable Assignment
-      udescriptor: "calc_height_agl"
+      identifier:
+        name: "VariableAssignment_calc_height_agl"
+        logging: {{ obs_filter_logging | default(true) }}
       assignments:
       - name: DerivedMetaData/height_agl
         type: float
@@ -50,7 +54,9 @@
 
     # Reject obs above 10 km AGL
     - filter: Domain Check
-      udescriptor: height_check
+      identifier:
+        name: "DomainCheck_height_check"
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: equivalentReflectivityFactor
       where:
@@ -60,7 +66,9 @@
 
     # Initial error assignment
     - filter: Perform Action
-      udescriptor: "intial_error_assignment"
+      identifier:
+        name: "PerformAction_initial_error_assignment"
+        logging: {{ obs_filter_logging | default(true) }}
       filter variables:
       - name: equivalentReflectivityFactor
       action:
@@ -69,7 +77,9 @@
 
     # Inflate obs error in precipitation
     - filter: Perform Action
-      udescriptor: inflate_error_precip
+      identifier:
+        name: "PerformAction_inflate_error_precip"
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: equivalentReflectivityFactor
@@ -82,7 +92,9 @@
 
     # First gross error check to inflate errors if ratio > 4
     - filter: Background Check
-      udescriptor: gross_error_check_inflt
+      identifier:
+        name: "BackgroundCheck_gross_error_check_inflt"
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: equivalentReflectivityFactor
@@ -103,7 +115,9 @@
 
     # Second gross error check to reject anything with ratio > 8
     - filter: Background Check
-      udescriptor: gross_error_check_reject
+      identifier:
+        name: "BackgroundCheck_gross_error_check_reject"
+        logging: {{ obs_filter_logging | default(true) }}
       apply at iterations: 0,1
       filter variables:
       - name: equivalentReflectivityFactor

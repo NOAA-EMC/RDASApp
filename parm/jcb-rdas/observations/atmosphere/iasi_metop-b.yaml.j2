@@ -83,8 +83,8 @@
   - filter: AcceptList
     apply at iterations: 1
     identifier:
-      name: NewLoopReset
-      logging: true
+      name: "AcceptList_reset_qc_flags_second_outer_loop"
+      logging: {{ obs_filter_logging | default(true) }}
 
   # --------------------------------------------------------------------------------------
   # Step 1: Polygon Check: Remove (reduce obs space) all obs outside the regional domain   
@@ -100,7 +100,8 @@
   # -----------------------------------------------------------------------
   - filter: Variable Assignment
     identifier:
-      name: TimeConvert
+      name: "VariableAssignment_datetime_to_time_offset"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: MetaData/timeOffset
       type: float
@@ -114,8 +115,8 @@
   # -----------------------------------------------------------------------------------------------------
   - filter: Domain Check
     identifier:
-      name: TimeWindowCheck
-      logging: true
+      name: "DomainCheck_time_window_check"
+      logging: {{ obs_filter_logging | default(true) }}
     where:
         - variable:
             name: MetaData/timeOffset # units: s
@@ -130,8 +131,8 @@
   # ----------------------------------------------------------------
   - filter: Variable Assignment
     identifier:
-      name: VarAssignWavenumber
-      logging: true
+      name: "VariableAssignment_sensor_central_wavenumber"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: MetaData/sensorCentralWavenumber
       type: float
@@ -152,8 +153,8 @@
   # ----------------------------------------------------------------------------------------------------
   - filter: Variable Transforms
     identifier:
-      name: BrightnessTempTransform
-      logging: true
+      name: "VariableTransforms_radiance_to_brightness_temperature"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     Transform: SatBrightnessTempFromRad
@@ -174,8 +175,8 @@
   - filter: Perform Action
     apply at iterations: 0,1
     identifier:
-      name: ObsErrorInit
-      logging: true
+      name: "PerformAction_initial_error_assignment"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -200,7 +201,8 @@
   # -----------------------------------------------------------------------------------------------
   - filter: Variable Assignment
     identifier:
-      name: VarAssignCloudFree
+      name: "VariableAssignment_cloud_free_fraction"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedMetaData/cloudFree
       type: int 
@@ -217,8 +219,8 @@
   # ------------------------------------------------------------------------
   - filter: Domain Check
     identifier:
-      name: ScanEdgeCheck 
-      logging: true
+      name: "DomainCheck_scan_edge_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *iasi_metop-b_channels
@@ -235,8 +237,8 @@
   # --------------------------------------------------------------------------------------------------------------
   - filter: Bounds Check
     identifier:
-      name: ObsRangeCheck
-      logging: true
+      name: "BoundsCheck_brightness_temperature_range_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *iasi_metop-b_channels
@@ -252,8 +254,8 @@
   # --------------------------------------------------------------------------
   - filter: Gaussian Thinning
     identifier:
-      name: GaussianThinning
-      logging: true
+      name: "GaussianThinning_spatial_thinning"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *iasi_metop-b_channels
@@ -282,8 +284,8 @@
   - filter: Bounds Check
     apply at iterations: 0,1
     identifier:
-      name: RegionalDomainCheck
-      logging: true
+      name: "BoundsCheck_online_domain_check"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -305,8 +307,8 @@
   - filter: Perform Action
     apply at iterations: 0,1
     identifier:
-      name: WavenumberCheck
-      logging: true
+      name: "PerformAction_shortwave_daytime_water_check"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -337,8 +339,8 @@
   - filter: Perform Action
     apply at iterations: 0,1
     identifier:
-      name: ObsErrorInflationWavenumIR
-      logging: true
+      name: "PerformAction_error_inflation_wavenumber"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -359,8 +361,8 @@
   - filter: Variable Assignment
     apply at iterations: 0
     identifier:
-      name: CreateObsErrorFactorWavenumIR0 
-      logging: true
+      name: "VariableAssignment_error_factor_wavenumber_outer_loop_0"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorFactorWavenumIR0
       channels: *iasi_metop-b_channels
@@ -378,8 +380,8 @@
   - filter: Variable Assignment
     apply at iterations: 1
     identifier:
-      name: CreateObsErrorFactorWavenumIR1 
-      logging: true
+      name: "VariableAssignment_error_factor_wavenumber_outer_loop_1"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorFactorWavenumIR1
       channels: *iasi_metop-b_channels
@@ -399,8 +401,8 @@
   - filter: Perform Action
     apply at iterations: 0,1
     identifier:
-      name: ObsErrorInflationTotoRad
-      logging: true
+      name: "PerformAction_error_inflation_topography"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -422,8 +424,8 @@
   - filter: Variable Assignment
     apply at iterations: 0
     identifier:
-      name: CreateObsErrorFactorTopoRad0 
-      logging: true
+      name: "VariableAssignment_error_factor_topography_outer_loop_0"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorFactorTopoRad0
       channels: *iasi_metop-b_channels
@@ -442,8 +444,8 @@
   - filter: Variable Assignment
     apply at iterations: 1
     identifier:
-      name: CreateObsErrorFactorTopoRad1 
-      logging: true
+      name: "VariableAssignment_error_factor_topography_outer_loop_1"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorFactorTopoRad1
       channels: *iasi_metop-b_channels
@@ -464,8 +466,8 @@
   - filter: Perform Action
     apply at iterations: 0,1
     identifier:
-      name: ObsErrorInflationTransmittopRad
-      logging: true
+      name: "PerformAction_error_inflation_model_top_transmittance"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -486,8 +488,8 @@
   - filter: Variable Assignment
     apply at iterations: 0
     identifier:
-      name: CreateObsErrorFactorTransmitTopRad0  
-      logging: true
+      name: "VariableAssignment_error_factor_model_top_transmittance_outer_loop_0"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorFactorTransmitTopRad0
       channels: *iasi_metop-b_channels
@@ -505,8 +507,8 @@
   - filter: Variable Assignment
     apply at iterations: 1
     identifier:
-      name: CreateObsErrorFactorTransmitTopRad1  
-      logging: true
+      name: "VariableAssignment_error_factor_model_top_transmittance_outer_loop_1"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorFactorTransmitTopRad1
       channels: *iasi_metop-b_channels
@@ -529,8 +531,8 @@
   - filter: Bounds Check
     apply at iterations: 0,1
     identifier:
-      name: CloudDetect
-      logging: true
+      name: "BoundsCheck_min_residual_cloud_detection"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -556,8 +558,8 @@
   - filter: Bounds Check
     apply at iterations: 0,1
     identifier:
-      name: SurfaceTempJacobianCheck
-      logging: true
+      name: "BoundsCheck_land_surface_temperature_jacobian_check"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -583,8 +585,8 @@
   - filter: Bounds Check
     apply at iterations: 0,1
     identifier:
-      name: NearSSTRetCheckCheckIR
-      logging: true
+      name: "BoundsCheck_near_sea_surface_temperature_retrieval_check"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -612,8 +614,8 @@
   - filter: Perform Action
     apply at iterations: 0,1
     identifier:
-      name: ObsErrorInflationSurfJacobianRad
-      logging: true
+      name: "PerformAction_error_inflation_surface_jacobians"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -637,8 +639,8 @@
   - filter: Variable Assignment
     apply at iterations: 0
     identifier:
-      name: CreateObsErrorFactorSurfJacobianRad0 
-      logging: true
+      name: "VariableAssignment_error_factor_surface_jacobians_outer_loop_0"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorFactorSurfJacobianRad0
       channels: *iasi_metop-b_channels
@@ -659,8 +661,8 @@
   - filter: Variable Assignment
     apply at iterations: 1
     identifier:
-      name: CreateObsErrorFactorSurfJacobianRad1 
-      logging: true
+      name: "VariableAssignment_error_factor_surface_jacobians_outer_loop_1"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorFactorSurfJacobianRad1
       channels: *iasi_metop-b_channels
@@ -684,8 +686,8 @@
   - filter: Background Check
     apply at iterations: 0,1
     identifier:
-      name: GrossErrorCheck
-      logging: true
+      name: "BackgroundCheck_gross_error_check"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:
@@ -718,8 +720,8 @@
   - filter: Variable Assignment
     apply at iterations: 0
     identifier:
-      name: CreateObsErrorBoundIR0 
-      logging: true
+      name: "VariableAssignment_observation_error_bound_outer_loop_0"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorBoundIR0
       channels: *iasi_metop-b_channels
@@ -749,8 +751,8 @@
   - filter: Variable Assignment
     apply at iterations: 1
     identifier:
-      name: CreateObsErrorBoundIR1 
-      logging: true
+      name: "VariableAssignment_observation_error_bound_outer_loop_1"
+      logging: {{ obs_filter_logging | default(true) }}
     assignments:
     - name: DerivedData/obsErrorBoundIR1
       channels: *iasi_metop-b_channels
@@ -781,8 +783,8 @@
   - filter: Bounds Check
     apply at iterations: 0,1
     identifier:
-      name: ChannelUseflagCheckRad
-      logging: true
+      name: "BoundsCheck_channel_useflag_check"
+      logging: {{ obs_filter_logging | default(true) }}
       diagnostic flag: true
       diagnostic flag new: true
     filter variables:

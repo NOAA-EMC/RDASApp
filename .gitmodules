@@ -3,6 +3,11 @@
 	url = https://github.com/RRFSx/crtm
 	branch = aod
 	ignore = all
+[submodule "sorc/crtmv3"]
+	path = sorc/crtmv3
+	url = https://github.com/JCSDA/CRTMv3
+	branch = release/REL-3.1.6
+	ignore = all
 [submodule "sorc/femps"]
 	path = sorc/femps
 	url = https://github.com/jcsda/femps

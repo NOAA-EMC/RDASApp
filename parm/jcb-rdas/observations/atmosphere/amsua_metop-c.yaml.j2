@@ -63,6 +63,9 @@
   obs pre filters:
   # Step 0-A: Create Diagnostic Flags
   - filter: Create Diagnostic Flags
+    identifier:
+      name: "CreateDiagnosticFlags_create_diagnostic_flags"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -73,6 +76,9 @@
   obs post filters:
   #Thinning
   - filter: Gaussian Thinning
+    identifier:
+      name: "GaussianThinning_spatial_thinning"
+      logging: {{ obs_filter_logging | default(true) }}
     #horizontal_mesh: 145
     horizontal_mesh: 60
     use_reduced_horizontal_grid: true
@@ -86,6 +92,9 @@
 {% if use_online_domain_check | default(true) %}
   # Regional domain check to remove data outside of model domain
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_online_domain_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -97,6 +106,9 @@
    #Toss data if the hofx is missing or outside of range
 {% endif %}
   - filter: Domain Check
+    identifier:
+      name: "DomainCheck_hofx_brightness_temperature_range_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -110,6 +122,9 @@
     action:
       name: reject
   - filter: BlackList
+    identifier:
+      name: "BlackList_initial_error_assignment"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -140,6 +155,9 @@
                    0.400,  0.550,  0.800,  3.000, 18.000]
   #  CLW Retrieval Check
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_cloud_liquid_water_retrieval_ObsValue"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 1-6, 15
@@ -154,6 +172,9 @@
       name: reject
   #  CLW Retrieval Check
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_cloud_liquid_water_retrieval_HofX"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: 1-6, 15
@@ -168,6 +189,9 @@
       name: reject
   #  Hydrometeor Check (cloud/precipitation affected chanels)
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_hydrometeor_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -211,6 +235,9 @@
       name: reject
   #  Topography check
   - filter: BlackList
+    identifier:
+      name: "BlackList_error_inflation_topography"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -229,6 +256,9 @@
           channels: *amsua_metop-c_channels
   #  Transmittnace Top Check
   - filter: BlackList
+    identifier:
+      name: "BlackList_error_inflation_model_top_transmittance"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -242,6 +272,9 @@
           channels: *amsua_metop-c_channels
   #  Surface Jacobian check
   - filter: BlackList
+    identifier:
+      name: "BlackList_error_inflation_surface_jacobians"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -257,6 +290,9 @@
           obserr_dtempf: [0.500, 2.000, 1.000, 2.000, 4.500]
   #  Situation dependent Check
   - filter: BlackList
+    identifier:
+      name: "BlackList_error_inflation_situation_dependent"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -337,6 +373,9 @@
 
   #  Gross check
   - filter: Background Check
+    identifier:
+      name: "BackgroundCheck_gross_error_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -395,6 +434,9 @@
       name: reject
   #  Inter-channel check
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_inter_channel_consistency_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
@@ -410,6 +452,9 @@
       name: reject
   #  Useflag check
   - filter: Bounds Check
+    identifier:
+      name: "BoundsCheck_channel_useflag_check"
+      logging: {{ obs_filter_logging | default(true) }}
     filter variables:
     - name: brightnessTemperature
       channels: *amsua_metop-c_channels
